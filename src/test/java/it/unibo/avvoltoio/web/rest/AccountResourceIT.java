@@ -14,7 +14,6 @@ import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.service.UserService;
 import it.unibo.avvoltoio.service.dto.AdminUserDTO;
 import it.unibo.avvoltoio.service.dto.PasswordChangeDTO;
-import it.unibo.avvoltoio.service.dto.UserDTO;
 import it.unibo.avvoltoio.web.rest.vm.KeyAndPasswordVM;
 import it.unibo.avvoltoio.web.rest.vm.ManagedUserVM;
 import java.time.Instant;

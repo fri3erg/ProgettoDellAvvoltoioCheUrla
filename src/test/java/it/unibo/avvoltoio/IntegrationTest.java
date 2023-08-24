@@ -1,6 +1,5 @@
 package it.unibo.avvoltoio;
 
-import it.unibo.avvoltoio.AvvoltoioCheUrlaApp;
 import it.unibo.avvoltoio.config.AsyncSyncConfiguration;
 import it.unibo.avvoltoio.config.EmbeddedMongo;
 import java.lang.annotation.ElementType;

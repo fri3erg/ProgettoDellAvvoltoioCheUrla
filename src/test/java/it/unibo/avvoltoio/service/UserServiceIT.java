@@ -3,10 +3,8 @@ package it.unibo.avvoltoio.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import it.unibo.avvoltoio.IntegrationTest;
-import it.unibo.avvoltoio.config.Constants;
 import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.repository.UserRepository;
-import it.unibo.avvoltoio.service.dto.AdminUserDTO;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -15,8 +13,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import tech.jhipster.security.RandomUtil;
 
 /**
