@@ -1,0 +1,54 @@
+squealer in se
+html
+css
+angular
+mongodb
+server tipo aws
+
+canali privati
+canali pubblici
+menzioni
+messaggi privati
+notifiche
+login e non login
+views
+max amount characters
+counter
+moneytization
+reazioni
+massa critica
+aumenti quota
+roba per testing di sta roba
+profili e manipolazione
+impostazioni
+immagini
+geolocalizzazione
+moderatori
+app
+SMM dashboard
+moderator dashboard
+data e ora
+messaggi temporizzati
+altri 2 automatici
+SMM e VIP
+moderating 
+docker
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+popolare database

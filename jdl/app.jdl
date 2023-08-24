@@ -1,0 +1,91 @@
+
+
+relationship ManyToMany {
+
+}
+
+
+relationship OneToOne {
+
+User{reaction} to Reaction{user};
+
+User{geolocation} to GeoLocationCoordinates{userId};
+
+}
+
+
+
+relationship OneToMany {
+User{squeals} to Squeal{owner};
+
+Channel{squeals} to Squeal{channel};
+
+User{channels} to Channel{owner};
+
+Reaction{likes} to User;
+
+Reaction{dislikes} to User;
+
+Reaction{laugh} to User;
+
+Reaction{angry} to User;
+
+Reaction{sad} to User;
+}
+
+relationship ManyToOne {
+}
+
+
+
+
+
+
+
+
+entity User {
+    userNameId  String;
+    nickName  String;
+    bio String;
+    maxCharacters Integer;
+    remainingCharacters Integer;
+
+}
+entity Squeal {
+	idUtente String;
+    timestamp Long;
+    mentionId String;
+    body String;
+    views Integer;
+    img  ImageBlob;
+    interactable Boolean;
+    timed Integer|false;
+
+}
+@embedded
+entity GeolocationCoordinates{
+latitude Double;
+longitude Double; 
+accuracy Double;
+heading Double;
+speed Double;
+timestamp Long;
+}
+
+@embedded
+entity Reaction{
+userID String;
+}
+
+entity Channel {
+    ownerId String;
+    name String;
+    type ChannelTypes;
+
+}
+enum ChannelTypes{
+    PRIVATE,
+    PUBLIC,
+    MOD,
+    MESSAGE
+}
