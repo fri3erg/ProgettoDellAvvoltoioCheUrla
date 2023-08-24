@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import './theme.scss';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mainContentBody {
+    height:100%;
+    padding:0px !important;
+
+}
+
+.mainContentBodyContent {
+    padding:1%;
+    display: initial !important;
+    overflow-y: scroll;
+}
+
+.mainContentBodyContent {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mainContentBodyContent::-webkit-scrollbar {
+  display: none;
+}
+
+.mat-card-actions {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+
+td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
+  padding-right: 5px !important;
+  padding-left: 2px !important;
+}
+
+.responsive-mat-form {
+  min-width: 150px;
+  background: none !important;
+  width: 100%;
+}
+
+
+

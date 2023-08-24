@@ -1,0 +1,48 @@
+.user-profile {
+  margin: 20px;
+  height: 800px;
+}
+
+#squeal {
+  margin-bottom: 20px;
+  background-color: #ec8b0d;
+}
+.squealTitle {
+  color: white;
+  font-size: xx-large;
+}
+.squealText {
+  color: white;
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-image img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-list,
+.answer-list {
+  margin-top: 20px;
+}
+
+.post,
+.answer {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}

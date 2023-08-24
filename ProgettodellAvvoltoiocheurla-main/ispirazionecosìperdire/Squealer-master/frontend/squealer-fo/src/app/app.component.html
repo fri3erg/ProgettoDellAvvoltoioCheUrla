@@ -1,0 +1,63 @@
+
+<div class="content" role="main" [class.example-is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="toolbar">
+    <button mat-icon-button (click)="menu.toggle()"><mat-icon>menu</mat-icon></button>
+    <img width="40" alt="Squealer Logo" src="../assets/1511304664.png"/>
+    <span>Squealer</span>
+  </mat-toolbar>
+  <div class="example-sidenav-container" fxLayout="row" fxFlex>
+    <mat-sidenav-container fxFlex fxLayout="row" hasBackdrop="true">
+      <mat-sidenav #menu mode="over" opened="false" class="navBar">
+        <mat-accordion>
+          <mat-list fxLayoutAlign="space-around center" fxLayout="column">
+            <mat-list-item>
+              <button mat-button fxFlex fxLayoutAlign="start center" [routerLink]="['']" (click)="menu.toggle()" style="color: white;">
+                <mat-icon>home</mat-icon>&nbsp;Homepage
+              </button>
+            </mat-list-item>
+            <mat-expansion-panel fxLayoutAlign="space-around center" fxLayout="column" class="navBar"
+            style="width:100%;box-shadow: none;">
+              <mat-expansion-panel-header>Socials</mat-expansion-panel-header>
+              <mat-accordion>
+                <mat-list>
+                  <mat-list-item>
+                    <button mat-button fxFlex fxLayoutAlign="start center" [routerLink]="['/following']" (click)="menu.toggle()" style="color: white;">
+                      <mat-icon>group</mat-icon>&nbsp;Followed Accounts
+                    </button>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <button mat-button fxFlex fxLayoutAlign="start center" [routerLink]="['']" (click)="menu.toggle()" style="color: white;">
+                      <mat-icon>public</mat-icon>&nbsp;Explore Squeals
+                    </button>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <button mat-button fxFlex fxLayoutAlign="start center" [routerLink]="['']" (click)="menu.toggle()" style="color: white;">
+                      <mat-icon>whatshot</mat-icon>&nbsp;What's the best Post?
+                    </button>
+                  </mat-list-item>
+                </mat-list>
+              </mat-accordion>
+            </mat-expansion-panel>
+          </mat-list>
+        </mat-accordion>
+      </mat-sidenav>
+      <mat-sidenav-content fxFlex="100" fxLayout="row">
+        <mat-card fxLayout="column" fxFlex class="mainContent">
+          <mat-card-content fxLayout="column" fxFlex>
+            <div class="mainContentBody"
+              [ngStyle]="{'width.px': screenWidth, 'min-width.px': screenWidth, 'max-width.px': screenWidth}">
+              <router-outlet></router-outlet>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+  <mat-toolbar fxLayout="row" ngClass-xs="footerToolbarXs footerToolbarTextXs" ngClass="footerToolbar footerToolbarText"
+    color="primary">
+    Squealer &copy; &nbsp;&nbsp;<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="color: white;">Squealer Inc.</a>
+  </mat-toolbar>
+
+
+</div>
+

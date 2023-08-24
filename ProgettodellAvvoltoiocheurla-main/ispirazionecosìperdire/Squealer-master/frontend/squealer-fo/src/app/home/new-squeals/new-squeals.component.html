@@ -1,0 +1,44 @@
+
+<div class="feed-container">
+  <h2>Squealer Feed</h2>
+
+  <div fxLayout="column" class="responsive-mat-form" *ngIf="isLoggedIn">
+    <mat-form-field class="full-width" appearance="outline" color="primary">
+      <mat-label color="primary">What are you thinking?</mat-label>
+      <input color="primary" matInput [(ngModel)]="newSqueal.content"/>
+    </mat-form-field>
+    <div class="button-group">
+      <button mat-raised-button color="primary" type="submit" (click)="addPost()">Add Post</button>
+    </div>
+  </div>
+
+  <div class="login" *ngIf="!isLoggedIn">
+    <button mat-raised-button color="primary" (click)="login()">Login</button>
+    <p *ngIf="!isLoggedIn">Please login to add a post.</p>
+  </div>
+
+
+  <div class="posts">
+    <div *ngFor="let squeal of squeals">
+      <mat-card id="squeal">
+        <mat-card-header>
+          <div mat-card-avatar class="profile-image">
+            <img *ngIf="squeal?.profileImage" [src]="squeal?.profileImage" [alt]="'profile image of ' + squeal?.username" />
+            <img *ngIf="!squeal?.profileImage" src="../../assets/1511304664.png" [alt]="'profile image of ' + squeal?.username + ', but it seems to not be working properly...'" />
+          </div>
+          <mat-card-title class="squealTitle">{{ squeal.username }}</mat-card-title>
+          <br>
+          <mat-card-subtitle class="squealText">{{ formatDate(squeal.timestamp) }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="squealText">{{ squeal.content }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+
+</div>
+
+
+

@@ -1,0 +1,14 @@
+<mat-card id="card" fxLayout="column" class="mainContentBody">
+ <mat-card-content fxFlex [style.overflow]="'auto'" fxLayout="column" class="mainContentBodyContent">
+  <div>
+    <mat-tab-group mat-stretch-tabs [(selectedIndex)]="selectedIndex" [backgroundColor]="'primary'">
+      <mat-tab label="New Squeals" aria-label="primary">
+        <app-new-squeal></app-new-squeal>
+      </mat-tab>
+      <mat-tab label="Your Squealers" aria-label="primary">
+        <app-new-squeal></app-new-squeal>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+ </mat-card-content>
+</mat-card>
