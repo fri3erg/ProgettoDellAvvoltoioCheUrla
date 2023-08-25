@@ -1,0 +1,95 @@
+<div>
+  <h2 id="page-heading" data-cy="SquealViewsHeading">
+    <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.home.title">Squeal Views</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-squeal-views"
+        [routerLink]="['/squeal-views/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.home.createLabel"> Create a new Squeal Views </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="squealViews?.length === 0">
+    <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.home.notFound">No Squeal Views found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="squealViews && squealViews.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="squealId">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.squealId">Squeal Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="number">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squealViews.number">Number</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let squealViews of squealViews; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/squeal-views', squealViews.id, 'view']">{{ squealViews.id }}</a>
+          </td>
+          <td>{{ squealViews.squealId }}</td>
+          <td>{{ squealViews.number }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/squeal-views', squealViews.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/squeal-views', squealViews.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(squealViews)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

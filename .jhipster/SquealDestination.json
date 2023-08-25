@@ -1,0 +1,32 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102943",
+  "embedded": true,
+  "entityTableName": "squeal_destination",
+  "fields": [
+    {
+      "fieldName": "destination",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "destinationType",
+      "fieldType": "ChannelTypes",
+      "fieldValues": "PRIVATEGROUP,PUBLICGROUP,MOD,MESSAGE"
+    },
+    {
+      "fieldName": "adminAdd",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "SquealDestination",
+  "relationships": [
+    {
+      "otherEntityName": "squeal",
+      "otherEntityRelationshipName": "destination",
+      "relationshipName": "squeal",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}

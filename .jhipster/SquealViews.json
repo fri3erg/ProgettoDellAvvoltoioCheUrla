@@ -1,0 +1,18 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102945",
+  "entityTableName": "squeal_views",
+  "fields": [
+    {
+      "fieldName": "squealId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "number",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "SquealViews",
+  "relationships": [],
+  "searchEngine": "no"
+}

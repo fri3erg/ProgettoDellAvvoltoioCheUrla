@@ -1,0 +1,136 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-squeal-heading" data-cy="SquealCreateUpdateHeading" jhiTranslate="avvoltoioCheUrlaApp.squeal.home.createOrEditLabel">
+        Create or edit a Squeal
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.userId" for="field_userId">User Id</label>
+          <input type="text" class="form-control" name="userId" id="field_userId" data-cy="userId" formControlName="userId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.timestamp" for="field_timestamp">Timestamp</label>
+          <input type="number" class="form-control" name="timestamp" id="field_timestamp" data-cy="timestamp" formControlName="timestamp" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.body" for="field_body">Body</label>
+          <input type="text" class="form-control" name="body" id="field_body" data-cy="body" formControlName="body" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.img" for="field_img">Img</label>
+          <div>
+            <img
+              [src]="'data:' + editForm.get('imgContentType')!.value + ';base64,' + editForm.get('img')!.value"
+              style="max-height: 100px"
+              *ngIf="editForm.get('img')!.value"
+              alt="squeal image"
+            />
+            <div *ngIf="editForm.get('img')!.value" class="form-text text-danger clearfix">
+              <span class="pull-start">{{ editForm.get('imgContentType')!.value }}, {{ byteSize(editForm.get('img')!.value!) }}</span>
+              <button
+                type="button"
+                (click)="clearInputImage('img', 'imgContentType', 'file_img')"
+                class="btn btn-secondary btn-xs pull-end"
+              >
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+            <input type="file" id="file_img" data-cy="img" (change)="setFileData($event, 'img', true)" accept="image/*" />
+          </div>
+          <input type="hidden" class="form-control" name="img" id="field_img" data-cy="img" formControlName="img" />
+          <input type="hidden" class="form-control" name="imgContentType" id="field_imgContentType" formControlName="imgContentType" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName" for="field_imgName">Img Name</label>
+          <input type="text" class="form-control" name="imgName" id="field_imgName" data-cy="imgName" formControlName="imgName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType" for="field_videoContentType"
+            >Video Content Type</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="videoContentType"
+            id="field_videoContentType"
+            data-cy="videoContentType"
+            formControlName="videoContentType"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName" for="field_videoName">Video Name</label>
+          <input type="text" class="form-control" name="videoName" id="field_videoName" data-cy="videoName" formControlName="videoName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters" for="field_nCharacters">N Characters</label>
+          <input
+            type="number"
+            class="form-control"
+            name="nCharacters"
+            id="field_nCharacters"
+            data-cy="nCharacters"
+            formControlName="nCharacters"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse" for="field_squealIdResponse"
+            >Squeal Id Response</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="squealIdResponse"
+            id="field_squealIdResponse"
+            data-cy="squealIdResponse"
+            formControlName="squealIdResponse"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime" for="field_refreshTime">Refresh Time</label>
+          <input
+            type="number"
+            class="form-control"
+            name="refreshTime"
+            id="field_refreshTime"
+            data-cy="refreshTime"
+            formControlName="refreshTime"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

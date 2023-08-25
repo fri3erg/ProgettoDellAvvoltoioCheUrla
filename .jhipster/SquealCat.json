@@ -1,0 +1,31 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102942",
+  "entityTableName": "squeal_cat",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "squealId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "category",
+      "fieldType": "CategoryTypes",
+      "fieldValues": "POPULAR,UNPOPULAR,CONTROVERSIAL"
+    },
+    {
+      "fieldName": "nCharacters",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "timestamp",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "SquealCat",
+  "relationships": [],
+  "searchEngine": "no"
+}

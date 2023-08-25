@@ -1,0 +1,30 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102944",
+  "entityTableName": "squeal_reaction",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "username",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "squealId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "positive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "emoji",
+      "fieldType": "String"
+    }
+  ],
+  "name": "SquealReaction",
+  "relationships": [],
+  "searchEngine": "no"
+}

@@ -1,5 +1,8 @@
 import { Injectable, SecurityContext, NgZone } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+
+import { translationNotFoundMessage } from 'app/config/translation.config';
 
 export type AlertType = 'success' | 'danger' | 'warning' | 'info';
 
@@ -7,6 +10,8 @@ export interface Alert {
   id?: number;
   type: AlertType;
   message?: string;
+  translationKey?: string;
+  translationParams?: { [key: string]: unknown };
   timeout?: number;
   toast?: boolean;
   position?: string;
@@ -25,7 +30,7 @@ export class AlertService {
   private alertId = 0;
   private alerts: Alert[] = [];
 
-  constructor(private sanitizer: DomSanitizer, private ngZone: NgZone) {}
+  constructor(private sanitizer: DomSanitizer, private ngZone: NgZone, private translateService: TranslateService) {}
 
   clear(): void {
     this.alerts = [];
@@ -38,12 +43,23 @@ export class AlertService {
   /**
    * Adds alert to alerts array and returns added alert.
    * @param alert      Alert to add. If `timeout`, `toast` or `position` is missing then applying default value.
+   *                   If `translateKey` is available then it's translation else `message` is used for showing.
    * @param extAlerts  If missing then adding `alert` to `AlertService` internal array and alerts can be retrieved by `get()`.
    *                   Else adding `alert` to `extAlerts`.
    * @returns  Added alert
    */
   addAlert(alert: Alert, extAlerts?: Alert[]): Alert {
     alert.id = this.alertId++;
+
+    if (alert.translationKey) {
+      const translatedMessage = this.translateService.instant(alert.translationKey, alert.translationParams);
+      // if translation key exists
+      if (translatedMessage !== `${translationNotFoundMessage}[${alert.translationKey}]`) {
+        alert.message = translatedMessage;
+      } else if (!alert.message) {
+        alert.message = alert.translationKey;
+      }
+    }
 
     alert.message = this.sanitizer.sanitize(SecurityContext.HTML, alert.message ?? '') ?? '';
     alert.timeout = alert.timeout ?? this.timeout;

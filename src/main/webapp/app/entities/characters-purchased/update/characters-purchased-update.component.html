@@ -1,0 +1,104 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-characters-purchased-heading"
+        data-cy="CharactersPurchasedCreateUpdateHeading"
+        jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.home.createOrEditLabel"
+      >
+        Create or edit a Characters Purchased
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.userId" for="field_userId">User Id</label>
+          <input type="text" class="form-control" name="userId" id="field_userId" data-cy="userId" formControlName="userId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.nCharacters" for="field_nCharacters"
+            >N Characters</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="nCharacters"
+            id="field_nCharacters"
+            data-cy="nCharacters"
+            formControlName="nCharacters"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestampBought" for="field_timestampBought"
+            >Timestamp Bought</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="timestampBought"
+            id="field_timestampBought"
+            data-cy="timestampBought"
+            formControlName="timestampBought"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestampExpire" for="field_timestampExpire"
+            >Timestamp Expire</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="timestampExpire"
+            id="field_timestampExpire"
+            data-cy="timestampExpire"
+            formControlName="timestampExpire"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.amount" for="field_amount">Amount</label>
+          <input type="number" class="form-control" name="amount" id="field_amount" data-cy="amount" formControlName="amount" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.adminDiscount" for="field_adminDiscount"
+            >Admin Discount</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="adminDiscount"
+            id="field_adminDiscount"
+            data-cy="adminDiscount"
+            formControlName="adminDiscount"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

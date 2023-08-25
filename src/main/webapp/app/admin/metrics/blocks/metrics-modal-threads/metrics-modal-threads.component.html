@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">Threads dump</h4>
+  <h4 class="modal-title" jhiTranslate="metrics.jvm.threads.dump.title">Threads dump</h4>
 
   <button type="button" class="btn-close" (click)="dismiss()">&times;</button>
 </div>
@@ -39,8 +39,8 @@
       &nbsp;{{ thread.threadName }} (ID {{ thread.threadId }})
 
       <a (click)="thread.showThreadDump = !thread.showThreadDump" href="javascript:void(0);">
-        <span [hidden]="thread.showThreadDump">Show Stacktrace</span>
-        <span [hidden]="!thread.showThreadDump">Hide Stacktrace</span>
+        <span [hidden]="thread.showThreadDump" jhiTranslate="metrics.jvm.threads.dump.show">Show Stacktrace</span>
+        <span [hidden]="!thread.showThreadDump" jhiTranslate="metrics.jvm.threads.dump.hide">Hide Stacktrace</span>
       </a>
     </h6>
 
@@ -64,11 +64,11 @@
       </caption>
       <thead>
         <tr>
-          <th scope="col">Blocked Time</th>
-          <th scope="col">Blocked Count</th>
-          <th scope="col">Waited Time</th>
-          <th scope="col">Waited Count</th>
-          <th scope="col">Lock name</th>
+          <th scope="col" jhiTranslate="metrics.jvm.threads.dump.blockedtime">Blocked Time</th>
+          <th scope="col" jhiTranslate="metrics.jvm.threads.dump.blockedcount">Blocked Count</th>
+          <th scope="col" jhiTranslate="metrics.jvm.threads.dump.waitedtime">Waited Time</th>
+          <th scope="col" jhiTranslate="metrics.jvm.threads.dump.waitedcount">Waited Count</th>
+          <th scope="col" jhiTranslate="metrics.jvm.threads.dump.lockname">Lock name</th>
         </tr>
       </thead>
       <tbody>

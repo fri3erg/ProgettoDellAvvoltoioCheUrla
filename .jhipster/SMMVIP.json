@@ -1,0 +1,22 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102940",
+  "entityTableName": "smmvip",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    }
+  ],
+  "name": "SMMVIP",
+  "relationships": [
+    {
+      "otherEntityName": "sMMUser",
+      "otherEntityRelationshipName": "sMM",
+      "relationshipName": "users",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}

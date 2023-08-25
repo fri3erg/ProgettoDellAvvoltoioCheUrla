@@ -5,7 +5,7 @@ import PasswordResetFinishComponent from './password-reset-finish.component';
 const passwordResetFinishRoute: Route = {
   path: 'reset/finish',
   component: PasswordResetFinishComponent,
-  title: 'Password',
+  title: 'global.menu.account.password',
 };
 
 export default passwordResetFinishRoute;

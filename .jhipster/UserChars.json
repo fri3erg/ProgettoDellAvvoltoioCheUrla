@@ -1,0 +1,22 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102946",
+  "entityTableName": "user_chars",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "maxChars",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "remaningChars",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "UserChars",
+  "relationships": [],
+  "searchEngine": "no"
+}

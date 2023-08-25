@@ -5,7 +5,7 @@ import ActivateComponent from './activate.component';
 const activateRoute: Route = {
   path: 'activate',
   component: ActivateComponent,
-  title: 'Activation',
+  title: 'activate.title',
 };
 
 export default activateRoute;

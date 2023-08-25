@@ -1,0 +1,73 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="squeal">
+      <h2 data-cy="squealDetailsHeading"><span jhiTranslate="avvoltoioCheUrlaApp.squeal.detail.title">Squeal</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ squeal.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.userId">User Id</span></dt>
+        <dd>
+          <span>{{ squeal.userId }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.timestamp">Timestamp</span></dt>
+        <dd>
+          <span>{{ squeal.timestamp }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.body">Body</span></dt>
+        <dd>
+          <span>{{ squeal.body }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.img">Img</span></dt>
+        <dd>
+          <div *ngIf="squeal.img">
+            <a (click)="openFile(squeal.img, squeal.imgContentType)">
+              <img [src]="'data:' + squeal.imgContentType + ';base64,' + squeal.img" style="max-width: 100%" alt="squeal image" />
+            </a>
+            {{ squeal.imgContentType }}, {{ byteSize(squeal.img) }}
+          </div>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName">Img Name</span></dt>
+        <dd>
+          <span>{{ squeal.imgName }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType">Video Content Type</span></dt>
+        <dd>
+          <span>{{ squeal.videoContentType }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName">Video Name</span></dt>
+        <dd>
+          <span>{{ squeal.videoName }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters">N Characters</span></dt>
+        <dd>
+          <span>{{ squeal.nCharacters }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse">Squeal Id Response</span></dt>
+        <dd>
+          <span>{{ squeal.squealIdResponse }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime">Refresh Time</span></dt>
+        <dd>
+          <span>{{ squeal.refreshTime }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/squeal', squeal.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

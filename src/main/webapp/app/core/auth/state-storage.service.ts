@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 export class StateStorageService {
   private previousUrlKey = 'previousUrl';
   private authenticationKey = 'jhi-authenticationToken';
+  private localeKey = 'locale';
 
   storeUrl(url: string): void {
     sessionStorage.setItem(this.previousUrlKey, JSON.stringify(url));
@@ -36,5 +37,17 @@ export class StateStorageService {
   clearAuthenticationToken(): void {
     sessionStorage.removeItem(this.authenticationKey);
     localStorage.removeItem(this.authenticationKey);
+  }
+
+  storeLocale(locale: string): void {
+    sessionStorage.setItem(this.localeKey, locale);
+  }
+
+  getLocale(): string | null {
+    return sessionStorage.getItem(this.localeKey);
+  }
+
+  clearLocale(): void {
+    sessionStorage.removeItem(this.localeKey);
   }
 }

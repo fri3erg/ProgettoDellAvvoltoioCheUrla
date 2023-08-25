@@ -1,0 +1,73 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-squeal-cat-heading"
+        data-cy="SquealCatCreateUpdateHeading"
+        jhiTranslate="avvoltoioCheUrlaApp.squealCat.home.createOrEditLabel"
+      >
+        Create or edit a Squeal Cat
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squealCat.userId" for="field_userId">User Id</label>
+          <input type="text" class="form-control" name="userId" id="field_userId" data-cy="userId" formControlName="userId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squealCat.squealId" for="field_squealId">Squeal Id</label>
+          <input type="text" class="form-control" name="squealId" id="field_squealId" data-cy="squealId" formControlName="squealId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squealCat.category" for="field_category">Category</label>
+          <select class="form-control" name="category" formControlName="category" id="field_category" data-cy="category">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let categoryTypes of categoryTypesValues" [value]="categoryTypes">{{ categoryTypes }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squealCat.nCharacters" for="field_nCharacters">N Characters</label>
+          <input
+            type="number"
+            class="form-control"
+            name="nCharacters"
+            id="field_nCharacters"
+            data-cy="nCharacters"
+            formControlName="nCharacters"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squealCat.timestamp" for="field_timestamp">Timestamp</label>
+          <input type="number" class="form-control" name="timestamp" id="field_timestamp" data-cy="timestamp" formControlName="timestamp" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

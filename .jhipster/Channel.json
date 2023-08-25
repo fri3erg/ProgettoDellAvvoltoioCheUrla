@@ -1,0 +1,27 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102935",
+  "entityTableName": "channel",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "ChannelTypes",
+      "fieldValues": "PRIVATEGROUP,PUBLICGROUP,MOD,MESSAGE"
+    },
+    {
+      "fieldName": "modType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "emergency",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Channel",
+  "relationships": [],
+  "searchEngine": "no"
+}

@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="geolocationCoordinates">
+      <h2 data-cy="geolocationCoordinatesDetailsHeading">
+        <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.detail.title">Geolocation Coordinates</span>
+      </h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.squealId">Squeal Id</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.squealId }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.userId">User Id</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.userId }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.latitude">Latitude</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.latitude }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.longitude">Longitude</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.longitude }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.accuracy">Accuracy</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.accuracy }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.heading">Heading</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.heading }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.speed">Speed</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.speed }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.timestamp">Timestamp</span></dt>
+        <dd>
+          <span>{{ geolocationCoordinates.timestamp }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/geolocation-coordinates', geolocationCoordinates.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

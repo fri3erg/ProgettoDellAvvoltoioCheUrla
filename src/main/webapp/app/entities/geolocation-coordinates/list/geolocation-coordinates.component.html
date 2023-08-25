@@ -1,0 +1,137 @@
+<div>
+  <h2 id="page-heading" data-cy="GeolocationCoordinatesHeading">
+    <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.home.title">Geolocation Coordinates</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-geolocation-coordinates"
+        [routerLink]="['/geolocation-coordinates/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.home.createLabel"> Create a new Geolocation Coordinates </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="geolocationCoordinates?.length === 0">
+    <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.home.notFound">No Geolocation Coordinates found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="geolocationCoordinates && geolocationCoordinates.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="squealId">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.squealId">Squeal Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="userId">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.userId">User Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="latitude">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.latitude">Latitude</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="longitude">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.longitude">Longitude</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="accuracy">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.accuracy">Accuracy</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="heading">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.heading">Heading</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="speed">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.speed">Speed</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timestamp">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.timestamp">Timestamp</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let geolocationCoordinates of geolocationCoordinates; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/geolocation-coordinates', geolocationCoordinates.id, 'view']">{{ geolocationCoordinates.id }}</a>
+          </td>
+          <td>{{ geolocationCoordinates.squealId }}</td>
+          <td>{{ geolocationCoordinates.userId }}</td>
+          <td>{{ geolocationCoordinates.latitude }}</td>
+          <td>{{ geolocationCoordinates.longitude }}</td>
+          <td>{{ geolocationCoordinates.accuracy }}</td>
+          <td>{{ geolocationCoordinates.heading }}</td>
+          <td>{{ geolocationCoordinates.speed }}</td>
+          <td>{{ geolocationCoordinates.timestamp }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/geolocation-coordinates', geolocationCoordinates.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/geolocation-coordinates', geolocationCoordinates.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(geolocationCoordinates)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

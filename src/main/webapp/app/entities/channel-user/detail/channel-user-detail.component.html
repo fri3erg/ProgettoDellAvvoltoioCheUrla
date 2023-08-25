@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="channelUser">
+      <h2 data-cy="channelUserDetailsHeading"><span jhiTranslate="avvoltoioCheUrlaApp.channelUser.detail.title">Channel User</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ channelUser.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.channelUser.userId">User Id</span></dt>
+        <dd>
+          <span>{{ channelUser.userId }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.channelUser.channelId">Channel Id</span></dt>
+        <dd>
+          <span>{{ channelUser.channelId }}</span>
+        </dd>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.channelUser.privilege">Privilege</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'avvoltoioCheUrlaApp.PrivilegeType.' + channelUser.privilege }}">{{ channelUser.privilege }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/channel-user', channelUser.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

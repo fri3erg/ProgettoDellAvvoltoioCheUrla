@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-geolocation-coordinates-heading"
+        data-cy="GeolocationCoordinatesCreateUpdateHeading"
+        jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.home.createOrEditLabel"
+      >
+        Create or edit a Geolocation Coordinates
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.squealId" for="field_squealId"
+            >Squeal Id</label
+          >
+          <input type="text" class="form-control" name="squealId" id="field_squealId" data-cy="squealId" formControlName="squealId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.userId" for="field_userId">User Id</label>
+          <input type="text" class="form-control" name="userId" id="field_userId" data-cy="userId" formControlName="userId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.latitude" for="field_latitude">Latitude</label>
+          <input type="number" class="form-control" name="latitude" id="field_latitude" data-cy="latitude" formControlName="latitude" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.longitude" for="field_longitude"
+            >Longitude</label
+          >
+          <input type="number" class="form-control" name="longitude" id="field_longitude" data-cy="longitude" formControlName="longitude" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.accuracy" for="field_accuracy">Accuracy</label>
+          <input type="number" class="form-control" name="accuracy" id="field_accuracy" data-cy="accuracy" formControlName="accuracy" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.heading" for="field_heading">Heading</label>
+          <input type="number" class="form-control" name="heading" id="field_heading" data-cy="heading" formControlName="heading" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.speed" for="field_speed">Speed</label>
+          <input type="number" class="form-control" name="speed" id="field_speed" data-cy="speed" formControlName="speed" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.timestamp" for="field_timestamp"
+            >Timestamp</label
+          >
+          <input type="number" class="form-control" name="timestamp" id="field_timestamp" data-cy="timestamp" formControlName="timestamp" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

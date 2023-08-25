@@ -1,0 +1,102 @@
+<div>
+  <h2 id="page-heading" data-cy="UserCharsHeading">
+    <span jhiTranslate="avvoltoioCheUrlaApp.userChars.home.title">User Chars</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.userChars.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-user-chars"
+        [routerLink]="['/user-chars/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.userChars.home.createLabel"> Create a new User Chars </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="userChars?.length === 0">
+    <span jhiTranslate="avvoltoioCheUrlaApp.userChars.home.notFound">No User Chars found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="userChars && userChars.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="userId">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.userId">User Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="maxChars">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.maxChars">Max Chars</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="remaningChars">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.remaningChars">Remaning Chars</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let userChars of userChars; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/user-chars', userChars.id, 'view']">{{ userChars.id }}</a>
+          </td>
+          <td>{{ userChars.userId }}</td>
+          <td>{{ userChars.maxChars }}</td>
+          <td>{{ userChars.remaningChars }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/user-chars', userChars.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/user-chars', userChars.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(userChars)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -6,7 +6,7 @@ import SettingsComponent from './settings.component';
 const settingsRoute: Route = {
   path: 'settings',
   component: SettingsComponent,
-  title: 'Settings',
+  title: 'global.menu.account.settings',
   canActivate: [UserRouteAccessService],
 };
 

@@ -1,91 +1,122 @@
-
-
-relationship ManyToMany {
-
+entity UserChars {
+    userId String
+    maxChars Integer
+    remaningChars Integer
 }
 
 
-relationship OneToOne {
-
-User{reaction} to Reaction{user};
-
-User{geolocation} to GeoLocationCoordinates{userId};
-
+entity Squeal {
+	userId String
+    timestamp Long
+    body String
+    img  ImageBlob
+    imgName String
+    videoContentType String
+    videoName String
+    nCharacters Integer
+    squealIdResponse String
+    refreshTime Integer
 }
-
+@embedded
+entity SquealDestination{
+    destination String
+    destinationType ChannelTypes
+    adminAdd Boolean
+}
 
 
 relationship OneToMany {
-User{squeals} to Squeal{owner};
-
-Channel{squeals} to Squeal{channel};
-
-User{channels} to Channel{owner};
-
-Reaction{likes} to User;
-
-Reaction{dislikes} to User;
-
-Reaction{laugh} to User;
-
-Reaction{angry} to User;
-
-Reaction{sad} to User;
+Squeal{destination} to SquealDestination{squeal}
 }
 
-relationship ManyToOne {
+entity SquealViews{
+    squealId String
+    number Integer
 }
 
 
-
-
-
-
-
-
-entity User {
-    userNameId  String;
-    nickName  String;
-    bio String;
-    maxCharacters Integer;
-    remainingCharacters Integer;
-
+entity SquealReaction{
+userId String
+username String
+squealId String
+positive Boolean
+emoji String
 }
-entity Squeal {
-	idUtente String;
-    timestamp Long;
-    mentionId String;
-    body String;
-    views Integer;
-    img  ImageBlob;
-    interactable Boolean;
-    timed Integer|false;
 
-}
-@embedded
 entity GeolocationCoordinates{
-latitude Double;
-longitude Double; 
-accuracy Double;
-heading Double;
-speed Double;
-timestamp Long;
+squealId String
+userId String
+latitude Double
+longitude Double 
+accuracy Double
+heading Double
+speed Double
+timestamp Long
+
 }
 
-@embedded
-entity Reaction{
-userID String;
+entity SquealCat{
+    userId String
+    squealId String
+    category CategoryTypes
+    nCharacters Integer
+    timestamp Long
+}
+
+enum CategoryTypes{
+    POPULAR,
+    UNPOPULAR,
+    CONTROVERSIAL
+
+}
+
+entity CharactersPurchased{
+userId String
+nCharacters Integer
+timestampBought Long
+timestampExpire Long
+amount BigDecimal
+adminDiscount Boolean
 }
 
 entity Channel {
-    ownerId String;
-    name String;
-    type ChannelTypes;
-
+    name String
+    type ChannelTypes
+    modType String
+    emergency Boolean
 }
+
 enum ChannelTypes{
-    PRIVATE,
-    PUBLIC,
+    PRIVATEGROUP,
+    PUBLICGROUP,
     MOD,
     MESSAGE
+}
+
+entity ChannelUser{
+    userId String
+    channelId String
+    privilege PrivilegeType
+
+}
+
+enum PrivilegeType{
+ADMIN,
+WRITE,
+READ
+
+}
+
+entity SMMVIP{
+    userId String
+
+}
+
+@embedded
+entity SMMUser{
+    userId String
+}
+
+relationship OneToMany {
+    SMMVIP{users} to SMMUser{SMM}
 }

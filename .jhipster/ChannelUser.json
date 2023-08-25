@@ -1,0 +1,23 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102936",
+  "entityTableName": "channel_user",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "channelId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "privilege",
+      "fieldType": "PrivilegeType",
+      "fieldValues": "ADMIN,WRITE,READ"
+    }
+  ],
+  "name": "ChannelUser",
+  "relationships": [],
+  "searchEngine": "no"
+}

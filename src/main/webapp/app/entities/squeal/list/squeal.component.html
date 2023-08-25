@@ -1,0 +1,146 @@
+<div>
+  <h2 id="page-heading" data-cy="SquealHeading">
+    <span jhiTranslate="avvoltoioCheUrlaApp.squeal.home.title">Squeals</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.squeal.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-squeal"
+        [routerLink]="['/squeal/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="avvoltoioCheUrlaApp.squeal.home.createLabel"> Create a new Squeal </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="squeals?.length === 0">
+    <span jhiTranslate="avvoltoioCheUrlaApp.squeal.home.notFound">No Squeals found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="squeals && squeals.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span jhiTranslate="global.field.id">ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="userId">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.userId">User Id</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="timestamp">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.timestamp">Timestamp</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="body">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.body">Body</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="img">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.img">Img</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="imgName">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName">Img Name</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="videoContentType">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType">Video Content Type</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="videoName">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName">Video Name</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="nCharacters">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters">N Characters</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="squealIdResponse">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse">Squeal Id Response</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="refreshTime">
+            <div class="d-flex">
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime">Refresh Time</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let squeal of squeals; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/squeal', squeal.id, 'view']">{{ squeal.id }}</a>
+          </td>
+          <td>{{ squeal.userId }}</td>
+          <td>{{ squeal.timestamp }}</td>
+          <td>{{ squeal.body }}</td>
+          <td>
+            <a *ngIf="squeal.img" (click)="openFile(squeal.img, squeal.imgContentType)">
+              <img [src]="'data:' + squeal.imgContentType + ';base64,' + squeal.img" style="max-height: 30px" alt="squeal image" />
+            </a>
+            <span *ngIf="squeal.img">{{ squeal.imgContentType }}, {{ byteSize(squeal.img) }}</span>
+          </td>
+          <td>{{ squeal.imgName }}</td>
+          <td>{{ squeal.videoContentType }}</td>
+          <td>{{ squeal.videoName }}</td>
+          <td>{{ squeal.nCharacters }}</td>
+          <td>{{ squeal.squealIdResponse }}</td>
+          <td>{{ squeal.refreshTime }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button type="submit" [routerLink]="['/squeal', squeal.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button type="submit" [routerLink]="['/squeal', squeal.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(squeal)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

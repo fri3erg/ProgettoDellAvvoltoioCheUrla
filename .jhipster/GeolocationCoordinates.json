@@ -1,0 +1,42 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102938",
+  "entityTableName": "geolocation_coordinates",
+  "fields": [
+    {
+      "fieldName": "squealId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "latitude",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "longitude",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "accuracy",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "heading",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "speed",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "timestamp",
+      "fieldType": "Long"
+    }
+  ],
+  "name": "GeolocationCoordinates",
+  "relationships": [],
+  "searchEngine": "no"
+}

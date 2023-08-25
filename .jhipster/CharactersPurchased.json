@@ -1,0 +1,34 @@
+{
+  "applications": "*",
+  "changelogDate": "20230825102937",
+  "entityTableName": "characters_purchased",
+  "fields": [
+    {
+      "fieldName": "userId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nCharacters",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "timestampBought",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "timestampExpire",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "amount",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "adminDiscount",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "CharactersPurchased",
+  "relationships": [],
+  "searchEngine": "no"
+}
