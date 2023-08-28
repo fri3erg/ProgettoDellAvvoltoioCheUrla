@@ -6,13 +6,14 @@ import { takeUntil } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
+import { CreateSquealComponent } from 'app/pages/squeal/create-squeal/create-squeal.component';
 
 @Component({
   standalone: true,
   selector: 'jhi-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [SharedModule, RouterModule],
+  imports: [SharedModule, RouterModule, CreateSquealComponent],
 })
 export default class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;

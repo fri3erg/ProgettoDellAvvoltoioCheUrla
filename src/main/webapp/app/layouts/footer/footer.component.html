@@ -1,3 +1,24 @@
-<div class="footer">
-  <p jhiTranslate="footer">This is your footer</p>
+<div class="footer fixed-bottom">
+  <nav class="navbar navbar-dark navbar-expand-md" style="background-color: crimson">
+    <div class="container-fluid row">
+      <div class="col-4 text-center">
+        <a [routerLink]="">
+          <fa-icon icon="home" [fixedWidth]="true"></fa-icon>
+          Home</a
+        >
+      </div>
+      <div class="col-4 text-center">
+        <a [routerLink]="">
+          <fa-icon icon="magnifying-glass" [fixedWidth]="true"></fa-icon>
+          Search
+        </a>
+      </div>
+      <div class="col-4 text-center">
+        <a [routerLink]="">
+          <fa-icon icon="inbox" [fixedWidth]="true"></fa-icon>
+          Boh
+        </a>
+      </div>
+    </div>
+  </nav>
 </div>
