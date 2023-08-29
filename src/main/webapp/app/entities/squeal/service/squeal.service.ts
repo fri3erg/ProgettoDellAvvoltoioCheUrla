@@ -6,6 +6,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ISqueal, NewSqueal } from '../squeal.model';
+import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, 'id'>;
 
@@ -17,6 +18,10 @@ export class SquealService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/squeals');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+
+  insertOrUpdate(squeal: ISquealDTO): Observable<HttpResponse<ISquealDTO>> {
+    return this.http.post<ISquealDTO>(this.resourceUrl, squeal, { observe: 'response' });
+  }
 
   create(squeal: NewSqueal): Observable<EntityResponseType> {
     return this.http.post<ISqueal>(this.resourceUrl, squeal, { observe: 'response' });
@@ -44,7 +49,7 @@ export class SquealService {
   }
 
   getSquealIdentifier(squeal: Pick<ISqueal, 'id'>): string {
-    return squeal.id;
+    return squeal.id ?? '';
   }
 
   compareSqueal(o1: Pick<ISqueal, 'id'> | null, o2: Pick<ISqueal, 'id'> | null): boolean {

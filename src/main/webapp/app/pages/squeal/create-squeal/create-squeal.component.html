@@ -1,11 +1,18 @@
-<form>
+<form *ngIf="dto?.squeal">
   <div class="input-group mb-3">
-    <span class="input-group-text" id="inputGroup-sizing-default">Destinatari</span>
-    <p-chips separator="," placeholder="Hint: a, b, c"></p-chips>
+    <span class="input-group-text" id="inputGroup-sizing-default">Destination</span>
+    <p-chips name="destinations" [(ngModel)]="destinations" separator=" " placeholder="your destination"></p-chips>
   </div>
   <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+    <textarea
+      class="form-control"
+      name="body"
+      [(ngModel)]="message"
+      placeholder="Leave your squeal here"
+      id="floatingTextarea2"
+      style="height: 100px"
+    ></textarea>
     <label for="floatingTextarea2">body</label>
   </div>
-  <button class="btn btn-primary" type="submit">invia</button>
+  <button class="btn btn-primary" type="button" (click)="createSqueal()">Invia</button>
 </form>

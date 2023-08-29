@@ -1,6 +1,7 @@
 package it.unibo.avvoltoio.repository;
 
 import it.unibo.avvoltoio.domain.SquealReaction;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface SquealReactionRepository extends MongoRepository<SquealReaction, String> {}
+public interface SquealReactionRepository extends MongoRepository<SquealReaction, String> {
+    List<SquealReaction> findAllBySquealId(String id);
+}

@@ -1,6 +1,7 @@
 package it.unibo.avvoltoio.repository;
 
 import it.unibo.avvoltoio.domain.SquealViews;
+import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface SquealViewsRepository extends MongoRepository<SquealViews, String> {}
+public interface SquealViewsRepository extends MongoRepository<SquealViews, String> {
+    Optional<SquealViews> findFirstBySquealId(String id);
+}
