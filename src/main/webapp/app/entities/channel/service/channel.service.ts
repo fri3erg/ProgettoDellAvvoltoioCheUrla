@@ -6,6 +6,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IChannel, NewChannel } from '../channel.model';
+import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 
 export type PartialUpdateChannel = Partial<IChannel> & Pick<IChannel, 'id'>;
 
@@ -17,6 +18,19 @@ export class ChannelService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/channels');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+
+  findDTO(id: string): Observable<HttpResponse<IChannelDTO>> {
+    return this.http.get<IChannelDTO>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  insertOrUpdate(channel: IChannelDTO): Observable<HttpResponse<IChannelDTO>> {
+    return this.http.post<IChannelDTO>(this.resourceUrl, channel, { observe: 'response' });
+  }
+
+  search(name: string): Observable<HttpResponse<IChannelDTO[]>> {
+    const url = this.applicationConfigService.getEndpointFor('api/channel-search');
+    return this.http.get<IChannelDTO[]>(`${url}/${name}`, { observe: 'response' });
+  }
 
   create(channel: NewChannel): Observable<EntityResponseType> {
     return this.http.post<IChannel>(this.resourceUrl, channel, { observe: 'response' });
@@ -44,7 +58,7 @@ export class ChannelService {
   }
 
   getChannelIdentifier(channel: Pick<IChannel, 'id'>): string {
-    return channel.id;
+    return channel.id ?? '';
   }
 
   compareChannel(o1: Pick<IChannel, 'id'> | null, o2: Pick<IChannel, 'id'> | null): boolean {

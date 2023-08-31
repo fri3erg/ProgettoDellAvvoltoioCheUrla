@@ -45,6 +45,10 @@ public final class SecurityUtils {
         return null;
     }
 
+    public static boolean isCurrentUserMod() {
+        return SecurityUtils.hasCurrentUserAnyOfAuthorities(AuthoritiesConstants.ADMIN);
+    }
+
     /**
      * Get the JWT of the current user.
      *

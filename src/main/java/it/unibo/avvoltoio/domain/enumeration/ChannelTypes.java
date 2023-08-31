@@ -1,7 +1,5 @@
 package it.unibo.avvoltoio.domain.enumeration;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * The ChannelTypes enumeration.
  */
@@ -11,26 +9,40 @@ public enum ChannelTypes {
     MOD,
     MESSAGE;
 
-    public static ChannelTypes getDestinationType(String destination) {
-        if (destination == null) {
+    public static ChannelTypes getChannelType(String name) {
+        if (name == null) {
             return null;
         }
 
-        if (destination.startsWith("@")) {
+        if (name.startsWith("@")) {
             return ChannelTypes.MESSAGE;
         }
-        if (destination.startsWith("#")) {
+        if (name.startsWith("#")) {
             return ChannelTypes.PUBLICGROUP;
         }
-        if (destination.startsWith("§")) {
-            if (StringUtils.isAllUpperCase(destination)) {
+        if (name.startsWith("§")) {
+            if (isAllUpperCase(name)) {
                 return ChannelTypes.MOD;
             }
-            if (StringUtils.isAllLowerCase(destination)) {
+            if (isAllLowerCase(name)) {
                 return ChannelTypes.PRIVATEGROUP;
             }
         }
 
         return null;
+    }
+
+    public static boolean isAllUpperCase(String value) {
+        if (value == null) {
+            return false;
+        }
+        return value.toUpperCase().equals(value);
+    }
+
+    public static boolean isAllLowerCase(String value) {
+        if (value == null) {
+            return false;
+        }
+        return value.toLowerCase().equals(value);
     }
 }

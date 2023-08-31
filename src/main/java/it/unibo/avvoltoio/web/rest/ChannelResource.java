@@ -2,6 +2,8 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.repository.ChannelRepository;
+import it.unibo.avvoltoio.service.ChannelService;
+import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,10 +33,20 @@ public class ChannelResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final ChannelService channelService;
+
     private final ChannelRepository channelRepository;
 
-    public ChannelResource(ChannelRepository channelRepository) {
+    public ChannelResource(ChannelService channelService, ChannelRepository channelRepository) {
+        this.channelService = channelService;
         this.channelRepository = channelRepository;
+    }
+
+    @GetMapping("/channel-search/{name}")
+    public ResponseEntity<List<ChannelDTO>> searchChannel(@PathVariable String name) {
+        log.debug("REST request to get Channel : {}", name);
+        List<ChannelDTO> ret = channelService.searchChannels(name);
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     /**
@@ -44,15 +57,12 @@ public class ChannelResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/channels")
-    public ResponseEntity<Channel> createChannel(@RequestBody Channel channel) throws URISyntaxException {
+    public ResponseEntity<ChannelDTO> createChannel(@RequestBody ChannelDTO channel) throws URISyntaxException {
         log.debug("REST request to save Channel : {}", channel);
-        if (channel.getId() != null) {
-            throw new BadRequestAlertException("A new channel cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Channel result = channelRepository.save(channel);
+        ChannelDTO result = this.channelService.insertOrUpdateChannel(channel);
         return ResponseEntity
-            .created(new URI("/api/channels/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
+            .created(new URI("/api/channels/" + result.getChannel().getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getChannel().getId()))
             .body(result);
     }
 
@@ -162,9 +172,9 @@ public class ChannelResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the channel, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/channels/{id}")
-    public ResponseEntity<Channel> getChannel(@PathVariable String id) {
+    public ResponseEntity<ChannelDTO> getChannel(@PathVariable String id) {
         log.debug("REST request to get Channel : {}", id);
-        Optional<Channel> channel = channelRepository.findById(id);
+        Optional<ChannelDTO> channel = Optional.ofNullable(channelService.getChannel(id));
         return ResponseUtil.wrapOrNotFound(channel);
     }
 

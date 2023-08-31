@@ -8,7 +8,6 @@ import it.unibo.avvoltoio.repository.SquealCatRepository;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
 import it.unibo.avvoltoio.repository.SquealRepository;
 import it.unibo.avvoltoio.repository.SquealViewsRepository;
-import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.security.SecurityUtils;
 import it.unibo.avvoltoio.service.dto.SquealDTO;
 import java.util.HashSet;
@@ -56,14 +55,14 @@ public class SquealService {
         Squeal s = squeal.getSqueal();
         Set<SquealDestination> validDest = new HashSet<>();
         for (SquealDestination sd : s.getDestinations()) {
-            sd.setDestinationType(ChannelTypes.getDestinationType(sd.getDestination()));
+            sd.setDestinationType(ChannelTypes.getChannelType(sd.getDestination()));
             if (sd.getDestinationType() == null) {
                 continue;
             }
             boolean valid = false;
             switch (sd.getDestinationType()) {
                 case MOD:
-                    valid = isCurrentUserMod();
+                    valid = SecurityUtils.isCurrentUserMod();
                     break;
                 case PRIVATEGROUP:
                     valid = isCurrentUserInChannel(sd.getDestination());
@@ -103,9 +102,5 @@ public class SquealService {
     private boolean isCurrentUserInChannel(String destination) {
         // TODO da fare
         return true;
-    }
-
-    private boolean isCurrentUserMod() {
-        return SecurityUtils.hasCurrentUserAnyOfAuthorities(AuthoritiesConstants.ADMIN);
     }
 }

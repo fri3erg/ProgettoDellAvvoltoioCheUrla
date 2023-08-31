@@ -1,7 +1,7 @@
 import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 
 export interface IChannel {
-  id: string;
+  id?: string;
   name?: string | null;
   type?: keyof typeof ChannelTypes | null;
   modType?: string | null;
