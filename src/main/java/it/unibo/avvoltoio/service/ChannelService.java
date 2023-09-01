@@ -43,9 +43,9 @@ public class ChannelService {
                         break;
                     }
                 }
-                if (valid) {
-                    retList.add(cDTO);
-                }
+            }
+            if (valid) {
+                retList.add(cDTO);
             }
         }
         return retList;
@@ -57,8 +57,17 @@ public class ChannelService {
     }
 
     public ChannelDTO getChannelByName(String name) {
-        Channel c = channelRepository.findFirstByName(name).orElseThrow(NullPointerException::new);
+        Channel c = channelRepository.findFirstByName(name).orElse(null);
         return loadUsers(c);
+    }
+
+    public ChannelDTO createChannel(String name) {
+        ChannelDTO dto = new ChannelDTO();
+
+        Channel c = new Channel();
+        c.setName(name);
+        dto.setChannel(c);
+        return insertOrUpdateChannel(dto);
     }
 
     public ChannelDTO insertOrUpdateChannel(ChannelDTO channel) {

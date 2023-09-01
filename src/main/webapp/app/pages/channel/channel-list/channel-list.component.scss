@@ -1,0 +1,17 @@
+.badge {
+  color: white !important ;
+}
+
+.channel-layout {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.btn-subscribe {
+  padding: 2px 4px 2px 4px;
+}
+.btn-subscribe:hover {
+  color: white;
+}

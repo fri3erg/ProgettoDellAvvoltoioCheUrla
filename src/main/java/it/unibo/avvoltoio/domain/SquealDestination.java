@@ -9,13 +9,23 @@ import org.springframework.data.mongodb.core.mapping.Field;
 /**
  * A SquealDestination.
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class SquealDestination implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Field("destination")
     private String destination;
+
+    @Field("destination_id")
+    private String destinationId;
+
+    public String getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(String destinationId) {
+        this.destinationId = destinationId;
+    }
 
     @Field("destination_type")
     private ChannelTypes destinationType;

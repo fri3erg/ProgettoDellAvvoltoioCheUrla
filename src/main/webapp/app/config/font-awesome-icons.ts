@@ -39,6 +39,8 @@ import {
   faWrench,
   faFeatherPointed,
   faInbox,
+  faSquarePlus,
+  faSquareMinus,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -84,5 +86,7 @@ export const fontAwesomeIcons = [
   faFeatherPointed,
   faInbox,
   faHome,
+  faSquarePlus,
+  faSquareMinus,
   // jhipster-needle-add-icon-import
 ];

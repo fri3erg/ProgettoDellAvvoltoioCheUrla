@@ -1,0 +1,6 @@
+<div *ngIf="squeal">
+  <div class="flex">
+    <div>{{ squeal.squeal?.timestamp | date : 'dd/MM/yyyy HH:mm' }}</div>
+  </div>
+  {{ squeal.squeal?.body }}
+</div>

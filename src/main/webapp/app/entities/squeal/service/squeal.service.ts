@@ -23,6 +23,12 @@ export class SquealService {
     return this.http.post<ISquealDTO>(this.resourceUrl, squeal, { observe: 'response' });
   }
 
+  listSqueals(): Observable<HttpResponse<ISquealDTO[]>> {
+    const url = this.applicationConfigService.getEndpointFor('api/squeal-list');
+
+    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+  }
+
   create(squeal: NewSqueal): Observable<EntityResponseType> {
     return this.http.post<ISqueal>(this.resourceUrl, squeal, { observe: 'response' });
   }

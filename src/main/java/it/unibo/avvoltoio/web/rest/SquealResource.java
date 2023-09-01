@@ -63,6 +63,17 @@ public class SquealResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squeals in body.
      */
+    @GetMapping("/squeal-list")
+    public List<SquealDTO> getSquealList() {
+        log.debug("REST request to get squeals");
+        return squealService.getSquealsList();
+    }
+
+    /**
+     * {@code GET  /squeals} : get all the squeals.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squeals in body.
+     */
     @GetMapping("/squeals")
     public List<Squeal> getAllSqueals() {
         log.debug("REST request to get all Squeals");

@@ -1,5 +1,11 @@
 <jhi-create-squeal></jhi-create-squeal>
 
+<p-dataView #dv [value]="squeals">
+  <ng-template let-s pTemplate="listItem">
+    <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
+  </ng-template>
+</p-dataView>
+
 <div [ngSwitch]="account !== null" class="">
   <div class="alert alert-success" *ngSwitchCase="true">
     <span id="home-logged-message" *ngIf="account" jhiTranslate="home.logged.message" [translateValues]="{ username: account.login }"
