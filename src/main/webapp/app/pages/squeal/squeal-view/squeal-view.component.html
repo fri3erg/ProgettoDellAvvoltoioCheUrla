@@ -1,17 +1,18 @@
-<div *ngIf="squeal">
-  <div class="squeal-layout">
+<div class="message bg-gradient rounded-4 m-3" *ngIf="squeal">
+  <div class="squeal-layout pb-2 head-message">
+    <div class="username fw-semibold fs-5">@{{ squeal.userName }}</div>
+    <div>{{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}</div>
+  </div>
+  <div class="squeal-layout pt-0 pb-3 head-message">
     <div style="flex: 1">
-      <ng-container *ngFor="let d of squeal.squeal?.destinations">
+      <ng-container style="size-adjust: 50%" *ngFor="let d of squeal.squeal?.destinations">
         <p-chip [label]="d.destination ?? ''"></p-chip>
       </ng-container>
     </div>
-    <div>{{ squeal.squeal?.timestamp | date : 'dd/MM/yyyy HH:mm' }}</div>
-  </div>
-  <div class="squeal-layout">
-    <div style="flex: 1">{{ squeal.userName }}</div>
     <div>{{ squeal.squeal?.nCharacters }} characters</div>
   </div>
-  <div>
+  <hr class="m-0" />
+  <div class="ps-4 pt-3 fs-4 fw-light">
     {{ squeal.squeal?.body }}
   </div>
   <div>
@@ -19,12 +20,13 @@
     {{ squeal.squeal?.videoName }}
     {{ squeal.squeal?.img }}
     {{ squeal.squeal?.imgName }}
-    .
+
     {{ squeal.squeal?.imgContentType }}
   </div>
-  <div class="squeal-layout">
+  <hr />
+  <div class="squeal-layout pt-0">
     <div style="flex: 1">
-      <div>
+      <div class="pb-1">
         <p-speedDial [model]="reactions" [radius]="60" direction="right" type="semi-circle" buttonClassName="p-button-success">
         </p-speedDial>
       </div>
@@ -34,8 +36,6 @@
         </ng-container>
       </div>
     </div>
-    <div>
-      {{ squeal.views?.number }}
-    </div>
+    <div>{{ squeal.views?.number }} views</div>
   </div>
 </div>

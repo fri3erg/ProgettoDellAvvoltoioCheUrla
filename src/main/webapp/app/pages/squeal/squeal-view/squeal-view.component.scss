@@ -43,3 +43,15 @@
     content: '\1F976' !important;
   }
 }
+
+.message {
+  background-color: whitesmoke;
+}
+.username {
+  flex: 1;
+  position: relative;
+  left: 10px;
+}
+.head-message {
+  font-size: 85%;
+}
