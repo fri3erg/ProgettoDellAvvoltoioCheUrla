@@ -1,8 +1,11 @@
 package it.unibo.avvoltoio.service;
 
+import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.domain.ChannelUser;
 import it.unibo.avvoltoio.domain.Squeal;
 import it.unibo.avvoltoio.domain.SquealDestination;
+import it.unibo.avvoltoio.domain.SquealReaction;
+import it.unibo.avvoltoio.domain.SquealViews;
 import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.domain.enumeration.ChannelTypes;
 import it.unibo.avvoltoio.repository.ChannelRepository;
@@ -13,10 +16,14 @@ import it.unibo.avvoltoio.repository.SquealRepository;
 import it.unibo.avvoltoio.repository.SquealViewsRepository;
 import it.unibo.avvoltoio.security.SecurityUtils;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
+import it.unibo.avvoltoio.service.dto.ReactionDTO;
 import it.unibo.avvoltoio.service.dto.SquealDTO;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +34,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SquealService {
+
+    public static final Comparator<ReactionDTO> reactionsByNumber = Comparator.comparing(ReactionDTO::getNumber);
 
     @Autowired
     private UserService userService;
@@ -58,6 +67,23 @@ public class SquealService {
         return loadSquealData(s);
     }
 
+    public List<String> getSquealDestination(String name) {
+        if (name.startsWith("@")) {
+            return getSquealUser(name);
+        }
+        List<Channel> ch = channelService.getChannelNames(name);
+        return ch.stream().map(Channel::getName).toList();
+    }
+
+    private List<String> getSquealUser(String name) {
+        List<String> retUsers = new ArrayList<>();
+        List<User> us = userService.getUsersByName(name.substring(1));
+        for (User u : us) {
+            retUsers.add("@" + u.getLogin());
+        }
+        return retUsers;
+    }
+
     public SquealDTO loadSquealData(Squeal sq) {
         if (sq == null) {
             return null;
@@ -66,11 +92,29 @@ public class SquealService {
         s.setSqueal(sq);
         s.setCategory(squealCatRepository.findFirstBySquealId(sq.getId()).orElse(null));
 
-        s.setReactions(squealReactionRepository.findAllBySquealId(sq.getId()));
+        s.setReactions(getReactions(sq));
 
-        s.setViews(squealViewsRepository.findFirstBySquealId(sq.getId()).orElse(null));
+        s.setViews(addView(sq));
+
+        s.setUserName(userService.getUserById(sq.getUserId()).map(User::getLogin).orElse(null));
 
         return s;
+    }
+
+    public List<ReactionDTO> getReactions(Squeal sq) {
+        String cUid = getCurrentUserId();
+
+        Map<String, ReactionDTO> map = new HashMap<>();
+
+        List<SquealReaction> rList = squealReactionRepository.findAllBySquealId(sq.getId());
+
+        for (SquealReaction sr : rList) {
+            ReactionDTO r = map.computeIfAbsent(sr.getEmoji(), k -> new ReactionDTO(k));
+            r.setNumber(r.getNumber() + 1);
+            r.setUser(cUid.equals(sr.getUserId()));
+        }
+
+        return map.values().stream().sorted(reactionsByNumber).toList();
     }
 
     public List<SquealDTO> getSquealsList() {
@@ -161,6 +205,19 @@ public class SquealService {
         return getSqueal(s.getId());
     }
 
+    private SquealViews addView(Squeal s) {
+        Optional<SquealViews> v = squealViewsRepository.findFirstBySquealId(s.getId());
+        if (v.isPresent()) {
+            v.get().addView();
+            return squealViewsRepository.save(v.get());
+        } else {
+            SquealViews sw = new SquealViews();
+            sw.setNumber(1);
+            sw.setSquealId(s.getId());
+            return squealViewsRepository.save(sw);
+        }
+    }
+
     private Integer getNumberOfCharacters(Squeal s) {
         // TODO Controllare img  + se destinations solo message
 
@@ -177,7 +234,7 @@ public class SquealService {
         return false;
     }
 
-    private String getCurrentUserId() {
+    public String getCurrentUserId() {
         return userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new);
     }
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import SharedModule from 'app/shared/shared.module';
+import { MessageService } from 'primeng/api';
 
 @Component({
   standalone: true,
@@ -16,10 +17,12 @@ import SharedModule from 'app/shared/shared.module';
 export class CreateSquealComponent implements OnInit {
   destinations: string[] = [];
   message = '';
-
+  results?: string[];
   dto?: ISquealDTO;
 
-  constructor(protected squealService: SquealService) {}
+  @Output() squealed: EventEmitter<boolean> = new EventEmitter();
+
+  constructor(protected squealService: SquealService, private messageService: MessageService) {}
 
   ngOnInit(): void {
     // TODO: To edit arrive with id
@@ -27,6 +30,21 @@ export class CreateSquealComponent implements OnInit {
     this.dto = {
       squeal: {},
     };
+  }
+
+  search(event: any): void {
+    const q: string = event.query;
+    console.log(q);
+
+    this.squealService.findDestinations(q).subscribe(r => {
+      this.results = [];
+      if (r.body) {
+        this.results = r.body;
+      }
+      if (q.startsWith('#')) {
+        this.results.push(q);
+      }
+    });
   }
 
   createSqueal(): void {
@@ -58,6 +76,11 @@ export class CreateSquealComponent implements OnInit {
           }
         }
         console.log(this.dto);
+        this.messageService.add({ severity: 'success', summary: 'Squeal Squealed', detail: 'you squealed' });
+        this.destinations = [];
+        this.message = '';
+        this.dto = { squeal: {} };
+        this.squealed.emit(true);
       }
     });
   }

@@ -10,12 +10,25 @@ import { AlertComponent } from './alert/alert.component';
 import { AlertErrorComponent } from './alert/alert-error.component';
 import { ChipsModule } from 'primeng/chips';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ToastModule } from 'primeng/toast';
 
 /**
  * Application wide Module
  */
 @NgModule({
-  imports: [AlertComponent, AlertErrorComponent, FindLanguageFromKeyPipe, TranslateDirective, ChipsModule, DataViewModule],
+  imports: [
+    AlertComponent,
+    AlertErrorComponent,
+    FindLanguageFromKeyPipe,
+    TranslateDirective,
+    ChipsModule,
+    DataViewModule,
+    SpeedDialModule,
+    AutoCompleteModule,
+    ToastModule,
+  ],
   exports: [
     CommonModule,
     NgbModule,
@@ -28,6 +41,9 @@ import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
     ChipsModule,
     DataViewModule,
     DataViewLayoutOptions,
+    SpeedDialModule,
+    AutoCompleteModule,
+    ToastModule,
   ],
 })
 export default class SharedModule {}

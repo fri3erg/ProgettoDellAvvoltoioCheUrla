@@ -1,0 +1,45 @@
+.squeal-layout {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+:host ::ng-deep {
+  .p-speeddial-button.p-button.p-button-icon-only {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .p-speeddial-button.p-button.p-button-icon-only .p-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .p-speeddial-action {
+    width: 2rem;
+    height: 2rem;
+    background: #fff;
+    color: #fff;
+    border: 1px solid black;
+  }
+
+  span.clown::before {
+    content: '\1F921' !important;
+  }
+  span.nerd::before {
+    content: '\1F913' !important;
+  }
+  span.bored::before {
+    content: '\1F971' !important;
+  }
+  span.heart::before {
+    content: '\2764' !important;
+  }
+  span.exploding::before {
+    content: '\1F92F' !important;
+  }
+  span.cold::before {
+    content: '\1F976' !important;
+  }
+}

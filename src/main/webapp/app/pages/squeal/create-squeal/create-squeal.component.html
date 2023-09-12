@@ -1,7 +1,17 @@
 <form *ngIf="dto?.squeal">
   <div class="input-group mb-3">
     <span class="input-group-text" id="inputGroup-sizing-default">Destination</span>
-    <p-chips name="destinations" [(ngModel)]="destinations" separator=" " placeholder="your destination"></p-chips>
+    <div style="flex: 1">
+      <p-autoComplete
+        [style]="{ width: '100%' }"
+        name="destinations"
+        [minLength]="2"
+        [(ngModel)]="destinations"
+        [suggestions]="results ?? []"
+        (completeMethod)="search($event)"
+        [multiple]="true"
+      ></p-autoComplete>
+    </div>
   </div>
   <div class="form-floating">
     <textarea

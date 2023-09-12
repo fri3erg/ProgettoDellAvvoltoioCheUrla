@@ -6,6 +6,12 @@ import { ISqueal } from 'app/entities/squeal/squeal.model';
 export interface ISquealDTO {
   squeal?: ISqueal;
   category?: ISquealCat;
-  reactions?: ISquealReaction;
+  reactions?: IReactionDTO[];
   views?: ISquealViews;
+  userName?: string;
+}
+export interface IReactionDTO {
+  reaction: string;
+  number: number;
+  user: boolean;
 }

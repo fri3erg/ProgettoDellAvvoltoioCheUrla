@@ -51,6 +51,14 @@ public class UserService {
         this.cacheManager = cacheManager;
     }
 
+    public Optional<User> getUserById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public List<User> getUsersByName(String name) {
+        return userRepository.findAllByLoginContainsOrderByLogin(name);
+    }
+
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository

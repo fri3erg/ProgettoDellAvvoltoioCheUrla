@@ -1,5 +1,5 @@
 export interface ISquealReaction {
-  id: string;
+  id?: string | null;
   userId?: string | null;
   username?: string | null;
   squealId?: string | null;

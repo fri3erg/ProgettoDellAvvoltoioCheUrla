@@ -51,6 +51,10 @@ public class ChannelService {
         return retList;
     }
 
+    public List<Channel> getChannelNames(String name) {
+        return channelRepository.findAllByNameContainsOrderByName(name);
+    }
+
     public ChannelDTO getChannel(String id) {
         Channel c = channelRepository.findById(id).orElse(null);
         return loadUsers(c);

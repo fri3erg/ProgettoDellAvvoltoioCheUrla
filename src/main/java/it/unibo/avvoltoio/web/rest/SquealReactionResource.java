@@ -2,6 +2,8 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.SquealReaction;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
+import it.unibo.avvoltoio.security.SecurityUtils;
+import it.unibo.avvoltoio.service.SquealService;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +35,9 @@ public class SquealReactionResource {
 
     private final SquealReactionRepository squealReactionRepository;
 
+    @Autowired
+    private SquealService squealService;
+
     public SquealReactionResource(SquealReactionRepository squealReactionRepository) {
         this.squealReactionRepository = squealReactionRepository;
     }
@@ -49,6 +55,8 @@ public class SquealReactionResource {
         if (squealReaction.getId() != null) {
             throw new BadRequestAlertException("A new squealReaction cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
+        squealReaction.setUserId(squealService.getCurrentUserId());
         SquealReaction result = squealReactionRepository.save(squealReaction);
         return ResponseEntity
             .created(new URI("/api/squeal-reactions/" + result.getId()))

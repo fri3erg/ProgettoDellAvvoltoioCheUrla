@@ -10,6 +10,8 @@ import NavbarComponent from './layouts/navbar/navbar.component';
 import LoginComponent from './login/login.component';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { NotifyComponent } from './pages/notify/notify.component';
 
 @NgModule({
   imports: [
@@ -24,6 +26,16 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: '',
           component: NavbarComponent,
           outlet: 'navbar',
+        },
+        {
+          path: 'profile',
+          component: ProfileComponent,
+          title: '',
+        },
+        {
+          path: 'notification',
+          component: NotifyComponent,
+          title: '',
         },
         {
           path: 'admin',

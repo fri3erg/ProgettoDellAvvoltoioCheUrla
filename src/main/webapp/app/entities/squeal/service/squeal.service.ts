@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { isPresent } from 'app/core/util/operators';
@@ -18,6 +18,12 @@ export class SquealService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/squeals');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+
+  findDestinations(name: string): Observable<HttpResponse<string[]>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/squeals-destination`);
+    const params = new HttpParams().append('name', name);
+    return this.http.get<string[]>(url, { params, observe: 'response' });
+  }
 
   insertOrUpdate(squeal: ISquealDTO): Observable<HttpResponse<ISquealDTO>> {
     return this.http.post<ISquealDTO>(this.resourceUrl, squeal, { observe: 'response' });

@@ -41,6 +41,13 @@ public class SquealResource {
         this.squealRepository = squealRepository;
     }
 
+    @GetMapping("/squeals-destination")
+    public ResponseEntity<List<String>> getSquealDestination(@RequestParam("name") String name) {
+        log.debug("REST request to get SquealDestination : {}", name);
+        List<String> ret = squealService.getSquealDestination(name);
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
     /**
      * {@code POST  /squeals} : Create a new squeal.
      *

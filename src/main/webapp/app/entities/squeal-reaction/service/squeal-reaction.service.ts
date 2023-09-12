@@ -18,7 +18,7 @@ export class SquealReactionService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(squealReaction: NewSquealReaction): Observable<EntityResponseType> {
+  create(squealReaction: ISquealReaction): Observable<EntityResponseType> {
     return this.http.post<ISquealReaction>(this.resourceUrl, squealReaction, { observe: 'response' });
   }
 
@@ -48,7 +48,7 @@ export class SquealReactionService {
   }
 
   getSquealReactionIdentifier(squealReaction: Pick<ISquealReaction, 'id'>): string {
-    return squealReaction.id;
+    return squealReaction.id ?? '';
   }
 
   compareSquealReaction(o1: Pick<ISquealReaction, 'id'> | null, o2: Pick<ISquealReaction, 'id'> | null): boolean {

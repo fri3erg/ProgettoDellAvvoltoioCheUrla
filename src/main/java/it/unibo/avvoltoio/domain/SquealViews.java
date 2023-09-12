@@ -1,6 +1,7 @@
 package it.unibo.avvoltoio.domain;
 
 import java.io.Serializable;
+import java.util.Optional;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -62,6 +63,10 @@ public class SquealViews implements Serializable {
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public void addView() {
+        this.number = Optional.ofNullable(this.number).orElse(0) + 1;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -1,6 +1,41 @@
 <div *ngIf="squeal">
-  <div class="flex">
+  <div class="squeal-layout">
+    <div style="flex: 1">
+      <ng-container *ngFor="let d of squeal.squeal?.destinations">
+        <p-chip [label]="d.destination ?? ''"></p-chip>
+      </ng-container>
+    </div>
     <div>{{ squeal.squeal?.timestamp | date : 'dd/MM/yyyy HH:mm' }}</div>
   </div>
-  {{ squeal.squeal?.body }}
+  <div class="squeal-layout">
+    <div style="flex: 1">{{ squeal.userName }}</div>
+    <div>{{ squeal.squeal?.nCharacters }} characters</div>
+  </div>
+  <div>
+    {{ squeal.squeal?.body }}
+  </div>
+  <div>
+    {{ squeal.squeal?.videoContentType }}
+    {{ squeal.squeal?.videoName }}
+    {{ squeal.squeal?.img }}
+    {{ squeal.squeal?.imgName }}
+    .
+    {{ squeal.squeal?.imgContentType }}
+  </div>
+  <div class="squeal-layout">
+    <div style="flex: 1">
+      <div>
+        <p-speedDial [model]="reactions" [radius]="60" direction="right" type="semi-circle" buttonClassName="p-button-success">
+        </p-speedDial>
+      </div>
+      <div style="padding-left: 6rem">
+        <ng-container *ngFor="let r of squeal.reactions">
+          <span [class]="r.reaction">{{ r.number }}</span>
+        </ng-container>
+      </div>
+    </div>
+    <div>
+      {{ squeal.views?.number }}
+    </div>
+  </div>
 </div>
