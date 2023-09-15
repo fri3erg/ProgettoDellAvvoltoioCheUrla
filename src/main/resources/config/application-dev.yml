@@ -13,6 +13,12 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+app:
+  max-chars:
+    day: 400
+    week: 1000
+    month: 5000
+
 logging:
   level:
     ROOT: DEBUG

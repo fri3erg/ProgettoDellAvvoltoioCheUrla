@@ -16,6 +16,13 @@
 
 ---
 # Conditionally disable springdoc on missing api-docs profile
+
+app:
+  max-chars:
+    day: 20
+    week: 60
+    month: 400
+
 spring:
   config:
     activate:

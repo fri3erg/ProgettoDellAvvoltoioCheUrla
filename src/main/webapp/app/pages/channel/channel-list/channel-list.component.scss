@@ -15,3 +15,16 @@
 .btn-subscribe:hover {
   color: white;
 }
+
+.search {
+  background-color: #ff473d;
+  padding: 2px;
+}
+
+:host ::ng-deep .p-button {
+  position: fixed;
+  right: 10px;
+  bottom: 50px;
+  font-size: 18px;
+  font-weight: bolder;
+}

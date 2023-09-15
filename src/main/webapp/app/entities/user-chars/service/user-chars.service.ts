@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IUserChars, NewUserChars } from '../user-chars.model';
+import { IUserChars, IUserCharsDTO, NewUserChars } from '../user-chars.model';
 
 export type PartialUpdateUserChars = Partial<IUserChars> & Pick<IUserChars, 'id'>;
 
@@ -17,6 +17,10 @@ export class UserCharsService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/user-chars');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+
+  getChars(): Observable<HttpResponse<IUserCharsDTO>> {
+    return this.http.get<IUserCharsDTO>(this.resourceUrl, { observe: 'response' });
+  }
 
   create(userChars: NewUserChars): Observable<EntityResponseType> {
     return this.http.post<IUserChars>(this.resourceUrl, userChars, { observe: 'response' });

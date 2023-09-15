@@ -1,5 +1,6 @@
-<div class="input-group mb-3">
+<div class="input-group search bg-gradient">
   <input
+    (keyup)="search()"
     [(ngModel)]="searchKey"
     type="text"
     class="form-control"
@@ -7,10 +8,8 @@
     aria-label="Recipient's username"
     aria-describedby="button-addon2"
   />
-  <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="search()">Search</button>
-  <a class="btn btn-primary" [routerLink]="['/channels/new']">Create channel</a>
 </div>
-
+<p-button label="+" styleClass="p-button-lg p-button-rounded p-button-raised " [routerLink]="['/channels/new']"></p-button>
 <p-dataView #dv [value]="channels">
   <ng-template pTemplate="header">
     <div class="flex flex-column md:flex-row md:justify-content-between">

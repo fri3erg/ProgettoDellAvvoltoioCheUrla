@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'jhi-main',
   templateUrl: './main.component.html',
-  providers: [AppPageTitleStrategy, MessageService],
+  providers: [AppPageTitleStrategy],
 })
 export default class MainComponent implements OnInit {
   private renderer: Renderer2;

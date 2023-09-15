@@ -31,13 +31,16 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(account => (this.account = account));
-
-    this.loadSqueals();
+      .subscribe(account => {
+        this.account = account;
+        this.loadSqueals();
+      });
   }
 
   loadSqueals(): void {
+    console.log('load');
     this.squealService.listSqueals().subscribe(r => {
+      this.squeals = [];
       if (r.body) {
         this.squeals = r.body;
       }

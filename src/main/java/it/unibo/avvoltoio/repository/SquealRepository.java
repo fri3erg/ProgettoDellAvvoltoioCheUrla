@@ -14,4 +14,6 @@ public interface SquealRepository extends MongoRepository<Squeal, String> {
     List<Squeal> findAllByDestinations_DestinationIgnoreCaseOrderByTimestampDesc(String destination);
 
     List<Squeal> findAllByDestinations_DestinationIdInOrderByTimestampDesc(List<String> destinationIds, Pageable page);
+
+    List<Squeal> findAllByUserIdAndTimestampGreaterThanOrderByTimestamp(String userId, long smTime);
 }

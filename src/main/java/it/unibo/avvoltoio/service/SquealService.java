@@ -14,6 +14,7 @@ import it.unibo.avvoltoio.repository.SquealCatRepository;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
 import it.unibo.avvoltoio.repository.SquealRepository;
 import it.unibo.avvoltoio.repository.SquealViewsRepository;
+import it.unibo.avvoltoio.repository.UserCharsRepository;
 import it.unibo.avvoltoio.security.SecurityUtils;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.service.dto.ReactionDTO;
@@ -44,6 +45,9 @@ public class SquealService {
     private ChannelService channelService;
 
     @Autowired
+    private UserCharsService userCharsService;
+
+    @Autowired
     private ChannelRepository channelRepository;
 
     @Autowired
@@ -60,6 +64,9 @@ public class SquealService {
 
     @Autowired
     private SquealViewsRepository squealViewsRepository;
+
+    @Autowired
+    private UserCharsRepository userCharsRepository;
 
     public SquealDTO getSqueal(String id) {
         Squeal s = squealRepository.findById(id).orElseThrow(NullPointerException::new);
@@ -207,9 +214,13 @@ public class SquealService {
 
     private SquealViews addView(Squeal s) {
         Optional<SquealViews> v = squealViewsRepository.findFirstBySquealId(s.getId());
+        boolean addView = !getCurrentUserId().equals(s.getUserId());
         if (v.isPresent()) {
-            v.get().addView();
-            return squealViewsRepository.save(v.get());
+            if (addView) {
+                v.get().addView();
+                return squealViewsRepository.save(v.get());
+            }
+            return v.get();
         } else {
             SquealViews sw = new SquealViews();
             sw.setNumber(1);
@@ -235,6 +246,6 @@ public class SquealService {
     }
 
     public String getCurrentUserId() {
-        return userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new);
+        return userService.getUserWithAuthorities().map(User::getId).orElse("anonymous");
     }
 }

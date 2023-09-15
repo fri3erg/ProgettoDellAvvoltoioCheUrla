@@ -77,24 +77,27 @@ public class ChannelService {
     public ChannelDTO insertOrUpdateChannel(ChannelDTO channel) {
         Channel c = channel.getChannel();
 
+        if (isIncorrectName(c.getName())) {
+            throw new SquealException("Channel name " + c.getName() + " is invalid");
+        }
         c.setType(ChannelTypes.getChannelType(c.getName()));
 
         if (c.getType() == null) {
             throw new SquealException("Channel name " + c.getName() + " is invalid");
         }
+
         if (c.getType() == ChannelTypes.MOD && !SecurityUtils.isCurrentUserMod()) {
             throw new SquealException("channel " + c.getName() + " is reserved");
         }
-
         // check if exist
         Optional<Channel> cc = channelRepository.findFirstByName(c.getName());
+
         if (cc.isPresent() && !cc.get().getId().equals(c.getId())) {
             throw new SquealException("Channel name " + c.getName() + " already exist");
         }
-
         boolean createOwner = (c.getId() == null);
-        c = channelRepository.save(c);
 
+        c = channelRepository.save(c);
         if (createOwner) {
             ChannelUser user = new ChannelUser();
             user.setUserId(getCurrentUserId());
@@ -104,6 +107,14 @@ public class ChannelService {
         }
 
         return loadUsers(c);
+    }
+
+    private boolean isIncorrectName(String name) {
+        String q = name.substring(1);
+        if (q.contains("§") || q.contains("#") || q.contains("@") || !q.toLowerCase().equals(q)) {
+            return true;
+        }
+        return false;
     }
 
     private String getCurrentUserId() {

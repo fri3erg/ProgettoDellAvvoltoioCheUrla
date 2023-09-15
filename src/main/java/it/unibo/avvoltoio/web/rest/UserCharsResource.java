@@ -2,15 +2,18 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.UserChars;
 import it.unibo.avvoltoio.repository.UserCharsRepository;
+import it.unibo.avvoltoio.service.UserCharsService;
+import it.unibo.avvoltoio.service.dto.UserCharsDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,12 +33,29 @@ public class UserCharsResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    @Autowired
+    UserCharsService userCharsService;
+
     private final UserCharsRepository userCharsRepository;
 
     public UserCharsResource(UserCharsRepository userCharsRepository) {
         this.userCharsRepository = userCharsRepository;
     }
 
+    @GetMapping("/user-chars")
+    public ResponseEntity<UserCharsDTO> getChars() {
+        log.debug("REST request to get chars : {}");
+        UserCharsDTO ret = userCharsService.calcChars();
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    /*@GetMapping("/user-characters")
+    public ResponseEntity<Integer> getChars() {
+        log.debug("REST request to get chars : {}");
+        Integer ret = userCharsService.getCurrentUserChars().get().getRemaningChars();
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+    */
     /**
      * {@code POST  /user-chars} : Create a new userChars.
      *
@@ -146,11 +166,11 @@ public class UserCharsResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of userChars in body.
      */
-    @GetMapping("/user-chars")
-    public List<UserChars> getAllUserChars() {
-        log.debug("REST request to get all UserChars");
-        return userCharsRepository.findAll();
-    }
+    //    @GetMapping("/user-chars")
+    //    public List<UserChars> getAllUserChars() {
+    //        log.debug("REST request to get all UserChars");
+    //        return userCharsRepository.findAll();
+    //    }
 
     /**
      * {@code GET  /user-chars/:id} : get the "id" userChars.

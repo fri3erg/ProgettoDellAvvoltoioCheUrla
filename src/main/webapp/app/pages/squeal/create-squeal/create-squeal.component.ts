@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
+import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
+import { IUserCharsDTO, Type } from 'app/entities/user-chars/user-chars.model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import SharedModule from 'app/shared/shared.module';
 import { MessageService } from 'primeng/api';
@@ -19,10 +21,14 @@ export class CreateSquealComponent implements OnInit {
   message = '';
   results?: string[];
   dto?: ISquealDTO;
-
+  charsDTO?: IUserCharsDTO;
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(protected squealService: SquealService, private messageService: MessageService) {}
+  constructor(
+    protected squealService: SquealService,
+    private messageService: MessageService,
+    protected userCharsService: UserCharsService
+  ) {}
 
   ngOnInit(): void {
     // TODO: To edit arrive with id
@@ -30,6 +36,26 @@ export class CreateSquealComponent implements OnInit {
     this.dto = {
       squeal: {},
     };
+    this.userCharsService.getChars().subscribe(r => {
+      if (r.body) {
+        this.charsDTO = r.body;
+      }
+    });
+  }
+
+  getType(): string {
+    if (this.charsDTO?.type === Type.DAY) {
+      return 'giorno';
+    }
+    if (this.charsDTO?.type === Type.WEEK) {
+      return 'settimana';
+    } else {
+      return 'mese';
+    }
+  }
+
+  getRemainingChars(): number {
+    return (this.charsDTO?.remainingChars ?? 0) - this.message.length;
   }
 
   search(event: any): void {
@@ -46,7 +72,6 @@ export class CreateSquealComponent implements OnInit {
       }
     });
   }
-
   createSqueal(): void {
     if (!this.dto?.squeal) {
       return;
