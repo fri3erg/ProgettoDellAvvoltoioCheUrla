@@ -71,9 +71,9 @@ public class SquealResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squeals in body.
      */
     @GetMapping("/squeal-list")
-    public List<SquealDTO> getSquealList() {
+    public List<SquealDTO> getSquealList(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
         log.debug("REST request to get squeals");
-        return squealService.getSquealsList();
+        return squealService.getSquealsList(page, size);
     }
 
     /**
@@ -98,6 +98,20 @@ public class SquealResource {
         log.debug("REST request to get Squeal : {}", id);
         Optional<SquealDTO> squeal = Optional.ofNullable(this.squealService.getSqueal(id));
         return ResponseUtil.wrapOrNotFound(squeal);
+    }
+
+    @GetMapping("/direct-squeal-list")
+    public ResponseEntity<List<SquealDTO>> getDirectSqueal() {
+        log.debug("REST request to get direct Squeal : {}");
+        Optional<List<SquealDTO>> squeal = Optional.ofNullable(this.squealService.getDirectSqueal());
+        return ResponseUtil.wrapOrNotFound(squeal);
+    }
+
+    @GetMapping("/direct-squeal-preview")
+    public ResponseEntity<List<SquealDTO>> getDirectSquealPreview() {
+        log.debug("REST request to get direct Squeal : {}");
+        List<SquealDTO> squeal = this.squealService.getDirectSquealPreview();
+        return new ResponseEntity<>(squeal, HttpStatus.OK);
     }
 
     @GetMapping("/squeal-by-destination/{destination}")

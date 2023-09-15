@@ -5,6 +5,16 @@
     <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
   </ng-template>
 </p-dataView>
+<div
+  jhiObserveElement
+  #intersection="intersection"
+  [class.example-card--is-intersecting]="intersection._isIntersecting"
+  (isIntersecting)="isIntersecting($event)"
+  [isContinuous]="true"
+  *ngIf="hasMorePage"
+>
+  <span> Loading more...</span>
+</div>
 
 <div [ngSwitch]="account !== null" class="">
   <div class="alert alert-success" *ngSwitchCase="true">

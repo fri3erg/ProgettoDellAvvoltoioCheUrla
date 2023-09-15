@@ -1,12 +1,14 @@
-<ng-template let-c pTemplate="listItem">
+<ng-container *ngFor="let squeal of squeals">
   <div class="col-12">
+    p
     <div class="message-layout">
+      <div>
+        <h2>{{ squeal.squeal?.userId }}</h2>
+      </div>
       <div style="flex: 1">
-        <h2>{{}}</h2>
-        <div>
-          <p>{{}}</p>
-        </div>
+        <p>{{ squeal.squeal?.body }}</p>
       </div>
     </div>
   </div>
-</ng-template>
+</ng-container>
+<p>oooo</p>

@@ -10,6 +10,10 @@ export interface ISquealDTO {
   views?: ISquealViews;
   userName?: string;
 }
+export interface IDirectDTO {
+  user?: string;
+  body?: string;
+}
 export interface IReactionDTO {
   reaction: string;
   number: number;

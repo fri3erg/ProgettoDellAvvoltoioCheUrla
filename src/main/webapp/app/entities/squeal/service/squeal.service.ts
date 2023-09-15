@@ -29,10 +29,17 @@ export class SquealService {
     return this.http.post<ISquealDTO>(this.resourceUrl, squeal, { observe: 'response' });
   }
 
-  listSqueals(): Observable<HttpResponse<ISquealDTO[]>> {
-    const url = this.applicationConfigService.getEndpointFor('api/squeal-list');
+  getDirectSqueal(): Observable<HttpResponse<ISquealDTO[]>> {
+    const url = this.applicationConfigService.getEndpointFor('api/direct-squeal-preview');
 
     return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+  }
+
+  listSqueals(page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
+    const params = new HttpParams().append('page', page).append('size', size);
+    const url = this.applicationConfigService.getEndpointFor('api/squeal-list');
+
+    return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
 
   create(squeal: NewSqueal): Observable<EntityResponseType> {

@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -124,20 +126,22 @@ public class SquealService {
         return map.values().stream().sorted(reactionsByNumber).toList();
     }
 
-    public List<SquealDTO> getSquealsList() {
+    public List<SquealDTO> getSquealsList(int page, int number) {
         if (!SecurityUtils.isAuthenticated()) {
             return getAnonymousSqueals();
         } else {
-            return getUserSqueals();
+            return getUserSqueals(page, number);
         }
     }
 
-    public List<SquealDTO> getUserSqueals() {
+    public List<SquealDTO> getUserSqueals(int page, int number) {
+        Pageable p = PageRequest.of(page, number);
+
         List<ChannelUser> myChannels = channelUserRepository.findAllByUserId(getCurrentUserId());
 
         List<String> destIds = myChannels.stream().map(ChannelUser::getChannelId).collect(Collectors.toList());
 
-        List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(destIds, Pageable.ofSize(200));
+        List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(destIds, p);
 
         List<SquealDTO> ret = new ArrayList<>();
         for (Squeal s : mySqueals) {
@@ -148,7 +152,7 @@ public class SquealService {
     }
 
     public List<SquealDTO> getAnonymousSqueals() {
-        //TODO Return public stuff
+        // TODO Return public stuff
         return null;
     }
 
@@ -189,7 +193,7 @@ public class SquealService {
                     }
                     break;
                 default:
-                //do nothing
+                // do nothing
             }
             if (valid) {
                 sd.setDestinationId(destinationId);
@@ -204,7 +208,8 @@ public class SquealService {
 
         s = squealRepository.save(s);
 
-        //TODO: Destinations added after save (id problem), maybe generate UUID and insert
+        // TODO: Destinations added after save (id problem), maybe generate UUID and
+        // insert
         s.setDestinations(validDest);
 
         s = squealRepository.save(s);
@@ -230,7 +235,7 @@ public class SquealService {
     }
 
     private Integer getNumberOfCharacters(Squeal s) {
-        // TODO Controllare img  + se destinations solo message
+        // TODO Controllare img + se destinations solo message
 
         return Optional.ofNullable(s.getBody()).map(String::length).orElse(0);
     }
@@ -247,5 +252,38 @@ public class SquealService {
 
     public String getCurrentUserId() {
         return userService.getUserWithAuthorities().map(User::getId).orElse("anonymous");
+    }
+
+    public List<SquealDTO> getDirectSqueal() {
+        List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(getCurrentUserId());
+        List<SquealDTO> ret = new ArrayList<>();
+        for (Squeal s : mySqueals) {
+            ret.add(loadSquealData(s));
+        }
+        return ret;
+    }
+
+    public List<SquealDTO> getDirectSquealPreview() {
+        List<SquealDTO> ret = new ArrayList<>();
+        List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(getCurrentUserId());
+
+        Map<String, Squeal> lastSqualsByUser = mySqueals
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    Squeal::getUserId,
+                    Function.identity(),
+                    (s1, s2) -> {
+                        if (s1.getTimestamp() > s2.getTimestamp()) {
+                            return s1;
+                        }
+                        return s2;
+                    }
+                )
+            );
+        for (Squeal s : lastSqualsByUser.values()) {
+            ret.add(loadSquealData(s));
+        }
+        return ret;
     }
 }
