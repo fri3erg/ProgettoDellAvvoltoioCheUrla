@@ -123,6 +123,24 @@ public class SquealResource {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
+    @GetMapping("/squeal-received-by-user/{userId}")
+    public ResponseEntity<List<SquealDTO>> getSquealsReceivedByUser(@PathVariable String userId) {
+        log.debug("REST request to get Squeal : {}", userId);
+
+        List<SquealDTO> ret = squealService.getSquealByUser(userId);
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-sent-by-user/{userId}")
+    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(@PathVariable String userId) {
+        log.debug("REST request to get Squeal : {}", userId);
+
+        List<SquealDTO> ret = squealService.getSquealByUser(userId);
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
     /**
      * {@code DELETE  /squeals/:id} : delete the "id" squeal.
      *

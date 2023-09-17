@@ -1,0 +1,15 @@
+<div class="rounded-4 mytitlecard p-2 m-1">
+  {{ userId }}
+</div>
+<ng-container *ngFor="let squeal of squeals" class="m-3 p-2">
+  <div class="col-8" style="float: left" *ngIf="userId == squeal.squeal?.userId">
+    <div class="message-layout rounded-4 m-3 p-2">
+      <div style="flex: 1" class="m-2 mymessage ps-3">
+        <p>{{ squeal.squeal?.body }}</p>
+      </div>
+      <div class="mytimestamp me-3">
+        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
+      </div>
+    </div>
+  </div>
+</ng-container>

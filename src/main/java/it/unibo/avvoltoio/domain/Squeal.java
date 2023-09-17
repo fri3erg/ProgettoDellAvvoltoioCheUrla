@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * A Squeal.
  */
 @Document(collection = "squeal")
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Squeal implements Serializable {
 
     private static final long serialVersionUID = 1L;

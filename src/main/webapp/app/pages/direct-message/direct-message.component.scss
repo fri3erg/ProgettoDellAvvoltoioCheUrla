@@ -1,6 +1,26 @@
 .message-layout {
+  background-color: whitesmoke;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   padding: 1rem;
+}
+
+.myname {
+  background-color: lightgray;
+  width: 23rem;
+}
+.mymessage {
+  font-size: large;
+  position: relative;
+  top: 7px;
+}
+.mytimestamp {
+  font-size: small;
+}
+.mynotify {
+  background-color: lightgray;
+  height: 2rem;
+  width: 3rem;
+  text-align: center;
 }

@@ -18,4 +18,6 @@ public interface SquealRepository extends MongoRepository<Squeal, String> {
     List<Squeal> findAllByUserIdAndTimestampGreaterThanOrderByTimestamp(String userId, long smTime);
 
     List<Squeal> findAllByDestinations_DestinationIdOrderByUserId(String currentUserId);
+
+    List<Squeal> findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(String userId, String currentUserId);
 }

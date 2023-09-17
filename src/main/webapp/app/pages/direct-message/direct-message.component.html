@@ -1,14 +1,16 @@
 <ng-container *ngFor="let squeal of squeals">
-  <div class="col-12">
-    p
-    <div class="message-layout">
-      <div>
+  <div class="col-12" [routerLink]="['user', squeal.squeal?.userId]">
+    <div class="message-layout rounded-4 m-3 p-2">
+      <div class="myname rounded-4 p-2">
         <h2>{{ squeal.squeal?.userId }}</h2>
       </div>
-      <div style="flex: 1">
+      <div style="flex: 1" class="m-2 mymessage ps-3">
         <p>{{ squeal.squeal?.body }}</p>
       </div>
+      <div class="mytimestamp me-3">
+        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
+      </div>
+      <div class="mynotify rounded-4 p-1 m-2">5<fa-icon icon="heart" [fixedWidth]="true"></fa-icon></div>
     </div>
   </div>
 </ng-container>
-<p>oooo</p>

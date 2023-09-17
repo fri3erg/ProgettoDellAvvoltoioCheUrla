@@ -2,6 +2,7 @@ package it.unibo.avvoltoio.service;
 
 import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.domain.ChannelUser;
+import it.unibo.avvoltoio.domain.DmUser;
 import it.unibo.avvoltoio.domain.Squeal;
 import it.unibo.avvoltoio.domain.SquealDestination;
 import it.unibo.avvoltoio.domain.SquealReaction;
@@ -10,6 +11,7 @@ import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.domain.enumeration.ChannelTypes;
 import it.unibo.avvoltoio.repository.ChannelRepository;
 import it.unibo.avvoltoio.repository.ChannelUserRepository;
+import it.unibo.avvoltoio.repository.DMUserRepository;
 import it.unibo.avvoltoio.repository.SquealCatRepository;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
 import it.unibo.avvoltoio.repository.SquealRepository;
@@ -66,6 +68,9 @@ public class SquealService {
 
     @Autowired
     private SquealViewsRepository squealViewsRepository;
+
+    @Autowired
+    private DMUserRepository dmUserRepository;
 
     @Autowired
     private UserCharsRepository userCharsRepository;
@@ -264,6 +269,7 @@ public class SquealService {
     }
 
     public List<SquealDTO> getDirectSquealPreview() {
+        List<DmUser> test = dmUserRepository.findDirectMessageUser(getCurrentUserId());
         List<SquealDTO> ret = new ArrayList<>();
         List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(getCurrentUserId());
 
@@ -282,6 +288,25 @@ public class SquealService {
                 )
             );
         for (Squeal s : lastSqualsByUser.values()) {
+            ret.add(loadSquealData(s));
+        }
+
+        return ret;
+    }
+
+    public List<SquealDTO> getSquealReceivedByUser(String userId) {
+        List<Squeal> squeals = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, getCurrentUserId());
+        List<SquealDTO> ret = new ArrayList<>();
+        for (Squeal s : squeals) {
+            ret.add(loadSquealData(s));
+        }
+        return ret;
+    }
+
+    public List<SquealDTO> getSquealSentByUser(String userId) {
+        List<Squeal> squeals = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(getCurrentUserId(), userId);
+        List<SquealDTO> ret = new ArrayList<>();
+        for (Squeal s : squeals) {
             ret.add(loadSquealData(s));
         }
         return ret;
