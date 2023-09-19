@@ -132,6 +132,15 @@ public class SquealResource {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
+    @GetMapping("/squeal-by-channel/{channelId}")
+    public ResponseEntity<List<SquealDTO>> getSquealsByChannel(@PathVariable String channelId) {
+        log.debug("REST request to get Squeal : {}", channelId);
+
+        List<SquealDTO> ret = squealService.getSquealByChannel(channelId);
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
     /**
      * {@code DELETE  /squeals/:id} : delete the "id" squeal.
      *

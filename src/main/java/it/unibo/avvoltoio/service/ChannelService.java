@@ -130,4 +130,35 @@ public class ChannelService {
         c.setUsers(channelUserRepository.findAllByChannelId(c.getChannel().getId()));
         return c;
     }
+
+    public boolean isCurrentUserInChannel(ChannelDTO channel) {
+        String uid = getCurrentUserId();
+        for (ChannelUser u : channel.getUsers()) {
+            if (uid.equals(u.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isUserInChannel(String id) {
+        Channel channel = channelRepository.findFirstById(id);
+        ChannelDTO dto = loadUsers(channel);
+        boolean valid = false;
+        switch (channel.getType()) {
+            case MOD:
+                valid = SecurityUtils.isCurrentUserMod();
+                // TODO: Destination id
+                break;
+            case PRIVATEGROUP:
+                valid = isCurrentUserInChannel(dto);
+                break;
+            case PUBLICGROUP:
+                valid = true;
+                break;
+            default:
+            // do nothing
+        }
+        return valid;
+    }
 }

@@ -14,4 +14,5 @@ public interface ChannelRepository extends MongoRepository<Channel, String> {
     Optional<Channel> findFirstByName(String name);
 
     List<Channel> findAllByNameContainsOrderByName(String name);
+    Channel findFirstById(String id);
 }

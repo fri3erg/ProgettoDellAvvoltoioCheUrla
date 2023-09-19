@@ -169,8 +169,24 @@ public class SquealService {
             if (sd.getDestinationType() == null) {
                 continue;
             }
+            ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
+            String destinationId = "";
+            boolean message = sd.getDestinationType() == ChannelTypes.MESSAGE;
+            if (channelService.isUserInChannel(destinationId) || message || dto == null) {
+                if (message) {
+                    String user = StringUtils.remove(sd.getDestination(), '@');
+                    User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
+                    if (u == null) {
+                        continue;
+                    }
+                }
+                if (dto == null) {
+                    dto = channelService.createChannel(sd.getDestination());
+                }
+                destinationId = dto.getChannel().getId();
+            }
+
             boolean valid = false;
-            String destinationId = null;
             switch (sd.getDestinationType()) {
                 case MOD:
                     valid = SecurityUtils.isCurrentUserMod();
@@ -178,7 +194,7 @@ public class SquealService {
                     break;
                 case PRIVATEGROUP:
                     ChannelDTO cp = channelService.getChannelByName(sd.getDestination());
-                    valid = isCurrentUserInChannel(cp);
+                    valid = channelService.isCurrentUserInChannel(cp);
                     destinationId = cp.getChannel().getId();
                     break;
                 case PUBLICGROUP:
@@ -245,16 +261,6 @@ public class SquealService {
         return Optional.ofNullable(s.getBody()).map(String::length).orElse(0);
     }
 
-    private boolean isCurrentUserInChannel(ChannelDTO channel) {
-        String uid = getCurrentUserId();
-        for (ChannelUser u : channel.getUsers()) {
-            if (uid.equals(u.getUserId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public String getCurrentUserId() {
         return userService.getUserWithAuthorities().map(User::getId).orElse("anonymous");
     }
@@ -294,21 +300,34 @@ public class SquealService {
         return ret;
     }
 
-
-
-	public List<SquealDTO> getSquealByUser(String userId) {
-        List<Squeal> squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, getCurrentUserId());
-        List<Squeal> squealsSent = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(getCurrentUserId(), userId);
+    public List<SquealDTO> getSquealByUser(String userId) {
+        List<Squeal> squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(
+            userId,
+            getCurrentUserId()
+        );
+        List<Squeal> squealsSent = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(
+            getCurrentUserId(),
+            userId
+        );
         List<SquealDTO> ret = new ArrayList<>();
         List<Squeal> merge = new ArrayList<>();
-        		merge.addAll(squealsReceived);
-        		merge.addAll(squealsSent);
-        		merge.stream()
-        		  .sorted(Comparator.comparing(Squeal::getTimestamp).reversed())
-        		  .collect(Collectors.toList());
-                for (Squeal s : merge) {
-                    ret.add(loadSquealData(s));
-                }        return ret;
-                
-	}
+        if (getCurrentUserId() != userId) {
+            merge.addAll(squealsReceived);
+        }
+        merge.addAll(squealsSent);
+        merge.stream().sorted(Comparator.comparing(Squeal::getTimestamp)).collect(Collectors.toList());
+        for (Squeal s : merge) {
+            ret.add(loadSquealData(s));
+        }
+        return ret;
+    }
+
+    public List<SquealDTO> getSquealByChannel(String channelId, int page, int number) {
+        Pageable p = PageRequest.of(page, number);
+
+        if (channelService.isUserInChannel(channelId)) {
+            squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(null, null);
+        }
+        return null;
+    }
 }
