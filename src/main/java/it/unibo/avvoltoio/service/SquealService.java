@@ -294,21 +294,21 @@ public class SquealService {
         return ret;
     }
 
-    public List<SquealDTO> getSquealReceivedByUser(String userId) {
-        List<Squeal> squeals = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, getCurrentUserId());
-        List<SquealDTO> ret = new ArrayList<>();
-        for (Squeal s : squeals) {
-            ret.add(loadSquealData(s));
-        }
-        return ret;
-    }
 
-    public List<SquealDTO> getSquealSentByUser(String userId) {
-        List<Squeal> squeals = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(getCurrentUserId(), userId);
+
+	public List<SquealDTO> getSquealByUser(String userId) {
+        List<Squeal> squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, getCurrentUserId());
+        List<Squeal> squealsSent = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(getCurrentUserId(), userId);
         List<SquealDTO> ret = new ArrayList<>();
-        for (Squeal s : squeals) {
-            ret.add(loadSquealData(s));
-        }
-        return ret;
-    }
+        List<Squeal> merge = new ArrayList<>();
+        		merge.addAll(squealsReceived);
+        		merge.addAll(squealsSent);
+        		merge.stream()
+        		  .sorted(Comparator.comparing(Squeal::getTimestamp).reversed())
+        		  .collect(Collectors.toList());
+                for (Squeal s : merge) {
+                    ret.add(loadSquealData(s));
+                }        return ret;
+                
+	}
 }

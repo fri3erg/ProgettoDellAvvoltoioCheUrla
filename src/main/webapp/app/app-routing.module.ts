@@ -12,7 +12,7 @@ import LoginComponent from './login/login.component';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { NotifyComponent } from './pages/notify/notify.component';
-import { DirectMessageComponent } from './pages/direct-message/direct-message.component';
+import { DirectMessageComponent } from './pages/direct-message/direct-message/direct-message.component';
 
 @NgModule({
   imports: [

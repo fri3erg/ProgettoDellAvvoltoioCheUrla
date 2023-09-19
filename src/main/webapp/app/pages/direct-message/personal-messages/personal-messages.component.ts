@@ -21,22 +21,18 @@ export class PersonalMessagesComponent implements OnInit {
   squeals?: ISquealDTO[];
   account: Account | null = null;
 
-  private readonly destroy$ = new Subject<void>();
-
-  private route = inject(ActivatedRoute);
 
   constructor(
     protected squealService: SquealService,
-    private accountService: AccountService,
     protected channelService: ChannelService,
-    protected channelUserService: ChannelUserService
+    protected channelUserService: ChannelUserService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.userId = id;
-      this.squealService.getSquealByUser(id).subscribe(r => {
+    this.userId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();    
+    if (this.userId) {
+      this.squealService.getSquealByUser(this.userId).subscribe(r => {
         if (r.body) {
           this.squeals = r.body;
           console.log(this.squeals);

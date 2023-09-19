@@ -26,9 +26,8 @@ export class SquealService {
   }
 
   getSquealByUser(userId: string): Observable<HttpResponse<ISquealDTO[]>> {
-    const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-user`);
-    const params = new HttpParams().append('id', userId);
-    return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
+    const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-user/${userId}`);
+    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
   }
 
   insertOrUpdate(squeal: ISquealDTO): Observable<HttpResponse<ISquealDTO>> {
