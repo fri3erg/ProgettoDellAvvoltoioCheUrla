@@ -6,6 +6,7 @@ import { ChannelListComponent } from './channel-list/channel-list.component';
 import { ChannelViewComponent } from './channel-view/channel-view.component';
 import channelDtoResolve from './channel-dto-routing-resolve.service';
 import { ChannelEditComponent } from './channel-edit/channel-edit.component';
+import { ChannelPageComponent } from './channel-page/channel-page.component';
 
 const channelRoute: Routes = [
   {
@@ -14,15 +15,11 @@ const channelRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/view',
-    component: ChannelViewComponent,
-    resolve: {
-      channel: channelDtoResolve,
-    },
-    canActivate: [UserRouteAccessService],
+    path: 'view/:id',
+    component: ChannelPageComponent,
   },
   {
-    path: ':id/edit',
+    path: 'edit/:id',
     component: ChannelEditComponent,
     resolve: {
       channel: channelDtoResolve,

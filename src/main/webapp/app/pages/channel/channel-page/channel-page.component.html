@@ -1,7 +1,10 @@
-<div></div>
+<div>
+  aaa
+  {{ channel?.channel?.name }}
+</div>
 
-<ng-container *ngFor="let squeal of channel" class="m-3 p-2 pt-3">
-  <div class="col-8" style="float: left" *ngIf="userId == squeal.squeal?.userId">
+<ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
+  <div class="col-8">
     <div class="message-layout rounded-4 m-3 p-2">
       <div style="flex: 1" class="m-2 mymessage ps-3">
         <p>{{ squeal.squeal?.body }}</p>
@@ -12,3 +15,13 @@
     </div>
   </div>
 </ng-container>
+<div
+  jhiObserveElement
+  #intersection="intersection"
+  [class.example-card--is-intersecting]="intersection._isIntersecting"
+  (isIntersecting)="isIntersecting($event)"
+  [isContinuous]="true"
+  *ngIf="hasMorePage"
+>
+  <span> Loading more...</span>
+</div>

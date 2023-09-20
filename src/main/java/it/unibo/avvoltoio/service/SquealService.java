@@ -170,55 +170,24 @@ public class SquealService {
                 continue;
             }
             ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
-            String destinationId = "";
-            boolean message = sd.getDestinationType() == ChannelTypes.MESSAGE;
-            if (channelService.isUserInChannel(destinationId) || message || dto == null) {
-                if (message) {
-                    String user = StringUtils.remove(sd.getDestination(), '@');
-                    User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
-                    if (u == null) {
-                        continue;
-                    }
+            if (dto == null) {
+                if (sd.getDestinationType() != ChannelTypes.PUBLICGROUP) {
+                    continue;
                 }
-                if (dto == null) {
-                    dto = channelService.createChannel(sd.getDestination());
-                }
-                destinationId = dto.getChannel().getId();
+                dto = channelService.createChannel(sd.getDestination());
             }
-
-            boolean valid = false;
-            switch (sd.getDestinationType()) {
-                case MOD:
-                    valid = SecurityUtils.isCurrentUserMod();
-                    // TODO: Destination id
-                    break;
-                case PRIVATEGROUP:
-                    ChannelDTO cp = channelService.getChannelByName(sd.getDestination());
-                    valid = channelService.isCurrentUserInChannel(cp);
-                    destinationId = cp.getChannel().getId();
-                    break;
-                case PUBLICGROUP:
-                    ChannelDTO cPup = channelService.getChannelByName(sd.getDestination());
-                    if (cPup == null) {
-                        cPup = channelService.createChannel(sd.getDestination());
-                    }
-                    destinationId = cPup.getChannel().getId();
-                    valid = true;
-                    break;
-                case MESSAGE:
-                    String user = StringUtils.remove(sd.getDestination(), '@');
-                    User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
-                    valid = u != null;
-                    if (u != null) {
-                        destinationId = u.getId();
-                    }
-                    break;
-                default:
-                // do nothing
-            }
-            if (valid) {
+            String destinationId = dto.getChannel().getId();
+            if (channelService.isUserInChannel(destinationId)) {
                 sd.setDestinationId(destinationId);
                 validDest.add(sd);
+            }
+            if (sd.getDestinationType() == ChannelTypes.MESSAGE) {
+                String user = StringUtils.remove(sd.getDestination(), '@');
+                User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
+                if (u != null) {
+                    sd.setDestinationId(destinationId);
+                    validDest.add(sd);
+                }
             }
         }
 
@@ -324,10 +293,16 @@ public class SquealService {
 
     public List<SquealDTO> getSquealByChannel(String channelId, int page, int number) {
         Pageable p = PageRequest.of(page, number);
-
+        List<String> id = new ArrayList<>();
+        id.add(channelId);
+        List<SquealDTO> ret = new ArrayList<>();
+        List<Squeal> mySqueals = new ArrayList<>();
         if (channelService.isUserInChannel(channelId)) {
-            squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(null, null);
+            mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(id, p);
         }
-        return null;
+        for (Squeal s : mySqueals) {
+            ret.add(loadSquealData(s));
+        }
+        return ret;
     }
 }

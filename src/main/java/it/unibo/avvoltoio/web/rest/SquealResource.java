@@ -52,7 +52,9 @@ public class SquealResource {
      * {@code POST  /squeals} : Create a new squeal.
      *
      * @param squeal the squeal to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new squeal, or with status {@code 400 (Bad Request)} if the squeal has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new squeal, or with status {@code 400 (Bad Request)} if the
+     *         squeal has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/squeals")
@@ -68,7 +70,8 @@ public class SquealResource {
     /**
      * {@code GET  /squeals} : get all the squeals.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squeals in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of squeals in body.
      */
     @GetMapping("/squeal-list")
     public List<SquealDTO> getSquealList(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
@@ -79,7 +82,8 @@ public class SquealResource {
     /**
      * {@code GET  /squeals} : get all the squeals.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squeals in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of squeals in body.
      */
     @GetMapping("/squeals")
     public List<Squeal> getAllSqueals() {
@@ -91,7 +95,8 @@ public class SquealResource {
      * {@code GET  /squeals/:id} : get the "id" squeal.
      *
      * @param id the id of the squeal to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the squeal, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the squeal, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/squeals/{id}")
     public ResponseEntity<SquealDTO> getSqueal(@PathVariable String id) {
@@ -133,10 +138,14 @@ public class SquealResource {
     }
 
     @GetMapping("/squeal-by-channel/{channelId}")
-    public ResponseEntity<List<SquealDTO>> getSquealsByChannel(@PathVariable String channelId) {
+    public ResponseEntity<List<SquealDTO>> getSquealsByChannel(
+        @PathVariable String channelId,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size
+    ) {
         log.debug("REST request to get Squeal : {}", channelId);
 
-        List<SquealDTO> ret = squealService.getSquealByChannel(channelId);
+        List<SquealDTO> ret = squealService.getSquealByChannel(channelId, page, size);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }

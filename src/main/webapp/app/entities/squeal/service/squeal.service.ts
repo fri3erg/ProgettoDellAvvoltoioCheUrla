@@ -19,9 +19,10 @@ export class SquealService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  getSquealByChannel(channelId: string): Observable<HttpResponse<ISquealDTO[]>> {
+  getSquealByChannel(channelId: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
+    const params = new HttpParams().append('page', page).append('size', size);
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channelId}`);
-    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+    return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
 
   findDestinations(name: string): Observable<HttpResponse<string[]>> {

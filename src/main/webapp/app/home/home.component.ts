@@ -8,7 +8,6 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { CreateSquealComponent } from 'app/pages/squeal/create-squeal/create-squeal.component';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
-import { ChannelService } from 'app/entities/channel/service/channel.service';
 import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';

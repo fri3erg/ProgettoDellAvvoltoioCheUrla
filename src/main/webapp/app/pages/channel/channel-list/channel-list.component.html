@@ -19,7 +19,7 @@
     </div>
   </ng-template>
   <ng-template let-c pTemplate="listItem">
-    <div class="col-12">
+    <div class="col-12" [routerLink]="['/view', c.channel?.id]">
       <div class="channel-layout">
         <div style="flex: 1">
           <h2>{{ c.channel?.name }}</h2>
