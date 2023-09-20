@@ -35,14 +35,12 @@ export class ChannelPageComponent implements OnInit {
   loadSqueals(): void {
     console.log('load');
     this.channelService.findDTO(this.channelId ?? '').subscribe(r => {
-      this.squeals = [];
       if (r.body) {
         this.channel = r.body;
       }
     });
 
     this.squealService.getSquealByChannel(this.channelId ?? '', this.page, this.size).subscribe(r => {
-      this.squeals = [];
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;

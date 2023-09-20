@@ -170,7 +170,7 @@ public class SquealService {
                 continue;
             }
             ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
-            if (dto == null) {
+            if (dto == null && sd.getDestinationType() != ChannelTypes.MESSAGE) {
                 if (sd.getDestinationType() != ChannelTypes.PUBLICGROUP) {
                     continue;
                 }
@@ -270,19 +270,17 @@ public class SquealService {
     }
 
     public List<SquealDTO> getSquealByUser(String userId) {
-        List<Squeal> squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(
-            userId,
-            getCurrentUserId()
-        );
+        List<Squeal> squealsReceived = new ArrayList<>();
+        if (!getCurrentUserId().equals(userId)) {
+            squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, getCurrentUserId());
+        }
         List<Squeal> squealsSent = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(
             getCurrentUserId(),
             userId
         );
         List<SquealDTO> ret = new ArrayList<>();
         List<Squeal> merge = new ArrayList<>();
-        if (getCurrentUserId() != userId) {
-            merge.addAll(squealsReceived);
-        }
+        merge.addAll(squealsReceived);
         merge.addAll(squealsSent);
         merge.stream().sorted(Comparator.comparing(Squeal::getTimestamp)).collect(Collectors.toList());
         for (Squeal s : merge) {
