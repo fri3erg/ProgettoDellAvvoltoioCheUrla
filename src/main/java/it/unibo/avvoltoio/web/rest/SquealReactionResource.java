@@ -2,7 +2,6 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.SquealReaction;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
-import it.unibo.avvoltoio.security.SecurityUtils;
 import it.unibo.avvoltoio.service.SquealService;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -52,12 +51,8 @@ public class SquealReactionResource {
     @PostMapping("/squeal-reactions")
     public ResponseEntity<SquealReaction> createSquealReaction(@RequestBody SquealReaction squealReaction) throws URISyntaxException {
         log.debug("REST request to save SquealReaction : {}", squealReaction);
-        if (squealReaction.getId() != null) {
-            throw new BadRequestAlertException("A new squealReaction cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
-        squealReaction.setUserId(squealService.getCurrentUserId());
-        SquealReaction result = squealReactionRepository.save(squealReaction);
+
+        SquealReaction result = squealService.manageReaction(squealReaction).orElse(null);
         return ResponseEntity
             .created(new URI("/api/squeal-reactions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))

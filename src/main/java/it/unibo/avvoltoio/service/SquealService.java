@@ -85,8 +85,20 @@ public class SquealService {
         if (name.startsWith("@")) {
             return getSquealUser(name);
         }
+        List<String> ret = new ArrayList<>();
+
+        if (name.startsWith("#")) {
+            ret.add(name);
+            return ret;
+        }
+
         List<Channel> ch = channelService.getChannelNames(name);
-        return ch.stream().map(Channel::getName).toList();
+        for (Channel channel : ch) {
+            if (channelService.isUserInChannel(channel.getId())) {
+                ret.add(channel.getName());
+            }
+        }
+        return ret;
     }
 
     private List<String> getSquealUser(String name) {
@@ -170,41 +182,45 @@ public class SquealService {
                 continue;
             }
             ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
+            // create channel too if public and not exist
             if (dto == null && sd.getDestinationType() != ChannelTypes.MESSAGE) {
                 if (sd.getDestinationType() != ChannelTypes.PUBLICGROUP) {
                     continue;
                 }
                 dto = channelService.createChannel(sd.getDestination());
             }
+            // manage message
+            if (sd.getDestinationType() == ChannelTypes.MESSAGE) {
+                String user = StringUtils.remove(sd.getDestination(), '@');
+                User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
+                if (u != null) {
+                    validDest.add(sd);
+                    continue;
+                }
+            }
             String destinationId = dto.getChannel().getId();
             if (channelService.isUserInChannel(destinationId)) {
                 sd.setDestinationId(destinationId);
                 validDest.add(sd);
             }
-            if (sd.getDestinationType() == ChannelTypes.MESSAGE) {
-                String user = StringUtils.remove(sd.getDestination(), '@');
-                User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
-                if (u != null) {
-                    sd.setDestinationId(destinationId);
-                    validDest.add(sd);
-                }
-            }
         }
+        if (validDest.size() != 0) {
+            s.getDestinations().clear();
+            s.setTimestamp(System.currentTimeMillis());
+            s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
+            s.setnCharacters(getNumberOfCharacters(s));
 
-        s.getDestinations().clear();
-        s.setTimestamp(System.currentTimeMillis());
-        s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
-        s.setnCharacters(getNumberOfCharacters(s));
+            s = squealRepository.save(s);
 
-        s = squealRepository.save(s);
+            // TODO: Destinations added after save (id problem), maybe generate UUID and
+            // insert
+            s.setDestinations(validDest);
 
-        // TODO: Destinations added after save (id problem), maybe generate UUID and
-        // insert
-        s.setDestinations(validDest);
+            s = squealRepository.save(s);
 
-        s = squealRepository.save(s);
-
-        return getSqueal(s.getId());
+            return getSqueal(s.getId());
+        }
+        return null;
     }
 
     private SquealViews addView(Squeal s) {
@@ -302,5 +318,20 @@ public class SquealService {
             ret.add(loadSquealData(s));
         }
         return ret;
+    }
+
+    public Optional<SquealReaction> manageReaction(SquealReaction squealReaction) {
+        if (getReaction(squealReaction.getUserId()) != null) {
+            squealReactionRepository.deleteById(squealReaction.getId());
+            return null;
+        }
+        squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
+        squealReaction.setUserId(getCurrentUserId());
+        squealReactionRepository.save(squealReaction);
+        return Optional.ofNullable(squealReaction);
+    }
+
+    public Optional<SquealReaction> getReaction(String id) {
+        return squealReactionRepository.findFirstByUserId(id);
     }
 }

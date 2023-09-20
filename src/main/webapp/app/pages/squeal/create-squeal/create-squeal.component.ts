@@ -67,9 +67,6 @@ export class CreateSquealComponent implements OnInit {
       if (r.body) {
         this.results = r.body;
       }
-      if (q.startsWith('#')) {
-        this.results.push(q);
-      }
     });
   }
   createSqueal(): void {
