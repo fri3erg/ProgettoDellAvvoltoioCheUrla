@@ -69,6 +69,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   createdSqueal(): void {
+    this.page = 0;
     this.loadSqueals();
   }
 

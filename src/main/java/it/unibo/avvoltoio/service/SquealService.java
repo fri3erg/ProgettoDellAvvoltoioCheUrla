@@ -181,30 +181,28 @@ public class SquealService {
             if (sd.getDestinationType() == null) {
                 continue;
             }
-            ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
-            // create channel too if public and not exist
-            if (dto == null && sd.getDestinationType() != ChannelTypes.MESSAGE) {
-                if (sd.getDestinationType() != ChannelTypes.PUBLICGROUP) {
-                    continue;
-                }
-                dto = channelService.createChannel(sd.getDestination());
+
+            String destinationId = null;
+            switch (sd.getDestinationType()) {
+                case MESSAGE:
+                    destinationId = getDestinationIdMessage(sd);
+                    break;
+                case MOD:
+                case PRIVATEGROUP:
+                case PUBLICGROUP:
+                    destinationId = getDestinationIdChannel(sd);
+                    break;
+                default:
+                //do nothing
             }
-            // manage message
-            if (sd.getDestinationType() == ChannelTypes.MESSAGE) {
-                String user = StringUtils.remove(sd.getDestination(), '@');
-                User u = userService.getUserWithAuthoritiesByLogin(user).orElse(null);
-                if (u != null) {
-                    validDest.add(sd);
-                    continue;
-                }
+
+            if (destinationId == null) {
+                continue;
             }
-            String destinationId = dto.getChannel().getId();
-            if (channelService.isUserInChannel(destinationId)) {
-                sd.setDestinationId(destinationId);
-                validDest.add(sd);
-            }
+            sd.setDestinationId(destinationId);
+            validDest.add(sd);
         }
-        if (validDest.size() != 0) {
+        if (!validDest.isEmpty()) {
             s.getDestinations().clear();
             s.setTimestamp(System.currentTimeMillis());
             s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
@@ -221,6 +219,27 @@ public class SquealService {
             return getSqueal(s.getId());
         }
         return null;
+    }
+
+    private String getDestinationIdChannel(SquealDestination sd) {
+        ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
+
+        // create channel too if public and not exist
+        if (dto == null && sd.getDestinationType() == ChannelTypes.PUBLICGROUP) {
+            dto = channelService.createChannel(sd.getDestination());
+            return dto.getChannel().getId();
+        }
+
+        //Check for channel type if user allowed to write
+        if (dto != null && channelService.isUserInChannel(dto.getChannel().getId())) {
+            return dto.getChannel().getId();
+        }
+        return null;
+    }
+
+    private String getDestinationIdMessage(SquealDestination sd) {
+        String user = StringUtils.remove(sd.getDestination(), '@');
+        return userService.getUserWithAuthoritiesByLogin(user).map(User::getId).orElse(null);
     }
 
     private SquealViews addView(Squeal s) {
