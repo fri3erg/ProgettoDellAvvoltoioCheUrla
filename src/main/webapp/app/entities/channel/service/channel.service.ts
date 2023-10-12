@@ -24,11 +24,11 @@ export class ChannelService {
   }
 
   getSubscribed(): Observable<HttpResponse<IChannelDTO[]>> {
-    return this.http.get<IChannelDTO[]>(`api/channel/sub/get`, { observe: 'response' });
+    return this.http.get<IChannelDTO[]>(`api/channels/sub/get`, { observe: 'response' });
   }
 
   countChannelSubscribed(): Observable<HttpResponse<number>> {
-    const url = this.applicationConfigService.getEndpointFor(`api/channel/sub/count`);
+    const url = this.applicationConfigService.getEndpointFor(`api/channels/sub/count`);
     return this.http.get<number>(url, { observe: 'response' });
   }
 

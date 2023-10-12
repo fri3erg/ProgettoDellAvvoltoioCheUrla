@@ -10,11 +10,12 @@ import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { CreateSquealComponent } from '../squeal/create-squeal/create-squeal.component';
 import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component';
+import SharedModule from 'app/shared/shared.module';
 
 @Component({
   selector: 'jhi-profile',
   standalone: true,
-  imports: [CommonModule, CreateSquealComponent, SquealViewComponent],
+  imports: [SharedModule, CommonModule, CreateSquealComponent, SquealViewComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
@@ -22,7 +23,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   //channels: IChannelDTO[] = [];
   nChannels = 0;
-  squeals: ISquealDTO[] = [];
+  squeals?: ISquealDTO[];
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -48,6 +49,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.squealService.getSquealMadeByUser().subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
+        console.log('users squeals:');
+        console.log(this.squeals);
       }
     });
     this.channelService.countChannelSubscribed().subscribe(r => {
