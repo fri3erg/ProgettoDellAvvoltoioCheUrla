@@ -6,12 +6,12 @@ import { takeUntil } from 'rxjs/operators';
 import { AccountService } from 'app/core/auth/account.service';
 import { ChannelService } from 'app/entities/channel/service/channel.service';
 import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
-import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import SharedModule from 'app/shared/shared.module';
 import { Account } from 'app/core/auth/account.model';
 import { ChannelUserService } from 'app/entities/channel-user/service/channel-user.service';
 import { NewChannelUser } from 'app/entities/channel-user/channel-user.model';
 import { PrivilegeType } from 'app/entities/enumerations/privilege-type.model';
+import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 
 @Component({
   selector: 'jhi-channel-list',
@@ -32,8 +32,8 @@ export class ChannelListComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private accountService: AccountService,
     protected channelService: ChannelService,
+    private accountService: AccountService,
     protected channelUserService: ChannelUserService
   ) {}
 

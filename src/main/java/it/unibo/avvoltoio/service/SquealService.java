@@ -94,7 +94,7 @@ public class SquealService {
 
         List<Channel> ch = channelService.getChannelNames(name);
         for (Channel channel : ch) {
-            if (channelService.isUserInChannel(channel.getId())) {
+            if (channelService.canUserWrite(channel.getId())) {
                 ret.add(channel.getName());
             }
         }
@@ -231,7 +231,7 @@ public class SquealService {
         }
 
         //Check for channel type if user allowed to write
-        if (dto != null && channelService.isUserInChannel(dto.getChannel().getId())) {
+        if (dto != null && channelService.canUserWrite(dto.getChannel().getId())) {
             return dto.getChannel().getId();
         }
         return null;
@@ -330,7 +330,7 @@ public class SquealService {
         id.add(channelId);
         List<SquealDTO> ret = new ArrayList<>();
         List<Squeal> mySqueals = new ArrayList<>();
-        if (channelService.isUserInChannel(channelId)) {
+        if (channelService.canUserWrite(channelId)) {
             mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(id, p);
         }
         for (Squeal s : mySqueals) {
@@ -340,9 +340,12 @@ public class SquealService {
     }
 
     public Optional<SquealReaction> manageReaction(SquealReaction squealReaction) {
-        if (getReaction(squealReaction.getUserId()) != null) {
+        Optional<SquealReaction> search = getReaction(squealReaction.getUserId());
+        if (search.isPresent()) {
             squealReactionRepository.deleteById(squealReaction.getId());
-            return null;
+            if (squealReaction.getEmoji() == search.get().getEmoji()) {
+                return Optional.ofNullable(null);
+            }
         }
         squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
         squealReaction.setUserId(getCurrentUserId());
@@ -352,5 +355,36 @@ public class SquealService {
 
     public Optional<SquealReaction> getReaction(String id) {
         return squealReactionRepository.findFirstByUserId(id);
+    }
+
+    /*
+	public List<ReactionDTO> getSquealReactions(String squealId) {
+		List<SquealReaction> list= squealReactionRepository.findAllByUserIdOrderByEmoji();
+		if(!list.isEmpty()) {
+		String emoji= list.get(0).getEmoji();
+		for (SquealReaction s : list) {
+			if(s.getEmoji()!=emoji) {
+				emoji= s.getEmoji();
+			}
+			else {
+				
+			}
+		}
+		
+		}
+	}*/
+
+    public long getChannelCount(String id) {
+        return squealRepository.countByDestinations_DestinationId(id);
+    }
+
+    public List<SquealDTO> getSquealMadeByUser() {
+        List<Squeal> squeals = squealRepository.findAllByUserId(getCurrentUserId());
+        List<SquealDTO> dto = new ArrayList<>();
+        for (Squeal s : squeals) {
+            dto.add(loadSquealData(s));
+        }
+
+        return dto;
     }
 }

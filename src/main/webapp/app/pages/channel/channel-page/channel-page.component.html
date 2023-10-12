@@ -1,11 +1,25 @@
-<div>
+<div class="rounded-4 mytitlecard p-2 m-1">
   {{ channel?.channel?.name }}
 </div>
-
+<div class="rounded-4 mytitlecard p-2 m-1">
+  {{ usersFollowing }}
+</div>
+<div class="rounded-4 mytitlecard p-2 m-1">
+  {{ squealsSquealed }}
+</div>
+<div>
+  <span class="badge" [class]="returnColor(channel)">{{ channel?.channel?.type }}</span>
+  <button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(channel)" (click)="sub(channel)">
+    <fa-icon icon="square-plus" [fixedWidth]="true"></fa-icon>
+  </button>
+  <button class="btn btn-outline-danger btn-subscribe" title="Subscription" *ngIf="isUserSubscribed(channel)" (click)="unSub(channel)">
+    <fa-icon icon="square-minus" [fixedWidth]="true"></fa-icon>
+  </button>
+</div>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
   <div class="col-8">
     <div class="message-layout rounded-4 m-3 p-2">
-      <div style="flex: 1" class="m-2 mymessage ps-3">
+      <div style="flex: 1" class="m-2 ps-3">
         <p>{{ squeal.squeal?.body }}</p>
       </div>
       <div class="mytimestamp me-3">

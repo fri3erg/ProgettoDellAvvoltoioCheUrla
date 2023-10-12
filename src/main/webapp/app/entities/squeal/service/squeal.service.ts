@@ -6,7 +6,8 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ISqueal, NewSqueal } from '../squeal.model';
-import { ISquealDTO } from 'app/shared/model/squealDTO-model';
+import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
+import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
 
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, 'id'>;
 
@@ -23,6 +24,16 @@ export class SquealService {
     const params = new HttpParams().append('page', page).append('size', size);
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channelId}`);
     return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
+  }
+
+  getSquealMadeByUser(): Observable<HttpResponse<ISquealDTO[]>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/squeal-made-by-user`);
+    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+  }
+
+  getReactions(squealId: string): Observable<HttpResponse<IReactionDTO[]>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/reactions-by-id/${squealId}`);
+    return this.http.get<IReactionDTO[]>(url, { observe: 'response' });
   }
 
   findDestinations(name: string): Observable<HttpResponse<string[]>> {

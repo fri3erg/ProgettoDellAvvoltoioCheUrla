@@ -19,6 +19,19 @@ export class ChannelService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
+  countSqueals(id: string): Observable<HttpResponse<number>> {
+    return this.http.get<number>(`api/channel/count/${id}`, { observe: 'response' });
+  }
+
+  getSubscribed(): Observable<HttpResponse<IChannelDTO[]>> {
+    return this.http.get<IChannelDTO[]>(`api/channel/sub/get`, { observe: 'response' });
+  }
+
+  countChannelSubscribed(): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/channel/sub/count`);
+    return this.http.get<number>(url, { observe: 'response' });
+  }
+
   findDTO(id: string): Observable<HttpResponse<IChannelDTO>> {
     return this.http.get<IChannelDTO>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

@@ -3,6 +3,7 @@ package it.unibo.avvoltoio.web.rest;
 import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.repository.ChannelRepository;
 import it.unibo.avvoltoio.service.ChannelService;
+import it.unibo.avvoltoio.service.SquealService;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -35,10 +36,13 @@ public class ChannelResource {
 
     private final ChannelService channelService;
 
+    private final SquealService squealService;
+
     private final ChannelRepository channelRepository;
 
-    public ChannelResource(ChannelService channelService, ChannelRepository channelRepository) {
+    public ChannelResource(ChannelService channelService, ChannelRepository channelRepository, SquealService squealService) {
         this.channelService = channelService;
+        this.squealService = squealService;
         this.channelRepository = channelRepository;
     }
 
@@ -176,6 +180,27 @@ public class ChannelResource {
         log.debug("REST request to get Channel : {}", id);
         Optional<ChannelDTO> channel = Optional.ofNullable(channelService.getChannel(id));
         return ResponseUtil.wrapOrNotFound(channel);
+    }
+
+    @GetMapping("/channels/sub/get")
+    public ResponseEntity<List<ChannelDTO>> getSub() {
+        log.debug("REST request to get sub : {}");
+        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub());
+        return ResponseUtil.wrapOrNotFound(channels);
+    }
+
+    @GetMapping("/channels/sub/count")
+    public ResponseEntity<Integer> countSub() {
+        log.debug("REST request to count sub : {}");
+        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub());
+        return ResponseUtil.wrapOrNotFound(nChannels);
+    }
+
+    @GetMapping("/channels/count/{id}")
+    public ResponseEntity<Long> getChannelCount(@PathVariable String id) {
+        log.debug("REST request to get Channel : {}", id);
+        Optional<Long> count = Optional.ofNullable(squealService.getChannelCount(id));
+        return ResponseUtil.wrapOrNotFound(count);
     }
 
     /**

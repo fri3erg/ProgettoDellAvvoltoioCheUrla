@@ -1,5 +1,4 @@
 <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="account"></jhi-create-squeal>
-
 <p-dataView #dv [value]="squeals">
   <ng-template let-s pTemplate="listItem">
     <jhi-squeal-view [squeal]="s"></jhi-squeal-view>

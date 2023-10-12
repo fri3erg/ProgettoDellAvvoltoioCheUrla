@@ -3,6 +3,7 @@ package it.unibo.avvoltoio.web.rest;
 import it.unibo.avvoltoio.domain.Squeal;
 import it.unibo.avvoltoio.repository.SquealRepository;
 import it.unibo.avvoltoio.service.SquealService;
+import it.unibo.avvoltoio.service.dto.ReactionDTO;
 import it.unibo.avvoltoio.service.dto.SquealDTO;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -133,6 +134,24 @@ public class SquealResource {
         log.debug("REST request to get Squeal : {}", userId);
 
         List<SquealDTO> ret = squealService.getSquealByUser(userId);
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-made-by-user")
+    public ResponseEntity<List<SquealDTO>> getSquealsMade() {
+        log.debug("REST request to get Squeal : {}");
+
+        List<SquealDTO> ret = squealService.getSquealMadeByUser();
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/reactions-by-id/{squealId}")
+    public ResponseEntity<List<ReactionDTO>> getSquealReactionsById(@PathVariable String squealId) {
+        log.debug("REST request to get Squeal : {}", squealId);
+
+        List<ReactionDTO> ret = squealService.getReactions(squealService.getSqueal(squealId).getSqueal());
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }

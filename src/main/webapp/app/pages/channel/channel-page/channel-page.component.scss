@@ -1,0 +1,24 @@
+.mytitlecard {
+  background-color: red;
+}
+.message-layout {
+  background-color: whitesmoke;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.mytimestamp {
+  font-size: small;
+}
+.mynotify {
+  background-color: lightgray;
+  height: 2rem;
+  width: 3rem;
+  text-align: center;
+}
+.myname {
+  background-color: lightgray;
+  width: 23rem;
+}

@@ -15,4 +15,6 @@ public interface SquealReactionRepository extends MongoRepository<SquealReaction
     List<SquealReaction> findAllBySquealId(String id);
 
     Optional<SquealReaction> findFirstByUserId(String id);
+
+    List<SquealReaction> findAllByUserIdOrderByEmoji();
 }

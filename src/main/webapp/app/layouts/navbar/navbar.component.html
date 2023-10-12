@@ -27,6 +27,14 @@
             </span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" [href]="'http://localhost:9001/index.html?token=' + getToken()">
+            <span>
+              <fa-icon icon="home"></fa-icon>
+              <span>smm</span>
+            </span>
+          </a>
+        </li>
         <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
         <li
           *ngSwitchCase="true"

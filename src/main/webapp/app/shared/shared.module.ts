@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MessagesModule } from 'primeng/messages';
 import FindLanguageFromKeyPipe from './language/find-language-from-key.pipe';
 import TranslateDirective from './language/translate.directive';
-import { AlertComponent } from './alert/alert.component';
 import { AlertErrorComponent } from './alert/alert-error.component';
 import { ChipsModule } from 'primeng/chips';
 import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
@@ -14,6 +13,7 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
+import { AlertComponent } from './alert/alert.component';
 /**
  * Application wide Module
  */

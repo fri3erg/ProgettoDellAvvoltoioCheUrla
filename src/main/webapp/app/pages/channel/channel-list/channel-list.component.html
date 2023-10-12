@@ -19,13 +19,13 @@
     </div>
   </ng-template>
   <ng-template let-c pTemplate="listItem">
-    <div class="col-12" [routerLink]="['/channels/view', c.channel?.id]">
+    <div class="col-12">
       <div class="channel-layout">
-        <div style="flex: 1">
+        <div style="flex: 1" [routerLink]="['/channels/view', c.channel?.id]">
           <h2>{{ c.channel?.name }}</h2>
         </div>
         <div>
-          <span class="badge text-bg-success" [class]="returnColor(c)">{{ c.channel?.type }}</span>
+          <span class="badge" [class]="returnColor(c)">{{ c.channel?.type }}</span>
           <button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(c)" (click)="sub(c)">
             <fa-icon icon="square-plus" [fixedWidth]="true"></fa-icon>
           </button>

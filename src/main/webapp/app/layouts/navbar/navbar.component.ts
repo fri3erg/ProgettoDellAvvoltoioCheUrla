@@ -56,6 +56,10 @@ export default class NavbarComponent implements OnInit {
     });
   }
 
+  public getToken(): string | null {
+    return this.stateStorageService.getAuthenticationToken();
+  }
+
   changeLanguage(languageKey: string): void {
     this.stateStorageService.storeLocale(languageKey);
     this.translateService.use(languageKey);

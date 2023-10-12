@@ -141,9 +141,8 @@ public class ChannelService {
         return false;
     }
 
-    public boolean isUserInChannel(String id) {
+    public boolean canUserWrite(String id) {
         Channel channel = channelRepository.findFirstById(id);
-        ChannelDTO dto = loadUsers(channel);
         boolean valid = false;
         switch (channel.getType()) {
             case MOD:
@@ -151,6 +150,7 @@ public class ChannelService {
                 // TODO: Destination id
                 break;
             case PRIVATEGROUP:
+                ChannelDTO dto = loadUsers(channel);
                 valid = isCurrentUserInChannel(dto);
                 break;
             case PUBLICGROUP:
@@ -160,5 +160,22 @@ public class ChannelService {
             // do nothing
         }
         return valid;
+    }
+
+    public List<ChannelDTO> getSub() {
+        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(getCurrentUserId());
+        List<ChannelDTO> channels = new ArrayList<>();
+        Channel temp;
+        for (ChannelUser c : channeluser) {
+            temp = channelRepository.findFirstById(c.getChannelId());
+            if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
+                channels.add(loadUsers(temp));
+            }
+        }
+        return channels;
+    }
+
+    public Integer countSub() {
+        return getSub().size();
     }
 }

@@ -1,1 +1,16 @@
-<p>profile works!</p>
+<div *ngIf="account">
+  <img href="https://matteoraggiblog.b-cdn.net/wp-content/uploads/2023/03/matteo-raggi-1.png" height="15rem" width="15rem" alt="ilraggi" />
+  <div style="flex: 1">
+    <span>
+      {{ this.account.firstName || 'maffeo' }}
+      {{ this.account.lastName || 'raggi' }}
+      {{ this.account.login || 'gaymaffeo42' }}
+      {{ this.nChannels }} channels subscribed to {{ this.squeals.length }} squeals squealed
+    </span>
+  </div>
+  <jhi-create-squeal></jhi-create-squeal>
+  <ng-template *ngFor="let s of squeals">
+    <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
+  </ng-template>
+</div>
+<div *ngIf="!account">you are not logged in</div>

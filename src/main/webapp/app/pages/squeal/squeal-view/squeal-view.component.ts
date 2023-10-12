@@ -62,6 +62,7 @@ export class SquealViewComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.squeal);
   }
+
   addReaction(emoji: string, positive: boolean): void {
     const r: ISquealReaction = {
       positive,
@@ -71,12 +72,18 @@ export class SquealViewComponent implements OnInit {
     this.squealReactionService.create(r).subscribe(ret => {
       if (ret.body) {
         console.log(ret.body);
-        this.updateReaction(ret.body);
+        this.updateReaction();
       }
     });
   }
 
-  updateReaction(r: ISquealReaction): void {
+  updateReaction(): void {
+    this.squealService.getReactions(this.squeal?.squeal?.id ?? '').subscribe(ret => {
+      if (ret.body) {
+        //this.squeal.reactions=ret.body;
+      }
+    });
+    /*
     if (!this.squeal?.reactions) {
       return;
     }
@@ -91,5 +98,6 @@ export class SquealViewComponent implements OnInit {
       };
       this.squeal.reactions.push(nr);
     }
+  */
   }
 }
