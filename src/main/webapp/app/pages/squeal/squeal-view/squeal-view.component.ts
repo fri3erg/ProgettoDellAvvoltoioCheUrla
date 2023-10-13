@@ -17,7 +17,7 @@ import { ChipModule } from 'primeng/chip';
 })
 export class SquealViewComponent implements OnInit {
   @Input() squeal?: ISquealDTO;
-
+  reactionAdded?: string;
   reactions: MenuItem[] = [
     {
       icon: 'heart',
@@ -69,35 +69,13 @@ export class SquealViewComponent implements OnInit {
       emoji,
       squealId: this.squeal?.squeal?.id,
     };
-    this.squealReactionService.create(r).subscribe(ret => {
+    this.squealReactionService.createorUpdate(r).subscribe(ret => {
       if (ret.body) {
         console.log(ret.body);
-        this.updateReaction();
+        if (this.squeal) {
+          this.squeal.reactions = ret.body;
+        }
       }
     });
-  }
-
-  updateReaction(): void {
-    this.squealService.getReactions(this.squeal?.squeal?.id ?? '').subscribe(ret => {
-      if (ret.body) {
-        //this.squeal.reactions=ret.body;
-      }
-    });
-    /*
-    if (!this.squeal?.reactions) {
-      return;
-    }
-    const fr = this.squeal.reactions.find(rc => rc.reaction === r.emoji);
-    if (fr) {
-      fr.number++;
-    } else {
-      const nr: IReactionDTO = {
-        reaction: r.emoji ?? '',
-        number: 1,
-        user: true,
-      };
-      this.squeal.reactions.push(nr);
-    }
-  */
   }
 }

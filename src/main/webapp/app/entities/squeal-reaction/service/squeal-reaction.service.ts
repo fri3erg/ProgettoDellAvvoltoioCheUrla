@@ -6,6 +6,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ISquealReaction, NewSquealReaction } from '../squeal-reaction.model';
+import { IReactionDTO } from 'app/shared/model/squealDTO-model';
 
 export type PartialUpdateSquealReaction = Partial<ISquealReaction> & Pick<ISquealReaction, 'id'>;
 
@@ -20,6 +21,10 @@ export class SquealReactionService {
 
   create(squealReaction: ISquealReaction): Observable<EntityResponseType> {
     return this.http.post<ISquealReaction>(this.resourceUrl, squealReaction, { observe: 'response' });
+  }
+
+  createorUpdate(squealReaction: ISquealReaction): Observable<HttpResponse<IReactionDTO[]>> {
+    return this.http.post<IReactionDTO[]>('api/squeal-reaction/create', squealReaction, { observe: 'response' });
   }
 
   update(squealReaction: ISquealReaction): Observable<EntityResponseType> {

@@ -3,6 +3,7 @@ package it.unibo.avvoltoio.web.rest;
 import it.unibo.avvoltoio.domain.SquealReaction;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
 import it.unibo.avvoltoio.service.SquealService;
+import it.unibo.avvoltoio.service.dto.ReactionDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,15 +49,12 @@ public class SquealReactionResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new squealReaction, or with status {@code 400 (Bad Request)} if the squealReaction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/squeal-reactions")
-    public ResponseEntity<SquealReaction> createSquealReaction(@RequestBody SquealReaction squealReaction) throws URISyntaxException {
-        log.debug("REST request to save SquealReaction : {}", squealReaction);
 
-        SquealReaction result = squealService.manageReaction(squealReaction).orElse(null);
-        return ResponseEntity
-            .created(new URI("/api/squeal-reactions/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
-            .body(result);
+    @PostMapping("/squeal-reaction/create")
+    public ResponseEntity<List<ReactionDTO>> createOrUpdateReaction(@RequestBody SquealReaction reaction) throws URISyntaxException {
+        log.debug("REST request to save reaction : {}", reaction);
+        List<ReactionDTO> result = squealService.insertOrUpdateReaction(reaction);
+        return ResponseEntity.created(new URI("/api/squeal-reaction")).body(result);
     }
 
     /**
@@ -159,6 +157,12 @@ public class SquealReactionResource {
     public List<SquealReaction> getAllSquealReactions() {
         log.debug("REST request to get all SquealReactions");
         return squealReactionRepository.findAll();
+    }
+
+    @GetMapping("/reactions-positive/get/{id}")
+    public Long getPositiveReactions(@PathVariable String id) {
+        log.debug("REST request to get all SquealReactions positive", id);
+        return squealService.getPositiveReactions(id);
     }
 
     /**

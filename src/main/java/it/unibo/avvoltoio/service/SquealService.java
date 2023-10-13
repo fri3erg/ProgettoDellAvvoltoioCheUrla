@@ -118,7 +118,7 @@ public class SquealService {
         s.setSqueal(sq);
         s.setCategory(squealCatRepository.findFirstBySquealId(sq.getId()).orElse(null));
 
-        s.setReactions(getReactions(sq));
+        s.setReactions(getReactions(sq.getId()));
 
         s.setViews(addView(sq));
 
@@ -127,12 +127,12 @@ public class SquealService {
         return s;
     }
 
-    public List<ReactionDTO> getReactions(Squeal sq) {
+    public List<ReactionDTO> getReactions(String sq) {
         String cUid = getCurrentUserId();
 
         Map<String, ReactionDTO> map = new HashMap<>();
 
-        List<SquealReaction> rList = squealReactionRepository.findAllBySquealId(sq.getId());
+        List<SquealReaction> rList = squealReactionRepository.findAllBySquealId(sq);
 
         for (SquealReaction sr : rList) {
             ReactionDTO r = map.computeIfAbsent(sr.getEmoji(), k -> new ReactionDTO(k));
@@ -339,42 +339,24 @@ public class SquealService {
         return ret;
     }
 
-    public Optional<SquealReaction> manageReaction(SquealReaction squealReaction) {
-        Optional<SquealReaction> search = getReaction(squealReaction.getUserId());
-        if (search.isPresent()) {
-            squealReactionRepository.deleteById(squealReaction.getId());
-            if (squealReaction.getEmoji() == search.get().getEmoji()) {
-                return Optional.ofNullable(null);
+    public List<ReactionDTO> insertOrUpdateReaction(SquealReaction squealReaction) {
+        SquealReaction search = squealReactionRepository.findFirstByUserIdAndSquealId(
+            squealReaction.getUserId(),
+            squealReaction.getSquealId()
+        );
+        if (search != null) {
+            squealReactionRepository.deleteById(search.getId());
+            if (search.getEmoji().equals(squealReaction.getEmoji())) {
+                return getReactions(squealReaction.getSquealId());
             }
         }
         squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
         squealReaction.setUserId(getCurrentUserId());
         squealReactionRepository.save(squealReaction);
-        return Optional.ofNullable(squealReaction);
+        return getReactions(squealReaction.getSquealId());
     }
 
-    public Optional<SquealReaction> getReaction(String id) {
-        return squealReactionRepository.findFirstByUserId(id);
-    }
-
-    /*
-	public List<ReactionDTO> getSquealReactions(String squealId) {
-		List<SquealReaction> list= squealReactionRepository.findAllByUserIdOrderByEmoji();
-		if(!list.isEmpty()) {
-		String emoji= list.get(0).getEmoji();
-		for (SquealReaction s : list) {
-			if(s.getEmoji()!=emoji) {
-				emoji= s.getEmoji();
-			}
-			else {
-				
-			}
-		}
-		
-		}
-	}*/
-
-    public long getChannelCount(String id) {
+    public Long getChannelCount(String id) {
         return squealRepository.countByDestinations_DestinationId(id);
     }
 
@@ -386,5 +368,14 @@ public class SquealService {
         }
 
         return dto;
+    }
+
+    public Long getPositiveReactions(String id) {
+        if (id.equals(getCurrentUserId())) {
+            List<Squeal> squeals = squealRepository.findAllByUserId(id);
+            List<String> ids = squeals.stream().map(Squeal::getId).collect(Collectors.toList());
+            return squealReactionRepository.countBySquealIdAndPositive(ids, true);
+        }
+        return (long) 0;
     }
 }

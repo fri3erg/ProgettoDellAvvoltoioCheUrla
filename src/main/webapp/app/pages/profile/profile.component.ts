@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   //channels: IChannelDTO[] = [];
   nChannels = 0;
+  positiveReaction = 0;
   squeals?: ISquealDTO[];
   private readonly destroy$ = new Subject<void>();
 
@@ -56,6 +57,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.channelService.countChannelSubscribed().subscribe(r => {
       if (r.body) {
         this.nChannels = r.body;
+      }
+    });
+
+    this.squealService.getPositiveReactions(this.account?.id).subscribe(r => {
+      if (r.body) {
+        this.positiveReaction = r.body;
       }
     });
   }
