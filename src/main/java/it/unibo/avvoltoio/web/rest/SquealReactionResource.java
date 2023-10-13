@@ -20,7 +20,8 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link it.unibo.avvoltoio.domain.SquealReaction}.
+ * REST controller for managing
+ * {@link it.unibo.avvoltoio.domain.SquealReaction}.
  */
 @RestController
 @RequestMapping("/api")
@@ -46,7 +47,9 @@ public class SquealReactionResource {
      * {@code POST  /squeal-reactions} : Create a new squealReaction.
      *
      * @param squealReaction the squealReaction to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new squealReaction, or with status {@code 400 (Bad Request)} if the squealReaction has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new squealReaction, or with status {@code 400 (Bad Request)}
+     *         if the squealReaction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
 
@@ -60,11 +63,13 @@ public class SquealReactionResource {
     /**
      * {@code PUT  /squeal-reactions/:id} : Updates an existing squealReaction.
      *
-     * @param id the id of the squealReaction to save.
+     * @param id             the id of the squealReaction to save.
      * @param squealReaction the squealReaction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated squealReaction,
-     * or with status {@code 400 (Bad Request)} if the squealReaction is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the squealReaction couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated squealReaction, or with status {@code 400 (Bad Request)}
+     *         if the squealReaction is not valid, or with status
+     *         {@code 500 (Internal Server Error)} if the squealReaction couldn't be
+     *         updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/squeal-reactions/{id}")
@@ -92,14 +97,17 @@ public class SquealReactionResource {
     }
 
     /**
-     * {@code PATCH  /squeal-reactions/:id} : Partial updates given fields of an existing squealReaction, field will ignore if it is null
+     * {@code PATCH  /squeal-reactions/:id} : Partial updates given fields of an
+     * existing squealReaction, field will ignore if it is null
      *
-     * @param id the id of the squealReaction to save.
+     * @param id             the id of the squealReaction to save.
      * @param squealReaction the squealReaction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated squealReaction,
-     * or with status {@code 400 (Bad Request)} if the squealReaction is not valid,
-     * or with status {@code 404 (Not Found)} if the squealReaction is not found,
-     * or with status {@code 500 (Internal Server Error)} if the squealReaction couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated squealReaction, or with status {@code 400 (Bad Request)}
+     *         if the squealReaction is not valid, or with status
+     *         {@code 404 (Not Found)} if the squealReaction is not found, or with
+     *         status {@code 500 (Internal Server Error)} if the squealReaction
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/squeal-reactions/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -151,7 +159,8 @@ public class SquealReactionResource {
     /**
      * {@code GET  /squeal-reactions} : get all the squealReactions.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of squealReactions in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of squealReactions in body.
      */
     @GetMapping("/squeal-reactions")
     public List<SquealReaction> getAllSquealReactions() {
@@ -169,7 +178,8 @@ public class SquealReactionResource {
      * {@code GET  /squeal-reactions/:id} : get the "id" squealReaction.
      *
      * @param id the id of the squealReaction to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the squealReaction, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the squealReaction, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/squeal-reactions/{id}")
     public ResponseEntity<SquealReaction> getSquealReaction(@PathVariable String id) {

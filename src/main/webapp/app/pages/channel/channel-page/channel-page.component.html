@@ -16,6 +16,8 @@
     <fa-icon icon="square-minus" [fixedWidth]="true"></fa-icon>
   </button>
 </div>
+
+<jhi-create-squeal [destinations]="[channel?.channel?.name ?? '']"></jhi-create-squeal>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
   <div class="col-8">
     <div class="message-layout rounded-4 m-3 p-2">

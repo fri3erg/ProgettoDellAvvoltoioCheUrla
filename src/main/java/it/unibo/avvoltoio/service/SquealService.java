@@ -193,7 +193,7 @@ public class SquealService {
                     destinationId = getDestinationIdChannel(sd);
                     break;
                 default:
-                //do nothing
+                // do nothing
             }
 
             if (destinationId == null) {
@@ -230,7 +230,7 @@ public class SquealService {
             return dto.getChannel().getId();
         }
 
-        //Check for channel type if user allowed to write
+        // Check for channel type if user allowed to write
         if (dto != null && channelService.canUserWrite(dto.getChannel().getId())) {
             return dto.getChannel().getId();
         }
@@ -340,13 +340,13 @@ public class SquealService {
     }
 
     public List<ReactionDTO> insertOrUpdateReaction(SquealReaction squealReaction) {
-        SquealReaction search = squealReactionRepository.findFirstByUserIdAndSquealId(
+        Optional<SquealReaction> search = squealReactionRepository.findFirstByUserIdAndSquealId(
             squealReaction.getUserId(),
             squealReaction.getSquealId()
         );
-        if (search != null) {
-            squealReactionRepository.deleteById(search.getId());
-            if (search.getEmoji().equals(squealReaction.getEmoji())) {
+        if (search.isPresent()) {
+            squealReactionRepository.deleteById(search.get().getId());
+            if (search.get().getEmoji().equals(squealReaction.getEmoji())) {
                 return getReactions(squealReaction.getSquealId());
             }
         }

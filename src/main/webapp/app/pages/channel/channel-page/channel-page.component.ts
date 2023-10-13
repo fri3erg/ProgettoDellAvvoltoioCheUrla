@@ -159,6 +159,9 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       this.isLoad = false;
     }
   }
+  isLogged(): boolean {
+    return this.accountService.isAuthenticated();
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

@@ -57,7 +57,9 @@ public class ChannelResource {
      * {@code POST  /channels} : Create a new channel.
      *
      * @param channel the channel to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new channel, or with status {@code 400 (Bad Request)} if the channel has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new channel, or with status {@code 400 (Bad Request)} if the
+     *         channel has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/channels")
@@ -73,11 +75,13 @@ public class ChannelResource {
     /**
      * {@code PUT  /channels/:id} : Updates an existing channel.
      *
-     * @param id the id of the channel to save.
+     * @param id      the id of the channel to save.
      * @param channel the channel to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated channel,
-     * or with status {@code 400 (Bad Request)} if the channel is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the channel couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated channel, or with status {@code 400 (Bad Request)} if the
+     *         channel is not valid, or with status
+     *         {@code 500 (Internal Server Error)} if the channel couldn't be
+     *         updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/channels/{id}")
@@ -105,14 +109,17 @@ public class ChannelResource {
     }
 
     /**
-     * {@code PATCH  /channels/:id} : Partial updates given fields of an existing channel, field will ignore if it is null
+     * {@code PATCH  /channels/:id} : Partial updates given fields of an existing
+     * channel, field will ignore if it is null
      *
-     * @param id the id of the channel to save.
+     * @param id      the id of the channel to save.
      * @param channel the channel to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated channel,
-     * or with status {@code 400 (Bad Request)} if the channel is not valid,
-     * or with status {@code 404 (Not Found)} if the channel is not found,
-     * or with status {@code 500 (Internal Server Error)} if the channel couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated channel, or with status {@code 400 (Bad Request)} if the
+     *         channel is not valid, or with status {@code 404 (Not Found)} if the
+     *         channel is not found, or with status
+     *         {@code 500 (Internal Server Error)} if the channel couldn't be
+     *         updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/channels/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -161,7 +168,8 @@ public class ChannelResource {
     /**
      * {@code GET  /channels} : get all the channels.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of channels in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of channels in body.
      */
     @GetMapping("/channels")
     public List<Channel> getAllChannels() {
@@ -173,7 +181,8 @@ public class ChannelResource {
      * {@code GET  /channels/:id} : get the "id" channel.
      *
      * @param id the id of the channel to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the channel, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the channel, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/channels/{id}")
     public ResponseEntity<ChannelDTO> getChannel(@PathVariable String id) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
@@ -17,11 +17,11 @@ import { MessageService } from 'primeng/api';
   imports: [SharedModule, FormsModule, RouterModule],
 })
 export class CreateSquealComponent implements OnInit {
-  destinations: string[] = [];
   message = '';
   results?: string[];
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
+  @Input() destinations: string[] = [];
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
