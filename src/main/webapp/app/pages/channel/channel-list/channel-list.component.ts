@@ -5,18 +5,15 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AccountService } from 'app/core/auth/account.service';
 import { ChannelService } from 'app/entities/channel/service/channel.service';
-import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 import SharedModule from 'app/shared/shared.module';
 import { Account } from 'app/core/auth/account.model';
-import { ChannelUserService } from 'app/entities/channel-user/service/channel-user.service';
-import { NewChannelUser } from 'app/entities/channel-user/channel-user.model';
-import { PrivilegeType } from 'app/entities/enumerations/privilege-type.model';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
+import { ChannelPreviewComponent } from '../channel-preview/channel-preview.component';
 
 @Component({
   selector: 'jhi-channel-list',
   standalone: true,
-  imports: [SharedModule, FormsModule, RouterModule],
+  imports: [SharedModule, FormsModule, RouterModule, ChannelPreviewComponent],
   templateUrl: './channel-list.component.html',
   styleUrls: ['./channel-list.component.scss'],
 })
@@ -31,11 +28,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(
-    protected channelService: ChannelService,
-    private accountService: AccountService,
-    protected channelUserService: ChannelUserService
-  ) {}
+  constructor(private accountService: AccountService, private channelService: ChannelService) {}
 
   ngOnInit(): void {
     this.accountService
@@ -53,55 +46,6 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         this.channels = r.body;
       }
     });
-  }
-
-  sub(c: IChannelDTO): void {
-    //TO DO check security
-
-    const nu: NewChannelUser = {
-      id: null,
-      userId: this.account?.id,
-      channelId: c.channel.id,
-      privilege: PrivilegeType.READ,
-    };
-    this.channelUserService.create(nu).subscribe(r => {
-      if (r.body) {
-        c.users.push(r.body);
-        console.log(c);
-      }
-    });
-  }
-  unSub(c: IChannelDTO): void {
-    const u = c.users.find(ch => ch.userId === this.account?.id);
-    if (!u) {
-      return;
-    }
-    this.channelUserService.delete(u.id).subscribe(() => {
-      c.users = c.users.filter(obj => obj.id !== u.id);
-    });
-  }
-
-  isUserSubscribed(c: IChannelDTO): boolean {
-    const u = c.users.find(ch => ch.userId === this.account?.id);
-    return !!u;
-  }
-
-  returnColor(c: IChannelDTO): string {
-    switch (c.channel.type) {
-      case ChannelTypes.PRIVATEGROUP:
-        return 'text-bg-info';
-        break;
-      case ChannelTypes.PUBLICGROUP:
-        return 'text-bg-success';
-        break;
-      case ChannelTypes.MOD:
-        return 'text-bg-warning';
-    }
-    return '';
-  }
-
-  createChannel(): void {
-    // TODO create
   }
 
   ngOnDestroy(): void {

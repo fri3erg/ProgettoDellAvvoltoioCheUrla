@@ -178,4 +178,8 @@ public class ChannelService {
     public Integer countSub() {
         return getSub().size();
     }
+
+    public Long getChannelSubsCount(String id) {
+        return channelUserRepository.countByChannelId(id);
+    }
 }

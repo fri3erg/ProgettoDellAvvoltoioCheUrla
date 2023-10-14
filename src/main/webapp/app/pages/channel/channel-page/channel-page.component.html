@@ -1,12 +1,8 @@
 <div class="rounded-4 mytitlecard p-2 m-1">
   {{ channel?.channel?.name }}
 </div>
-<div class="rounded-4 mytitlecard p-2 m-1">
-  {{ usersFollowing }}
-</div>
-<div class="rounded-4 mytitlecard p-2 m-1">
-  {{ squealsSquealed }}
-</div>
+<div class="rounded-4 mytitlecard p-2 m-1">{{ usersFollowing }} following</div>
+<div class="rounded-4 mytitlecard p-2 m-1">{{ squeals.length }} squeals</div>
 <div>
   <span class="badge" [class]="returnColor(channel)">{{ channel?.channel?.type }}</span>
   <button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(channel)" (click)="sub(channel)">
@@ -19,16 +15,7 @@
 
 <jhi-create-squeal [destinations]="[channel?.channel?.name ?? '']"></jhi-create-squeal>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
-  <div class="col-8">
-    <div class="message-layout rounded-4 m-3 p-2">
-      <div style="flex: 1" class="m-2 ps-3">
-        <p>{{ squeal.squeal?.body }}</p>
-      </div>
-      <div class="mytimestamp me-3">
-        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
-      </div>
-    </div>
-  </div>
+  <jhi-squeal-view [squeal]="squeal"></jhi-squeal-view>
 </ng-container>
 <div
   jhiObserveElement

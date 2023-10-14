@@ -2,6 +2,7 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.ChannelUser;
 import it.unibo.avvoltoio.repository.ChannelUserRepository;
+import it.unibo.avvoltoio.service.ChannelService;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,13 +28,23 @@ public class ChannelUserResource {
 
     private static final String ENTITY_NAME = "channelUser";
 
+    private final ChannelService channelService;
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final ChannelUserRepository channelUserRepository;
 
-    public ChannelUserResource(ChannelUserRepository channelUserRepository) {
+    public ChannelUserResource(ChannelService channelService, ChannelUserRepository channelUserRepository) {
+        this.channelService = channelService;
         this.channelUserRepository = channelUserRepository;
+    }
+
+    @GetMapping("/channels/countSubs/{id}")
+    public ResponseEntity<Long> getChannelSubsCount(@PathVariable String id) {
+        log.debug("REST request to get Channel subs : {}", id);
+        Optional<Long> count = Optional.ofNullable(channelService.getChannelSubsCount(id));
+        return ResponseUtil.wrapOrNotFound(count);
     }
 
     /**

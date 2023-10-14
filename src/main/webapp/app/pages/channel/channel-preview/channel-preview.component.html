@@ -1,0 +1,16 @@
+<div class="col-12">
+  <div class="channel-layout">
+    <div style="flex: 1" [routerLink]="['/channels/view', channel?.channel?.id]">
+      <h2>{{ channel?.channel?.name }}</h2>
+    </div>
+    <div>
+      <span class="badge" [class]="returnColor(channel)">{{ channel?.channel?.type }}</span>
+      <button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(channel)" (click)="sub(channel)">
+        <fa-icon icon="square-plus" [fixedWidth]="true"></fa-icon>
+      </button>
+      <button class="btn btn-outline-danger btn-subscribe" title="Subscription" *ngIf="isUserSubscribed(channel)" (click)="unSub(channel)">
+        <fa-icon icon="square-minus" [fixedWidth]="true"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

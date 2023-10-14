@@ -15,11 +15,12 @@ import { Account } from 'app/core/auth/account.model';
 import { NewChannelUser } from 'app/entities/channel-user/channel-user.model';
 import { Subject, takeUntil } from 'rxjs';
 import SharedModule from 'app/shared/shared.module';
+import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
 
 @Component({
   selector: 'jhi-channel-page',
   standalone: true,
-  imports: [CommonModule, ObserveElementDirective, CreateSquealComponent, SharedModule],
+  imports: [CommonModule, ObserveElementDirective, CreateSquealComponent, SharedModule, SquealViewComponent],
   templateUrl: './channel-page.component.html',
   styleUrls: ['./channel-page.component.scss'],
 })
@@ -32,7 +33,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   size = 5;
   hasMorePage = false;
   isLoad = false;
-  usersFollowing?: number;
+  usersFollowing = 0;
   squealsSquealed = 0;
   private readonly destroy$ = new Subject<void>();
 
@@ -57,12 +58,12 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     if (this.channelId) {
       this.loadSqueals();
       this.usersFollowing = this.channel?.users.length ?? 0;
-      this.channelService.countSqueals(this.channelId).subscribe(r => {
-        if (r.body) {
-          this.squealsSquealed = r.body;
-        }
-      });
     }
+    this.channelService.countUsersFollowing(this.channelId ?? '').subscribe(r => {
+      if (r.body) {
+        this.usersFollowing = r.body;
+      }
+    });
   }
   loadSqueals(): void {
     console.log('load');

@@ -5,7 +5,8 @@
       {{ this.account.firstName || 'maffeo' }}
       {{ this.account.lastName || 'raggi' }}
       {{ this.account.login || 'gaymaffeo42' }}
-      {{ this.nChannels }} channels subscribed to {{ squeals?.length ?? 0 }} squeals squealed
+      <span style="background-color: red" routerLink="/profile/mychannels"> {{ this.nChannels }} channels subscribed to </span>
+      {{ squeals?.length ?? 0 }} squeals squealed
     </span>
   </div>
   <jhi-create-squeal></jhi-create-squeal>

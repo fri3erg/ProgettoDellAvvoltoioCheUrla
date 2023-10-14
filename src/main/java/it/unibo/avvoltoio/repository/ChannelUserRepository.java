@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ChannelUserRepository extends MongoRepository<ChannelUser, String> {
     List<ChannelUser> findAllByChannelId(String id);
     List<ChannelUser> findAllByUserId(String id);
+    Long countByChannelId(String id);
 }
