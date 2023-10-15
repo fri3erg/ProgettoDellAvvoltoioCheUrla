@@ -28,24 +28,26 @@ public class ChannelService {
     @Autowired
     private UserService userService;
 
-    public List<ChannelDTO> searchChannels(String name) {
+    public List<ChannelDTO> searchChannels(String name, String id) {
         List<ChannelDTO> retList = new ArrayList<>();
-        List<Channel> cList = channelRepository.findAllByNameContainsOrderByName(name);
-        String currentUserId = getCurrentUserId();
-        for (Channel c : cList) {
-            ChannelDTO cDTO = loadUsers(c);
-            boolean valid = true;
-            if (c.getType() == ChannelTypes.PRIVATEGROUP) {
-                valid = false;
-                for (ChannelUser u : cDTO.getUsers()) {
-                    if (u.getUserId().equals(currentUserId)) {
-                        valid = true;
-                        break;
+        if (isUserAuthorized(id)) {
+            List<Channel> cList = channelRepository.findAllByNameContainsOrderByName(name);
+            String currentUserId = id;
+            for (Channel c : cList) {
+                ChannelDTO cDTO = loadUsers(c);
+                boolean valid = true;
+                if (c.getType() == ChannelTypes.PRIVATEGROUP) {
+                    valid = false;
+                    for (ChannelUser u : cDTO.getUsers()) {
+                        if (u.getUserId().equals(currentUserId)) {
+                            valid = true;
+                            break;
+                        }
                     }
                 }
-            }
-            if (valid) {
-                retList.add(cDTO);
+                if (valid) {
+                    retList.add(cDTO);
+                }
             }
         }
         return retList;
@@ -65,16 +67,19 @@ public class ChannelService {
         return loadUsers(c);
     }
 
-    public ChannelDTO createChannel(String name) {
+    public ChannelDTO createChannel(String name, String id) {
+        if (!isUserAuthorized(id)) {
+            return null;
+        }
         ChannelDTO dto = new ChannelDTO();
 
         Channel c = new Channel();
         c.setName(name);
         dto.setChannel(c);
-        return insertOrUpdateChannel(dto);
+        return insertOrUpdateChannel(dto, id);
     }
 
-    public ChannelDTO insertOrUpdateChannel(ChannelDTO channel) {
+    public ChannelDTO insertOrUpdateChannel(ChannelDTO channel, String id) {
         Channel c = channel.getChannel();
 
         if (isIncorrectName(c.getName())) {
@@ -100,7 +105,7 @@ public class ChannelService {
         c = channelRepository.save(c);
         if (createOwner) {
             ChannelUser user = new ChannelUser();
-            user.setUserId(getCurrentUserId());
+            user.setUserId(id);
             user.setChannelId(c.getId());
             user.setPrivilege(PrivilegeType.ADMIN);
             channelUserRepository.save(user);
@@ -117,7 +122,7 @@ public class ChannelService {
         return false;
     }
 
-    private String getCurrentUserId() {
+    public String getCurrentUserId() {
         return userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new);
     }
 
@@ -131,17 +136,23 @@ public class ChannelService {
         return c;
     }
 
-    public boolean isCurrentUserInChannel(ChannelDTO channel) {
-        String uid = getCurrentUserId();
-        for (ChannelUser u : channel.getUsers()) {
-            if (uid.equals(u.getUserId())) {
-                return true;
+    public boolean isCurrentUserInChannel(ChannelDTO channel, String uid) {
+        if (isUserAuthorized(uid)) {
+            for (ChannelUser u : channel.getUsers()) {
+                if (uid.equals(u.getUserId())) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public boolean canUserWrite(String id) {
+    private Boolean isUserAuthorized(String id) {
+        //add for smm
+        return id.equals(getCurrentUserId());
+    }
+
+    public boolean canUserWrite(String id, String myId) {
         Channel channel = channelRepository.findFirstById(id);
         boolean valid = false;
         switch (channel.getType()) {
@@ -151,7 +162,7 @@ public class ChannelService {
                 break;
             case PRIVATEGROUP:
                 ChannelDTO dto = loadUsers(channel);
-                valid = isCurrentUserInChannel(dto);
+                valid = isCurrentUserInChannel(dto, myId);
                 break;
             case PUBLICGROUP:
                 valid = true;
@@ -162,21 +173,24 @@ public class ChannelService {
         return valid;
     }
 
-    public List<ChannelDTO> getSub() {
-        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(getCurrentUserId());
+    public List<ChannelDTO> getSub(String id) {
         List<ChannelDTO> channels = new ArrayList<>();
-        Channel temp;
-        for (ChannelUser c : channeluser) {
-            temp = channelRepository.findFirstById(c.getChannelId());
-            if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
-                channels.add(loadUsers(temp));
+        if (isUserAuthorized(id)) {
+            List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(id);
+
+            Channel temp;
+            for (ChannelUser c : channeluser) {
+                temp = channelRepository.findFirstById(c.getChannelId());
+                if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
+                    channels.add(loadUsers(temp));
+                }
             }
         }
         return channels;
     }
 
-    public Integer countSub() {
-        return getSub().size();
+    public Integer countSub(String id) {
+        return getSub(id).size();
     }
 
     public Long getChannelSubsCount(String id) {

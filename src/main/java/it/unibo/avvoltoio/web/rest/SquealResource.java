@@ -44,7 +44,14 @@ public class SquealResource {
     @GetMapping("/squeals-destination")
     public ResponseEntity<List<String>> getSquealDestination(@RequestParam("name") String name) {
         log.debug("REST request to get SquealDestination : {}", name);
-        List<String> ret = squealService.getSquealDestination(name);
+        List<String> ret = squealService.getSquealDestination(name, squealService.getCurrentUserId());
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeals-destination/SMM/{id}")
+    public ResponseEntity<List<String>> getSquealDestination(@PathVariable String id, @RequestParam("name") String name) {
+        log.debug("REST request to get SquealDestination : {}", name);
+        List<String> ret = squealService.getSquealDestination(name, id);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
@@ -60,7 +67,18 @@ public class SquealResource {
     @PostMapping("/squeals")
     public ResponseEntity<SquealDTO> createOrUpdateSqueal(@RequestBody SquealDTO squeal) throws URISyntaxException {
         log.debug("REST request to save Squeal : {}", squeal);
-        SquealDTO result = squealService.insertOrUpdate(squeal);
+        SquealDTO result = squealService.insertOrUpdate(squeal, squealService.getCurrentUserId());
+        return ResponseEntity
+            .created(new URI("/api/squeals/" + result.getSqueal().getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getSqueal().getId()))
+            .body(result);
+    }
+
+    @PostMapping("/squeals/SMM/{id}")
+    public ResponseEntity<SquealDTO> createOrUpdateSqueal(@RequestBody SquealDTO squeal, @PathVariable String id)
+        throws URISyntaxException {
+        log.debug("REST request to save Squeal : {}", squeal);
+        SquealDTO result = squealService.insertOrUpdate(squeal, id);
         return ResponseEntity
             .created(new URI("/api/squeals/" + result.getSqueal().getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getSqueal().getId()))
@@ -76,7 +94,13 @@ public class SquealResource {
     @GetMapping("/squeal-list")
     public List<SquealDTO> getSquealList(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
         log.debug("REST request to get squeals");
-        return squealService.getSquealsList(page, size);
+        return squealService.getSquealsList(page, size, squealService.getCurrentUserId());
+    }
+
+    @GetMapping("/squeal-list/SMM/{id}")
+    public List<SquealDTO> getSquealList(@RequestParam("page") Integer page, @PathVariable String id, @RequestParam("size") Integer size) {
+        log.debug("REST request to get squeals");
+        return squealService.getSquealsList(page, size, id);
     }
 
     /**
@@ -101,21 +125,42 @@ public class SquealResource {
     @GetMapping("/squeals/{id}")
     public ResponseEntity<SquealDTO> getSqueal(@PathVariable String id) {
         log.debug("REST request to get Squeal : {}", id);
-        Optional<SquealDTO> squeal = Optional.ofNullable(this.squealService.getSqueal(id));
+        Optional<SquealDTO> squeal = Optional.ofNullable(this.squealService.getSqueal(id, squealService.getCurrentUserId()));
+        return ResponseUtil.wrapOrNotFound(squeal);
+    }
+
+    @GetMapping("/squeals/{id}/SMM/{userId}")
+    public ResponseEntity<SquealDTO> getSqueal(@PathVariable String id, @PathVariable String userId) {
+        log.debug("REST request to get Squeal : {}", id);
+        Optional<SquealDTO> squeal = Optional.ofNullable(this.squealService.getSqueal(id, userId));
         return ResponseUtil.wrapOrNotFound(squeal);
     }
 
     @GetMapping("/direct-squeal-list")
     public ResponseEntity<List<SquealDTO>> getDirectSqueal() {
         log.debug("REST request to get direct Squeal : {}");
-        Optional<List<SquealDTO>> squeal = Optional.ofNullable(this.squealService.getDirectSqueal());
+        Optional<List<SquealDTO>> squeal = Optional.ofNullable(this.squealService.getDirectSqueal(squealService.getCurrentUserId()));
+        return ResponseUtil.wrapOrNotFound(squeal);
+    }
+
+    @GetMapping("/direct-squeal-list/SMM/{id}")
+    public ResponseEntity<List<SquealDTO>> getDirectSqueal(@PathVariable String id) {
+        log.debug("REST request to get direct Squeal : {}");
+        Optional<List<SquealDTO>> squeal = Optional.ofNullable(this.squealService.getDirectSqueal(id));
         return ResponseUtil.wrapOrNotFound(squeal);
     }
 
     @GetMapping("/direct-squeal-preview")
     public ResponseEntity<List<SquealDTO>> getDirectSquealPreview() {
         log.debug("REST request to get direct Squeal : {}");
-        List<SquealDTO> squeal = this.squealService.getDirectSquealPreview();
+        List<SquealDTO> squeal = this.squealService.getDirectSquealPreview(squealService.getCurrentUserId());
+        return new ResponseEntity<>(squeal, HttpStatus.OK);
+    }
+
+    @GetMapping("/direct-squeal-preview/SMM/{id}")
+    public ResponseEntity<List<SquealDTO>> getDirectSquealPreview(@PathVariable String id) {
+        log.debug("REST request to get direct Squeal : {}");
+        List<SquealDTO> squeal = this.squealService.getDirectSquealPreview(id);
         return new ResponseEntity<>(squeal, HttpStatus.OK);
     }
 
@@ -132,7 +177,16 @@ public class SquealResource {
     public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(@PathVariable String userId) {
         log.debug("REST request to get Squeal : {}", userId);
 
-        List<SquealDTO> ret = squealService.getSquealByUser(userId);
+        List<SquealDTO> ret = squealService.getSquealByUser(userId, squealService.getCurrentUserId());
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-by-user/{userId}/SMM/{myId}")
+    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(@PathVariable String userId, @PathVariable String myId) {
+        log.debug("REST request to get Squeal : {}", userId);
+
+        List<SquealDTO> ret = squealService.getSquealByUser(userId, myId);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
@@ -141,7 +195,16 @@ public class SquealResource {
     public ResponseEntity<List<SquealDTO>> getSquealsMade() {
         log.debug("REST request to get Squeal : {}");
 
-        List<SquealDTO> ret = squealService.getSquealMadeByUser();
+        List<SquealDTO> ret = squealService.getSquealMadeByUser(squealService.getCurrentUserId());
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-made-by-user/SMM/{id}")
+    public ResponseEntity<List<SquealDTO>> getSquealsMade(@PathVariable String id) {
+        log.debug("REST request to get Squeal : {}");
+
+        List<SquealDTO> ret = squealService.getSquealMadeByUser(id);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
@@ -154,7 +217,21 @@ public class SquealResource {
     ) {
         log.debug("REST request to get Squeal : {}", channelId);
 
-        List<SquealDTO> ret = squealService.getSquealByChannel(channelId, page, size);
+        List<SquealDTO> ret = squealService.getSquealByChannel(channelId, page, size, squealService.getCurrentUserId());
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-by-channel/{channelId}/SMM/{myId}")
+    public ResponseEntity<List<SquealDTO>> getSquealsByChannel(
+        @PathVariable String channelId,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size,
+        @PathVariable String myId
+    ) {
+        log.debug("REST request to get Squeal : {}", channelId);
+
+        List<SquealDTO> ret = squealService.getSquealByChannel(channelId, page, size, myId);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }

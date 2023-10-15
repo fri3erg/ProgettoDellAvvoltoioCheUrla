@@ -45,7 +45,14 @@ public class UserCharsResource {
     @GetMapping("/user-chars")
     public ResponseEntity<UserCharsDTO> getChars() {
         log.debug("REST request to get chars : {}");
-        UserCharsDTO ret = userCharsService.calcChars();
+        UserCharsDTO ret = userCharsService.calcChars(userCharsService.getCurrentUserId());
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/user-chars/SMM/{id}")
+    public ResponseEntity<UserCharsDTO> getChars(@PathVariable String id) {
+        log.debug("REST request to get chars : {}");
+        UserCharsDTO ret = userCharsService.calcChars(id);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 

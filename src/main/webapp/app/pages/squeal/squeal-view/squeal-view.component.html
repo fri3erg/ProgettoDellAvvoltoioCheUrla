@@ -6,7 +6,7 @@
   <div class="squeal-layout pt-0 pb-3 head-message">
     <div style="flex: 1">
       <ng-container style="size-adjust: 50%" *ngFor="let d of squeal.squeal?.destinations">
-        <p-chip [label]="d.destination ?? ''"></p-chip>
+        <p-chip [label]="d.destination ?? ''" [routerLink]="['/channels/view', d.destinationId]"></p-chip>
       </ng-container>
     </div>
     <div>{{ squeal.squeal?.nCharacters }} characters</div>

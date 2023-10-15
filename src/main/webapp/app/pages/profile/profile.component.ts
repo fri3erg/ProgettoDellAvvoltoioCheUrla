@@ -11,6 +11,7 @@ import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { CreateSquealComponent } from '../squeal/create-squeal/create-squeal.component';
 import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component';
 import SharedModule from 'app/shared/shared.module';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'jhi-profile',
@@ -21,13 +22,13 @@ import SharedModule from 'app/shared/shared.module';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   account: Account | null = null;
-  //channels: IChannelDTO[] = [];
   nChannels = 0;
-  positiveReaction = 0;
   squeals?: ISquealDTO[];
+  profileId?: string;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
+    protected activatedRoute: ActivatedRoute,
     protected channelService: ChannelService,
     private accountService: AccountService,
     protected channelUserService: ChannelUserService,
@@ -35,6 +36,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    //this.profileId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
@@ -42,11 +44,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.account = account;
         console.log(account);
       });
-    /*this.channelService.getSubscribed().subscribe(r => {
-        if(r.body){
-          this.channels=r.body;
-        }
-      });*/
     this.squealService.getSquealMadeByUser().subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
@@ -57,12 +54,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.channelService.countChannelSubscribed().subscribe(r => {
       if (r.body) {
         this.nChannels = r.body;
-      }
-    });
-
-    this.squealService.getPositiveReactions(this.account?.id).subscribe(r => {
-      if (r.body) {
-        this.positiveReaction = r.body;
       }
     });
   }

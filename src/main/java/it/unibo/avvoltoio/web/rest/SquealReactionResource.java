@@ -56,7 +56,15 @@ public class SquealReactionResource {
     @PostMapping("/squeal-reaction/create")
     public ResponseEntity<List<ReactionDTO>> createOrUpdateReaction(@RequestBody SquealReaction reaction) throws URISyntaxException {
         log.debug("REST request to save reaction : {}", reaction);
-        List<ReactionDTO> result = squealService.insertOrUpdateReaction(reaction);
+        List<ReactionDTO> result = squealService.insertOrUpdateReaction(reaction, squealService.getCurrentUserId());
+        return ResponseEntity.created(new URI("/api/squeal-reaction")).body(result);
+    }
+
+    @PostMapping("/squeal-reaction/create/SMM/{id}")
+    public ResponseEntity<List<ReactionDTO>> createOrUpdateReaction(@PathVariable String id, @RequestBody SquealReaction reaction)
+        throws URISyntaxException {
+        log.debug("REST request to save reaction : {}", reaction);
+        List<ReactionDTO> result = squealService.insertOrUpdateReaction(reaction, id);
         return ResponseEntity.created(new URI("/api/squeal-reaction")).body(result);
     }
 

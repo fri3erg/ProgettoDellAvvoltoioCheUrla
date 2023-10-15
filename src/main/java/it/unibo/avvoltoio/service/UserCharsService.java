@@ -40,17 +40,23 @@ public class UserCharsService {
     @Autowired
     UserService userService;
 
-    public Optional<UserChars> getCurrentUserChars() {
-        return userCharsRepository.findByUserId(getCurrentUserId());
+    public Optional<UserChars> getCurrentUserChars(String id) {
+        if (!isUserAuthorized(id)) {
+            return null;
+        }
+        return userCharsRepository.findByUserId(id);
+    }
+
+    private Boolean isUserAuthorized(String id) {
+        //add for smm
+        return id.equals(getCurrentUserId());
     }
 
     public String getCurrentUserId() {
         return userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new);
     }
 
-    public UserCharsDTO calcChars() {
-        String userId = getCurrentUserId();
-
+    public UserCharsDTO calcChars(String userId) {
         UserCharsDTO usercharsDTO = new UserCharsDTO();
 
         long smTime = getStartOfMonth();

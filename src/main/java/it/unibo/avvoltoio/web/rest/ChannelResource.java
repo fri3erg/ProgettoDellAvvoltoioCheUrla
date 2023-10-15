@@ -49,7 +49,14 @@ public class ChannelResource {
     @GetMapping("/channel-search/{name}")
     public ResponseEntity<List<ChannelDTO>> searchChannel(@PathVariable String name) {
         log.debug("REST request to get Channel : {}", name);
-        List<ChannelDTO> ret = channelService.searchChannels(name);
+        List<ChannelDTO> ret = channelService.searchChannels(name, channelService.getCurrentUserId());
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/channel-search/{name}/SMM/{id}")
+    public ResponseEntity<List<ChannelDTO>> searchChannel(@PathVariable String name, @PathVariable String id) {
+        log.debug("REST request to get Channel : {}", name);
+        List<ChannelDTO> ret = channelService.searchChannels(name, id);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
@@ -65,7 +72,17 @@ public class ChannelResource {
     @PostMapping("/channels")
     public ResponseEntity<ChannelDTO> createChannel(@RequestBody ChannelDTO channel) throws URISyntaxException {
         log.debug("REST request to save Channel : {}", channel);
-        ChannelDTO result = this.channelService.insertOrUpdateChannel(channel);
+        ChannelDTO result = this.channelService.insertOrUpdateChannel(channel, channelService.getCurrentUserId());
+        return ResponseEntity
+            .created(new URI("/api/channels/" + result.getChannel().getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getChannel().getId()))
+            .body(result);
+    }
+
+    @PostMapping("/channels/SMM/{id}")
+    public ResponseEntity<ChannelDTO> createChannel(@PathVariable String id, @RequestBody ChannelDTO channel) throws URISyntaxException {
+        log.debug("REST request to save Channel : {}", channel);
+        ChannelDTO result = this.channelService.insertOrUpdateChannel(channel, id);
         return ResponseEntity
             .created(new URI("/api/channels/" + result.getChannel().getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getChannel().getId()))
@@ -194,14 +211,28 @@ public class ChannelResource {
     @GetMapping("/channels/sub/get")
     public ResponseEntity<List<ChannelDTO>> getSub() {
         log.debug("REST request to get sub : {}");
-        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub());
+        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(channelService.getCurrentUserId()));
+        return ResponseUtil.wrapOrNotFound(channels);
+    }
+
+    @GetMapping("/channels/sub/get/SMM/{id}")
+    public ResponseEntity<List<ChannelDTO>> getSub(@PathVariable String id) {
+        log.debug("REST request to get sub : {}");
+        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(id));
         return ResponseUtil.wrapOrNotFound(channels);
     }
 
     @GetMapping("/channels/sub/count")
     public ResponseEntity<Integer> countSub() {
         log.debug("REST request to count sub : {}");
-        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub());
+        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(channelService.getCurrentUserId()));
+        return ResponseUtil.wrapOrNotFound(nChannels);
+    }
+
+    @GetMapping("/channels/sub/count/SMM/{id}")
+    public ResponseEntity<Integer> countSub(@PathVariable String id) {
+        log.debug("REST request to count sub : {}");
+        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(id));
         return ResponseUtil.wrapOrNotFound(nChannels);
     }
 
