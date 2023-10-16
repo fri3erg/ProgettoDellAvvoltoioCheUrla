@@ -23,3 +23,8 @@
     <jhi-channel-preview [channel]="c"></jhi-channel-preview>
   </ng-template>
 </p-dataView>
+<p-dataView #dv [value]="users">
+  <ng-template let-c pTemplate="listItem">
+    <jhi-user-preview [user]="c"></jhi-user-preview>
+  </ng-template>
+</p-dataView>

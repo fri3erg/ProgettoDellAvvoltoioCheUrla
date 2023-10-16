@@ -23,8 +23,8 @@ export class ChannelService {
     return this.http.get<number>(`api/channels/countSubs/${id}`, { observe: 'response' });
   }
 
-  getSubscribed(): Observable<HttpResponse<IChannelDTO[]>> {
-    return this.http.get<IChannelDTO[]>(`api/channels/sub/get`, { observe: 'response' });
+  getSubscribed(id: string): Observable<HttpResponse<IChannelDTO[]>> {
+    return this.http.get<IChannelDTO[]>(`api/channels/sub/get/${id}`, { observe: 'response' });
   }
 
   countChannelSubscribed(id: string): Observable<HttpResponse<number>> {

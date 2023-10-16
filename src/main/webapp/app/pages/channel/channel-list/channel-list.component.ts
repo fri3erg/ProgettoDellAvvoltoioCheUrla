@@ -9,11 +9,12 @@ import SharedModule from 'app/shared/shared.module';
 import { Account } from 'app/core/auth/account.model';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { ChannelPreviewComponent } from '../channel-preview/channel-preview.component';
+import { UserPreviewComponent } from '../user-preview/user-preview.component';
 
 @Component({
   selector: 'jhi-channel-list',
   standalone: true,
-  imports: [SharedModule, FormsModule, RouterModule, ChannelPreviewComponent],
+  imports: [SharedModule, FormsModule, RouterModule, ChannelPreviewComponent, UserPreviewComponent],
   templateUrl: './channel-list.component.html',
   styleUrls: ['./channel-list.component.scss'],
 })
