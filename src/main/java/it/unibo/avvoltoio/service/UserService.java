@@ -3,7 +3,9 @@ package it.unibo.avvoltoio.service;
 import it.unibo.avvoltoio.config.Constants;
 import it.unibo.avvoltoio.domain.Authority;
 import it.unibo.avvoltoio.domain.User;
+import it.unibo.avvoltoio.domain.SMMVIP;
 import it.unibo.avvoltoio.repository.AuthorityRepository;
+import it.unibo.avvoltoio.repository.SMMVIPRepository;
 import it.unibo.avvoltoio.repository.UserRepository;
 import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.security.SecurityUtils;
@@ -15,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+    
+    @Autowired
+    private SMMVIPRepository smmvipRepository;
+
 
     private final CacheManager cacheManager;
 
@@ -144,6 +151,52 @@ public class UserService {
 
         return newUser;
     }
+    
+    public User registerUserSmm(AdminUserDTO userDTO, String password) {
+        userRepository
+            .findOneByLogin(userDTO.getLogin().toLowerCase())
+            .ifPresent(existingUser -> {
+                boolean removed = removeNonActivatedUser(existingUser);
+                if (!removed) {
+                    throw new UsernameAlreadyUsedException();
+                }
+            });
+        userRepository
+            .findOneByEmailIgnoreCase(userDTO.getEmail())
+            .ifPresent(existingUser -> {
+                boolean removed = removeNonActivatedUser(existingUser);
+                if (!removed) {
+                    throw new EmailAlreadyUsedException();
+                }
+            });
+        User newUser = new User();
+        String encryptedPassword = passwordEncoder.encode(password);
+        newUser.setLogin(userDTO.getLogin().toLowerCase());
+        // new user gets initially a generated password
+        newUser.setPassword(encryptedPassword);
+        newUser.setFirstName(userDTO.getFirstName());
+        newUser.setLastName(userDTO.getLastName());
+        if (userDTO.getEmail() != null) {
+            newUser.setEmail(userDTO.getEmail().toLowerCase());
+        }
+        newUser.setImageUrl(userDTO.getImageUrl());
+        newUser.setLangKey(userDTO.getLangKey());
+        // new user is not active
+        newUser.setActivated(false);
+        // new user gets registration key
+        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        Set<Authority> authorities = new HashSet<>();
+        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        newUser.setAuthorities(authorities);
+        userRepository.save(newUser);
+        this.clearUserCaches(newUser);
+        log.debug("Created Information for User: {}", newUser);
+        SMMVIP smm = new SMMVIP();
+        smm.setUserId(newUser.getId());
+        smmvipRepository.save(smm);
+        return newUser;
+    }
+    
 
     private boolean removeNonActivatedUser(User existingUser) {
         if (existingUser.isActivated()) {

@@ -45,7 +45,7 @@ public class AccountResource {
         this.userService = userService;
         this.mailService = mailService;
     }
-
+    
     /**
      * {@code POST  /register} : register the user.
      *
@@ -62,6 +62,16 @@ public class AccountResource {
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
+    }
+    
+    @PostMapping("/registersmm")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerAccountSmm(@Valid @RequestBody ManagedUserVM managedUserVM) {
+        if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        User smmuser = userService.registerUserSmm(managedUserVM, managedUserVM.getPassword());
+        mailService.sendActivationEmail(smmuser);
     }
 
     /**
