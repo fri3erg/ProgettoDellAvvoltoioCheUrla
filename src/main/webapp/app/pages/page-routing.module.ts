@@ -12,6 +12,11 @@ import { MyChannelsComponent } from './profile/my-channels/my-channels.component
         title: 'direct messages',
       },
       {
+        path: 'profile',
+        data: { pageTitle: 'Profile' },
+        loadChildren: () => import('./profile/profile.routes'),
+      },
+      {
         path: 'profile/mychannels',
         component: MyChannelsComponent,
         title: 'channels subbed to',

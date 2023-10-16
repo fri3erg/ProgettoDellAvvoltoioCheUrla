@@ -377,11 +377,9 @@ public class SquealService {
 
     public List<SquealDTO> getSquealMadeByUser(String id) {
         List<SquealDTO> dto = new ArrayList<>();
-        if (isUserAuthorized(id)) {
-            List<Squeal> squeals = squealRepository.findAllByUserId(id);
-            for (Squeal s : squeals) {
-                dto.add(loadSquealData(s, id));
-            }
+        List<Squeal> squeals = squealRepository.findAllByUserId(id);
+        for (Squeal s : squeals) {
+            dto.add(loadSquealData(s, id));
         }
         return dto;
     }

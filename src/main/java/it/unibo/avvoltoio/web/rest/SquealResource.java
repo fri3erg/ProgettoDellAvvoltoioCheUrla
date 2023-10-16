@@ -191,16 +191,7 @@ public class SquealResource {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
-    @GetMapping("/squeal-made-by-user")
-    public ResponseEntity<List<SquealDTO>> getSquealsMade() {
-        log.debug("REST request to get Squeal : {}");
-
-        List<SquealDTO> ret = squealService.getSquealMadeByUser(squealService.getCurrentUserId());
-
-        return new ResponseEntity<>(ret, HttpStatus.OK);
-    }
-
-    @GetMapping("/squeal-made-by-user/SMM/{id}")
+    @GetMapping("/squeal-made-by-user/{id}")
     public ResponseEntity<List<SquealDTO>> getSquealsMade(@PathVariable String id) {
         log.debug("REST request to get Squeal : {}");
 

@@ -36,22 +36,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    //this.profileId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
+    this.profileId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
       .subscribe(account => {
         this.account = account;
         console.log(account);
+        if (!this.profileId) {
+          this.profileId = account?.id;
+          console.log(this.profileId);
+        }
       });
-    this.squealService.getSquealMadeByUser().subscribe(r => {
+    this.squealService.getSquealMadeByUser(this.profileId ?? '').subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
         console.log('users squeals:');
         console.log(this.squeals);
       }
     });
-    this.channelService.countChannelSubscribed().subscribe(r => {
+    this.channelService.countChannelSubscribed(this.profileId ?? '').subscribe(r => {
       if (r.body) {
         this.nChannels = r.body;
       }

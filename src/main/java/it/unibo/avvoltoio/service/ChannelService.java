@@ -175,15 +175,13 @@ public class ChannelService {
 
     public List<ChannelDTO> getSub(String id) {
         List<ChannelDTO> channels = new ArrayList<>();
-        if (isUserAuthorized(id)) {
-            List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(id);
+        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(id);
 
-            Channel temp;
-            for (ChannelUser c : channeluser) {
-                temp = channelRepository.findFirstById(c.getChannelId());
-                if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
-                    channels.add(loadUsers(temp));
-                }
+        Channel temp;
+        for (ChannelUser c : channeluser) {
+            temp = channelRepository.findFirstById(c.getChannelId());
+            if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
+                channels.add(loadUsers(temp));
             }
         }
         return channels;

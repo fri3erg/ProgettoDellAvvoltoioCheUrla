@@ -16,11 +16,12 @@ import { NewChannelUser } from 'app/entities/channel-user/channel-user.model';
 import { Subject, takeUntil } from 'rxjs';
 import SharedModule from 'app/shared/shared.module';
 import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
+import { ChannelSubscribeComponent } from '../channel-subscribe/channel-subscribe.component';
 
 @Component({
   selector: 'jhi-channel-page',
   standalone: true,
-  imports: [CommonModule, ObserveElementDirective, CreateSquealComponent, SharedModule, SquealViewComponent],
+  imports: [CommonModule, ObserveElementDirective, CreateSquealComponent, SharedModule, SquealViewComponent, ChannelSubscribeComponent],
   templateUrl: './channel-page.component.html',
   styleUrls: ['./channel-page.component.scss'],
 })

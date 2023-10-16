@@ -3,15 +3,8 @@
 </div>
 <div class="rounded-4 mytitlecard p-2 m-1">{{ usersFollowing }} following</div>
 <div class="rounded-4 mytitlecard p-2 m-1">{{ squeals.length }} squeals</div>
-<div>
-  <span class="badge" [class]="returnColor(channel)">{{ channel?.channel?.type }}</span>
-  <button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(channel)" (click)="sub(channel)">
-    <fa-icon icon="square-plus" [fixedWidth]="true"></fa-icon>
-  </button>
-  <button class="btn btn-outline-danger btn-subscribe" title="Subscription" *ngIf="isUserSubscribed(channel)" (click)="unSub(channel)">
-    <fa-icon icon="square-minus" [fixedWidth]="true"></fa-icon>
-  </button>
-</div>
+
+<jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>
 
 <jhi-create-squeal [destinations]="[channel?.channel?.name ?? '']"></jhi-create-squeal>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">

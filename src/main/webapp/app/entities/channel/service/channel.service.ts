@@ -27,8 +27,8 @@ export class ChannelService {
     return this.http.get<IChannelDTO[]>(`api/channels/sub/get`, { observe: 'response' });
   }
 
-  countChannelSubscribed(): Observable<HttpResponse<number>> {
-    const url = this.applicationConfigService.getEndpointFor(`api/channels/sub/count`);
+  countChannelSubscribed(id: string): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/channels/sub/count/${id}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
 

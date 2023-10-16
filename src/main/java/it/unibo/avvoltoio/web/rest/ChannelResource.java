@@ -222,14 +222,7 @@ public class ChannelResource {
         return ResponseUtil.wrapOrNotFound(channels);
     }
 
-    @GetMapping("/channels/sub/count")
-    public ResponseEntity<Integer> countSub() {
-        log.debug("REST request to count sub : {}");
-        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(channelService.getCurrentUserId()));
-        return ResponseUtil.wrapOrNotFound(nChannels);
-    }
-
-    @GetMapping("/channels/sub/count/SMM/{id}")
+    @GetMapping("/channels/sub/count/{id}")
     public ResponseEntity<Integer> countSub(@PathVariable String id) {
         log.debug("REST request to count sub : {}");
         Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(id));
