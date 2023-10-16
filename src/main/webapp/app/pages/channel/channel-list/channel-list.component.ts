@@ -25,6 +25,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
   toggle = true;
 
   channels: IChannelDTO[] = [];
+  users: Account[] = [];
 
   private readonly destroy$ = new Subject<void>();
 
@@ -41,11 +42,19 @@ export class ChannelListComponent implements OnInit, OnDestroy {
   }
 
   search(): void {
-    this.channelService.search(this.searchKey).subscribe(r => {
-      if (r.body) {
-        this.channels = r.body;
-      }
-    });
+    if (this.searchKey.length >= 2) {
+      this.channelService.search(this.searchKey).subscribe(r => {
+        if (r.body) {
+          this.channels = r.body;
+        }
+      });
+      this.accountService.search(this.searchKey).subscribe(r => {
+        if (r.body) {
+          this.users = r.body;
+          console.log(this.users);
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

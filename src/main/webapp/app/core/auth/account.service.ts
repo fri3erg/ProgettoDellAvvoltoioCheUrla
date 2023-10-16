@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
@@ -23,6 +23,10 @@ export class AccountService {
     private applicationConfigService: ApplicationConfigService
   ) {}
 
+  search(name: string): Observable<HttpResponse<Account[]>> {
+    const url = this.applicationConfigService.getEndpointFor('api/users/search');
+    return this.http.get<Account[]>(`${url}/${name}`, { observe: 'response' });
+  }
   save(account: Account): Observable<{}> {
     return this.http.post(this.applicationConfigService.getEndpointFor('api/account'), account);
   }

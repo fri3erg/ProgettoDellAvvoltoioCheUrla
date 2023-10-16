@@ -32,14 +32,13 @@ public class ChannelService {
         List<ChannelDTO> retList = new ArrayList<>();
         if (isUserAuthorized(id)) {
             List<Channel> cList = channelRepository.findAllByNameContainsOrderByName(name);
-            String currentUserId = id;
             for (Channel c : cList) {
                 ChannelDTO cDTO = loadUsers(c);
                 boolean valid = true;
                 if (c.getType() == ChannelTypes.PRIVATEGROUP) {
                     valid = false;
                     for (ChannelUser u : cDTO.getUsers()) {
-                        if (u.getUserId().equals(currentUserId)) {
+                        if (u.getUserId().equals(id)) {
                             valid = true;
                             break;
                         }
