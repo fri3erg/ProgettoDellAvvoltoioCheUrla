@@ -148,7 +148,6 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-
         return newUser;
     }
     
@@ -190,12 +189,15 @@ public class UserService {
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
+        
+        SMMVIP smmUser = new SMMVIP();
+        smmUser.setUserId(newUser.getId());
+        smmvipRepository.save(smmUser);
+        
         log.debug("Created Information for User: {}", newUser);
-        SMMVIP smm = new SMMVIP();
-        smm.setUserId(newUser.getId());
-        smmvipRepository.save(smm);
         return newUser;
     }
+   
     
 
     private boolean removeNonActivatedUser(User existingUser) {
