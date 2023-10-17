@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +39,7 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
     
-    @Autowired
-    private SMMVIPRepository smmvipRepository;
+    private final SMMVIPRepository smmvipRepository;
 
 
     private final CacheManager cacheManager;
@@ -50,12 +48,14 @@ public class UserService {
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        SMMVIPRepository  smmvipRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.smmvipRepository = smmvipRepository;
     }
 
     public Optional<User> getUserById(String id) {
@@ -148,6 +148,7 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
+        
         return newUser;
     }
     
@@ -192,12 +193,12 @@ public class UserService {
         
         SMMVIP smmUser = new SMMVIP();
         smmUser.setUserId(newUser.getId());
+        authorityRepository.findById(AuthoritiesConstants.SMM).ifPresent(authorities::add);
         smmvipRepository.save(smmUser);
         
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
-   
     
 
     private boolean removeNonActivatedUser(User existingUser) {

@@ -3,6 +3,7 @@ package it.unibo.avvoltoio.web.rest;
 import it.unibo.avvoltoio.domain.SMMVIP;
 import it.unibo.avvoltoio.repository.SMMVIPRepository;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -166,4 +167,22 @@ public class SMMVIPResource {
         sMMVIPRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
+    
+    /**
+     * {@code POST  /addsmm} : Add a SMM.
+     *
+     * @param sMMVIP the sMMVIP to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new sMMVIP, or with status {@code 400 (Bad Request)} if the sMMVIP has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+
+
+	/**
+	 * {@code GET  /smmclients/:id} : get all SMM clients.
+	 *
+	 * @param id the id of the sMMVIP to retrieve.
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the sMMVIP, or with status {@code 404 (Not Found)}.
+	 */
+
 }
+

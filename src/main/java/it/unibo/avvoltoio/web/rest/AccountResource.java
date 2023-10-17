@@ -65,14 +65,14 @@ public class AccountResource {
     }
     
     /**
-     * {@code POST  /registersmm} : register the user.
+     * {@code POST  /register/smm} : register the smm.
      *
      * @param managedUserVM the managed user View Model.
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
-    @PostMapping("/registersmm")
+    @PostMapping("/register/smm")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccountSmm(@Valid @RequestBody ManagedUserVM managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
