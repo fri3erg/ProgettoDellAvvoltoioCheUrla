@@ -60,7 +60,7 @@ public class SquealReactionResource {
         return ResponseEntity.created(new URI("/api/squeal-reaction")).body(result);
     }
 
-    @PostMapping("/squeal-reaction/create/SMM/{id}")
+    @PostMapping("/squeal-reaction-smm/create/{id}")
     public ResponseEntity<List<ReactionDTO>> createOrUpdateReaction(@PathVariable String id, @RequestBody SquealReaction reaction)
         throws URISyntaxException {
         log.debug("REST request to save reaction : {}", reaction);

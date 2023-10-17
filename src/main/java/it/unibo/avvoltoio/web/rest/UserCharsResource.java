@@ -2,6 +2,7 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.UserChars;
 import it.unibo.avvoltoio.repository.UserCharsRepository;
+import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.service.UserCharsService;
 import it.unibo.avvoltoio.service.dto.UserCharsDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -49,7 +51,8 @@ public class UserCharsResource {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
-    @GetMapping("/user-chars/SMM/{id}")
+    @GetMapping("/user-chars-smm/{id}")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<UserCharsDTO> getChars(@PathVariable String id) {
         log.debug("REST request to get chars : {}");
         UserCharsDTO ret = userCharsService.calcChars(id);

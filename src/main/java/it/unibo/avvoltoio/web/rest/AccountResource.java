@@ -2,6 +2,7 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.repository.UserRepository;
+import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.security.SecurityUtils;
 import it.unibo.avvoltoio.service.MailService;
 import it.unibo.avvoltoio.service.UserService;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -45,7 +47,7 @@ public class AccountResource {
         this.userService = userService;
         this.mailService = mailService;
     }
-    
+
     /**
      * {@code POST  /register} : register the user.
      *
@@ -63,7 +65,7 @@ public class AccountResource {
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
     }
-    
+
     /**
      * {@code POST  /register/smm} : register the smm.
      *
@@ -73,6 +75,7 @@ public class AccountResource {
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
     @PostMapping("/register/smm")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccountSmm(@Valid @RequestBody ManagedUserVM managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {

@@ -2,6 +2,7 @@ package it.unibo.avvoltoio.web.rest;
 
 import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.repository.ChannelRepository;
+import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.service.ChannelService;
 import it.unibo.avvoltoio.service.SquealService;
 import it.unibo.avvoltoio.service.dto.AdminUserDTO;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -61,7 +63,8 @@ public class ChannelResource {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
-    @GetMapping("/channel-search/{name}/SMM/{id}")
+    @GetMapping("/channel-search-smm/{name}/{id}")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<List<ChannelDTO>> searchChannel(@PathVariable String name, @PathVariable String id) {
         log.debug("REST request to get Channel : {}", name);
         List<ChannelDTO> ret = channelService.searchChannels(name, id);
@@ -87,7 +90,8 @@ public class ChannelResource {
             .body(result);
     }
 
-    @PostMapping("/channels/SMM/{id}")
+    @PostMapping("/channels-smm/{id}")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<ChannelDTO> createChannel(@PathVariable String id, @RequestBody ChannelDTO channel) throws URISyntaxException {
         log.debug("REST request to save Channel : {}", channel);
         ChannelDTO result = this.channelService.insertOrUpdateChannel(channel, id);
