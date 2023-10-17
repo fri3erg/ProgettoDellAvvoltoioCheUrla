@@ -1,8 +1,8 @@
 <ng-container *ngFor="let squeal of squeals">
-  <div class="col-12" [routerLink]="['/user', squeal.squeal?.userId]">
+  <div class="col-12" [routerLink]="['user', squeal.userName]">
     <div class="message-layout rounded-4 m-3 p-2">
       <div class="myname rounded-4 p-2">
-        <h2>{{ squeal.squeal?.userId }}</h2>
+        <h2>{{ squeal.userName }}</h2>
       </div>
       <div style="flex: 1" class="m-2 mymessage ps-3">
         <p>{{ squeal.squeal?.body }}</p>

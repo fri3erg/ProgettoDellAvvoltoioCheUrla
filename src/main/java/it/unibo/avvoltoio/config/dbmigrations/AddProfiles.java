@@ -37,12 +37,10 @@ public class AddProfiles {
     }
 
     private Authority createVIPAuthority() {
-        Authority adminAuthority = createAuthority(AuthoritiesConstants.VIP);
-        return adminAuthority;
+        return createAuthority(AuthoritiesConstants.VIP);
     }
 
     private Authority createSMMAuthority() {
-        Authority userAuthority = createAuthority(AuthoritiesConstants.SMM);
-        return userAuthority;
+        return createAuthority(AuthoritiesConstants.SMM);
     }
 }

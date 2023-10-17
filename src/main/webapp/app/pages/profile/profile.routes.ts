@@ -3,15 +3,20 @@ import { Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
 import { ProfileComponent } from './profile.component';
-import { MyChannelsComponent } from './my-channels/my-channels.component';
+import { MyChannelsComponent } from '../channel/my-channels/my-channels.component';
 
 const profileRoute: Routes = [
   {
-    path: ':id',
+    path: '',
+    component: ProfileComponent,
+    title: '',
+  },
+  {
+    path: ':name',
     component: ProfileComponent,
   },
   {
-    path: ':id/mychannels',
+    path: ':name/mychannels',
     component: MyChannelsComponent,
     canActivate: [UserRouteAccessService],
   },

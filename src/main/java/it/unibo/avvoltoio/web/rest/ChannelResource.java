@@ -4,6 +4,7 @@ import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.repository.ChannelRepository;
 import it.unibo.avvoltoio.service.ChannelService;
 import it.unibo.avvoltoio.service.SquealService;
+import it.unibo.avvoltoio.service.dto.AdminUserDTO;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -44,6 +45,13 @@ public class ChannelResource {
         this.channelService = channelService;
         this.squealService = squealService;
         this.channelRepository = channelRepository;
+    }
+
+    @GetMapping("channels/getSubscribed/{id}")
+    public ResponseEntity<List<AdminUserDTO>> getSubscribedToChannel(@PathVariable String id) {
+        log.debug("REST request to get Subscibed to Channel : {}", id);
+        List<AdminUserDTO> ret = channelService.getSubscribedToChannel(id);
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     @GetMapping("/channel-search/{name}")
@@ -208,23 +216,15 @@ public class ChannelResource {
         return ResponseUtil.wrapOrNotFound(channel);
     }
 
-    @GetMapping("/channels/sub/get/{id}")
-    public ResponseEntity<List<ChannelDTO>> getSub(@PathVariable String id) {
-        log.debug("REST request to get sub : {}");
-        if (id.equals("") || id == null) {
-            id = channelService.getCurrentUserId();
-        }
-        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(id));
+    @GetMapping("/channels/sub/get/{name}")
+    public ResponseEntity<List<ChannelDTO>> getSub(@PathVariable String name) {
+        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(name));
         return ResponseUtil.wrapOrNotFound(channels);
     }
 
-    @GetMapping("/channels/sub/count/{id}")
-    public ResponseEntity<Integer> countSub(@PathVariable String id) {
-        log.debug("REST request to count sub : {}");
-        if (id.equals("") || id == null) {
-            id = channelService.getCurrentUserId();
-        }
-        Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(id));
+    @GetMapping("/channels/sub/count/{name}")
+    public ResponseEntity<Long> countSub(@PathVariable String name) {
+        Optional<Long> nChannels = Optional.ofNullable(channelService.countSub(name));
         return ResponseUtil.wrapOrNotFound(nChannels);
     }
 

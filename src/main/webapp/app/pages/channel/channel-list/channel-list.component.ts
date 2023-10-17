@@ -47,6 +47,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
       this.channelService.search(this.searchKey).subscribe(r => {
         if (r.body) {
           this.channels = r.body;
+          console.log(this.channels);
         }
       });
       this.accountService.search(this.searchKey).subscribe(r => {

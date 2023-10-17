@@ -1,9 +1,9 @@
 <div class="rounded-4 mytitlecard p-2 m-1">
-  {{ userId }}
+  {{ username }}
 </div>
 <div style="overflow: hidden; height: xyz" #scrollMe [scrollTop]="scrollMe.scrollHeight">
   <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
-    <div class="col-8" style="float: left" *ngIf="userId == squeal.squeal?.userId">
+    <div class="col-8" style="float: left" *ngIf="username == squeal.userName">
       <div class="message-layout rounded-4 m-3 p-2">
         <div style="flex: 1" class="m-2 mymessage ps-3">
           <p>{{ squeal.squeal?.body }}</p>
@@ -15,7 +15,7 @@
     </div>
   </ng-container>
   <ng-container *ngFor="let squeal of squeals" class="m-3 p-2">
-    <div class="col-8" style="float: right" *ngIf="userId != squeal.squeal?.userId">
+    <div class="col-8" style="float: right" *ngIf="username != squeal.userName">
       <div class="message-layout rounded-4 m-3 p-2">
         <div style="flex: 1" class="m-2 mymessage ps-3">
           <p>{{ squeal.squeal?.body }}</p>

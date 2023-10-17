@@ -1,7 +1,7 @@
 <div class="rounded-4 mytitlecard p-2 m-1">
   {{ channel?.channel?.name }}
 </div>
-<div class="rounded-4 mytitlecard p-2 m-1">{{ usersFollowing }} following</div>
+<div [routerLink]="['/channels/subscribed', channelId]" class="rounded-4 mytitlecard p-2 m-1">{{ usersFollowing }} following</div>
 <div class="rounded-4 mytitlecard p-2 m-1">{{ squeals.length }} squeals</div>
 
 <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>

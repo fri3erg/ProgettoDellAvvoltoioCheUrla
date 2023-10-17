@@ -2,8 +2,8 @@ package it.unibo.avvoltoio.service;
 
 import it.unibo.avvoltoio.config.Constants;
 import it.unibo.avvoltoio.domain.Authority;
-import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.domain.SMMVIP;
+import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.repository.AuthorityRepository;
 import it.unibo.avvoltoio.repository.SMMVIPRepository;
 import it.unibo.avvoltoio.repository.UserRepository;
@@ -38,9 +38,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
-    
-    private final SMMVIPRepository smmvipRepository;
 
+    private final SMMVIPRepository smmvipRepository;
 
     private final CacheManager cacheManager;
 
@@ -49,7 +48,7 @@ public class UserService {
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
         CacheManager cacheManager,
-        SMMVIPRepository  smmvipRepository
+        SMMVIPRepository smmvipRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -62,8 +61,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<User> getUsersByName(String name) {
-        return userRepository.findAllByLoginContainsOrderByLogin(name);
+    public List<AdminUserDTO> getUsersByName(String name) {
+        return userRepository.findAllByLoginContainsOrderByLogin(name).stream().map(AdminUserDTO::new).collect(Collectors.toList());
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -148,10 +147,10 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-        
+
         return newUser;
     }
-    
+
     public User registerUserSmm(AdminUserDTO userDTO, String password) {
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
@@ -188,11 +187,11 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        
+
         SMMVIP smmUser = new SMMVIP();
         smmUser.setUserId(newUser.getId());
         authorityRepository.findById(AuthoritiesConstants.SMM).ifPresent(authorities::add);
-        
+
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
         smmvipRepository.save(smmUser);
@@ -200,7 +199,6 @@ public class UserService {
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
-    
 
     private boolean removeNonActivatedUser(User existingUser) {
         if (existingUser.isActivated()) {

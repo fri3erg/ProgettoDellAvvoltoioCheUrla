@@ -1,6 +1,6 @@
 <div class="message bg-gradient rounded-4 m-3" *ngIf="squeal">
   <div class="squeal-layout pb-2 head-message">
-    <div class="username fw-semibold fs-5">@{{ squeal.userName }}</div>
+    <div class="username fw-semibold fs-5" [routerLink]="['/profile']">@{{ squeal.userName }}</div>
     <div>{{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}</div>
   </div>
   <div class="squeal-layout pt-0 pb-3 head-message">
@@ -18,10 +18,12 @@
   <div>
     {{ squeal.squeal?.videoContentType }}
     {{ squeal.squeal?.videoName }}
-    {{ squeal.squeal?.img }}
-    {{ squeal.squeal?.imgName }}
-
-    {{ squeal.squeal?.imgContentType }}
+    <img
+      [src]="'data:' + squeal.squeal?.imgContentType + ';base64,' + squeal.squeal?.img"
+      style="width: 100%"
+      *ngIf="squeal?.squeal?.img"
+      alt="Immagine"
+    />
   </div>
   <hr />
   <div class="squeal-layout pt-0">

@@ -40,7 +40,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         console.log(account);
       });
 
-    this.squealService.getDirectSqueal().subscribe(r => {
+    this.squealService.getDirectSquealPreview().subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
         console.log(this.squeals);

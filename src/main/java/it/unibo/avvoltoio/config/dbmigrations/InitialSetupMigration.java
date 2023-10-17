@@ -41,13 +41,11 @@ public class InitialSetupMigration {
     }
 
     private Authority createAdminAuthority() {
-        Authority adminAuthority = createAuthority(AuthoritiesConstants.ADMIN);
-        return adminAuthority;
+        return createAuthority(AuthoritiesConstants.ADMIN);
     }
 
     private Authority createUserAuthority() {
-        Authority userAuthority = createAuthority(AuthoritiesConstants.USER);
-        return userAuthority;
+        return createAuthority(AuthoritiesConstants.USER);
     }
 
     private void addUsers(Authority userAuthority, Authority adminAuthority) {

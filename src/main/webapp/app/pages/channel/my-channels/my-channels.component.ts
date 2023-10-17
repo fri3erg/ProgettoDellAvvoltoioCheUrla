@@ -15,12 +15,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MyChannelsComponent implements OnInit {
   channels: IChannelDTO[] = [];
-  profileId?: string;
+  userName?: string;
   constructor(protected channelService: ChannelService, protected activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.profileId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
-    this.channelService.getSubscribed(this.profileId ?? '').subscribe(r => {
+    this.userName = this.activatedRoute.snapshot.paramMap.get('name')?.toString();
+    this.channelService.getChannelsUserIsSubbed(this.userName ?? '').subscribe(r => {
       if (r.body) {
         console.log(r.body);
         this.channels = r.body;

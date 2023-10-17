@@ -14,6 +14,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { AlertComponent } from './alert/alert.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 /**
  * Application wide Module
  */
@@ -30,6 +31,7 @@ import { AlertComponent } from './alert/alert.component';
     ToastModule,
     ButtonModule,
     MessagesModule,
+    ConfirmDialogModule,
   ],
   exports: [
     CommonModule,
@@ -48,6 +50,7 @@ import { AlertComponent } from './alert/alert.component';
     ToastModule,
     ButtonModule,
     MessagesModule,
+    ConfirmDialogModule,
   ],
 })
 export default class SharedModule {}

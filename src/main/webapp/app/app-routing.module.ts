@@ -28,19 +28,10 @@ import { DirectMessageComponent } from './pages/direct-message/direct-message/di
           component: NavbarComponent,
           outlet: 'navbar',
         },
-        {
-          path: 'profile',
-          component: ProfileComponent,
-          title: '',
-        },
+
         {
           path: 'notification',
           component: NotifyComponent,
-          title: '',
-        },
-        {
-          path: 'direct-message',
-          component: DirectMessageComponent,
           title: '',
         },
         {

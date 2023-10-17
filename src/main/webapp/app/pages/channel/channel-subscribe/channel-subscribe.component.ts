@@ -10,13 +10,12 @@ import { ChannelUserService } from 'app/entities/channel-user/service/channel-us
 import { Subject, takeUntil } from 'rxjs';
 import { Account } from 'app/core/auth/account.model';
 import SharedModule from 'app/shared/shared.module';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'jhi-channel-subscribe',
   standalone: true,
-  imports: [CommonModule, SharedModule, ConfirmDialogModule],
+  imports: [CommonModule, SharedModule],
   templateUrl: './channel-subscribe.component.html',
   styleUrls: ['./channel-subscribe.component.scss'],
 })

@@ -56,25 +56,22 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       });
 
     this.channelId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
-    if (this.channelId) {
-      this.loadSqueals();
-      this.usersFollowing = this.channel?.users.length ?? 0;
-    }
-    this.channelService.countUsersFollowing(this.channelId ?? '').subscribe(r => {
-      if (r.body) {
-        this.usersFollowing = r.body;
-      }
-    });
+    this.loadChannel();
+    this.loadSqueals();
+    this.loadOther();
   }
-  loadSqueals(): void {
+
+  loadChannel(): void {
     console.log('load');
     this.channelService.findDTO(this.channelId ?? '').subscribe(r => {
       if (r.body) {
         this.channel = r.body;
       }
     });
+  }
 
-    this.squealService.getSquealByChannel(this.channelId ?? '', this.page, this.size).subscribe(r => {
+  loadSqueals(): void {
+    this.squealService.getSquealByChannel(this.channel?.channel.id ?? '', this.page, this.size).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;
@@ -83,9 +80,18 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadOther(): void {
+    this.usersFollowing = this.channel?.users.length ?? 0;
+    this.channelService.countUsersFollowing(this.channel?.channel.id ?? '').subscribe(r => {
+      if (r.body) {
+        this.usersFollowing = r.body;
+      }
+    });
+  }
+
   appendSqueals(): void {
     console.log('load');
-    this.squealService.getSquealByChannel(this.channelId ?? '', this.page, 5).subscribe(r => {
+    this.squealService.getSquealByChannel(this.channel?.channel.id ?? '', this.page, 5).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;
@@ -98,59 +104,6 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     this.loadSqueals();
   }
 
-  sub(c?: IChannelDTO): void {
-    if (c) {
-      //TO DO check security
-
-      const nu: NewChannelUser = {
-        id: null,
-        userId: this.account?.id,
-        channelId: c.channel.id,
-        privilege: PrivilegeType.READ,
-      };
-      this.channelUserService.create(nu).subscribe(r => {
-        if (r.body) {
-          c.users.push(r.body);
-          console.log(c);
-        }
-      });
-    }
-  }
-  unSub(c?: IChannelDTO): void {
-    if (c) {
-      const u = c.users.find(ch => ch.userId === this.account?.id);
-      if (!u) {
-        return;
-      }
-      this.channelUserService.delete(u.id).subscribe(() => {
-        c.users = c.users.filter(obj => obj.id !== u.id);
-      });
-    }
-  }
-
-  isUserSubscribed(c?: IChannelDTO): boolean {
-    if (c) {
-      const u = c.users.find(ch => ch.userId === this.account?.id);
-      return !!u;
-    } else {
-      return false;
-    }
-  }
-  returnColor(c?: IChannelDTO): string {
-    if (c) {
-      switch (c.channel.type) {
-        case ChannelTypes.PRIVATEGROUP:
-          return 'text-bg-info';
-          break;
-        case ChannelTypes.PUBLICGROUP:
-          return 'text-bg-success';
-          break;
-        case ChannelTypes.MOD:
-          return 'text-bg-warning';
-      }
-    }
-    return '';
-  }
   isIntersecting(event: boolean): void {
     console.log(`Element is intersecting`);
     console.log(event);

@@ -2,22 +2,20 @@ package it.unibo.avvoltoio.service;
 
 import it.unibo.avvoltoio.domain.Channel;
 import it.unibo.avvoltoio.domain.ChannelUser;
-import it.unibo.avvoltoio.domain.DmUser;
 import it.unibo.avvoltoio.domain.Squeal;
 import it.unibo.avvoltoio.domain.SquealDestination;
 import it.unibo.avvoltoio.domain.SquealReaction;
 import it.unibo.avvoltoio.domain.SquealViews;
 import it.unibo.avvoltoio.domain.User;
 import it.unibo.avvoltoio.domain.enumeration.ChannelTypes;
-import it.unibo.avvoltoio.repository.ChannelRepository;
 import it.unibo.avvoltoio.repository.ChannelUserRepository;
-import it.unibo.avvoltoio.repository.DMUserRepository;
 import it.unibo.avvoltoio.repository.SquealCatRepository;
 import it.unibo.avvoltoio.repository.SquealReactionRepository;
 import it.unibo.avvoltoio.repository.SquealRepository;
 import it.unibo.avvoltoio.repository.SquealViewsRepository;
-import it.unibo.avvoltoio.repository.UserCharsRepository;
+import it.unibo.avvoltoio.repository.UserRepository;
 import it.unibo.avvoltoio.security.SecurityUtils;
+import it.unibo.avvoltoio.service.dto.AdminUserDTO;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.service.dto.ReactionDTO;
 import it.unibo.avvoltoio.service.dto.SquealDTO;
@@ -49,13 +47,10 @@ public class SquealService {
     private ChannelService channelService;
 
     @Autowired
-    private UserCharsService userCharsService;
-
-    @Autowired
-    private ChannelRepository channelRepository;
-
-    @Autowired
     private ChannelUserRepository channelUserRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SquealRepository squealRepository;
@@ -68,12 +63,6 @@ public class SquealService {
 
     @Autowired
     private SquealViewsRepository squealViewsRepository;
-
-    @Autowired
-    private DMUserRepository dmUserRepository;
-
-    @Autowired
-    private UserCharsRepository userCharsRepository;
 
     public SquealDTO getSqueal(String id, String userId) {
         Squeal s = squealRepository.findById(id).orElseThrow(NullPointerException::new);
@@ -103,8 +92,8 @@ public class SquealService {
 
     private List<String> getSquealUser(String name) {
         List<String> retUsers = new ArrayList<>();
-        List<User> us = userService.getUsersByName(name.substring(1));
-        for (User u : us) {
+        List<AdminUserDTO> us = userService.getUsersByName(name.substring(1));
+        for (AdminUserDTO u : us) {
             retUsers.add("@" + u.getLogin());
         }
         return retUsers;
@@ -135,7 +124,7 @@ public class SquealService {
         for (SquealReaction sr : rList) {
             ReactionDTO r = map.computeIfAbsent(sr.getEmoji(), k -> new ReactionDTO(k));
             r.setNumber(r.getNumber() + 1);
-            //r.setUser(cUid.equals(sr.getUserId()));
+            // r.setUser(cUid.equals(sr.getUserId()));
         }
 
         return map.values().stream().sorted(reactionsByNumber).toList();
@@ -187,9 +176,7 @@ public class SquealService {
                     case MESSAGE:
                         destinationId = getDestinationIdMessage(sd);
                         break;
-                    case MOD:
-                    case PRIVATEGROUP:
-                    case PUBLICGROUP:
+                    case MOD, PRIVATEGROUP, PUBLICGROUP:
                         destinationId = getDestinationIdChannel(sd, id);
                         break;
                     default:
@@ -206,8 +193,10 @@ public class SquealService {
                 s.getDestinations().clear();
                 s.setTimestamp(System.currentTimeMillis());
                 s.setUserId(id);
-                //s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
+                // s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
                 s.setnCharacters(getNumberOfCharacters(s));
+
+                //TODO: Check image size
 
                 s = squealRepository.save(s);
 
@@ -246,7 +235,7 @@ public class SquealService {
 
     private SquealViews addView(Squeal s, String id) {
         Optional<SquealViews> v = squealViewsRepository.findFirstBySquealId(s.getId());
-        //add or smm for no views
+        // add or smm for no views
         boolean addView = !id.equals(s.getUserId());
         if (v.isPresent()) {
             if (addView) {
@@ -286,14 +275,13 @@ public class SquealService {
     }
 
     private Boolean isUserAuthorized(String id) {
-        //add for smm
+        // add for smm
         return id.equals(getCurrentUserId());
     }
 
     public List<SquealDTO> getDirectSquealPreview(String id) {
         List<SquealDTO> ret = new ArrayList<>();
         if (isUserAuthorized(id)) {
-            List<DmUser> test = dmUserRepository.findDirectMessageUser(id);
             List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(id);
 
             Map<String, Squeal> lastSqualsByUser = mySqueals
@@ -318,7 +306,8 @@ public class SquealService {
         return ret;
     }
 
-    public List<SquealDTO> getSquealByUser(String userId, String myId) {
+    public List<SquealDTO> getSquealByUser(String userName, String myId) {
+        String userId = userRepository.findOneByLogin(userName).map(User::getId).orElse("");
         List<SquealDTO> ret = new ArrayList<>();
         if (isUserAuthorized(myId)) {
             List<Squeal> squealsReceived = new ArrayList<>();
@@ -375,11 +364,12 @@ public class SquealService {
         return squealRepository.countByDestinations_DestinationId(id);
     }
 
-    public List<SquealDTO> getSquealMadeByUser(String id) {
+    public List<SquealDTO> getSquealMadeByUser(String name) {
         List<SquealDTO> dto = new ArrayList<>();
-        List<Squeal> squeals = squealRepository.findAllByUserId(id);
+        String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
+        List<Squeal> squeals = squealRepository.findAllByUserId(userId);
         for (Squeal s : squeals) {
-            dto.add(loadSquealData(s, id));
+            dto.add(loadSquealData(s, name));
         }
         return dto;
     }

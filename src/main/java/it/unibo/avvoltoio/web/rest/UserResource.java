@@ -138,12 +138,12 @@ public class UserResource {
     }
 
     @GetMapping("/users/search/{name}")
-    public ResponseEntity<List<User>> searchChannel(@PathVariable String name) {
+    public ResponseEntity<List<AdminUserDTO>> searchChannel(@PathVariable String name) {
         log.debug("REST request to get Channel : {}", name);
         if (name.startsWith("@")) {
             name = name.substring(1);
         }
-        List<User> ret = userService.getUsersByName(name);
+        List<AdminUserDTO> ret = userService.getUsersByName(name);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
@@ -227,10 +227,4 @@ public class UserResource {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
         log.debug("REST request to delete User: {}", login);
-        userService.deleteUser(login);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createAlert(applicationName, "A user is deleted with identifier " + login, login))
-            .build();
-    }
-}
+        us

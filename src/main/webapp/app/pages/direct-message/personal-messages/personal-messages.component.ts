@@ -17,22 +17,16 @@ import { Subject } from 'rxjs';
   styleUrls: ['./personal-messages.component.scss'],
 })
 export class PersonalMessagesComponent implements OnInit {
-  userId?: string;
+  username?: string | null;
   squeals?: ISquealDTO[];
   account: Account | null = null;
 
-
-  constructor(
-    protected squealService: SquealService,
-    protected channelService: ChannelService,
-    protected channelUserService: ChannelUserService,
-    private activatedRoute: ActivatedRoute
-  ) {}
+  constructor(protected squealService: SquealService, protected channelService: ChannelService, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.userId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();    
-    if (this.userId) {
-      this.squealService.getSquealByUser(this.userId).subscribe(r => {
+    this.username = this.activatedRoute.snapshot.paramMap.get('username');
+    if (this.username) {
+      this.squealService.getSquealByUser(this.username).subscribe(r => {
         if (r.body) {
           this.squeals = r.body;
           console.log(this.squeals);

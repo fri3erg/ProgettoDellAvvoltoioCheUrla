@@ -8,6 +8,7 @@ export interface IUserCharsDTO {
   type: Type;
   remainingChars?: number | null;
 }
+
 export enum Type {
   MONTH,
   WEEK,

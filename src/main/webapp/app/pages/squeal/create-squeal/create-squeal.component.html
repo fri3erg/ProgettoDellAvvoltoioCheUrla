@@ -33,4 +33,45 @@
     </div>
     <p>{{ getRemainingChars() }} chars left</p>
   </div>
+
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="field_notificationImage">Immagine</label>
+      <div>
+        <img
+          [src]="'data:' + dto?.squeal?.imgContentType + ';base64,' + dto?.squeal?.img"
+          style="width: 100%"
+          *ngIf="dto?.squeal?.img"
+          alt="Immagine"
+        />
+        <div *ngIf="dto?.squeal?.img" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
+          <span class="pull-right" style="color: white">{{ dto?.squeal?.imgContentType }}, {{ byteSize(dto?.squeal?.img) }}</span>
+          <button type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </div>
+
+        <div class="p-grid">
+          <div class="p-col-12" *ngIf="dto?.squeal?.img">
+            <button class="btn btn-block btn-secondary" type="button" (click)="rotateImage()">Ruotare</button>
+          </div>
+          <div class="p-col-6">
+            <button class="btn btn-block btn-primary" type="button" onclick="document.getElementById('file_select').click()">
+              Seleziona
+            </button>
+          </div>
+          <div class="p-col-6">
+            <button class="btn btn-block btn-success" type="button" onclick="document.getElementById('file_camera').click()">
+              Scatta foto
+            </button>
+          </div>
+        </div>
+
+        <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
+        <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+      </div>
+
+                
+    </div>
+  </div>
 </form>

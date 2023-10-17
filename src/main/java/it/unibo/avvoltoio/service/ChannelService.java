@@ -7,12 +7,15 @@ import it.unibo.avvoltoio.domain.enumeration.ChannelTypes;
 import it.unibo.avvoltoio.domain.enumeration.PrivilegeType;
 import it.unibo.avvoltoio.repository.ChannelRepository;
 import it.unibo.avvoltoio.repository.ChannelUserRepository;
+import it.unibo.avvoltoio.repository.UserRepository;
 import it.unibo.avvoltoio.security.SecurityUtils;
+import it.unibo.avvoltoio.service.dto.AdminUserDTO;
 import it.unibo.avvoltoio.service.dto.ChannelDTO;
 import it.unibo.avvoltoio.web.rest.errors.SquealException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,9 @@ public class ChannelService {
     private ChannelUserRepository channelUserRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
 
     public List<ChannelDTO> searchChannels(String name, String id) {
@@ -34,22 +40,34 @@ public class ChannelService {
             List<Channel> cList = channelRepository.findAllByNameContainsOrderByName(name);
             for (Channel c : cList) {
                 ChannelDTO cDTO = loadUsers(c);
-                boolean valid = true;
-                if (c.getType() == ChannelTypes.PRIVATEGROUP) {
-                    valid = false;
-                    for (ChannelUser u : cDTO.getUsers()) {
-                        if (u.getUserId().equals(id)) {
-                            valid = true;
+                switch (c.getType()) {
+                    case PRIVATEGROUP:
+                        {
+                            if (isUserSubscribed(id, cDTO)) {
+                                retList.add(cDTO);
+                            }
                             break;
                         }
-                    }
-                }
-                if (valid) {
-                    retList.add(cDTO);
+                    case MESSAGE:
+                        {
+                            break;
+                        }
+                    case MOD, PUBLICGROUP:
+                        {
+                            retList.add(cDTO);
+                            break;
+                        }
+                    default:
+                        throw new IllegalArgumentException("Unexpected value: " + c.getType());
                 }
             }
         }
         return retList;
+    }
+
+    private boolean isUserSubscribed(String id, ChannelDTO cDTO) {
+        return cDTO.getUsers().stream().anyMatch(c -> c.getUserId() != null && c.getUserId().equals(id));
+        // return  cDTO.getUsers().stream().map(ChannelUser::getUserId).toList().contains(id);
     }
 
     public List<Channel> getChannelNames(String name) {
@@ -80,32 +98,35 @@ public class ChannelService {
 
     public ChannelDTO insertOrUpdateChannel(ChannelDTO channel, String id) {
         Channel c = channel.getChannel();
-
-        if (isIncorrectName(c.getName())) {
-            throw new SquealException("Channel name " + c.getName() + " is invalid");
+        String channelName = c.getName();
+        String channelId = c.getId();
+        ChannelTypes channelType = c.getType();
+        if (isIncorrectName(channelName)) {
+            throw new SquealException("Channel name " + channelName + " is invalid");
         }
-        c.setType(ChannelTypes.getChannelType(c.getName()));
+        c.setType(ChannelTypes.getChannelType(channelName));
 
-        if (c.getType() == null) {
-            throw new SquealException("Channel name " + c.getName() + " is invalid");
+        if (channelType == null) {
+            throw new SquealException("Channel name " + channelName + " is invalid");
         }
 
-        if (c.getType() == ChannelTypes.MOD && !SecurityUtils.isCurrentUserMod()) {
-            throw new SquealException("channel " + c.getName() + " is reserved");
+        if (channelType == ChannelTypes.MOD && !SecurityUtils.isCurrentUserMod()) {
+            throw new SquealException("channel " + channelName + " is reserved");
         }
         // check if exist
-        Optional<Channel> cc = channelRepository.findFirstByName(c.getName());
+        Optional<Channel> cc = channelRepository.findFirstByName(channelName);
 
-        if (cc.isPresent() && !cc.get().getId().equals(c.getId())) {
-            throw new SquealException("Channel name " + c.getName() + " already exist");
+        if (cc.isPresent() && !cc.get().getId().equals(channelId)) {
+            throw new SquealException("Channel name " + channelName + " already exist");
         }
-        boolean createOwner = (c.getId() == null);
+        boolean createOwner = (channelId == null);
 
         c = channelRepository.save(c);
+        // TODO : check createOwner
         if (createOwner) {
             ChannelUser user = new ChannelUser();
             user.setUserId(id);
-            user.setChannelId(c.getId());
+            user.setChannelId(channelId);
             user.setPrivilege(PrivilegeType.ADMIN);
             channelUserRepository.save(user);
         }
@@ -147,7 +168,7 @@ public class ChannelService {
     }
 
     private Boolean isUserAuthorized(String id) {
-        //add for smm
+        // TODO add for smm
         return id.equals(getCurrentUserId());
     }
 
@@ -172,25 +193,41 @@ public class ChannelService {
         return valid;
     }
 
-    public List<ChannelDTO> getSub(String id) {
+    public List<ChannelDTO> getSub(String name) {
+        String userId;
+        if (name.equals("")) {
+            userId = getCurrentUserId();
+        } else {
+            userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
+        }
         List<ChannelDTO> channels = new ArrayList<>();
-        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(id);
-
+        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(userId);
         Channel temp;
         for (ChannelUser c : channeluser) {
             temp = channelRepository.findFirstById(c.getChannelId());
-            if (temp.getType() == ChannelTypes.PRIVATEGROUP) {
-                channels.add(loadUsers(temp));
+            if ((temp.getType() == ChannelTypes.PRIVATEGROUP && !isUserAuthorized(userId)) || temp.getType() == ChannelTypes.MESSAGE) {
+                continue;
             }
+            channels.add(loadUsers(temp));
         }
         return channels;
     }
 
-    public Integer countSub(String id) {
-        return getSub(id).size();
+    public Long countSub(String id) {
+        return (long) getSub(id).size();
     }
 
     public Long getChannelSubsCount(String id) {
         return channelUserRepository.countByChannelId(id);
+    }
+
+    public List<AdminUserDTO> getSubscribedToChannel(String id) {
+        List<String> chUsers = channelUserRepository
+            .findAllByChannelId(id)
+            .stream()
+            .map(ChannelUser::getUserId)
+            .collect(Collectors.toList());
+
+        return userRepository.findAllById(chUsers).stream().map(AdminUserDTO::new).collect(Collectors.toList());
     }
 }

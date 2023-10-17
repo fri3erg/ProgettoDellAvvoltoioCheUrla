@@ -5,7 +5,7 @@
       {{ this.account.firstName || 'maffeo' }}
       {{ this.account.lastName || 'raggi' }}
       {{ this.account.login || 'gaymaffeo42' }}
-      <span style="background-color: red" [routerLink]="['/profile', profileId, '/mychannels']">
+      <span style="background-color: red" [routerLink]="['/profile', profileName, 'mychannels']">
         {{ this.nChannels }} channels subscribed to
       </span>
       {{ squeals?.length ?? 0 }} squeals squealed

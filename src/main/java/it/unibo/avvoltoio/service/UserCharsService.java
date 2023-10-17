@@ -42,7 +42,7 @@ public class UserCharsService {
 
     public Optional<UserChars> getCurrentUserChars(String id) {
         if (!isUserAuthorized(id)) {
-            return null;
+            return Optional.ofNullable(null);
         }
         return userCharsRepository.findByUserId(id);
     }
@@ -56,13 +56,16 @@ public class UserCharsService {
         return userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new);
     }
 
+    //TODO: check chars
     public UserCharsDTO calcChars(String userId) {
         UserCharsDTO usercharsDTO = new UserCharsDTO();
 
         long smTime = getStartOfMonth();
         long wkTime = getStartOfWeek();
         long dayTime = getStartOfDay();
-        int totgg, totwk, totmth;
+        int totgg;
+        int totwk;
+        int totmth;
         totgg = totwk = totmth = 0;
         List<Squeal> mSqueals = squealRepository.findAllByUserIdAndTimestampGreaterThanOrderByTimestamp(userId, smTime);
         for (Squeal s : mSqueals) {
@@ -109,23 +112,20 @@ public class UserCharsService {
         Calendar date = new GregorianCalendar();
         date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
         setStartOfDay(date);
-        long smTime = date.getTimeInMillis();
-        return smTime;
+        return date.getTimeInMillis();
     }
 
     private long getStartOfWeek() {
         Calendar date = new GregorianCalendar();
         date.set(Calendar.DAY_OF_WEEK, date.getActualMinimum(Calendar.DAY_OF_WEEK));
         setStartOfDay(date);
-        long smTime = date.getTimeInMillis();
-        return smTime;
+        return date.getTimeInMillis();
     }
 
     private long getStartOfDay() {
         Calendar date = new GregorianCalendar();
         setStartOfDay(date);
-        long smTime = date.getTimeInMillis();
-        return smTime;
+        return date.getTimeInMillis();
     }
 
     private void setStartOfDay(Calendar date) {

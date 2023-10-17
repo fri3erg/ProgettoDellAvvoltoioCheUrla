@@ -24,7 +24,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   nChannels = 0;
   squeals?: ISquealDTO[];
-  profileId?: string;
+  profileName?: string;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -36,26 +36,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.profileId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
+    this.profileName = this.activatedRoute.snapshot.paramMap.get('name')?.toString();
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
       .subscribe(account => {
         this.account = account;
         console.log(account);
-        if (!this.profileId) {
-          this.profileId = account?.id;
-          console.log(this.profileId);
+        if (!this.profileName) {
+          this.profileName = account?.login;
+          console.log(this.profileName);
         }
       });
-    this.squealService.getSquealMadeByUser(this.profileId ?? '').subscribe(r => {
+    this.squealService.getSquealMadeByUser(this.profileName ?? '').subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
         console.log('users squeals:');
         console.log(this.squeals);
       }
     });
-    this.channelService.countChannelSubscribed(this.profileId ?? '').subscribe(r => {
+    this.channelService.countChannelsUserIsSubbed(this.profileName ?? '').subscribe(r => {
       if (r.body) {
         this.nChannels = r.body;
       }

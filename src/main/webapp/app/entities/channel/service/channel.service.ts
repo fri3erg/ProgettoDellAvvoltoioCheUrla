@@ -7,6 +7,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { createRequestOption } from 'app/core/request/request-util';
 import { IChannel, NewChannel } from '../channel.model';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
+import { Account } from 'app/core/auth/account.model';
 
 export type PartialUpdateChannel = Partial<IChannel> & Pick<IChannel, 'id'>;
 
@@ -19,21 +20,25 @@ export class ChannelService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
+  getUsersSubbedToChannel(id: string): Observable<HttpResponse<Account[]>> {
+    return this.http.get<Account[]>(`api/channels/getSubscribed/${id}`, { observe: 'response' });
+  }
+
   countUsersFollowing(id: string): Observable<HttpResponse<number>> {
     return this.http.get<number>(`api/channels/countSubs/${id}`, { observe: 'response' });
   }
 
-  getSubscribed(id: string): Observable<HttpResponse<IChannelDTO[]>> {
-    return this.http.get<IChannelDTO[]>(`api/channels/sub/get/${id}`, { observe: 'response' });
+  getChannelsUserIsSubbed(name: string): Observable<HttpResponse<IChannelDTO[]>> {
+    return this.http.get<IChannelDTO[]>(`api/channels/sub/get/${name}`, { observe: 'response' });
   }
 
-  countChannelSubscribed(id: string): Observable<HttpResponse<number>> {
-    const url = this.applicationConfigService.getEndpointFor(`api/channels/sub/count/${id}`);
+  countChannelsUserIsSubbed(name: string): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/channels/sub/count/${name}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
 
-  findDTO(id: string): Observable<HttpResponse<IChannelDTO>> {
-    return this.http.get<IChannelDTO>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  findDTO(name: string): Observable<HttpResponse<IChannelDTO>> {
+    return this.http.get<IChannelDTO>(`${this.resourceUrl}/${name}`, { observe: 'response' });
   }
 
   insertOrUpdate(channel: IChannelDTO): Observable<HttpResponse<IChannelDTO>> {
