@@ -35,7 +35,7 @@ const channelRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: 'subscribed:id',
+    path: 'subscribed/:id',
     component: UsersOfChannelComponent,
   },
 ];

@@ -46,7 +46,7 @@
         />
         <div *ngIf="dto?.squeal?.img" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
           <span class="pull-right" style="color: white">{{ dto?.squeal?.imgContentType }}, {{ byteSize(dto?.squeal?.img) }}</span>
-          <button type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
+          <button title="clear" type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
             <fa-icon icon="times"></fa-icon>
           </button>
         </div>

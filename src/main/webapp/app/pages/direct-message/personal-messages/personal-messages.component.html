@@ -27,3 +27,24 @@
     </div>
   </ng-container>
 </div>
+<form class="message bg-gradient rounded-4 m-3 p-3">
+  <div class="input-group mb-3">
+    <div class="form-floating">
+      <textarea
+        [maxlength]="charsDTO?.remainingChars ?? 0"
+        class="form-control"
+        name="body"
+        [(ngModel)]="message"
+        placeholder="Leave your squeal here"
+        id="floatingTextarea2"
+        style="height: 100px"
+      ></textarea>
+      <label for="floatingTextarea2">body</label>
+    </div>
+    <div style="display: flex">
+      <div style="flex: 1">
+        <button class="btn btn-primary mt-2" type="button" (click)="createSqueal()">Invia</button>
+      </div>
+    </div>
+  </div>
+</form>

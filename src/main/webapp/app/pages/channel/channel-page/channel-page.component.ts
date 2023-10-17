@@ -58,7 +58,6 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     this.channelId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
     this.loadChannel();
     this.loadSqueals();
-    this.loadOther();
   }
 
   loadChannel(): void {
@@ -66,12 +65,13 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     this.channelService.findDTO(this.channelId ?? '').subscribe(r => {
       if (r.body) {
         this.channel = r.body;
+        this.loadOther();
       }
     });
   }
 
   loadSqueals(): void {
-    this.squealService.getSquealByChannel(this.channel?.channel.id ?? '', this.page, this.size).subscribe(r => {
+    this.squealService.getSquealByChannel(this.channelId ?? '', this.page, this.size).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;
@@ -82,11 +82,6 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
 
   loadOther(): void {
     this.usersFollowing = this.channel?.users.length ?? 0;
-    this.channelService.countUsersFollowing(this.channel?.channel.id ?? '').subscribe(r => {
-      if (r.body) {
-        this.usersFollowing = r.body;
-      }
-    });
   }
 
   appendSqueals(): void {

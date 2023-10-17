@@ -194,12 +194,7 @@ public class ChannelService {
     }
 
     public List<ChannelDTO> getSub(String name) {
-        String userId;
-        if (name.equals("")) {
-            userId = getCurrentUserId();
-        } else {
-            userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
-        }
+        String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
         List<ChannelDTO> channels = new ArrayList<>();
         List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(userId);
         Channel temp;
