@@ -208,16 +208,12 @@ public class ChannelResource {
         return ResponseUtil.wrapOrNotFound(channel);
     }
 
-    @GetMapping("/channels/sub/get")
-    public ResponseEntity<List<ChannelDTO>> getSub() {
-        log.debug("REST request to get sub : {}");
-        Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(channelService.getCurrentUserId()));
-        return ResponseUtil.wrapOrNotFound(channels);
-    }
-
-    @GetMapping("/channels/sub/get/SMM/{id}")
+    @GetMapping("/channels/sub/get/{id}")
     public ResponseEntity<List<ChannelDTO>> getSub(@PathVariable String id) {
         log.debug("REST request to get sub : {}");
+        if (id.equals("") || id == null) {
+            id = channelService.getCurrentUserId();
+        }
         Optional<List<ChannelDTO>> channels = Optional.ofNullable(channelService.getSub(id));
         return ResponseUtil.wrapOrNotFound(channels);
     }
@@ -225,6 +221,9 @@ public class ChannelResource {
     @GetMapping("/channels/sub/count/{id}")
     public ResponseEntity<Integer> countSub(@PathVariable String id) {
         log.debug("REST request to count sub : {}");
+        if (id.equals("") || id == null) {
+            id = channelService.getCurrentUserId();
+        }
         Optional<Integer> nChannels = Optional.ofNullable(channelService.countSub(id));
         return ResponseUtil.wrapOrNotFound(nChannels);
     }
