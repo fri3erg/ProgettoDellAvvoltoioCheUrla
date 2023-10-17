@@ -188,14 +188,15 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
-        this.clearUserCaches(newUser);
         
         SMMVIP smmUser = new SMMVIP();
         smmUser.setUserId(newUser.getId());
         authorityRepository.findById(AuthoritiesConstants.SMM).ifPresent(authorities::add);
-        smmvipRepository.save(smmUser);
         
+        newUser.setAuthorities(authorities);
+        userRepository.save(newUser);
+        smmvipRepository.save(smmUser);
+        this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
