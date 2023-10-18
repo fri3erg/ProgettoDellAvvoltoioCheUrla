@@ -1,7 +1,10 @@
 package it.unibo.avvoltoio.web.rest;
 
+import it.unibo.avvoltoio.domain.SMMUser;
 import it.unibo.avvoltoio.domain.SMMVIP;
 import it.unibo.avvoltoio.repository.SMMVIPRepository;
+import it.unibo.avvoltoio.security.AuthoritiesConstants;
+import it.unibo.avvoltoio.service.SMMVIPService;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
 
 import java.net.URI;
@@ -9,10 +12,15 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -32,6 +40,9 @@ public class SMMVIPResource {
     private String applicationName;
 
     private final SMMVIPRepository sMMVIPRepository;
+    
+    @Autowired
+    private SMMVIPService smmvipservice;
 
     public SMMVIPResource(SMMVIPRepository sMMVIPRepository) {
         this.sMMVIPRepository = sMMVIPRepository;
@@ -169,13 +180,23 @@ public class SMMVIPResource {
     }
     
     /**
-     * {@code POST  /addsmm} : Add a SMM.
+     * {@code POST  /add-smm/:id} : Add a SMM.
      *
      * @param sMMVIP the sMMVIP to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new sMMVIP, or with status {@code 400 (Bad Request)} if the sMMVIP has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-
+    @PostMapping("/add-smm/{id}")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.VIP + "')")
+    public ResponseEntity<SMMVIP> addSMM(@PathVariable String id) throws URISyntaxException {
+        log.debug("REST request to add SMM : {}", id);
+        SMMVIP result = smmvipservice.addSMM(id);
+        return ResponseEntity
+            .created(new URI("/api/add-smm/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
+            .body(result);
+        }
+   
 
 	/**
 	 * {@code GET  /smmclients/:id} : get all SMM clients.
@@ -183,6 +204,11 @@ public class SMMVIPResource {
 	 * @param id the id of the sMMVIP to retrieve.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the sMMVIP, or with status {@code 404 (Not Found)}.
 	 */
-
+    @GetMapping("/smmclients/{id}")
+    public ResponseEntity<Set<SMMUser>> getSMMclients(@PathVariable String id) {
+        log.debug("REST request to get SMM clients : {}", id);
+        Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUserId(id).map(SMMVIP::getUsers).orElse(null);
+        return new ResponseEntity<>(sMMclients, HttpStatus.OK);
+    }
 }
 
