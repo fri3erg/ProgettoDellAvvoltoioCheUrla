@@ -182,12 +182,12 @@ public class SMMVIPResource {
     /**
      * {@code POST  /add-smm/:id} : Add a SMM.
      *
-     * @param sMMVIP the sMMVIP to create.
+     * @param id of the smm
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new sMMVIP, or with status {@code 400 (Bad Request)} if the sMMVIP has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/add-smm/{id}")
-    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.VIP + "')")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<SMMVIP> addSMM(@PathVariable String id) throws URISyntaxException {
         log.debug("REST request to add SMM : {}", id);
         SMMVIP result = smmvipservice.addSMM(id);
@@ -201,10 +201,11 @@ public class SMMVIPResource {
 	/**
 	 * {@code GET  /smmclients/:id} : get all SMM clients.
 	 *
-	 * @param id the id of the sMMVIP to retrieve.
+	 * @param id of the smm
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the sMMVIP, or with status {@code 404 (Not Found)}.
 	 */
     @GetMapping("/smmclients/{id}")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<Set<SMMUser>> getSMMclients(@PathVariable String id) {
         log.debug("REST request to get SMM clients : {}", id);
         Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUserId(id).map(SMMVIP::getUsers).orElse(null);
