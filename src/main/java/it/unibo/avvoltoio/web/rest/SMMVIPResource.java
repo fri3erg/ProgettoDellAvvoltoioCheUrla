@@ -187,7 +187,7 @@ public class SMMVIPResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/add-smm/{id}")
-    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
+    @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.VIP + "')")
     public ResponseEntity<SMMVIP> addSMM(@PathVariable String id) throws URISyntaxException {
         log.debug("REST request to add SMM : {}", id);
         SMMVIP result = smmvipservice.addSMM(id);
