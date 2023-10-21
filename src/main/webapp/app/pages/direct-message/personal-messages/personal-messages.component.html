@@ -1,7 +1,17 @@
-<div class="rounded-4 mytitlecard p-2 m-1">
+<div class="rounded-4 mytitlecard p-2 m-1" [routerLink]="['/profile', username]">
   {{ username }}
 </div>
 <div style="overflow: hidden; height: xyz" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+  <div
+    jhiObserveElement
+    #intersection="intersection"
+    [class.example-card--is-intersecting]="intersection._isIntersecting"
+    (isIntersecting)="isIntersecting($event)"
+    [isContinuous]="true"
+    *ngIf="hasMorePage"
+  >
+    <span> Loading more...</span>
+  </div>
   <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
     <div class="col-8" style="float: left" *ngIf="username == squeal.userName">
       <div class="message-layout rounded-4 m-3 p-2">

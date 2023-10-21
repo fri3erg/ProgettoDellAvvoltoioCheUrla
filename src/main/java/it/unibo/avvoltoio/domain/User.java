@@ -74,6 +74,28 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
     @Field("reset_date")
     private Instant resetDate = null;
 
+    @Field("img")
+    private byte[] img;
+
+    @Field("img_content_type")
+    private String imgContentType;
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
+
+    public String getImgContentType() {
+        return imgContentType;
+    }
+
+    public void setImgContentType(String imgContentType) {
+        this.imgContentType = imgContentType;
+    }
+
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
 
@@ -211,6 +233,8 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
+            ", img='" + img + '\'' +
+            ", imgContentType='" + imgContentType + '\'' +
             "}";
     }
 }

@@ -178,27 +178,47 @@ public class SquealResource {
     }
 
     @GetMapping("/squeal-by-user/{username}")
-    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(@PathVariable String username) {
+    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(
+        @PathVariable String username,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size
+    ) {
         log.debug("REST request to get Squeal : {}", username);
 
-        List<SquealDTO> ret = squealService.getSquealByUser(username, squealService.getCurrentUserId());
+        List<SquealDTO> ret = squealService.getSquealByUser(page, size, username, squealService.getCurrentUserId());
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     @GetMapping("/squeal-by-user-smm/{username}/{myId}")
     @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
-    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(@PathVariable String username, @PathVariable String myId) {
+    public ResponseEntity<List<SquealDTO>> getSquealsSentByUser(
+        @PathVariable String username,
+        @PathVariable String myId,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size
+    ) {
         log.debug("REST request to get Squeal : {}", username);
 
-        List<SquealDTO> ret = squealService.getSquealByUser(username, myId);
+        List<SquealDTO> ret = squealService.getSquealByUser(page, size, username, myId);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     @GetMapping("/squeal-made-by-user/{name}")
-    public ResponseEntity<List<SquealDTO>> getSquealsMade(@PathVariable String name) {
-        List<SquealDTO> ret = squealService.getSquealMadeByUser(name);
+    public ResponseEntity<List<SquealDTO>> getSquealsMade(
+        @PathVariable String name,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size
+    ) {
+        List<SquealDTO> ret = squealService.getSquealMadeByUser(name, page, size);
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
+    }
+
+    @GetMapping("/squeal-made-by-user-count/{name}")
+    public ResponseEntity<Long> countSquealsMade(@PathVariable String name) {
+        Long ret = squealService.countSquealMadeByUser(name);
 
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }

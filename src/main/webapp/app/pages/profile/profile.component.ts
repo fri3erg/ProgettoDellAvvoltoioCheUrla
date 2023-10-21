@@ -6,7 +6,6 @@ import { ChannelUserService } from 'app/entities/channel-user/service/channel-us
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Account } from 'app/core/auth/account.model';
-import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { CreateSquealComponent } from '../squeal/create-squeal/create-squeal.component';
 import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component';
@@ -25,6 +24,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   nChannels = 0;
   squeals?: ISquealDTO[];
   profileName?: string;
+  newphoto = false;
+  edit = false;
+  squealslength = 0;
+  page = 0;
+  sizeofpage = 5;
+  hasMorePage = false;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -48,9 +53,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
           console.log(this.profileName);
         }
       });
-    this.squealService.getSquealMadeByUser(this.profileName ?? '').subscribe(r => {
+    this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
       if (r.body) {
         this.squeals = r.body;
+        console.log('users squeals:');
+        console.log(this.squeals);
+      }
+    });
+    this.squealService.countSquealMadeByUser(this.profileName ?? '').subscribe(r => {
+      if (r.body) {
+        this.squealslength = r.body;
         console.log('users squeals:');
         console.log(this.squeals);
       }
@@ -62,8 +74,143 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  setImage(): void {
+    console.log(this.account?.img);
+    if (this.account) {
+      this.accountService.setPhoto(this.account).subscribe(r => {
+        if (r.body && this.account) {
+          this.account = r.body;
+          this.newphoto = false;
+          this.edit = false;
+          console.log(this.account);
+        }
+      });
+    }
+  }
+
+  setFileData(event: any): void {
+    const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+    if (eventTarget?.files?.[0]) {
+      const file: File = eventTarget.files[0];
+      if (!file.type.startsWith('image/')) {
+        // message serivce errpr
+        return;
+      } else {
+        this.toBase64(file, (base64Data: string) => {
+          if (!this.account) {
+            return;
+          }
+          this.account.img = base64Data;
+          this.account.imgContentType = file.type;
+          this.newphoto = true;
+          console.log(this.account);
+        });
+      }
+    } else {
+      // message service no file selected
+    }
+  }
+
+  rotateImage(): void {
+    if (!this.account?.imgContentType || !this.account.img) {
+      return;
+    }
+    this.newphoto = true;
+    const prev = this.account.img;
+    const base = 'data:' + this.account.imgContentType + ';base64,';
+    let result = this.rotateBase64Image90deg(base + prev, true);
+    result = result.replace(base, '');
+    this.account.img = result;
+  }
+
+  rotateBase64Image90deg(base64Image: string, isClockwise: boolean): string {
+    // create an off-screen canvas
+    const offScreenCanvas = document.createElement('canvas');
+    const offScreenCanvasCtx = offScreenCanvas.getContext('2d');
+
+    // cteate Image
+    const img = new Image();
+    img.src = base64Image;
+
+    // set its dimension to rotated size
+    offScreenCanvas.height = img.width;
+    offScreenCanvas.width = img.height;
+
+    // rotate and draw source image into the off-screen canvas:
+    if (isClockwise) {
+      offScreenCanvasCtx?.rotate((90 * Math.PI) / 180);
+      offScreenCanvasCtx?.translate(0, -offScreenCanvas.width);
+    } else {
+      offScreenCanvasCtx?.rotate((-90 * Math.PI) / 180);
+      offScreenCanvasCtx?.translate(-offScreenCanvas.height, 0);
+    }
+    offScreenCanvasCtx?.drawImage(img, 0, 0);
+
+    // encode image to data-uri with base64
+    const ret = offScreenCanvas.toDataURL('image/jpeg', 100);
+    return ret;
+  }
+
+  clearInputImage(): void {
+    if (!this.account) {
+      return;
+    }
+    this.newphoto = false;
+    this.account.imageUrl = null;
+    this.account.imgContentType = null;
+    // if (this.elementRef && idInput && this.elementRef.nativeElement.querySelector('#' + idInput)) {
+    // this.elementRef.nativeElement.querySelector('#' + idInput).value =null;
+    // }
+  }
+
+  byteSize(base64String?: string | null): string {
+    if (!base64String) {
+      return '';
+    }
+    return this.formatAsBytes(this.size(base64String));
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Method to convert the file to base64
+   */
+  private toBase64(file: File, callback: (base64Data: string) => void): void {
+    const fileReader: FileReader = new FileReader();
+    fileReader.onload = (e: ProgressEvent<FileReader>) => {
+      if (typeof e.target?.result === 'string') {
+        const base64Data: string = e.target.result.substring(e.target.result.indexOf('base64,') + 'base64,'.length);
+        callback(base64Data);
+      }
+    };
+    fileReader.readAsDataURL(file);
+  }
+
+  private endsWith(suffix: string, str: string): boolean {
+    return str.includes(suffix, str.length - suffix.length);
+  }
+
+  private paddingSize(value: string): number {
+    if (this.endsWith('==', value)) {
+      return 2;
+    }
+    if (this.endsWith('=', value)) {
+      return 1;
+    }
+    return 0;
+  }
+
+  private size(value: string): number {
+    return (value.length / 4) * 3 - this.paddingSize(value);
+  }
+
+  private formatAsBytes(size?: number | null): string {
+    if (!size) {
+      return '';
+    }
+    return size.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' bytes'; // NOSONAR
   }
 }

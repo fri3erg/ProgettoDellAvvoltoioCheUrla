@@ -137,6 +137,16 @@ public class UserResource {
         }
     }
 
+    @PostMapping("/account/img-update")
+    public ResponseEntity<AdminUserDTO> imgUpdate(@Valid @RequestBody AdminUserDTO user) throws URISyntaxException {
+        user = userService.imgUpdate(user.getImg(), user.getImgContentType());
+
+        return ResponseUtil.wrapOrNotFound(
+            Optional.ofNullable(user),
+            HeaderUtil.createAlert(applicationName, "A user img is updated with identifier " + user.getId(), user.getLogin())
+        );
+    }
+
     @GetMapping("/users/search/{name}")
     public ResponseEntity<List<AdminUserDTO>> searchChannel(@PathVariable String name) {
         log.debug("REST request to get Channel : {}", name);

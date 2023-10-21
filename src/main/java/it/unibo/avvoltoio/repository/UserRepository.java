@@ -30,4 +30,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     List<User> findAllByLoginContainsOrderByLogin(String login);
 
     Page<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable);
+
+    Optional<User> findOneById(String currentUserId);
 }

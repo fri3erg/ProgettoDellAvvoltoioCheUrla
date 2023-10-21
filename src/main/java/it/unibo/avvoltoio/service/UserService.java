@@ -383,4 +383,21 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    public AdminUserDTO imgUpdate(byte[] img, String imgContentType) {
+        Optional<User> existingUser = userRepository.findOneById(getCurrentUserId());
+        AdminUserDTO userret = null;
+        if (existingUser.isPresent()) {
+            existingUser.get().setImg(img);
+            existingUser.get().setImgContentType(imgContentType);
+            userRepository.save(existingUser.get());
+            this.clearUserCaches(existingUser.get());
+            userret = new AdminUserDTO(existingUser.get());
+        }
+        return userret;
+    }
+
+    public String getCurrentUserId() {
+        return getUserWithAuthorities().map(User::getId).orElse("anonymous");
+    }
 }

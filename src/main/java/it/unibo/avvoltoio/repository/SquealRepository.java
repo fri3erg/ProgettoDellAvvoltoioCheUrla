@@ -19,9 +19,13 @@ public interface SquealRepository extends MongoRepository<Squeal, String> {
 
     List<Squeal> findAllByDestinations_DestinationIdOrderByUserId(String currentUserId);
 
-    List<Squeal> findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(String userId, String currentUserId);
+    List<Squeal> findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(String userId, String currentUserId, Pageable page);
 
-    long countByDestinations_DestinationId(String id);
+    Long countByDestinations_DestinationId(String id);
 
-    List<Squeal> findAllByUserId(String currentUserId);
+    List<Squeal> findAllByUserId(String currentUserId, Pageable page);
+
+    Long countByUserId(String userId);
+
+    List<Squeal> findAllByUserId(String id);
 }

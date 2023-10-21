@@ -49,6 +49,10 @@ public class AdminUserDTO implements Serializable {
 
     private Instant lastModifiedDate;
 
+    private byte[] img;
+
+    private String imgContentType;
+
     private Set<String> authorities;
 
     public AdminUserDTO() {
@@ -63,6 +67,8 @@ public class AdminUserDTO implements Serializable {
         this.email = user.getEmail();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
+        this.img = user.getImg();
+        this.imgContentType = user.getImgContentType();
         this.langKey = user.getLangKey();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
@@ -117,6 +123,22 @@ public class AdminUserDTO implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
+
+    public String getImgContentType() {
+        return imgContentType;
+    }
+
+    public void setImgContentType(String imgContentType) {
+        this.imgContentType = imgContentType;
     }
 
     public boolean isActivated() {

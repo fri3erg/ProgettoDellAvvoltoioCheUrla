@@ -1,5 +1,44 @@
 <div *ngIf="account">
-  <img href="https://matteoraggiblog.b-cdn.net/wp-content/uploads/2023/03/matteo-raggi-1.png" height="15rem" width="15rem" alt="ilraggi" />
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="field_notificationImage">Immagine</label>
+      <div>
+        <img [src]="'data:' + account.imgContentType + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
+
+        <div *ngIf="newphoto" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
+          <button title="clear" type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </div>
+        <button *ngIf="!edit" class="btn btn-block btn-primary" type="button" (click)="edit = true" title="edit">Edit photo</button>
+
+        <div class="p-grid" *ngIf="edit">
+          <div class="p-col-12">
+            <button class="btn btn-block btn-secondary" type="button" (click)="rotateImage()">Ruotare</button>
+          </div>
+          <div class="p-col-6">
+            <button class="btn btn-block btn-primary" type="button" onclick="document.getElementById('file_select').click()">
+              Seleziona
+            </button>
+          </div>
+          <div class="p-col-6">
+            <button class="btn btn-block btn-success" type="button" onclick="document.getElementById('file_camera').click()">
+              Scatta foto
+            </button>
+          </div>
+          <div class="p-col-6" *ngIf="newphoto">
+            <button class="btn btn-block btn-success" type="button" (click)="setImage()">OK</button>
+          </div>
+        </div>
+
+        <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
+        <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+      </div>
+
+                
+    </div>
+  </div>
+
   <div style="flex: 1">
     <span>
       {{ this.account.firstName || 'maffeo' }}
@@ -8,7 +47,7 @@
       <span style="background-color: red" [routerLink]="['/profile', profileName, 'mychannels']">
         {{ this.nChannels }} channels subscribed to
       </span>
-      {{ squeals?.length ?? 0 }} squeals squealed
+      {{ squealslength }} squeals squealed
     </span>
   </div>
   <jhi-create-squeal></jhi-create-squeal>

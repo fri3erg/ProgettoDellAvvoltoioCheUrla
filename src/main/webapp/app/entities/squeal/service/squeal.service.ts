@@ -33,9 +33,14 @@ export class SquealService {
     return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
 
-  getSquealMadeByUser(name: string): Observable<HttpResponse<ISquealDTO[]>> {
+  getSquealMadeByUser(name: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
+    const params = new HttpParams().append('page', page).append('size', size);
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-made-by-user/${name}`);
-    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+    return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
+  }
+  countSquealMadeByUser(name: string): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/squeal-made-by-user-count/${name}`);
+    return this.http.get<number>(url, { observe: 'response' });
   }
 
   getReactions(squealId: string): Observable<HttpResponse<ISquealReaction>> {
@@ -49,9 +54,10 @@ export class SquealService {
     return this.http.get<string[]>(url, { params, observe: 'response' });
   }
 
-  getSquealByUser(username: string): Observable<HttpResponse<ISquealDTO[]>> {
+  getSquealByUser(username: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
+    const params = new HttpParams().append('page', page).append('size', size);
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-user/${username}`);
-    return this.http.get<ISquealDTO[]>(url, { observe: 'response' });
+    return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
 
   insertOrUpdate(squeal: ISquealDTO): Observable<HttpResponse<ISquealDTO>> {

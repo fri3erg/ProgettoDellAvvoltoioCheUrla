@@ -23,6 +23,10 @@ export class AccountService {
     private applicationConfigService: ApplicationConfigService
   ) {}
 
+  setPhoto(user: Account): Observable<HttpResponse<Account>> {
+    return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/img-update'), user, { observe: 'response' });
+  }
+
   search(name: string): Observable<HttpResponse<Account[]>> {
     const url = this.applicationConfigService.getEndpointFor('api/users/search');
     return this.http.get<Account[]>(`${url}/${name}`, { observe: 'response' });

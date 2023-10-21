@@ -14,11 +14,12 @@ import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 import SharedModule from 'app/shared/shared.module';
 import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
 import { FormsModule } from '@angular/forms';
+import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
 
 @Component({
   selector: 'jhi-personal-messages',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule],
+  imports: [CommonModule, SharedModule, FormsModule, ObserveElementDirective],
   templateUrl: './personal-messages.component.html',
   styleUrls: ['./personal-messages.component.scss'],
 })
@@ -26,6 +27,10 @@ export class PersonalMessagesComponent implements OnInit {
   username?: string | null;
   squeals?: ISquealDTO[];
   account: Account | null = null;
+  page = 0;
+  size = 5;
+  isLoad = false;
+  hasMorePage = false;
   message = '';
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
@@ -48,8 +53,10 @@ export class PersonalMessagesComponent implements OnInit {
     if (this.username) {
       this.destinationMessage.destination = '@' + this.username;
       console.log(this.destinationMessage);
-      this.squealService.getSquealByUser(this.username).subscribe(r => {
+      this.squealService.getSquealByUser(this.username, this.page, this.size).subscribe(r => {
         if (r.body) {
+          this.hasMorePage = r.body.length >= this.size;
+          this.page++;
           this.squeals = r.body;
           console.log(this.squeals);
         }
@@ -60,6 +67,21 @@ export class PersonalMessagesComponent implements OnInit {
         this.charsDTO = r.body;
       }
     });
+  }
+
+  appendSqueals(): void {
+    if (this.username) {
+      console.log('load');
+      this.squealService.getSquealByUser(this.username, this.page, 5).subscribe(r => {
+        if (r.body) {
+          this.hasMorePage = r.body.length >= this.size;
+          this.page++;
+          if (this.squeals) {
+            this.squeals = [...this.squeals.concat(r.body)];
+          }
+        }
+      });
+    }
   }
 
   getRemainingChars(): number {
@@ -88,5 +110,15 @@ export class PersonalMessagesComponent implements OnInit {
         this.dto = { squeal: {} };
       }
     });
+  }
+  isIntersecting(event: boolean): void {
+    console.log(`Element is intersecting`);
+    console.log(event);
+    if (!event) {
+      this.isLoad = true;
+    } else if (this.isLoad && this.hasMorePage) {
+      this.appendSqueals();
+      this.isLoad = false;
+    }
   }
 }
