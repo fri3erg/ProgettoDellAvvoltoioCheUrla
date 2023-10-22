@@ -3,14 +3,15 @@ const jwt = require("jsonwebtoken");
 const config = process.env;
 
 const verifyToken = (req, res, next) => {
-  const token =
-    req.body.token || req.query.token || req.params.token || req.headers["x-access-token"];
+  
+  const token =  req.headers.authorization;
 
-  if (!token) {
+  if (!token || token.split(' ').length<2) {
     return res.status(403).send("A token is required for authentication");
   }
   try {
-    const decoded = jwt.verify(token, config.TOKEN_KEY);
+    const t1 = token.split(' ')[1];
+    const decoded = jwt.verify(t1, config.TOKEN_KEY);
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Invalid Token");
