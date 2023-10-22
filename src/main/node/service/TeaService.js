@@ -4,7 +4,7 @@ class TeaService {
         if (type==="white"){
             return "White";
         }
-        return "Black";
+        return "Blacks";
     }
 
 }
