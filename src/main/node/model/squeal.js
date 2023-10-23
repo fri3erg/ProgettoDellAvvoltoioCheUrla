@@ -17,7 +17,7 @@ const destinationSchema = new Schema({
 
 const squealSchema = new Schema(
   {
-    user_id: { type: String, unique: true, alias: 'userId' },
+    user_id: { type: String, alias: 'userId' },
     timestamp: { type: Number, default: null },
     body: { type: String, default: null },
     img: { type: Array, default: null },

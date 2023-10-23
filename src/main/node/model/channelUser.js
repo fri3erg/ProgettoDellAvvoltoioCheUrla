@@ -6,9 +6,12 @@ const PrivilegeType = {
   READ: 'READ',
 };
 
-const channelUserSchema = new Schema({
-  user_id: { type: String, alias: 'userId' },
-  channel_id: { type: String, alias: 'channelId' },
-  privilege: { type: PrivilegeType, default: null },
-});
+const channelUserSchema = new Schema(
+  {
+    user_id: { type: String, alias: 'userId' },
+    channel_id: { type: String, alias: 'channelId' },
+    privilege: { type: PrivilegeType, default: null },
+  },
+  { collection: 'channel_user', _id: true }
+);
 module.exports = model('channelUser', channelUserSchema);

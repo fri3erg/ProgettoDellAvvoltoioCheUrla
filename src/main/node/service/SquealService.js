@@ -1,5 +1,5 @@
 const Squeal = require('../model/squeal');
-const Destination = require('../model/destination');
+const Destination = require('../model/squealDestination');
 const channelUser = require('../model/channelUser');
 class SquealService {
   getSquealList(page, size, id) {
