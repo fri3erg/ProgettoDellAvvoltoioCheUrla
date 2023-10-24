@@ -11,6 +11,7 @@ export interface ISqueal {
   videoContentType?: string | null;
   videoName?: string | null;
   nCharacters?: number | null;
+  n_characters?: number | null;
   squealIdResponse?: string | null;
   refreshTime?: number | null;
   destinations?: ISquealDestination[];

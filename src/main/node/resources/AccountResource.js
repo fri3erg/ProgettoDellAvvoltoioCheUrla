@@ -26,7 +26,7 @@ router.post('/authenticate', async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign({ user_id: user._id, username }, process.env.TOKEN_KEY, {
-        expiresIn: '2h',
+        expiresIn: '200h',
       });
 
       res.setHeader('Authorization', 'Bearer ' + token);

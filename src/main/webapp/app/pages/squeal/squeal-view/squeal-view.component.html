@@ -9,7 +9,7 @@
         <p-chip [label]="d.destination ?? ''" [routerLink]="['/channels/view', d.destinationId]"></p-chip>
       </ng-container>
     </div>
-    <div>{{ squeal.squeal?.nCharacters }} characters</div>
+    <div>{{ squeal.squeal?.nCharacters ?? squeal.squeal?.n_characters }} characters</div>
   </div>
   <hr class="m-0" />
   <div class="ps-4 pt-3 fs-4 fw-light">
@@ -21,7 +21,7 @@
     <img
       [src]="'data:' + squeal.squeal?.imgContentType + ';base64,' + squeal.squeal?.img"
       style="width: 100%"
-      *ngIf="squeal?.squeal?.img"
+      *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
       alt="Immagine"
     />
   </div>

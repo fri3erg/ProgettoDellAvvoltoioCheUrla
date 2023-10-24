@@ -10,29 +10,13 @@ const auth = require('../middleware/auth');
 // 1.
 const router = express.Router();
 
-router.post('/authenticate', async (req, res) => {
-  try {
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 router.get('/squeal-list', auth, async (req, res) => {
   try {
-    console.log('1');
-    let ret = squealService.getSquealList(req.page, req.size, req.user.user_id);
-    console.log(ret);
+    const ret = await new squealService().getSquealList(req.page, req.size, req.user);
     res.status(200).json(ret);
   } catch (err) {
-    return res.status(405).send('test');
     console.log(err);
-  }
-});
-
-router.post('/register', async (req, res) => {
-  try {
-  } catch (err) {
-    console.log(err);
+    return res.status(500).send(err);
   }
 });
 

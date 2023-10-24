@@ -8,7 +8,7 @@ const DestType = {
 };
 
 const squealDestinationSchema = new Schema({
-  destination_id: { type: String, unique: true, alias: 'destinationId' },
+  destination_id: { type: String, alias: 'destinationId' },
   destination: { type: String, default: null },
   destination_type: { type: DestType, default: null, alias: 'destinationType' },
   seen: { type: Number, default: false },
