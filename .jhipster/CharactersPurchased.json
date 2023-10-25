@@ -4,11 +4,11 @@
   "entityTableName": "characters_purchased",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {
-      "fieldName": "nCharacters",
+      "fieldName": "n_characters",
       "fieldType": "Integer"
     },
     {

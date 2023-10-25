@@ -256,12 +256,12 @@
           [routerLinkActiveOptions]="{ exact: true }"
         >
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
-            <span *ngIf="!account?.imageUrl">
+            <span *ngIf="!account?.image_url">
               <fa-icon icon="user"></fa-icon>
               <span jhiTranslate="global.menu.account.main">Account</span>
             </span>
-            <span *ngIf="account?.imageUrl">
-              <img [src]="account!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
+            <span *ngIf="account?.image_url">
+              <img [src]="account!.image_url" class="profile-image rounded-circle" alt="Avatar" />
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">

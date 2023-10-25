@@ -1,6 +1,6 @@
 export interface ISquealViews {
   id: string;
-  squealId?: string | null;
+  squeal_id?: string | null;
   number?: number | null;
 }
 

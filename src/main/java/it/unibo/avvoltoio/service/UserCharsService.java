@@ -44,7 +44,7 @@ public class UserCharsService {
         if (!isUserAuthorized(id)) {
             return Optional.ofNullable(null);
         }
-        return userCharsRepository.findByUserId(id);
+        return userCharsRepository.findByUser_id(id);
     }
 
     private Boolean isUserAuthorized(String id) {
@@ -67,19 +67,19 @@ public class UserCharsService {
         int totwk;
         int totmth;
         totgg = totwk = totmth = 0;
-        List<Squeal> mSqueals = squealRepository.findAllByUserIdAndTimestampGreaterThanOrderByTimestamp(userId, smTime);
+        List<Squeal> mSqueals = squealRepository.findAllByUser_idAndTimestampGreaterThanOrderByTimestamp(userId, smTime);
         for (Squeal s : mSqueals) {
             boolean valid = false;
             Set<SquealDestination> dest = s.getDestinations();
             for (SquealDestination d : dest) {
-                if (d.getDestinationType() != ChannelTypes.MESSAGE) {
+                if (d.getDestination_type() != ChannelTypes.MESSAGE) {
                     valid = true;
                     break;
                 }
             }
             if (valid) {
                 long squealTime = s.getTimestamp();
-                int nChars = Optional.ofNullable(s.getnCharacters()).orElse(0);
+                int nChars = Optional.ofNullable(s.getN_characters()).orElse(0);
                 if (squealTime >= dayTime) {
                     totgg = totgg + nChars;
                 }

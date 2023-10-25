@@ -121,8 +121,8 @@ public class SquealViewsResource {
         Optional<SquealViews> result = squealViewsRepository
             .findById(squealViews.getId())
             .map(existingSquealViews -> {
-                if (squealViews.getSquealId() != null) {
-                    existingSquealViews.setSquealId(squealViews.getSquealId());
+                if (squealViews.getSqueal_id() != null) {
+                    existingSquealViews.setSqueal_id(squealViews.getSqueal_id());
                 }
                 if (squealViews.getNumber() != null) {
                     existingSquealViews.setNumber(squealViews.getNumber());

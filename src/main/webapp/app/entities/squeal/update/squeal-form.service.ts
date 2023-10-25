@@ -18,17 +18,17 @@ type SquealFormDefaults = Pick<NewSqueal, 'id'>;
 
 type SquealFormGroupContent = {
   id: FormControl<ISqueal['id'] | NewSqueal['id']>;
-  userId: FormControl<ISqueal['userId']>;
+  user_id: FormControl<ISqueal['user_id']>;
   timestamp: FormControl<ISqueal['timestamp']>;
   body: FormControl<ISqueal['body']>;
   img: FormControl<ISqueal['img']>;
-  imgContentType: FormControl<ISqueal['imgContentType']>;
-  imgName: FormControl<ISqueal['imgName']>;
-  videoContentType: FormControl<ISqueal['videoContentType']>;
-  videoName: FormControl<ISqueal['videoName']>;
-  nCharacters: FormControl<ISqueal['nCharacters']>;
-  squealIdResponse: FormControl<ISqueal['squealIdResponse']>;
-  refreshTime: FormControl<ISqueal['refreshTime']>;
+  img_content_type: FormControl<ISqueal['img_content_type']>;
+  img_name: FormControl<ISqueal['img_name']>;
+  video_content_type: FormControl<ISqueal['video_content_type']>;
+  video_name: FormControl<ISqueal['video_name']>;
+  n_characters: FormControl<ISqueal['n_characters']>;
+  squeal_id_response: FormControl<ISqueal['squeal_id_response']>;
+  refresh_time: FormControl<ISqueal['refresh_time']>;
 };
 
 export type SquealFormGroup = FormGroup<SquealFormGroupContent>;
@@ -48,17 +48,17 @@ export class SquealFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(squealRawValue.userId),
+      user_id: new FormControl(squealRawValue.user_id),
       timestamp: new FormControl(squealRawValue.timestamp),
       body: new FormControl(squealRawValue.body),
       img: new FormControl(squealRawValue.img),
-      imgContentType: new FormControl(squealRawValue.imgContentType),
-      imgName: new FormControl(squealRawValue.imgName),
-      videoContentType: new FormControl(squealRawValue.videoContentType),
-      videoName: new FormControl(squealRawValue.videoName),
-      nCharacters: new FormControl(squealRawValue.nCharacters),
-      squealIdResponse: new FormControl(squealRawValue.squealIdResponse),
-      refreshTime: new FormControl(squealRawValue.refreshTime),
+      img_content_type: new FormControl(squealRawValue.img_content_type),
+      img_name: new FormControl(squealRawValue.img_name),
+      video_content_type: new FormControl(squealRawValue.video_content_type),
+      video_name: new FormControl(squealRawValue.video_name),
+      n_characters: new FormControl(squealRawValue.n_characters),
+      squeal_id_response: new FormControl(squealRawValue.squeal_id_response),
+      refresh_time: new FormControl(squealRawValue.refresh_time),
     });
   }
 

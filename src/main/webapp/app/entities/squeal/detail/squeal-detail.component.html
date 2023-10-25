@@ -14,9 +14,9 @@
         <dd>
           <span>{{ squeal.id }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.userId">User Id</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.user_id">User Id</span></dt>
         <dd>
-          <span>{{ squeal.userId }}</span>
+          <span>{{ squeal.user_id }}</span>
         </dd>
         <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.timestamp">Timestamp</span></dt>
         <dd>
@@ -29,35 +29,35 @@
         <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.img">Img</span></dt>
         <dd>
           <div *ngIf="squeal.img">
-            <a (click)="openFile(squeal.img, squeal.imgContentType)">
-              <img [src]="'data:' + squeal.imgContentType + ';base64,' + squeal.img" style="max-width: 100%" alt="squeal image" />
+            <a (click)="openFile(squeal.img, squeal.img_content_type)">
+              <img [src]="'data:' + squeal.img_content_type + ';base64,' + squeal.img" style="max-width: 100%" alt="squeal image" />
             </a>
-            {{ squeal.imgContentType }}, {{ byteSize(squeal.img) }}
+            {{ squeal.img_content_type }}, {{ byteSize(squeal.img) }}
           </div>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName">Img Name</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.img_name">Img Name</span></dt>
         <dd>
-          <span>{{ squeal.imgName }}</span>
+          <span>{{ squeal.img_name }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType">Video Content Type</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.video_content_type">Video Content Type</span></dt>
         <dd>
-          <span>{{ squeal.videoContentType }}</span>
+          <span>{{ squeal.video_content_type }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName">Video Name</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.video_name">Video Name</span></dt>
         <dd>
-          <span>{{ squeal.videoName }}</span>
+          <span>{{ squeal.video_name }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters">N Characters</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.n_characters">N Characters</span></dt>
         <dd>
-          <span>{{ squeal.nCharacters }}</span>
+          <span>{{ squeal.n_characters }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse">Squeal Id Response</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.squeal_id_response">Squeal Id Response</span></dt>
         <dd>
-          <span>{{ squeal.squealIdResponse }}</span>
+          <span>{{ squeal.squeal_id_response }}</span>
         </dd>
-        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime">Refresh Time</span></dt>
+        <dt><span jhiTranslate="avvoltoioCheUrlaApp.squeal.refresh_time">Refresh Time</span></dt>
         <dd>
-          <span>{{ squeal.refreshTime }}</span>
+          <span>{{ squeal.refresh_time }}</span>
         </dd>
       </dl>
 

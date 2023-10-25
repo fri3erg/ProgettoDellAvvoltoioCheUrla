@@ -111,12 +111,12 @@ class CharactersPurchasedResourceIT {
         List<CharactersPurchased> charactersPurchasedList = charactersPurchasedRepository.findAll();
         assertThat(charactersPurchasedList).hasSize(databaseSizeBeforeCreate + 1);
         CharactersPurchased testCharactersPurchased = charactersPurchasedList.get(charactersPurchasedList.size() - 1);
-        assertThat(testCharactersPurchased.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testCharactersPurchased.getnCharacters()).isEqualTo(DEFAULT_N_CHARACTERS);
-        assertThat(testCharactersPurchased.getTimestampBought()).isEqualTo(DEFAULT_TIMESTAMP_BOUGHT);
-        assertThat(testCharactersPurchased.getTimestampExpire()).isEqualTo(DEFAULT_TIMESTAMP_EXPIRE);
+        assertThat(testCharactersPurchased.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testCharactersPurchased.getN_characters()).isEqualTo(DEFAULT_N_CHARACTERS);
+        assertThat(testCharactersPurchased.getTimestamp_bought()).isEqualTo(DEFAULT_TIMESTAMP_BOUGHT);
+        assertThat(testCharactersPurchased.getTimestamp_expire()).isEqualTo(DEFAULT_TIMESTAMP_EXPIRE);
         assertThat(testCharactersPurchased.getAmount()).isEqualByComparingTo(DEFAULT_AMOUNT);
-        assertThat(testCharactersPurchased.getAdminDiscount()).isEqualTo(DEFAULT_ADMIN_DISCOUNT);
+        assertThat(testCharactersPurchased.getAdmin_discount()).isEqualTo(DEFAULT_ADMIN_DISCOUNT);
     }
 
     @Test
@@ -149,7 +149,7 @@ class CharactersPurchasedResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(charactersPurchased.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].nCharacters").value(hasItem(DEFAULT_N_CHARACTERS)))
             .andExpect(jsonPath("$.[*].timestampBought").value(hasItem(DEFAULT_TIMESTAMP_BOUGHT.intValue())))
             .andExpect(jsonPath("$.[*].timestampExpire").value(hasItem(DEFAULT_TIMESTAMP_EXPIRE.intValue())))
@@ -168,7 +168,7 @@ class CharactersPurchasedResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(charactersPurchased.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.nCharacters").value(DEFAULT_N_CHARACTERS))
             .andExpect(jsonPath("$.timestampBought").value(DEFAULT_TIMESTAMP_BOUGHT.intValue()))
             .andExpect(jsonPath("$.timestampExpire").value(DEFAULT_TIMESTAMP_EXPIRE.intValue()))
@@ -211,12 +211,12 @@ class CharactersPurchasedResourceIT {
         List<CharactersPurchased> charactersPurchasedList = charactersPurchasedRepository.findAll();
         assertThat(charactersPurchasedList).hasSize(databaseSizeBeforeUpdate);
         CharactersPurchased testCharactersPurchased = charactersPurchasedList.get(charactersPurchasedList.size() - 1);
-        assertThat(testCharactersPurchased.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testCharactersPurchased.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
-        assertThat(testCharactersPurchased.getTimestampBought()).isEqualTo(UPDATED_TIMESTAMP_BOUGHT);
-        assertThat(testCharactersPurchased.getTimestampExpire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
+        assertThat(testCharactersPurchased.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testCharactersPurchased.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testCharactersPurchased.getTimestamp_bought()).isEqualTo(UPDATED_TIMESTAMP_BOUGHT);
+        assertThat(testCharactersPurchased.getTimestamp_expire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
         assertThat(testCharactersPurchased.getAmount()).isEqualByComparingTo(UPDATED_AMOUNT);
-        assertThat(testCharactersPurchased.getAdminDiscount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
+        assertThat(testCharactersPurchased.getAdmin_discount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
     }
 
     @Test
@@ -303,12 +303,12 @@ class CharactersPurchasedResourceIT {
         List<CharactersPurchased> charactersPurchasedList = charactersPurchasedRepository.findAll();
         assertThat(charactersPurchasedList).hasSize(databaseSizeBeforeUpdate);
         CharactersPurchased testCharactersPurchased = charactersPurchasedList.get(charactersPurchasedList.size() - 1);
-        assertThat(testCharactersPurchased.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testCharactersPurchased.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
-        assertThat(testCharactersPurchased.getTimestampBought()).isEqualTo(DEFAULT_TIMESTAMP_BOUGHT);
-        assertThat(testCharactersPurchased.getTimestampExpire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
+        assertThat(testCharactersPurchased.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testCharactersPurchased.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testCharactersPurchased.getTimestamp_bought()).isEqualTo(DEFAULT_TIMESTAMP_BOUGHT);
+        assertThat(testCharactersPurchased.getTimestamp_expire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
         assertThat(testCharactersPurchased.getAmount()).isEqualByComparingTo(UPDATED_AMOUNT);
-        assertThat(testCharactersPurchased.getAdminDiscount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
+        assertThat(testCharactersPurchased.getAdmin_discount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
     }
 
     @Test
@@ -342,12 +342,12 @@ class CharactersPurchasedResourceIT {
         List<CharactersPurchased> charactersPurchasedList = charactersPurchasedRepository.findAll();
         assertThat(charactersPurchasedList).hasSize(databaseSizeBeforeUpdate);
         CharactersPurchased testCharactersPurchased = charactersPurchasedList.get(charactersPurchasedList.size() - 1);
-        assertThat(testCharactersPurchased.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testCharactersPurchased.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
-        assertThat(testCharactersPurchased.getTimestampBought()).isEqualTo(UPDATED_TIMESTAMP_BOUGHT);
-        assertThat(testCharactersPurchased.getTimestampExpire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
+        assertThat(testCharactersPurchased.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testCharactersPurchased.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testCharactersPurchased.getTimestamp_bought()).isEqualTo(UPDATED_TIMESTAMP_BOUGHT);
+        assertThat(testCharactersPurchased.getTimestamp_expire()).isEqualTo(UPDATED_TIMESTAMP_EXPIRE);
         assertThat(testCharactersPurchased.getAmount()).isEqualByComparingTo(UPDATED_AMOUNT);
-        assertThat(testCharactersPurchased.getAdminDiscount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
+        assertThat(testCharactersPurchased.getAdmin_discount()).isEqualTo(UPDATED_ADMIN_DISCOUNT);
     }
 
     @Test

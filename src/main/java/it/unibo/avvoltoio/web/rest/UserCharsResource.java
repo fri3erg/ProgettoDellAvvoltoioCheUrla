@@ -151,14 +151,14 @@ public class UserCharsResource {
         Optional<UserChars> result = userCharsRepository
             .findById(userChars.getId())
             .map(existingUserChars -> {
-                if (userChars.getUserId() != null) {
-                    existingUserChars.setUserId(userChars.getUserId());
+                if (userChars.getUser_id() != null) {
+                    existingUserChars.setUser_id(userChars.getUser_id());
                 }
-                if (userChars.getMaxChars() != null) {
-                    existingUserChars.setMaxChars(userChars.getMaxChars());
+                if (userChars.getMax_chars() != null) {
+                    existingUserChars.setMax_chars(userChars.getMax_chars());
                 }
-                if (userChars.getRemaningChars() != null) {
-                    existingUserChars.setRemaningChars(userChars.getRemaningChars());
+                if (userChars.getRemaning_chars() != null) {
+                    existingUserChars.setRemaning_chars(userChars.getRemaning_chars());
                 }
 
                 return existingUserChars;

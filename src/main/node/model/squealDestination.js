@@ -8,11 +8,19 @@ const DestType = {
 };
 
 const squealDestinationSchema = new Schema({
-  destination_id: { type: String, alias: 'destinationId' },
+  destination_id: { type: String },
   destination: { type: String, default: null },
-  destination_type: { type: DestType, default: null, alias: 'destinationType' },
+  destination_type: { type: DestType, default: null },
   seen: { type: Number, default: false },
-  admin_add: { type: Boolean, default: false, alias: 'adminAdd' },
+  admin_add: { type: Boolean, default: false },
   squeal: { type: ObjectId, ref: 'squeal' },
 });
+
+function transformDocument(doc) {
+  return {
+    destinationId: destination_id,
+    destination: doc.destination,
+  };
+}
+
 module.exports = model('squealDestination', squealDestinationSchema);

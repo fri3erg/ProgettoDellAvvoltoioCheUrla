@@ -83,7 +83,7 @@ class SquealViewsResourceIT {
         List<SquealViews> squealViewsList = squealViewsRepository.findAll();
         assertThat(squealViewsList).hasSize(databaseSizeBeforeCreate + 1);
         SquealViews testSquealViews = squealViewsList.get(squealViewsList.size() - 1);
-        assertThat(testSquealViews.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testSquealViews.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
         assertThat(testSquealViews.getNumber()).isEqualTo(DEFAULT_NUMBER);
     }
 
@@ -163,7 +163,7 @@ class SquealViewsResourceIT {
         List<SquealViews> squealViewsList = squealViewsRepository.findAll();
         assertThat(squealViewsList).hasSize(databaseSizeBeforeUpdate);
         SquealViews testSquealViews = squealViewsList.get(squealViewsList.size() - 1);
-        assertThat(testSquealViews.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealViews.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealViews.getNumber()).isEqualTo(UPDATED_NUMBER);
     }
 
@@ -245,7 +245,7 @@ class SquealViewsResourceIT {
         List<SquealViews> squealViewsList = squealViewsRepository.findAll();
         assertThat(squealViewsList).hasSize(databaseSizeBeforeUpdate);
         SquealViews testSquealViews = squealViewsList.get(squealViewsList.size() - 1);
-        assertThat(testSquealViews.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testSquealViews.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
         assertThat(testSquealViews.getNumber()).isEqualTo(UPDATED_NUMBER);
     }
 
@@ -274,7 +274,7 @@ class SquealViewsResourceIT {
         List<SquealViews> squealViewsList = squealViewsRepository.findAll();
         assertThat(squealViewsList).hasSize(databaseSizeBeforeUpdate);
         SquealViews testSquealViews = squealViewsList.get(squealViewsList.size() - 1);
-        assertThat(testSquealViews.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealViews.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealViews.getNumber()).isEqualTo(UPDATED_NUMBER);
     }
 

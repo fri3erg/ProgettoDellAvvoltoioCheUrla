@@ -8,7 +8,7 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {

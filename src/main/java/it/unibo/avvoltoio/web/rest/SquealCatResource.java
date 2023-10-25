@@ -121,17 +121,17 @@ public class SquealCatResource {
         Optional<SquealCat> result = squealCatRepository
             .findById(squealCat.getId())
             .map(existingSquealCat -> {
-                if (squealCat.getUserId() != null) {
-                    existingSquealCat.setUserId(squealCat.getUserId());
+                if (squealCat.getUser_id() != null) {
+                    existingSquealCat.setUser_id(squealCat.getUser_id());
                 }
-                if (squealCat.getSquealId() != null) {
-                    existingSquealCat.setSquealId(squealCat.getSquealId());
+                if (squealCat.getSqueal_id() != null) {
+                    existingSquealCat.setSqueal_id(squealCat.getSqueal_id());
                 }
                 if (squealCat.getCategory() != null) {
                     existingSquealCat.setCategory(squealCat.getCategory());
                 }
-                if (squealCat.getnCharacters() != null) {
-                    existingSquealCat.setnCharacters(squealCat.getnCharacters());
+                if (squealCat.getN_characters() != null) {
+                    existingSquealCat.setN_characters(squealCat.getN_characters());
                 }
                 if (squealCat.getTimestamp() != null) {
                     existingSquealCat.setTimestamp(squealCat.getTimestamp());

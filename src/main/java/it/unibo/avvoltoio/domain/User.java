@@ -55,30 +55,30 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
 
     @Size(min = 2, max = 10)
     @Field("lang_key")
-    private String langKey;
+    private String lang_key;
 
     @Size(max = 256)
     @Field("image_url")
-    private String imageUrl;
+    private String image_url;
 
     @Size(max = 20)
     @Field("activation_key")
     @JsonIgnore
-    private String activationKey;
+    private String activation_key;
 
     @Size(max = 20)
     @Field("reset_key")
     @JsonIgnore
-    private String resetKey;
+    private String reset_key;
 
     @Field("reset_date")
-    private Instant resetDate = null;
+    private Instant reset_date = null;
 
     @Field("img")
     private byte[] img;
 
     @Field("img_content_type")
-    private String imgContentType;
+    private String img_content_type;
 
     public byte[] getImg() {
         return img;
@@ -88,12 +88,12 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
         this.img = img;
     }
 
-    public String getImgContentType() {
-        return imgContentType;
+    public String getImg_content_type() {
+        return img_content_type;
     }
 
-    public void setImgContentType(String imgContentType) {
-        this.imgContentType = imgContentType;
+    public void setImg_content_type(String imgContentType) {
+        this.img_content_type = imgContentType;
     }
 
     @JsonIgnore
@@ -148,12 +148,12 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage_url() {
+        return image_url;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage_url(String imageUrl) {
+        this.image_url = imageUrl;
     }
 
     public boolean isActivated() {
@@ -164,36 +164,36 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
         this.activated = activated;
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    public String getActivation_key() {
+        return activation_key;
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
+    public void setActivation_key(String activationKey) {
+        this.activation_key = activationKey;
     }
 
-    public String getResetKey() {
-        return resetKey;
+    public String getReset_key() {
+        return reset_key;
     }
 
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
+    public void setReset_key(String resetKey) {
+        this.reset_key = resetKey;
     }
 
-    public Instant getResetDate() {
-        return resetDate;
+    public Instant getReset_date() {
+        return reset_date;
     }
 
-    public void setResetDate(Instant resetDate) {
-        this.resetDate = resetDate;
+    public void setReset_date(Instant resetDate) {
+        this.reset_date = resetDate;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public String getLang_key() {
+        return lang_key;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setLang_key(String langKey) {
+        this.lang_key = langKey;
     }
 
     public Set<Authority> getAuthorities() {
@@ -229,12 +229,12 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
+            ", imageUrl='" + image_url + '\'' +
             ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
+            ", langKey='" + lang_key + '\'' +
+            ", activationKey='" + activation_key + '\'' +
             ", img='" + img + '\'' +
-            ", imgContentType='" + imgContentType + '\'' +
+            ", imgContentType='" + img_content_type + '\'' +
             "}";
     }
 }

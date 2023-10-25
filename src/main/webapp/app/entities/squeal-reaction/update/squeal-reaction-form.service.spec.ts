@@ -20,9 +20,9 @@ describe('SquealReaction Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
             username: expect.any(Object),
-            squealId: expect.any(Object),
+            squeal_id: expect.any(Object),
             positive: expect.any(Object),
             emoji: expect.any(Object),
           })
@@ -35,9 +35,9 @@ describe('SquealReaction Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
             username: expect.any(Object),
-            squealId: expect.any(Object),
+            squeal_id: expect.any(Object),
             positive: expect.any(Object),
             emoji: expect.any(Object),
           })

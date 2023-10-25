@@ -87,8 +87,8 @@ class ChannelUserResourceIT {
         List<ChannelUser> channelUserList = channelUserRepository.findAll();
         assertThat(channelUserList).hasSize(databaseSizeBeforeCreate + 1);
         ChannelUser testChannelUser = channelUserList.get(channelUserList.size() - 1);
-        assertThat(testChannelUser.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testChannelUser.getChannelId()).isEqualTo(DEFAULT_CHANNEL_ID);
+        assertThat(testChannelUser.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testChannelUser.getChannel_id()).isEqualTo(DEFAULT_CHANNEL_ID);
         assertThat(testChannelUser.getPrivilege()).isEqualTo(DEFAULT_PRIVILEGE);
     }
 
@@ -120,7 +120,7 @@ class ChannelUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(channelUser.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].channelId").value(hasItem(DEFAULT_CHANNEL_ID)))
             .andExpect(jsonPath("$.[*].privilege").value(hasItem(DEFAULT_PRIVILEGE.toString())));
     }
@@ -136,7 +136,7 @@ class ChannelUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(channelUser.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.channelId").value(DEFAULT_CHANNEL_ID))
             .andExpect(jsonPath("$.privilege").value(DEFAULT_PRIVILEGE.toString()));
     }
@@ -170,8 +170,8 @@ class ChannelUserResourceIT {
         List<ChannelUser> channelUserList = channelUserRepository.findAll();
         assertThat(channelUserList).hasSize(databaseSizeBeforeUpdate);
         ChannelUser testChannelUser = channelUserList.get(channelUserList.size() - 1);
-        assertThat(testChannelUser.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testChannelUser.getChannelId()).isEqualTo(UPDATED_CHANNEL_ID);
+        assertThat(testChannelUser.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testChannelUser.getChannel_id()).isEqualTo(UPDATED_CHANNEL_ID);
         assertThat(testChannelUser.getPrivilege()).isEqualTo(UPDATED_PRIVILEGE);
     }
 
@@ -251,8 +251,8 @@ class ChannelUserResourceIT {
         List<ChannelUser> channelUserList = channelUserRepository.findAll();
         assertThat(channelUserList).hasSize(databaseSizeBeforeUpdate);
         ChannelUser testChannelUser = channelUserList.get(channelUserList.size() - 1);
-        assertThat(testChannelUser.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testChannelUser.getChannelId()).isEqualTo(DEFAULT_CHANNEL_ID);
+        assertThat(testChannelUser.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testChannelUser.getChannel_id()).isEqualTo(DEFAULT_CHANNEL_ID);
         assertThat(testChannelUser.getPrivilege()).isEqualTo(DEFAULT_PRIVILEGE);
     }
 
@@ -281,8 +281,8 @@ class ChannelUserResourceIT {
         List<ChannelUser> channelUserList = channelUserRepository.findAll();
         assertThat(channelUserList).hasSize(databaseSizeBeforeUpdate);
         ChannelUser testChannelUser = channelUserList.get(channelUserList.size() - 1);
-        assertThat(testChannelUser.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testChannelUser.getChannelId()).isEqualTo(UPDATED_CHANNEL_ID);
+        assertThat(testChannelUser.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testChannelUser.getChannel_id()).isEqualTo(UPDATED_CHANNEL_ID);
         assertThat(testChannelUser.getPrivilege()).isEqualTo(UPDATED_PRIVILEGE);
     }
 

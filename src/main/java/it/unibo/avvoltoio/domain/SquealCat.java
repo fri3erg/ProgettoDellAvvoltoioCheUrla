@@ -19,16 +19,16 @@ public class SquealCat implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("squeal_id")
-    private String squealId;
+    private String squeal_id;
 
     @Field("category")
     private CategoryTypes category;
 
     @Field("n_characters")
-    private Integer nCharacters;
+    private Integer n_characters;
 
     @Field("timestamp")
     private Long timestamp;
@@ -48,30 +48,30 @@ public class SquealCat implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public SquealCat userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
-    public String getSquealId() {
-        return this.squealId;
+    public String getSqueal_id() {
+        return this.squeal_id;
     }
 
     public SquealCat squealId(String squealId) {
-        this.setSquealId(squealId);
+        this.setSqueal_id(squealId);
         return this;
     }
 
-    public void setSquealId(String squealId) {
-        this.squealId = squealId;
+    public void setSqueal_id(String squealId) {
+        this.squeal_id = squealId;
     }
 
     public CategoryTypes getCategory() {
@@ -87,17 +87,17 @@ public class SquealCat implements Serializable {
         this.category = category;
     }
 
-    public Integer getnCharacters() {
-        return this.nCharacters;
+    public Integer getN_characters() {
+        return this.n_characters;
     }
 
     public SquealCat nCharacters(Integer nCharacters) {
-        this.setnCharacters(nCharacters);
+        this.setN_characters(nCharacters);
         return this;
     }
 
-    public void setnCharacters(Integer nCharacters) {
-        this.nCharacters = nCharacters;
+    public void setN_characters(Integer nCharacters) {
+        this.n_characters = nCharacters;
     }
 
     public Long getTimestamp() {
@@ -137,10 +137,10 @@ public class SquealCat implements Serializable {
     public String toString() {
         return "SquealCat{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
-            ", squealId='" + getSquealId() + "'" +
+            ", userId='" + getUser_id() + "'" +
+            ", squealId='" + getSqueal_id() + "'" +
             ", category='" + getCategory() + "'" +
-            ", nCharacters=" + getnCharacters() +
+            ", nCharacters=" + getN_characters() +
             ", timestamp=" + getTimestamp() +
             "}";
     }

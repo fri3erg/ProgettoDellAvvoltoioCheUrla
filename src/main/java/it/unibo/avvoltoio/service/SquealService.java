@@ -105,13 +105,13 @@ public class SquealService {
         }
         SquealDTO s = new SquealDTO();
         s.setSqueal(sq);
-        s.setCategory(squealCatRepository.findFirstBySquealId(sq.getId()).orElse(null));
+        s.setCategory(squealCatRepository.findFirstBySqueal_id(sq.getId()).orElse(null));
 
         s.setReactions(getReactions(sq.getId()));
 
         s.setViews(addView(sq, id));
 
-        s.setUserName(userService.getUserById(sq.getUserId()).map(User::getLogin).orElse(null));
+        s.setUserName(userService.getUserById(sq.getUser_id()).map(User::getLogin).orElse(null));
 
         return s;
     }
@@ -144,11 +144,11 @@ public class SquealService {
         if (isUserAuthorized(id)) {
             Pageable p = PageRequest.of(page, number);
 
-            List<ChannelUser> myChannels = channelUserRepository.findAllByUserId(id);
+            List<ChannelUser> myChannels = channelUserRepository.findAllByUser_id(id);
 
-            List<String> destIds = myChannels.stream().map(ChannelUser::getChannelId).collect(Collectors.toList());
+            List<String> destIds = myChannels.stream().map(ChannelUser::getChannel_id).collect(Collectors.toList());
 
-            List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(destIds, p);
+            List<Squeal> mySqueals = squealRepository.findAllByDestinations_Destination_idInOrderByTimestampDesc(destIds, p);
             for (Squeal s : mySqueals) {
                 ret.add(loadSquealData(s, id));
             }
@@ -166,13 +166,13 @@ public class SquealService {
             Squeal s = squeal.getSqueal();
             Set<SquealDestination> validDest = new HashSet<>();
             for (SquealDestination sd : s.getDestinations()) {
-                sd.setDestinationType(ChannelTypes.getChannelType(sd.getDestination()));
-                if (sd.getDestinationType() == null) {
+                sd.setDestination_type(ChannelTypes.getChannelType(sd.getDestination()));
+                if (sd.getDestination_type() == null) {
                     continue;
                 }
 
                 String destinationId = null;
-                switch (sd.getDestinationType()) {
+                switch (sd.getDestination_type()) {
                     case MESSAGE:
                         destinationId = getDestinationIdMessage(sd);
                         break;
@@ -192,9 +192,9 @@ public class SquealService {
             if (!validDest.isEmpty()) {
                 s.getDestinations().clear();
                 s.setTimestamp(System.currentTimeMillis());
-                s.setUserId(id);
+                s.setUser_id(id);
                 // s.setUserId(userService.getUserWithAuthorities().map(User::getId).orElseThrow(NullPointerException::new));
-                s.setnCharacters(getNumberOfCharacters(s));
+                s.setN_characters(getNumberOfCharacters(s));
 
                 //TODO: Check image size
                 s.setImg(resizeImg(s.getImg()));
@@ -220,7 +220,7 @@ public class SquealService {
         ChannelDTO dto = channelService.getChannelByName(sd.getDestination());
 
         // create channel too if public and not exist
-        if (dto == null && sd.getDestinationType() == ChannelTypes.PUBLICGROUP) {
+        if (dto == null && sd.getDestination_type() == ChannelTypes.PUBLICGROUP) {
             dto = channelService.createChannel(sd.getDestination(), id);
             return dto.getChannel().getId();
         }
@@ -238,9 +238,9 @@ public class SquealService {
     }
 
     private SquealViews addView(Squeal s, String id) {
-        Optional<SquealViews> v = squealViewsRepository.findFirstBySquealId(s.getId());
+        Optional<SquealViews> v = squealViewsRepository.findFirstBySqueal_id(s.getId());
         // add or smm for no views
-        boolean addView = !id.equals(s.getUserId());
+        boolean addView = !id.equals(s.getUser_id());
         if (v.isPresent()) {
             if (addView) {
                 v.get().addView();
@@ -250,7 +250,7 @@ public class SquealService {
         } else {
             SquealViews sw = new SquealViews();
             sw.setNumber(1);
-            sw.setSquealId(s.getId());
+            sw.setSqueal_id(s.getId());
             return squealViewsRepository.save(sw);
         }
     }
@@ -269,7 +269,7 @@ public class SquealService {
         List<SquealDTO> ret = new ArrayList<>();
 
         if (isUserAuthorized(id)) {
-            List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(id);
+            List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUser_id(id);
 
             for (Squeal s : mySqueals) {
                 ret.add(loadSquealData(s, id));
@@ -286,13 +286,13 @@ public class SquealService {
     public List<SquealDTO> getDirectSquealPreview(String id) {
         List<SquealDTO> ret = new ArrayList<>();
         if (isUserAuthorized(id)) {
-            List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUserId(id);
+            List<Squeal> mySqueals = squealRepository.findAllByDestinations_DestinationIdOrderByUser_id(id);
 
             Map<String, Squeal> lastSqualsByUser = mySqueals
                 .stream()
                 .collect(
                     Collectors.toMap(
-                        Squeal::getUserId,
+                        Squeal::getUser_id,
                         Function.identity(),
                         (s1, s2) -> {
                             if (s1.getTimestamp() > s2.getTimestamp()) {
@@ -317,9 +317,9 @@ public class SquealService {
             Pageable p = PageRequest.of(page, number);
             List<Squeal> squealsReceived = new ArrayList<>();
             if (!myId.equals(userId)) {
-                squealsReceived = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(userId, myId, p);
+                squealsReceived = squealRepository.findAllByUser_idAndDestinations_Destination_idOrderByTimestamp(userId, myId, p);
             }
-            List<Squeal> squealsSent = squealRepository.findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(myId, userId, p);
+            List<Squeal> squealsSent = squealRepository.findAllByUser_idAndDestinations_Destination_idOrderByTimestamp(myId, userId, p);
             List<Squeal> merge = new ArrayList<>();
             merge.addAll(squealsReceived);
             merge.addAll(squealsSent);
@@ -338,7 +338,7 @@ public class SquealService {
         List<SquealDTO> ret = new ArrayList<>();
         List<Squeal> mySqueals = new ArrayList<>();
         if (channelService.canUserWrite(channelId, myId)) {
-            mySqueals = squealRepository.findAllByDestinations_DestinationIdInOrderByTimestampDesc(id, p);
+            mySqueals = squealRepository.findAllByDestinations_Destination_idInOrderByTimestampDesc(id, p);
         }
         for (Squeal s : mySqueals) {
             ret.add(loadSquealData(s, myId));
@@ -349,31 +349,31 @@ public class SquealService {
     public List<ReactionDTO> insertOrUpdateReaction(SquealReaction squealReaction, String id) {
         if (isUserAuthorized(id)) {
             Optional<SquealReaction> search = squealReactionRepository.findFirstByUserIdAndSquealId(
-                squealReaction.getUserId(),
-                squealReaction.getSquealId()
+                squealReaction.getUser_id(),
+                squealReaction.getSqueal_id()
             );
             if (search.isPresent()) {
                 squealReactionRepository.deleteById(search.get().getId());
                 if (search.get().getEmoji().equals(squealReaction.getEmoji())) {
-                    return getReactions(squealReaction.getSquealId());
+                    return getReactions(squealReaction.getSqueal_id());
                 }
             }
             squealReaction.setUsername(SecurityUtils.getCurrentUserLogin().orElse("unknown"));
-            squealReaction.setUserId(id);
+            squealReaction.setUser_id(id);
             squealReactionRepository.save(squealReaction);
         }
-        return getReactions(squealReaction.getSquealId());
+        return getReactions(squealReaction.getSqueal_id());
     }
 
     public Long getChannelCount(String id) {
-        return squealRepository.countByDestinations_DestinationId(id);
+        return squealRepository.countByDestinations_Destination_id(id);
     }
 
     public List<SquealDTO> getSquealMadeByUser(String name, int page, int number) {
         List<SquealDTO> dto = new ArrayList<>();
         String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
         Pageable p = PageRequest.of(page, number);
-        List<Squeal> squeals = squealRepository.findAllByUserId(userId, p);
+        List<Squeal> squeals = squealRepository.findAllByUser_id(userId, p);
         for (Squeal s : squeals) {
             dto.add(loadSquealData(s, name));
         }
@@ -382,12 +382,12 @@ public class SquealService {
 
     public Long countSquealMadeByUser(String name) {
         String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
-        return squealRepository.countByUserId(userId);
+        return squealRepository.countByUser_id(userId);
     }
 
     public Long getPositiveReactions(String id) {
         if (isUserAuthorized(id)) {
-            List<Squeal> squeals = squealRepository.findAllByUserId(id);
+            List<Squeal> squeals = squealRepository.findAllByUser_id(id);
             List<String> ids = squeals.stream().map(Squeal::getId).toList();
             return squealReactionRepository.countBySquealIdAndPositive(ids, true);
         }

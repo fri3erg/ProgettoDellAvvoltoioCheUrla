@@ -10,7 +10,7 @@ import { UserManagementService } from '../service/user-management.service';
 const userTemplate = {} as IUser;
 
 const newUser: IUser = {
-  langKey: 'en',
+  lang_key: 'en',
   activated: true,
 } as IUser;
 
@@ -43,7 +43,7 @@ export default class UserManagementUpdateComponent implements OnInit {
       validators: [Validators.minLength(5), Validators.maxLength(254), Validators.email],
     }),
     activated: new FormControl(userTemplate.activated, { nonNullable: true }),
-    langKey: new FormControl(userTemplate.langKey, { nonNullable: true }),
+    lang_key: new FormControl(userTemplate.lang_key, { nonNullable: true }),
     authorities: new FormControl(userTemplate.authorities, { nonNullable: true }),
   });
 

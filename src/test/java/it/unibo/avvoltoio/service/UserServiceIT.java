@@ -51,8 +51,8 @@ class UserServiceIT {
         user.setEmail(DEFAULT_EMAIL);
         user.setFirstName(DEFAULT_FIRSTNAME);
         user.setLastName(DEFAULT_LASTNAME);
-        user.setImageUrl(DEFAULT_IMAGEURL);
-        user.setLangKey(DEFAULT_LANGKEY);
+        user.setImage_url(DEFAULT_IMAGEURL);
+        user.setLang_key(DEFAULT_LANGKEY);
     }
 
     @Test
@@ -64,8 +64,8 @@ class UserServiceIT {
         maybeUser = userService.requestPasswordReset(user.getEmail());
         assertThat(maybeUser).isPresent();
         assertThat(maybeUser.orElse(null).getEmail()).isEqualTo(user.getEmail());
-        assertThat(maybeUser.orElse(null).getResetDate()).isNotNull();
-        assertThat(maybeUser.orElse(null).getResetKey()).isNotNull();
+        assertThat(maybeUser.orElse(null).getReset_date()).isNotNull();
+        assertThat(maybeUser.orElse(null).getReset_key()).isNotNull();
     }
 
     @Test
@@ -83,11 +83,11 @@ class UserServiceIT {
         Instant daysAgo = Instant.now().minus(25, ChronoUnit.HOURS);
         String resetKey = RandomUtil.generateResetKey();
         user.setActivated(true);
-        user.setResetDate(daysAgo);
-        user.setResetKey(resetKey);
+        user.setReset_date(daysAgo);
+        user.setReset_key(resetKey);
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getReset_key());
         assertThat(maybeUser).isNotPresent();
         userRepository.delete(user);
     }
@@ -96,11 +96,11 @@ class UserServiceIT {
     void assertThatResetKeyMustBeValid() {
         Instant daysAgo = Instant.now().minus(25, ChronoUnit.HOURS);
         user.setActivated(true);
-        user.setResetDate(daysAgo);
-        user.setResetKey("1234");
+        user.setReset_date(daysAgo);
+        user.setReset_key("1234");
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getReset_key());
         assertThat(maybeUser).isNotPresent();
         userRepository.delete(user);
     }
@@ -111,14 +111,14 @@ class UserServiceIT {
         Instant daysAgo = Instant.now().minus(2, ChronoUnit.HOURS);
         String resetKey = RandomUtil.generateResetKey();
         user.setActivated(true);
-        user.setResetDate(daysAgo);
-        user.setResetKey(resetKey);
+        user.setReset_date(daysAgo);
+        user.setReset_key(resetKey);
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getReset_key());
         assertThat(maybeUser).isPresent();
-        assertThat(maybeUser.orElse(null).getResetDate()).isNull();
-        assertThat(maybeUser.orElse(null).getResetKey()).isNull();
+        assertThat(maybeUser.orElse(null).getReset_date()).isNull();
+        assertThat(maybeUser.orElse(null).getReset_key()).isNull();
         assertThat(maybeUser.orElse(null).getPassword()).isNotEqualTo(oldPassword);
 
         userRepository.delete(user);
@@ -128,7 +128,7 @@ class UserServiceIT {
     void assertThatNotActivatedUsersWithNotNullActivationKeyCreatedBefore3DaysAreDeleted() {
         Instant now = Instant.now();
         user.setActivated(false);
-        user.setActivationKey(RandomStringUtils.random(20));
+        user.setActivation_key(RandomStringUtils.random(20));
         User dbUser = userRepository.save(user);
         dbUser.setCreatedDate(now.minus(4, ChronoUnit.DAYS));
         userRepository.save(user);

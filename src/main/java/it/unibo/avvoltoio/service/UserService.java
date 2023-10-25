@@ -72,7 +72,7 @@ public class UserService {
             .map(user -> {
                 // activate given user for the registration key.
                 user.setActivated(true);
-                user.setActivationKey(null);
+                user.setActivation_key(null);
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 log.debug("Activated user: {}", user);
@@ -84,11 +84,11 @@ public class UserService {
         log.debug("Reset user password for reset key {}", key);
         return userRepository
             .findOneByResetKey(key)
-            .filter(user -> user.getResetDate().isAfter(Instant.now().minus(1, ChronoUnit.DAYS)))
+            .filter(user -> user.getReset_date().isAfter(Instant.now().minus(1, ChronoUnit.DAYS)))
             .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
-                user.setResetKey(null);
-                user.setResetDate(null);
+                user.setReset_key(null);
+                user.setReset_date(null);
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 return user;
@@ -100,8 +100,8 @@ public class UserService {
             .findOneByEmailIgnoreCase(mail)
             .filter(User::isActivated)
             .map(user -> {
-                user.setResetKey(RandomUtil.generateResetKey());
-                user.setResetDate(Instant.now());
+                user.setReset_key(RandomUtil.generateResetKey());
+                user.setReset_date(Instant.now());
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 return user;
@@ -135,12 +135,12 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
-        newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setLangKey(userDTO.getLangKey());
+        newUser.setImage_url(userDTO.getImageUrl());
+        newUser.setLang_key(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        newUser.setActivation_key(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
@@ -178,12 +178,12 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
-        newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setLangKey(userDTO.getLangKey());
+        newUser.setImage_url(userDTO.getImageUrl());
+        newUser.setLang_key(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        newUser.setActivation_key(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
@@ -217,16 +217,16 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
         }
-        user.setImageUrl(userDTO.getImageUrl());
+        user.setImage_url(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+            user.setLang_key(Constants.DEFAULT_LANGUAGE); // default language
         } else {
-            user.setLangKey(userDTO.getLangKey());
+            user.setLang_key(userDTO.getLangKey());
         }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
-        user.setResetKey(RandomUtil.generateResetKey());
-        user.setResetDate(Instant.now());
+        user.setReset_key(RandomUtil.generateResetKey());
+        user.setReset_date(Instant.now());
         user.setActivated(true);
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO
@@ -263,9 +263,9 @@ public class UserService {
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
-                user.setImageUrl(userDTO.getImageUrl());
+                user.setImage_url(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
-                user.setLangKey(userDTO.getLangKey());
+                user.setLang_key(userDTO.getLangKey());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO
@@ -312,8 +312,8 @@ public class UserService {
                 if (email != null) {
                     user.setEmail(email.toLowerCase());
                 }
-                user.setLangKey(langKey);
-                user.setImageUrl(imageUrl);
+                user.setLang_key(langKey);
+                user.setImage_url(imageUrl);
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
@@ -389,7 +389,7 @@ public class UserService {
         AdminUserDTO userret = null;
         if (existingUser.isPresent()) {
             existingUser.get().setImg(img);
-            existingUser.get().setImgContentType(imgContentType);
+            existingUser.get().setImg_content_type(imgContentType);
             userRepository.save(existingUser.get());
             this.clearUserCaches(existingUser.get());
             userret = new AdminUserDTO(existingUser.get());

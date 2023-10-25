@@ -103,10 +103,10 @@ class SquealCatResourceIT {
         List<SquealCat> squealCatList = squealCatRepository.findAll();
         assertThat(squealCatList).hasSize(databaseSizeBeforeCreate + 1);
         SquealCat testSquealCat = squealCatList.get(squealCatList.size() - 1);
-        assertThat(testSquealCat.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testSquealCat.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testSquealCat.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testSquealCat.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
         assertThat(testSquealCat.getCategory()).isEqualTo(DEFAULT_CATEGORY);
-        assertThat(testSquealCat.getnCharacters()).isEqualTo(DEFAULT_N_CHARACTERS);
+        assertThat(testSquealCat.getN_characters()).isEqualTo(DEFAULT_N_CHARACTERS);
         assertThat(testSquealCat.getTimestamp()).isEqualTo(DEFAULT_TIMESTAMP);
     }
 
@@ -138,7 +138,7 @@ class SquealCatResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(squealCat.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].squealId").value(hasItem(DEFAULT_SQUEAL_ID)))
             .andExpect(jsonPath("$.[*].category").value(hasItem(DEFAULT_CATEGORY.toString())))
             .andExpect(jsonPath("$.[*].nCharacters").value(hasItem(DEFAULT_N_CHARACTERS)))
@@ -156,7 +156,7 @@ class SquealCatResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(squealCat.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.squealId").value(DEFAULT_SQUEAL_ID))
             .andExpect(jsonPath("$.category").value(DEFAULT_CATEGORY.toString()))
             .andExpect(jsonPath("$.nCharacters").value(DEFAULT_N_CHARACTERS))
@@ -197,10 +197,10 @@ class SquealCatResourceIT {
         List<SquealCat> squealCatList = squealCatRepository.findAll();
         assertThat(squealCatList).hasSize(databaseSizeBeforeUpdate);
         SquealCat testSquealCat = squealCatList.get(squealCatList.size() - 1);
-        assertThat(testSquealCat.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testSquealCat.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealCat.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSquealCat.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealCat.getCategory()).isEqualTo(UPDATED_CATEGORY);
-        assertThat(testSquealCat.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testSquealCat.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
         assertThat(testSquealCat.getTimestamp()).isEqualTo(UPDATED_TIMESTAMP);
     }
 
@@ -282,10 +282,10 @@ class SquealCatResourceIT {
         List<SquealCat> squealCatList = squealCatRepository.findAll();
         assertThat(squealCatList).hasSize(databaseSizeBeforeUpdate);
         SquealCat testSquealCat = squealCatList.get(squealCatList.size() - 1);
-        assertThat(testSquealCat.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testSquealCat.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealCat.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSquealCat.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealCat.getCategory()).isEqualTo(DEFAULT_CATEGORY);
-        assertThat(testSquealCat.getnCharacters()).isEqualTo(DEFAULT_N_CHARACTERS);
+        assertThat(testSquealCat.getN_characters()).isEqualTo(DEFAULT_N_CHARACTERS);
         assertThat(testSquealCat.getTimestamp()).isEqualTo(UPDATED_TIMESTAMP);
     }
 
@@ -319,10 +319,10 @@ class SquealCatResourceIT {
         List<SquealCat> squealCatList = squealCatRepository.findAll();
         assertThat(squealCatList).hasSize(databaseSizeBeforeUpdate);
         SquealCat testSquealCat = squealCatList.get(squealCatList.size() - 1);
-        assertThat(testSquealCat.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testSquealCat.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealCat.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSquealCat.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealCat.getCategory()).isEqualTo(UPDATED_CATEGORY);
-        assertThat(testSquealCat.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testSquealCat.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
         assertThat(testSquealCat.getTimestamp()).isEqualTo(UPDATED_TIMESTAMP);
     }
 

@@ -379,7 +379,7 @@ class AccountResourceIT {
         user.setEmail("activate-account@example.com");
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setActivated(false);
-        user.setActivationKey(activationKey);
+        user.setActivation_key(activationKey);
 
         userRepository.save(user);
 
@@ -422,9 +422,9 @@ class AccountResourceIT {
         assertThat(updatedUser.getFirstName()).isEqualTo(userDTO.getFirstName());
         assertThat(updatedUser.getLastName()).isEqualTo(userDTO.getLastName());
         assertThat(updatedUser.getEmail()).isEqualTo(userDTO.getEmail());
-        assertThat(updatedUser.getLangKey()).isEqualTo(userDTO.getLangKey());
+        assertThat(updatedUser.getLang_key()).isEqualTo(userDTO.getLangKey());
         assertThat(updatedUser.getPassword()).isEqualTo(user.getPassword());
-        assertThat(updatedUser.getImageUrl()).isEqualTo(userDTO.getImageUrl());
+        assertThat(updatedUser.getImage_url()).isEqualTo(userDTO.getImageUrl());
         assertThat(updatedUser.isActivated()).isTrue();
         assertThat(updatedUser.getAuthorities()).isEmpty();
     }
@@ -643,7 +643,7 @@ class AccountResourceIT {
         user.setActivated(true);
         user.setLogin("password-reset");
         user.setEmail("password-reset@example.com");
-        user.setLangKey("en");
+        user.setLang_key("en");
         userRepository.save(user);
 
         restAccountMockMvc
@@ -658,7 +658,7 @@ class AccountResourceIT {
         user.setActivated(true);
         user.setLogin("password-reset-upper-case");
         user.setEmail("password-reset-upper-case@example.com");
-        user.setLangKey("en");
+        user.setLang_key("en");
         userRepository.save(user);
 
         restAccountMockMvc
@@ -679,12 +679,12 @@ class AccountResourceIT {
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setLogin("finish-password-reset");
         user.setEmail("finish-password-reset@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
-        user.setResetKey("reset key");
+        user.setReset_date(Instant.now().plusSeconds(60));
+        user.setReset_key("reset key");
         userRepository.save(user);
 
         KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getResetKey());
+        keyAndPassword.setKey(user.getReset_key());
         keyAndPassword.setNewPassword("new password");
 
         restAccountMockMvc
@@ -705,12 +705,12 @@ class AccountResourceIT {
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setLogin("finish-password-reset-too-small");
         user.setEmail("finish-password-reset-too-small@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
-        user.setResetKey("reset key too small");
+        user.setReset_date(Instant.now().plusSeconds(60));
+        user.setReset_key("reset key too small");
         userRepository.save(user);
 
         KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getResetKey());
+        keyAndPassword.setKey(user.getReset_key());
         keyAndPassword.setNewPassword("foo");
 
         restAccountMockMvc

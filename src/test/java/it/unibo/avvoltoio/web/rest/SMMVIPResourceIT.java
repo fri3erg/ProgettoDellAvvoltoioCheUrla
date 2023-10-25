@@ -111,7 +111,7 @@ class SMMVIPResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(sMMVIP.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)));
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)));
     }
 
     @Test
@@ -125,7 +125,7 @@ class SMMVIPResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(sMMVIP.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID));
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID));
     }
 
     @Test

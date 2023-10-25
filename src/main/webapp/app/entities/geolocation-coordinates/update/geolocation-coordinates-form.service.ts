@@ -18,8 +18,8 @@ type GeolocationCoordinatesFormDefaults = Pick<NewGeolocationCoordinates, 'id'>;
 
 type GeolocationCoordinatesFormGroupContent = {
   id: FormControl<IGeolocationCoordinates['id'] | NewGeolocationCoordinates['id']>;
-  squealId: FormControl<IGeolocationCoordinates['squealId']>;
-  userId: FormControl<IGeolocationCoordinates['userId']>;
+  squeal_id: FormControl<IGeolocationCoordinates['squeal_id']>;
+  user_id: FormControl<IGeolocationCoordinates['user_id']>;
   latitude: FormControl<IGeolocationCoordinates['latitude']>;
   longitude: FormControl<IGeolocationCoordinates['longitude']>;
   accuracy: FormControl<IGeolocationCoordinates['accuracy']>;
@@ -47,8 +47,8 @@ export class GeolocationCoordinatesFormService {
           validators: [Validators.required],
         }
       ),
-      squealId: new FormControl(geolocationCoordinatesRawValue.squealId),
-      userId: new FormControl(geolocationCoordinatesRawValue.userId),
+      squeal_id: new FormControl(geolocationCoordinatesRawValue.squeal_id),
+      user_id: new FormControl(geolocationCoordinatesRawValue.user_id),
       latitude: new FormControl(geolocationCoordinatesRawValue.latitude),
       longitude: new FormControl(geolocationCoordinatesRawValue.longitude),
       accuracy: new FormControl(geolocationCoordinatesRawValue.accuracy),

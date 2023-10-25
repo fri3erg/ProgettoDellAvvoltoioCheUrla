@@ -104,9 +104,9 @@ class SquealReactionResourceIT {
         List<SquealReaction> squealReactionList = squealReactionRepository.findAll();
         assertThat(squealReactionList).hasSize(databaseSizeBeforeCreate + 1);
         SquealReaction testSquealReaction = squealReactionList.get(squealReactionList.size() - 1);
-        assertThat(testSquealReaction.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testSquealReaction.getUser_id()).isEqualTo(DEFAULT_USER_ID);
         assertThat(testSquealReaction.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(testSquealReaction.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testSquealReaction.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
         assertThat(testSquealReaction.getPositive()).isEqualTo(DEFAULT_POSITIVE);
         assertThat(testSquealReaction.getEmoji()).isEqualTo(DEFAULT_EMOJI);
     }
@@ -141,7 +141,7 @@ class SquealReactionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(squealReaction.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME)))
             .andExpect(jsonPath("$.[*].squealId").value(hasItem(DEFAULT_SQUEAL_ID)))
             .andExpect(jsonPath("$.[*].positive").value(hasItem(DEFAULT_POSITIVE.booleanValue())))
@@ -159,7 +159,7 @@ class SquealReactionResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(squealReaction.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME))
             .andExpect(jsonPath("$.squealId").value(DEFAULT_SQUEAL_ID))
             .andExpect(jsonPath("$.positive").value(DEFAULT_POSITIVE.booleanValue()))
@@ -200,9 +200,9 @@ class SquealReactionResourceIT {
         List<SquealReaction> squealReactionList = squealReactionRepository.findAll();
         assertThat(squealReactionList).hasSize(databaseSizeBeforeUpdate);
         SquealReaction testSquealReaction = squealReactionList.get(squealReactionList.size() - 1);
-        assertThat(testSquealReaction.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSquealReaction.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testSquealReaction.getUsername()).isEqualTo(UPDATED_USERNAME);
-        assertThat(testSquealReaction.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealReaction.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealReaction.getPositive()).isEqualTo(UPDATED_POSITIVE);
         assertThat(testSquealReaction.getEmoji()).isEqualTo(UPDATED_EMOJI);
     }
@@ -285,9 +285,9 @@ class SquealReactionResourceIT {
         List<SquealReaction> squealReactionList = squealReactionRepository.findAll();
         assertThat(squealReactionList).hasSize(databaseSizeBeforeUpdate);
         SquealReaction testSquealReaction = squealReactionList.get(squealReactionList.size() - 1);
-        assertThat(testSquealReaction.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testSquealReaction.getUser_id()).isEqualTo(DEFAULT_USER_ID);
         assertThat(testSquealReaction.getUsername()).isEqualTo(DEFAULT_USERNAME);
-        assertThat(testSquealReaction.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testSquealReaction.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
         assertThat(testSquealReaction.getPositive()).isEqualTo(UPDATED_POSITIVE);
         assertThat(testSquealReaction.getEmoji()).isEqualTo(UPDATED_EMOJI);
     }
@@ -322,9 +322,9 @@ class SquealReactionResourceIT {
         List<SquealReaction> squealReactionList = squealReactionRepository.findAll();
         assertThat(squealReactionList).hasSize(databaseSizeBeforeUpdate);
         SquealReaction testSquealReaction = squealReactionList.get(squealReactionList.size() - 1);
-        assertThat(testSquealReaction.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSquealReaction.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testSquealReaction.getUsername()).isEqualTo(UPDATED_USERNAME);
-        assertThat(testSquealReaction.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testSquealReaction.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
         assertThat(testSquealReaction.getPositive()).isEqualTo(UPDATED_POSITIVE);
         assertThat(testSquealReaction.getEmoji()).isEqualTo(UPDATED_EMOJI);
     }

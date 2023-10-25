@@ -18,8 +18,8 @@ type ChannelUserFormDefaults = Pick<NewChannelUser, 'id'>;
 
 type ChannelUserFormGroupContent = {
   id: FormControl<IChannelUser['id'] | NewChannelUser['id']>;
-  userId: FormControl<IChannelUser['userId']>;
-  channelId: FormControl<IChannelUser['channelId']>;
+  user_id: FormControl<IChannelUser['user_id']>;
+  channel_id: FormControl<IChannelUser['channel_id']>;
   privilege: FormControl<IChannelUser['privilege']>;
 };
 
@@ -40,8 +40,8 @@ export class ChannelUserFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(channelUserRawValue.userId),
-      channelId: new FormControl(channelUserRawValue.channelId),
+      user_id: new FormControl(channelUserRawValue.user_id),
+      channel_id: new FormControl(channelUserRawValue.channel_id),
       privilege: new FormControl(channelUserRawValue.privilege),
     });
   }

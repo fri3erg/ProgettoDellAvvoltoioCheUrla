@@ -132,11 +132,11 @@ public class ChannelUserResource {
         Optional<ChannelUser> result = channelUserRepository
             .findById(channelUser.getId())
             .map(existingChannelUser -> {
-                if (channelUser.getUserId() != null) {
-                    existingChannelUser.setUserId(channelUser.getUserId());
+                if (channelUser.getUser_id() != null) {
+                    existingChannelUser.setUser_id(channelUser.getUser_id());
                 }
-                if (channelUser.getChannelId() != null) {
-                    existingChannelUser.setChannelId(channelUser.getChannelId());
+                if (channelUser.getChannel_id() != null) {
+                    existingChannelUser.setChannel_id(channelUser.getChannel_id());
                 }
                 if (channelUser.getPrivilege() != null) {
                     existingChannelUser.setPrivilege(channelUser.getPrivilege());

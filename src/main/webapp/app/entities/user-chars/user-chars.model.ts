@@ -1,8 +1,8 @@
 export interface IUserChars {
   id: string;
-  userId?: string | null;
-  maxChars?: number | null;
-  remaningChars?: number | null;
+  user_id?: string | null;
+  max_chars?: number | null;
+  remaning_chars?: number | null;
 }
 export interface IUserCharsDTO {
   type: Type;

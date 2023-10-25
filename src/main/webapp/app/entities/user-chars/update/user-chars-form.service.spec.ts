@@ -20,9 +20,9 @@ describe('UserChars Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            maxChars: expect.any(Object),
-            remaningChars: expect.any(Object),
+            user_id: expect.any(Object),
+            max_chars: expect.any(Object),
+            remaning_chars: expect.any(Object),
           })
         );
       });
@@ -33,9 +33,9 @@ describe('UserChars Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            maxChars: expect.any(Object),
-            remaningChars: expect.any(Object),
+            user_id: expect.any(Object),
+            max_chars: expect.any(Object),
+            remaning_chars: expect.any(Object),
           })
         );
       });

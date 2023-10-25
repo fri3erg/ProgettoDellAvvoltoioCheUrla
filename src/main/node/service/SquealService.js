@@ -4,7 +4,9 @@ const channelUser = require('../model/channelUser');
 const squealCat = require('../model/squealCat');
 const squealReaction = require('../model/squealReaction');
 const squealViews = require('../model/squealViews');
+
 class ReactionDTO {
+  n_characters;
   number = 0;
   reaction = '';
   constructor(emoji) {
@@ -17,10 +19,8 @@ class ReactionDTO {
 class SquealService {
   async getSquealList(page, size, user) {
     const id = user.user_id;
-    console.log('id:' + id);
+
     const chUs = await channelUser.find({ user_id: id });
-    console.log('chUs');
-    console.log(chUs);
 
     let chId = [];
     for (const us of chUs) {
@@ -28,7 +28,8 @@ class SquealService {
     }
 
     const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } }).sort({ timestamp: -1 });
-
+    console.log('test');
+    console.log(sq);
     const ret = [];
     for (const s of sq) {
       const dto = await this.loadSquealData(s, user);
@@ -45,13 +46,11 @@ class SquealService {
     }
     const id = squeal._id.toString();
 
-    console.log(id);
     const cat = await squealCat.find({ squeal_id: id });
-    console.log(cat);
+
     const reactions = await this.getReaction(id);
-    console.log(reactions);
+
     const views = await squealViews.findOne({ squeal_id: id });
-    console.log(views);
 
     const ret = {
       userName: user.username,
@@ -65,7 +64,6 @@ class SquealService {
   async getReaction(id) {
     const reactions = await squealReaction.find({ squeal_id: id });
 
-    console.log(reactions);
     const map = new Map();
     for (const reaction of reactions) {
       const emoji = reaction.emoji;

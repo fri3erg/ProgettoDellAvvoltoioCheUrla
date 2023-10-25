@@ -20,16 +20,16 @@ describe('Squeal Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
             timestamp: expect.any(Object),
             body: expect.any(Object),
             img: expect.any(Object),
-            imgName: expect.any(Object),
-            videoContentType: expect.any(Object),
-            videoName: expect.any(Object),
-            nCharacters: expect.any(Object),
-            squealIdResponse: expect.any(Object),
-            refreshTime: expect.any(Object),
+            img_name: expect.any(Object),
+            video_content_type: expect.any(Object),
+            video_name: expect.any(Object),
+            n_characters: expect.any(Object),
+            squeal_id_response: expect.any(Object),
+            refresh_time: expect.any(Object),
           })
         );
       });
@@ -40,16 +40,16 @@ describe('Squeal Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
             timestamp: expect.any(Object),
             body: expect.any(Object),
             img: expect.any(Object),
-            imgName: expect.any(Object),
-            videoContentType: expect.any(Object),
-            videoName: expect.any(Object),
-            nCharacters: expect.any(Object),
-            squealIdResponse: expect.any(Object),
-            refreshTime: expect.any(Object),
+            img_name: expect.any(Object),
+            video_content_type: expect.any(Object),
+            video_name: expect.any(Object),
+            n_characters: expect.any(Object),
+            squeal_id_response: expect.any(Object),
+            refresh_time: expect.any(Object),
           })
         );
       });

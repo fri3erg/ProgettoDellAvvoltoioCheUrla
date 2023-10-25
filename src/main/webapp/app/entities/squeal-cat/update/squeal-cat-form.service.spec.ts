@@ -20,10 +20,10 @@ describe('SquealCat Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            squealId: expect.any(Object),
+            user_id: expect.any(Object),
+            squeal_id: expect.any(Object),
             category: expect.any(Object),
-            nCharacters: expect.any(Object),
+            n_characters: expect.any(Object),
             timestamp: expect.any(Object),
           })
         );
@@ -35,10 +35,10 @@ describe('SquealCat Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            squealId: expect.any(Object),
+            user_id: expect.any(Object),
+            squeal_id: expect.any(Object),
             category: expect.any(Object),
-            nCharacters: expect.any(Object),
+            n_characters: expect.any(Object),
             timestamp: expect.any(Object),
           })
         );

@@ -101,7 +101,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             return;
           }
           this.account.img = base64Data;
-          this.account.imgContentType = file.type;
+          this.account.img_content_type = file.type;
           this.newphoto = true;
           console.log(this.account);
         });
@@ -112,12 +112,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   rotateImage(): void {
-    if (!this.account?.imgContentType || !this.account.img) {
+    if (!this.account?.img_content_type || !this.account.img) {
       return;
     }
     this.newphoto = true;
     const prev = this.account.img;
-    const base = 'data:' + this.account.imgContentType + ';base64,';
+    const base = 'data:' + this.account.img_content_type + ';base64,';
     let result = this.rotateBase64Image90deg(base + prev, true);
     result = result.replace(base, '');
     this.account.img = result;
@@ -156,8 +156,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return;
     }
     this.newphoto = false;
-    this.account.imageUrl = null;
-    this.account.imgContentType = null;
+    this.account.image_url = null;
+    this.account.img_content_type = null;
     // if (this.elementRef && idInput && this.elementRef.nativeElement.querySelector('#' + idInput)) {
     // this.elementRef.nativeElement.querySelector('#' + idInput).value =null;
     // }

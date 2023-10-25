@@ -18,9 +18,9 @@ type SquealReactionFormDefaults = Pick<NewSquealReaction, 'id' | 'positive'>;
 
 type SquealReactionFormGroupContent = {
   id: FormControl<ISquealReaction['id'] | NewSquealReaction['id']>;
-  userId: FormControl<ISquealReaction['userId']>;
+  user_id: FormControl<ISquealReaction['user_id']>;
   username: FormControl<ISquealReaction['username']>;
-  squealId: FormControl<ISquealReaction['squealId']>;
+  squeal_id: FormControl<ISquealReaction['squeal_id']>;
   positive: FormControl<ISquealReaction['positive']>;
   emoji: FormControl<ISquealReaction['emoji']>;
 };
@@ -42,9 +42,9 @@ export class SquealReactionFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(squealReactionRawValue.userId),
+      user_id: new FormControl(squealReactionRawValue.user_id),
       username: new FormControl(squealReactionRawValue.username),
-      squealId: new FormControl(squealReactionRawValue.squealId),
+      squeal_id: new FormControl(squealReactionRawValue.squeal_id),
       positive: new FormControl(squealReactionRawValue.positive),
       emoji: new FormControl(squealReactionRawValue.emoji),
     });

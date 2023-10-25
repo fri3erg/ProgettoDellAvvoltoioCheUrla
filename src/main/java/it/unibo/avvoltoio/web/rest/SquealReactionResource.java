@@ -138,14 +138,14 @@ public class SquealReactionResource {
         Optional<SquealReaction> result = squealReactionRepository
             .findById(squealReaction.getId())
             .map(existingSquealReaction -> {
-                if (squealReaction.getUserId() != null) {
-                    existingSquealReaction.setUserId(squealReaction.getUserId());
+                if (squealReaction.getUser_id() != null) {
+                    existingSquealReaction.setUser_id(squealReaction.getUser_id());
                 }
                 if (squealReaction.getUsername() != null) {
                     existingSquealReaction.setUsername(squealReaction.getUsername());
                 }
-                if (squealReaction.getSquealId() != null) {
-                    existingSquealReaction.setSquealId(squealReaction.getSquealId());
+                if (squealReaction.getSqueal_id() != null) {
+                    existingSquealReaction.setSqueal_id(squealReaction.getSqueal_id());
                 }
                 if (squealReaction.getPositive() != null) {
                     existingSquealReaction.setPositive(squealReaction.getPositive());

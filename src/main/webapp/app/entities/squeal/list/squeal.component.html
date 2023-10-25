@@ -38,9 +38,9 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -62,39 +62,39 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="imgName">
+          <th scope="col" jhiSortBy="img_name">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName">Img Name</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.img_name">Img Name</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="videoContentType">
+          <th scope="col" jhiSortBy="video_content_type">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType">Video Content Type</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.video_content_type">Video Content Type</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="videoName">
+          <th scope="col" jhiSortBy="video_name">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName">Video Name</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.video_name">Video Name</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="nCharacters">
+          <th scope="col" jhiSortBy="n_characters">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters">N Characters</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.n_characters">N Characters</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="squealIdResponse">
+          <th scope="col" jhiSortBy="squeal_id_response">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse">Squeal Id Response</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.squeal_id_response">Squeal Id Response</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="refreshTime">
+          <th scope="col" jhiSortBy="refresh_time">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime">Refresh Time</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squeal.refresh_time">Refresh Time</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -106,21 +106,21 @@
           <td>
             <a [routerLink]="['/squeal', squeal.id, 'view']">{{ squeal.id }}</a>
           </td>
-          <td>{{ squeal.userId }}</td>
+          <td>{{ squeal.user_id }}</td>
           <td>{{ squeal.timestamp }}</td>
           <td>{{ squeal.body }}</td>
           <td>
-            <a *ngIf="squeal.img" (click)="openFile(squeal.img, squeal.imgContentType)">
-              <img [src]="'data:' + squeal.imgContentType + ';base64,' + squeal.img" style="max-height: 30px" alt="squeal image" />
+            <a *ngIf="squeal.img" (click)="openFile(squeal.img, squeal.img_content_type)">
+              <img [src]="'data:' + squeal.img_content_type + ';base64,' + squeal.img" style="max-height: 30px" alt="squeal image" />
             </a>
-            <span *ngIf="squeal.img">{{ squeal.imgContentType }}, {{ byteSize(squeal.img) }}</span>
+            <span *ngIf="squeal.img">{{ squeal.img_content_type }}, {{ byteSize(squeal.img) }}</span>
           </td>
-          <td>{{ squeal.imgName }}</td>
-          <td>{{ squeal.videoContentType }}</td>
-          <td>{{ squeal.videoName }}</td>
-          <td>{{ squeal.nCharacters }}</td>
-          <td>{{ squeal.squealIdResponse }}</td>
-          <td>{{ squeal.refreshTime }}</td>
+          <td>{{ squeal.img_name }}</td>
+          <td>{{ squeal.video_content_type }}</td>
+          <td>{{ squeal.video_name }}</td>
+          <td>{{ squeal.n_characters }}</td>
+          <td>{{ squeal.squeal_id_response }}</td>
+          <td>{{ squeal.refresh_time }}</td>
           <td class="text-end">
             <div class="btn-group">
               <button type="submit" [routerLink]="['/squeal', squeal.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

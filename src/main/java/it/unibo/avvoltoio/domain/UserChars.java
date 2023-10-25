@@ -18,13 +18,13 @@ public class UserChars implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("max_chars")
-    private Integer maxChars;
+    private Integer max_chars;
 
     @Field("remaning_chars")
-    private Integer remaningChars;
+    private Integer remaning_chars;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -41,43 +41,43 @@ public class UserChars implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public UserChars userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
-    public Integer getMaxChars() {
-        return this.maxChars;
+    public Integer getMax_chars() {
+        return this.max_chars;
     }
 
     public UserChars maxChars(Integer maxChars) {
-        this.setMaxChars(maxChars);
+        this.setMax_chars(maxChars);
         return this;
     }
 
-    public void setMaxChars(Integer maxChars) {
-        this.maxChars = maxChars;
+    public void setMax_chars(Integer maxChars) {
+        this.max_chars = maxChars;
     }
 
-    public Integer getRemaningChars() {
-        return this.remaningChars;
+    public Integer getRemaning_chars() {
+        return this.remaning_chars;
     }
 
     public UserChars remaningChars(Integer remaningChars) {
-        this.setRemaningChars(remaningChars);
+        this.setRemaning_chars(remaningChars);
         return this;
     }
 
-    public void setRemaningChars(Integer remaningChars) {
-        this.remaningChars = remaningChars;
+    public void setRemaning_chars(Integer remaningChars) {
+        this.remaning_chars = remaningChars;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -104,9 +104,9 @@ public class UserChars implements Serializable {
     public String toString() {
         return "UserChars{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
-            ", maxChars=" + getMaxChars() +
-            ", remaningChars=" + getRemaningChars() +
+            ", userId='" + getUser_id() + "'" +
+            ", maxChars=" + getMax_chars() +
+            ", remaningChars=" + getRemaning_chars() +
             "}";
     }
 }

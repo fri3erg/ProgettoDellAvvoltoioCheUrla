@@ -2,18 +2,17 @@ import { ISquealDestination } from '../squeal-destination/squeal-destination.mod
 
 export interface ISqueal {
   id?: string;
-  userId?: string | null;
+  user_id?: string | null;
   timestamp?: number | null;
   body?: string | null;
   img?: string | null;
-  imgContentType?: string | null;
-  imgName?: string | null;
-  videoContentType?: string | null;
-  videoName?: string | null;
-  nCharacters?: number | null;
+  img_content_type?: string | null;
+  img_name?: string | null;
+  video_content_type?: string | null;
+  video_name?: string | null;
   n_characters?: number | null;
-  squealIdResponse?: string | null;
-  refreshTime?: number | null;
+  squeal_id_response?: string | null;
+  refresh_time?: number | null;
   destinations?: ISquealDestination[];
 }
 

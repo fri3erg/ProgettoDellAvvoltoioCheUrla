@@ -90,8 +90,8 @@ class UserResourceIT {
         user.setEmail(DEFAULT_EMAIL);
         user.setFirstName(DEFAULT_FIRSTNAME);
         user.setLastName(DEFAULT_LASTNAME);
-        user.setImageUrl(DEFAULT_IMAGEURL);
-        user.setLangKey(DEFAULT_LANGKEY);
+        user.setImage_url(DEFAULT_IMAGEURL);
+        user.setLang_key(DEFAULT_LANGKEY);
         return user;
     }
 
@@ -136,8 +136,8 @@ class UserResourceIT {
             assertThat(testUser.getFirstName()).isEqualTo(DEFAULT_FIRSTNAME);
             assertThat(testUser.getLastName()).isEqualTo(DEFAULT_LASTNAME);
             assertThat(testUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
-            assertThat(testUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-            assertThat(testUser.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
+            assertThat(testUser.getImage_url()).isEqualTo(DEFAULT_IMAGEURL);
+            assertThat(testUser.getLang_key()).isEqualTo(DEFAULT_LANGKEY);
         });
         userRepository.deleteAll();
     }
@@ -301,8 +301,8 @@ class UserResourceIT {
             assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
             assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
             assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
-            assertThat(testUser.getImageUrl()).isEqualTo(UPDATED_IMAGEURL);
-            assertThat(testUser.getLangKey()).isEqualTo(UPDATED_LANGKEY);
+            assertThat(testUser.getImage_url()).isEqualTo(UPDATED_IMAGEURL);
+            assertThat(testUser.getLang_key()).isEqualTo(UPDATED_LANGKEY);
         });
         userRepository.deleteAll();
     }
@@ -343,8 +343,8 @@ class UserResourceIT {
             assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRSTNAME);
             assertThat(testUser.getLastName()).isEqualTo(UPDATED_LASTNAME);
             assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
-            assertThat(testUser.getImageUrl()).isEqualTo(UPDATED_IMAGEURL);
-            assertThat(testUser.getLangKey()).isEqualTo(UPDATED_LANGKEY);
+            assertThat(testUser.getImage_url()).isEqualTo(UPDATED_IMAGEURL);
+            assertThat(testUser.getLang_key()).isEqualTo(UPDATED_LANGKEY);
         });
         userRepository.deleteAll();
     }
@@ -361,8 +361,8 @@ class UserResourceIT {
         anotherUser.setEmail("jhipster@localhost");
         anotherUser.setFirstName("java");
         anotherUser.setLastName("hipster");
-        anotherUser.setImageUrl("");
-        anotherUser.setLangKey("en");
+        anotherUser.setImage_url("");
+        anotherUser.setLang_key("en");
         userRepository.save(anotherUser);
 
         // Update the user
@@ -375,8 +375,8 @@ class UserResourceIT {
         user.setLastName(updatedUser.getLastName());
         user.setEmail("jhipster@localhost"); // this email should already be used by anotherUser
         user.setActivated(updatedUser.isActivated());
-        user.setImageUrl(updatedUser.getImageUrl());
-        user.setLangKey(updatedUser.getLangKey());
+        user.setImageUrl(updatedUser.getImage_url());
+        user.setLangKey(updatedUser.getLang_key());
         user.setCreatedBy(updatedUser.getCreatedBy());
         user.setCreatedDate(updatedUser.getCreatedDate());
         user.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -401,8 +401,8 @@ class UserResourceIT {
         anotherUser.setEmail("jhipster@localhost");
         anotherUser.setFirstName("java");
         anotherUser.setLastName("hipster");
-        anotherUser.setImageUrl("");
-        anotherUser.setLangKey("en");
+        anotherUser.setImage_url("");
+        anotherUser.setLang_key("en");
         userRepository.save(anotherUser);
 
         // Update the user
@@ -415,8 +415,8 @@ class UserResourceIT {
         user.setLastName(updatedUser.getLastName());
         user.setEmail(updatedUser.getEmail());
         user.setActivated(updatedUser.isActivated());
-        user.setImageUrl(updatedUser.getImageUrl());
-        user.setLangKey(updatedUser.getLangKey());
+        user.setImageUrl(updatedUser.getImage_url());
+        user.setLangKey(updatedUser.getLang_key());
         user.setCreatedBy(updatedUser.getCreatedBy());
         user.setCreatedDate(updatedUser.getCreatedDate());
         user.setLastModifiedBy(updatedUser.getLastModifiedBy());
@@ -482,8 +482,8 @@ class UserResourceIT {
         assertThat(user.getLastName()).isEqualTo(DEFAULT_LASTNAME);
         assertThat(user.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(user.isActivated()).isTrue();
-        assertThat(user.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
-        assertThat(user.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
+        assertThat(user.getImage_url()).isEqualTo(DEFAULT_IMAGEURL);
+        assertThat(user.getLang_key()).isEqualTo(DEFAULT_LANGKEY);
         assertThat(user.getCreatedBy()).isNull();
         assertThat(user.getCreatedDate()).isNotNull();
         assertThat(user.getLastModifiedBy()).isNull();

@@ -38,27 +38,27 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="nCharacters">
+          <th scope="col" jhiSortBy="n_characters">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.nCharacters">N Characters</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.n_characters">N Characters</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="timestampBought">
+          <th scope="col" jhiSortBy="timestamp_bought">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestampBought">Timestamp Bought</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestamp_bought">Timestamp Bought</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="timestampExpire">
+          <th scope="col" jhiSortBy="timestamp_expire">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestampExpire">Timestamp Expire</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.timestamp_expire">Timestamp Expire</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -68,9 +68,9 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="adminDiscount">
+          <th scope="col" jhiSortBy="admin_discount">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.adminDiscount">Admin Discount</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.charactersPurchased.admin_discount">Admin Discount</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -82,12 +82,12 @@
           <td>
             <a [routerLink]="['/characters-purchased', charactersPurchased.id, 'view']">{{ charactersPurchased.id }}</a>
           </td>
-          <td>{{ charactersPurchased.userId }}</td>
-          <td>{{ charactersPurchased.nCharacters }}</td>
-          <td>{{ charactersPurchased.timestampBought }}</td>
-          <td>{{ charactersPurchased.timestampExpire }}</td>
+          <td>{{ charactersPurchased.user_id }}</td>
+          <td>{{ charactersPurchased.n_characters }}</td>
+          <td>{{ charactersPurchased.timestamp_bought }}</td>
+          <td>{{ charactersPurchased.timestamp_expire }}</td>
           <td>{{ charactersPurchased.amount }}</td>
-          <td>{{ charactersPurchased.adminDiscount }}</td>
+          <td>{{ charactersPurchased.admin_discount }}</td>
           <td class="text-end">
             <div class="btn-group">
               <button

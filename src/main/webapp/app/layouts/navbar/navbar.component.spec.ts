@@ -24,10 +24,10 @@ describe('Navbar Component', () => {
     authorities: [],
     email: '',
     firstName: 'John',
-    langKey: '',
+    lang_key: '',
     lastName: 'Doe',
     login: 'john.doe',
-    imageUrl: '',
+    image_url: '',
   };
 
   beforeEach(waitForAsync(() => {

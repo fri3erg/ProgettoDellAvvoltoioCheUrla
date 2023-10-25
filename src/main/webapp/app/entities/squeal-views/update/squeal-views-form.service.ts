@@ -18,7 +18,7 @@ type SquealViewsFormDefaults = Pick<NewSquealViews, 'id'>;
 
 type SquealViewsFormGroupContent = {
   id: FormControl<ISquealViews['id'] | NewSquealViews['id']>;
-  squealId: FormControl<ISquealViews['squealId']>;
+  squeal_id: FormControl<ISquealViews['squeal_id']>;
   number: FormControl<ISquealViews['number']>;
 };
 
@@ -39,7 +39,7 @@ export class SquealViewsFormService {
           validators: [Validators.required],
         }
       ),
-      squealId: new FormControl(squealViewsRawValue.squealId),
+      squeal_id: new FormControl(squealViewsRawValue.squeal_id),
       number: new FormControl(squealViewsRawValue.number),
     });
   }

@@ -1,7 +1,7 @@
 export interface IGeolocationCoordinates {
   id: string;
-  squealId?: string | null;
-  userId?: string | null;
+  squeal_id?: string | null;
+  user_id?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   accuracy?: number | null;

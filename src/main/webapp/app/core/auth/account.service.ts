@@ -63,7 +63,7 @@ export class AccountService {
           // the user's preferred language configured in the account setting
           // unless user have choosed other language in the current session
           if (!this.stateStorageService.getLocale()) {
-            this.translateService.use(account.langKey ?? account.lang_key ?? 'en');
+            this.translateService.use(account.lang_key ?? account.lang_key ?? 'en');
           }
 
           this.navigateToStoredUrl();

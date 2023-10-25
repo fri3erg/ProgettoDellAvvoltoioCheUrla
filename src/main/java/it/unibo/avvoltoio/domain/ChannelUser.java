@@ -19,10 +19,10 @@ public class ChannelUser implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("channel_id")
-    private String channelId;
+    private String channel_id;
 
     @Field("privilege")
     private PrivilegeType privilege;
@@ -42,30 +42,30 @@ public class ChannelUser implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public ChannelUser userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
-    public String getChannelId() {
-        return this.channelId;
+    public String getChannel_id() {
+        return this.channel_id;
     }
 
     public ChannelUser channelId(String channelId) {
-        this.setChannelId(channelId);
+        this.setChannel_id(channelId);
         return this;
     }
 
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
+    public void setChannel_id(String channelId) {
+        this.channel_id = channelId;
     }
 
     public PrivilegeType getPrivilege() {
@@ -105,8 +105,8 @@ public class ChannelUser implements Serializable {
     public String toString() {
         return "ChannelUser{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
-            ", channelId='" + getChannelId() + "'" +
+            ", userId='" + getUser_id() + "'" +
+            ", channelId='" + getChannel_id() + "'" +
             ", privilege='" + getPrivilege() + "'" +
             "}";
     }

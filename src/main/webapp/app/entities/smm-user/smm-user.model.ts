@@ -1,6 +1,6 @@
 import { ISMMVIP } from 'app/entities/smmvip/smmvip.model';
 
 export interface ISMMUser {
-  userId?: string | null;
+  user_id?: string | null;
   sMM?: Pick<ISMMVIP, 'id'> | null;
 }

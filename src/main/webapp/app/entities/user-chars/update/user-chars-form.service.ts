@@ -18,9 +18,9 @@ type UserCharsFormDefaults = Pick<NewUserChars, 'id'>;
 
 type UserCharsFormGroupContent = {
   id: FormControl<IUserChars['id'] | NewUserChars['id']>;
-  userId: FormControl<IUserChars['userId']>;
-  maxChars: FormControl<IUserChars['maxChars']>;
-  remaningChars: FormControl<IUserChars['remaningChars']>;
+  user_id: FormControl<IUserChars['user_id']>;
+  max_chars: FormControl<IUserChars['max_chars']>;
+  remaning_chars: FormControl<IUserChars['remaning_chars']>;
 };
 
 export type UserCharsFormGroup = FormGroup<UserCharsFormGroupContent>;
@@ -40,9 +40,9 @@ export class UserCharsFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(userCharsRawValue.userId),
-      maxChars: new FormControl(userCharsRawValue.maxChars),
-      remaningChars: new FormControl(userCharsRawValue.remaningChars),
+      user_id: new FormControl(userCharsRawValue.user_id),
+      max_chars: new FormControl(userCharsRawValue.max_chars),
+      remaning_chars: new FormControl(userCharsRawValue.remaning_chars),
     });
   }
 

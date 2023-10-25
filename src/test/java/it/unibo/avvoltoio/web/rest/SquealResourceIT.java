@@ -132,17 +132,17 @@ class SquealResourceIT {
         List<Squeal> squealList = squealRepository.findAll();
         assertThat(squealList).hasSize(databaseSizeBeforeCreate + 1);
         Squeal testSqueal = squealList.get(squealList.size() - 1);
-        assertThat(testSqueal.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testSqueal.getUser_id()).isEqualTo(DEFAULT_USER_ID);
         assertThat(testSqueal.getTimestamp()).isEqualTo(DEFAULT_TIMESTAMP);
         assertThat(testSqueal.getBody()).isEqualTo(DEFAULT_BODY);
         assertThat(testSqueal.getImg()).isEqualTo(DEFAULT_IMG);
-        assertThat(testSqueal.getImgContentType()).isEqualTo(DEFAULT_IMG_CONTENT_TYPE);
-        assertThat(testSqueal.getImgName()).isEqualTo(DEFAULT_IMG_NAME);
-        assertThat(testSqueal.getVideoContentType()).isEqualTo(DEFAULT_VIDEO_CONTENT_TYPE);
-        assertThat(testSqueal.getVideoName()).isEqualTo(DEFAULT_VIDEO_NAME);
-        assertThat(testSqueal.getnCharacters()).isEqualTo(DEFAULT_N_CHARACTERS);
-        assertThat(testSqueal.getSquealIdResponse()).isEqualTo(DEFAULT_SQUEAL_ID_RESPONSE);
-        assertThat(testSqueal.getRefreshTime()).isEqualTo(DEFAULT_REFRESH_TIME);
+        assertThat(testSqueal.getImg_content_type()).isEqualTo(DEFAULT_IMG_CONTENT_TYPE);
+        assertThat(testSqueal.getImg_name()).isEqualTo(DEFAULT_IMG_NAME);
+        assertThat(testSqueal.getVideo_content_type()).isEqualTo(DEFAULT_VIDEO_CONTENT_TYPE);
+        assertThat(testSqueal.getVideo_name()).isEqualTo(DEFAULT_VIDEO_NAME);
+        assertThat(testSqueal.getN_characters()).isEqualTo(DEFAULT_N_CHARACTERS);
+        assertThat(testSqueal.getSqueal_id_response()).isEqualTo(DEFAULT_SQUEAL_ID_RESPONSE);
+        assertThat(testSqueal.getRefresh_time()).isEqualTo(DEFAULT_REFRESH_TIME);
     }
 
     @Test
@@ -173,7 +173,7 @@ class SquealResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(squeal.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].timestamp").value(hasItem(DEFAULT_TIMESTAMP.intValue())))
             .andExpect(jsonPath("$.[*].body").value(hasItem(DEFAULT_BODY)))
             .andExpect(jsonPath("$.[*].imgContentType").value(hasItem(DEFAULT_IMG_CONTENT_TYPE)))
@@ -197,7 +197,7 @@ class SquealResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(squeal.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.timestamp").value(DEFAULT_TIMESTAMP.intValue()))
             .andExpect(jsonPath("$.body").value(DEFAULT_BODY))
             .andExpect(jsonPath("$.imgContentType").value(DEFAULT_IMG_CONTENT_TYPE))
@@ -250,17 +250,17 @@ class SquealResourceIT {
         List<Squeal> squealList = squealRepository.findAll();
         assertThat(squealList).hasSize(databaseSizeBeforeUpdate);
         Squeal testSqueal = squealList.get(squealList.size() - 1);
-        assertThat(testSqueal.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSqueal.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testSqueal.getTimestamp()).isEqualTo(UPDATED_TIMESTAMP);
         assertThat(testSqueal.getBody()).isEqualTo(UPDATED_BODY);
         assertThat(testSqueal.getImg()).isEqualTo(UPDATED_IMG);
-        assertThat(testSqueal.getImgContentType()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
-        assertThat(testSqueal.getImgName()).isEqualTo(UPDATED_IMG_NAME);
-        assertThat(testSqueal.getVideoContentType()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
-        assertThat(testSqueal.getVideoName()).isEqualTo(UPDATED_VIDEO_NAME);
-        assertThat(testSqueal.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
-        assertThat(testSqueal.getSquealIdResponse()).isEqualTo(UPDATED_SQUEAL_ID_RESPONSE);
-        assertThat(testSqueal.getRefreshTime()).isEqualTo(UPDATED_REFRESH_TIME);
+        assertThat(testSqueal.getImg_content_type()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
+        assertThat(testSqueal.getImg_name()).isEqualTo(UPDATED_IMG_NAME);
+        assertThat(testSqueal.getVideo_content_type()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
+        assertThat(testSqueal.getVideo_name()).isEqualTo(UPDATED_VIDEO_NAME);
+        assertThat(testSqueal.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testSqueal.getSqueal_id_response()).isEqualTo(UPDATED_SQUEAL_ID_RESPONSE);
+        assertThat(testSqueal.getRefresh_time()).isEqualTo(UPDATED_REFRESH_TIME);
     }
 
     @Test
@@ -346,17 +346,17 @@ class SquealResourceIT {
         List<Squeal> squealList = squealRepository.findAll();
         assertThat(squealList).hasSize(databaseSizeBeforeUpdate);
         Squeal testSqueal = squealList.get(squealList.size() - 1);
-        assertThat(testSqueal.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSqueal.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testSqueal.getTimestamp()).isEqualTo(DEFAULT_TIMESTAMP);
         assertThat(testSqueal.getBody()).isEqualTo(DEFAULT_BODY);
         assertThat(testSqueal.getImg()).isEqualTo(UPDATED_IMG);
-        assertThat(testSqueal.getImgContentType()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
-        assertThat(testSqueal.getImgName()).isEqualTo(UPDATED_IMG_NAME);
-        assertThat(testSqueal.getVideoContentType()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
-        assertThat(testSqueal.getVideoName()).isEqualTo(DEFAULT_VIDEO_NAME);
-        assertThat(testSqueal.getnCharacters()).isEqualTo(DEFAULT_N_CHARACTERS);
-        assertThat(testSqueal.getSquealIdResponse()).isEqualTo(DEFAULT_SQUEAL_ID_RESPONSE);
-        assertThat(testSqueal.getRefreshTime()).isEqualTo(DEFAULT_REFRESH_TIME);
+        assertThat(testSqueal.getImg_content_type()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
+        assertThat(testSqueal.getImg_name()).isEqualTo(UPDATED_IMG_NAME);
+        assertThat(testSqueal.getVideo_content_type()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
+        assertThat(testSqueal.getVideo_name()).isEqualTo(DEFAULT_VIDEO_NAME);
+        assertThat(testSqueal.getN_characters()).isEqualTo(DEFAULT_N_CHARACTERS);
+        assertThat(testSqueal.getSqueal_id_response()).isEqualTo(DEFAULT_SQUEAL_ID_RESPONSE);
+        assertThat(testSqueal.getRefresh_time()).isEqualTo(DEFAULT_REFRESH_TIME);
     }
 
     @Test
@@ -395,17 +395,17 @@ class SquealResourceIT {
         List<Squeal> squealList = squealRepository.findAll();
         assertThat(squealList).hasSize(databaseSizeBeforeUpdate);
         Squeal testSqueal = squealList.get(squealList.size() - 1);
-        assertThat(testSqueal.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testSqueal.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testSqueal.getTimestamp()).isEqualTo(UPDATED_TIMESTAMP);
         assertThat(testSqueal.getBody()).isEqualTo(UPDATED_BODY);
         assertThat(testSqueal.getImg()).isEqualTo(UPDATED_IMG);
-        assertThat(testSqueal.getImgContentType()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
-        assertThat(testSqueal.getImgName()).isEqualTo(UPDATED_IMG_NAME);
-        assertThat(testSqueal.getVideoContentType()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
-        assertThat(testSqueal.getVideoName()).isEqualTo(UPDATED_VIDEO_NAME);
-        assertThat(testSqueal.getnCharacters()).isEqualTo(UPDATED_N_CHARACTERS);
-        assertThat(testSqueal.getSquealIdResponse()).isEqualTo(UPDATED_SQUEAL_ID_RESPONSE);
-        assertThat(testSqueal.getRefreshTime()).isEqualTo(UPDATED_REFRESH_TIME);
+        assertThat(testSqueal.getImg_content_type()).isEqualTo(UPDATED_IMG_CONTENT_TYPE);
+        assertThat(testSqueal.getImg_name()).isEqualTo(UPDATED_IMG_NAME);
+        assertThat(testSqueal.getVideo_content_type()).isEqualTo(UPDATED_VIDEO_CONTENT_TYPE);
+        assertThat(testSqueal.getVideo_name()).isEqualTo(UPDATED_VIDEO_NAME);
+        assertThat(testSqueal.getN_characters()).isEqualTo(UPDATED_N_CHARACTERS);
+        assertThat(testSqueal.getSqueal_id_response()).isEqualTo(UPDATED_SQUEAL_ID_RESPONSE);
+        assertThat(testSqueal.getRefresh_time()).isEqualTo(UPDATED_REFRESH_TIME);
     }
 
     @Test

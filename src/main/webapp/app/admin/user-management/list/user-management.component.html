@@ -25,8 +25,8 @@
           <th scope="col" jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col"></th>
-          <th scope="col" jhiSortBy="langKey">
-            <span jhiTranslate="userManagement.langKey">Language</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" jhiSortBy="lang_key">
+            <span jhiTranslate="userManagement.lang_key">Language</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"><span jhiTranslate="userManagement.profiles">Profiles</span></th>
           <th scope="col" jhiSortBy="createdDate">
@@ -67,7 +67,7 @@
               Activated
             </button>
           </td>
-          <td>{{ user.langKey }}</td>
+          <td>{{ user.lang_key }}</td>
           <td>
             <div *ngFor="let authority of user.authorities">
               <span class="badge bg-info">{{ authority }}</span>

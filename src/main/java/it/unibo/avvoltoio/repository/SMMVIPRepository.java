@@ -1,9 +1,7 @@
 package it.unibo.avvoltoio.repository;
 
 import it.unibo.avvoltoio.domain.SMMVIP;
-
 import java.util.Optional;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SMMVIPRepository extends MongoRepository<SMMVIP, String> {
-
-	Optional<SMMVIP> findFirstByUserId(String id);
-
+    Optional<SMMVIP> findFirstByUser_id(String id);
 }

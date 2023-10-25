@@ -32,14 +32,14 @@ export default class SettingsComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email],
     }),
-    langKey: new FormControl(initialAccount.langKey, { nonNullable: true }),
+    lang_key: new FormControl(initialAccount.lang_key, { nonNullable: true }),
 
     activated: new FormControl(initialAccount.activated, { nonNullable: true }),
     authorities: new FormControl(initialAccount.authorities, { nonNullable: true }),
-    imageUrl: new FormControl(initialAccount.imageUrl, { nonNullable: true }),
+    image_url: new FormControl(initialAccount.image_url, { nonNullable: true }),
     login: new FormControl(initialAccount.login, { nonNullable: true }),
     img: new FormControl(initialAccount.img, { nonNullable: true }),
-    imgContentType: new FormControl(initialAccount.imgContentType, { nonNullable: true }),
+    img_content_type: new FormControl(initialAccount.img_content_type, { nonNullable: true }),
   });
 
   constructor(private accountService: AccountService, private translateService: TranslateService) {}
@@ -61,8 +61,8 @@ export default class SettingsComponent implements OnInit {
 
       this.accountService.authenticate(account);
 
-      if (account.langKey !== this.translateService.currentLang) {
-        this.translateService.use(account.langKey ?? 'en');
+      if (account.lang_key !== this.translateService.currentLang) {
+        this.translateService.use(account.lang_key ?? 'en');
       }
     });
   }

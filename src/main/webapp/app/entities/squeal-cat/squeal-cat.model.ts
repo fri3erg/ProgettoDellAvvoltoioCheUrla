@@ -2,10 +2,10 @@ import { CategoryTypes } from 'app/entities/enumerations/category-types.model';
 
 export interface ISquealCat {
   id: string;
-  userId?: string | null;
-  squealId?: string | null;
+  user_id?: string | null;
+  squeal_id?: string | null;
   category?: keyof typeof CategoryTypes | null;
-  nCharacters?: number | null;
+  n_characters?: number | null;
   timestamp?: number | null;
 }
 

@@ -122,23 +122,23 @@ public class CharactersPurchasedResource {
         Optional<CharactersPurchased> result = charactersPurchasedRepository
             .findById(charactersPurchased.getId())
             .map(existingCharactersPurchased -> {
-                if (charactersPurchased.getUserId() != null) {
-                    existingCharactersPurchased.setUserId(charactersPurchased.getUserId());
+                if (charactersPurchased.getUser_id() != null) {
+                    existingCharactersPurchased.setUser_id(charactersPurchased.getUser_id());
                 }
-                if (charactersPurchased.getnCharacters() != null) {
-                    existingCharactersPurchased.setnCharacters(charactersPurchased.getnCharacters());
+                if (charactersPurchased.getN_characters() != null) {
+                    existingCharactersPurchased.setN_characters(charactersPurchased.getN_characters());
                 }
-                if (charactersPurchased.getTimestampBought() != null) {
-                    existingCharactersPurchased.setTimestampBought(charactersPurchased.getTimestampBought());
+                if (charactersPurchased.getTimestamp_bought() != null) {
+                    existingCharactersPurchased.setTimestamp_bought(charactersPurchased.getTimestamp_bought());
                 }
-                if (charactersPurchased.getTimestampExpire() != null) {
-                    existingCharactersPurchased.setTimestampExpire(charactersPurchased.getTimestampExpire());
+                if (charactersPurchased.getTimestamp_expire() != null) {
+                    existingCharactersPurchased.setTimestamp_expire(charactersPurchased.getTimestamp_expire());
                 }
                 if (charactersPurchased.getAmount() != null) {
                     existingCharactersPurchased.setAmount(charactersPurchased.getAmount());
                 }
-                if (charactersPurchased.getAdminDiscount() != null) {
-                    existingCharactersPurchased.setAdminDiscount(charactersPurchased.getAdminDiscount());
+                if (charactersPurchased.getAdmin_discount() != null) {
+                    existingCharactersPurchased.setAdmin_discount(charactersPurchased.getAdmin_discount());
                 }
 
                 return existingCharactersPurchased;

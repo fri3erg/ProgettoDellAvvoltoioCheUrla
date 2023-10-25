@@ -38,15 +38,15 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="squealId">
+          <th scope="col" jhiSortBy="squeal_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.squealId">Squeal Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.squeal_id">Squeal Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -56,9 +56,9 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="nCharacters">
+          <th scope="col" jhiSortBy="n_characters">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.nCharacters">N Characters</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.squealCat.n_characters">N Characters</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -76,10 +76,10 @@
           <td>
             <a [routerLink]="['/squeal-cat', squealCat.id, 'view']">{{ squealCat.id }}</a>
           </td>
-          <td>{{ squealCat.userId }}</td>
-          <td>{{ squealCat.squealId }}</td>
+          <td>{{ squealCat.user_id }}</td>
+          <td>{{ squealCat.squeal_id }}</td>
           <td jhiTranslate="{{ 'avvoltoioCheUrlaApp.CategoryTypes.' + squealCat.category }}">{{ squealCat.category }}</td>
-          <td>{{ squealCat.nCharacters }}</td>
+          <td>{{ squealCat.n_characters }}</td>
           <td>{{ squealCat.timestamp }}</td>
           <td class="text-end">
             <div class="btn-group">

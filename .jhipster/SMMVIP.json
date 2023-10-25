@@ -4,7 +4,7 @@
   "entityTableName": "smmvip",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     }
   ],

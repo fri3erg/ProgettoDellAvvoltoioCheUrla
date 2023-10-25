@@ -35,7 +35,7 @@ export class PersonalMessagesComponent implements OnInit {
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
   destinationMessage: ISquealDestination = {
-    destinationType: ChannelTypes.MESSAGE,
+    destination_type: ChannelTypes.MESSAGE,
   };
 
   constructor(

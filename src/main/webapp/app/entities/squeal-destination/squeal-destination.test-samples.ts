@@ -8,8 +8,8 @@ export const sampleWithPartialData: ISquealDestination = {};
 
 export const sampleWithFullData: ISquealDestination = {
   destination: 'Tuna',
-  destinationType: 'MESSAGE',
-  adminAdd: false,
+  destination_type: 'MESSAGE',
+  admin_add: false,
 };
 Object.freeze(sampleWithRequiredData);
 Object.freeze(sampleWithPartialData);

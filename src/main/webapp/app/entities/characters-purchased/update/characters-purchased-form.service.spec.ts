@@ -20,12 +20,12 @@ describe('CharactersPurchased Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            nCharacters: expect.any(Object),
-            timestampBought: expect.any(Object),
-            timestampExpire: expect.any(Object),
+            user_id: expect.any(Object),
+            n_characters: expect.any(Object),
+            timestamp_bought: expect.any(Object),
+            timestamp_expire: expect.any(Object),
             amount: expect.any(Object),
-            adminDiscount: expect.any(Object),
+            admin_discount: expect.any(Object),
           })
         );
       });
@@ -36,12 +36,12 @@ describe('CharactersPurchased Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            nCharacters: expect.any(Object),
-            timestampBought: expect.any(Object),
-            timestampExpire: expect.any(Object),
+            user_id: expect.any(Object),
+            n_characters: expect.any(Object),
+            timestamp_bought: expect.any(Object),
+            timestamp_expire: expect.any(Object),
             amount: expect.any(Object),
-            adminDiscount: expect.any(Object),
+            admin_discount: expect.any(Object),
           })
         );
       });

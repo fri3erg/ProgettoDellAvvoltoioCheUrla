@@ -19,7 +19,7 @@ public class SquealViews implements Serializable {
     private String id;
 
     @Field("squeal_id")
-    private String squealId;
+    private String squeal_id;
 
     @Field("number")
     private Integer number;
@@ -39,17 +39,17 @@ public class SquealViews implements Serializable {
         this.id = id;
     }
 
-    public String getSquealId() {
-        return this.squealId;
+    public String getSqueal_id() {
+        return this.squeal_id;
     }
 
     public SquealViews squealId(String squealId) {
-        this.setSquealId(squealId);
+        this.setSqueal_id(squealId);
         return this;
     }
 
-    public void setSquealId(String squealId) {
-        this.squealId = squealId;
+    public void setSqueal_id(String squealId) {
+        this.squeal_id = squealId;
     }
 
     public Integer getNumber() {
@@ -93,7 +93,7 @@ public class SquealViews implements Serializable {
     public String toString() {
         return "SquealViews{" +
             "id=" + getId() +
-            ", squealId='" + getSquealId() + "'" +
+            ", squealId='" + getSqueal_id() + "'" +
             ", number=" + getNumber() +
             "}";
     }

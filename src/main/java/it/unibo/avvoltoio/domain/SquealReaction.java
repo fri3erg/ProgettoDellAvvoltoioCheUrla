@@ -18,13 +18,13 @@ public class SquealReaction implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("username")
     private String username;
 
     @Field("squeal_id")
-    private String squealId;
+    private String squeal_id;
 
     @Field("positive")
     private Boolean positive;
@@ -47,17 +47,17 @@ public class SquealReaction implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public SquealReaction userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public String getUsername() {
@@ -73,17 +73,17 @@ public class SquealReaction implements Serializable {
         this.username = username;
     }
 
-    public String getSquealId() {
-        return this.squealId;
+    public String getSqueal_id() {
+        return this.squeal_id;
     }
 
     public SquealReaction squealId(String squealId) {
-        this.setSquealId(squealId);
+        this.setSqueal_id(squealId);
         return this;
     }
 
-    public void setSquealId(String squealId) {
-        this.squealId = squealId;
+    public void setSqueal_id(String squealId) {
+        this.squeal_id = squealId;
     }
 
     public Boolean getPositive() {
@@ -136,9 +136,9 @@ public class SquealReaction implements Serializable {
     public String toString() {
         return "SquealReaction{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
+            ", userId='" + getUser_id() + "'" +
             ", username='" + getUsername() + "'" +
-            ", squealId='" + getSquealId() + "'" +
+            ", squealId='" + getSqueal_id() + "'" +
             ", positive='" + getPositive() + "'" +
             ", emoji='" + getEmoji() + "'" +
             "}";

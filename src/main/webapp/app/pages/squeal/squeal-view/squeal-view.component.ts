@@ -67,7 +67,7 @@ export class SquealViewComponent implements OnInit {
     const r: ISquealReaction = {
       positive,
       emoji,
-      squealId: this.squeal?.squeal?.id,
+      squeal_id: this.squeal?.squeal?.id,
     };
     this.squealReactionService.createorUpdate(r).subscribe(ret => {
       if (ret.body) {

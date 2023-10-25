@@ -20,10 +20,10 @@ function accountWithAuthorities(authorities: string[]): Account {
     authorities,
     email: '',
     firstName: '',
-    langKey: '',
+    lang_key: '',
     lastName: '',
     login: '',
-    imageUrl: '',
+    image_url: '',
   };
 }
 
@@ -137,7 +137,7 @@ describe('Account Service', () => {
 
         // WHEN
         service.identity().subscribe();
-        httpMock.expectOne({ method: 'GET' }).flush({ ...accountWithAuthorities([]), langKey: 'accountLang' });
+        httpMock.expectOne({ method: 'GET' }).flush({ ...accountWithAuthorities([]), lang_key: 'accountLang' });
 
         // THEN
         expect(mockTranslateService.use).toHaveBeenCalledWith('accountLang');
@@ -149,7 +149,7 @@ describe('Account Service', () => {
 
         // WHEN
         service.identity().subscribe();
-        httpMock.expectOne({ method: 'GET' }).flush({ ...accountWithAuthorities([]), langKey: 'accountLang' });
+        httpMock.expectOne({ method: 'GET' }).flush({ ...accountWithAuthorities([]), lang_key: 'accountLang' });
 
         // THEN
         expect(mockTranslateService.use).not.toHaveBeenCalled();

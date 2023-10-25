@@ -8,8 +8,8 @@ const PrivilegeType = {
 
 const channelUserSchema = new Schema(
   {
-    user_id: { type: String, alias: 'userId' },
-    channel_id: { type: String, alias: 'channelId' },
+    user_id: { type: String },
+    channel_id: { type: String },
     privilege: { type: PrivilegeType, default: null },
   },
   { collection: 'channel_user', _id: true }

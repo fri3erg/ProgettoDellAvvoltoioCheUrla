@@ -20,8 +20,8 @@ describe('ChannelUser Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            channelId: expect.any(Object),
+            user_id: expect.any(Object),
+            channel_id: expect.any(Object),
             privilege: expect.any(Object),
           })
         );
@@ -33,8 +33,8 @@ describe('ChannelUser Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
-            channelId: expect.any(Object),
+            user_id: expect.any(Object),
+            channel_id: expect.any(Object),
             privilege: expect.any(Object),
           })
         );

@@ -6,19 +6,19 @@ export const sampleWithRequiredData: ICharactersPurchased = {
 
 export const sampleWithPartialData: ICharactersPurchased = {
   id: '509488d7-1c9c-46be-b723-9e5a456a3f56',
-  nCharacters: 14868,
-  timestampBought: 18022,
-  adminDiscount: true,
+  n_characters: 14868,
+  timestamp_bought: 18022,
+  admin_discount: true,
 };
 
 export const sampleWithFullData: ICharactersPurchased = {
   id: 'a47a005f-f8d5-4391-a5e9-6fa2c26982a5',
-  userId: 'state',
-  nCharacters: 19715,
-  timestampBought: 5086,
-  timestampExpire: 6871,
+  user_id: 'state',
+  n_characters: 19715,
+  timestamp_bought: 5086,
+  timestamp_expire: 6871,
   amount: 30009,
-  adminDiscount: false,
+  admin_discount: false,
 };
 
 export const sampleWithNewData: NewCharactersPurchased = {

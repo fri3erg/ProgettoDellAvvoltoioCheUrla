@@ -3,11 +3,11 @@ import { ISMMUser } from './smm-user.model';
 export const sampleWithRequiredData: ISMMUser = {};
 
 export const sampleWithPartialData: ISMMUser = {
-  userId: 'Analyst state',
+  user_id: 'Analyst state',
 };
 
 export const sampleWithFullData: ISMMUser = {
-  userId: 'beloved',
+  user_id: 'beloved',
 };
 Object.freeze(sampleWithRequiredData);
 Object.freeze(sampleWithPartialData);

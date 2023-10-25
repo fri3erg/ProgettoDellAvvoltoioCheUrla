@@ -20,7 +20,7 @@ describe('SquealViews Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            squealId: expect.any(Object),
+            squeal_id: expect.any(Object),
             number: expect.any(Object),
           })
         );
@@ -32,7 +32,7 @@ describe('SquealViews Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            squealId: expect.any(Object),
+            squeal_id: expect.any(Object),
             number: expect.any(Object),
           })
         );

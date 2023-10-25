@@ -122,7 +122,7 @@ export class CreateSquealComponent implements OnInit {
             return;
           }
           this.dto.squeal.img = base64Data;
-          this.dto.squeal.imgContentType = file.type;
+          this.dto.squeal.img_content_type = file.type;
         });
       }
     } else {
@@ -131,11 +131,11 @@ export class CreateSquealComponent implements OnInit {
   }
 
   rotateImage(): void {
-    if (!this.dto?.squeal?.imgContentType || !this.dto.squeal.img) {
+    if (!this.dto?.squeal?.img_content_type || !this.dto.squeal.img) {
       return;
     }
     const prev = this.dto.squeal.img;
-    const base = 'data:' + this.dto.squeal.imgContentType + ';base64,';
+    const base = 'data:' + this.dto.squeal.img_content_type + ';base64,';
     let result = this.rotateBase64Image90deg(base + prev, true);
     result = result.replace(base, '');
     this.dto.squeal.img = result;
@@ -174,7 +174,7 @@ export class CreateSquealComponent implements OnInit {
       return;
     }
     this.dto.squeal.img = undefined;
-    this.dto.squeal.imgContentType = undefined;
+    this.dto.squeal.img_content_type = undefined;
     // if (this.elementRef && idInput && this.elementRef.nativeElement.querySelector('#' + idInput)) {
     // this.elementRef.nativeElement.querySelector('#' + idInput).value =null;
     // }

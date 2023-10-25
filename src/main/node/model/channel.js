@@ -10,7 +10,7 @@ const channelSchema = new Schema(
   {
     name: { type: String, unique: true },
     type: { type: DestType, default: null },
-    mod_type: { type: String, default: null, alias: 'modType' },
+    mod_type: { type: String, default: null },
     emergency: { type: Boolean, default: null },
   },
   { collection: 'channel', _id: true }

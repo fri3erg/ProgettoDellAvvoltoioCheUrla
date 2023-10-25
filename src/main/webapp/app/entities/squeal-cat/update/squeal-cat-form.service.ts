@@ -18,10 +18,10 @@ type SquealCatFormDefaults = Pick<NewSquealCat, 'id'>;
 
 type SquealCatFormGroupContent = {
   id: FormControl<ISquealCat['id'] | NewSquealCat['id']>;
-  userId: FormControl<ISquealCat['userId']>;
-  squealId: FormControl<ISquealCat['squealId']>;
+  user_id: FormControl<ISquealCat['user_id']>;
+  squeal_id: FormControl<ISquealCat['squeal_id']>;
   category: FormControl<ISquealCat['category']>;
-  nCharacters: FormControl<ISquealCat['nCharacters']>;
+  n_characters: FormControl<ISquealCat['n_characters']>;
   timestamp: FormControl<ISquealCat['timestamp']>;
 };
 
@@ -42,10 +42,10 @@ export class SquealCatFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(squealCatRawValue.userId),
-      squealId: new FormControl(squealCatRawValue.squealId),
+      user_id: new FormControl(squealCatRawValue.user_id),
+      squeal_id: new FormControl(squealCatRawValue.squeal_id),
       category: new FormControl(squealCatRawValue.category),
-      nCharacters: new FormControl(squealCatRawValue.nCharacters),
+      n_characters: new FormControl(squealCatRawValue.n_characters),
       timestamp: new FormControl(squealCatRawValue.timestamp),
     });
   }

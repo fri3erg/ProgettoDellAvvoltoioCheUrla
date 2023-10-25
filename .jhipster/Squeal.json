@@ -4,7 +4,7 @@
   "entityTableName": "squeal",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {
@@ -33,7 +33,7 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "nCharacters",
+      "fieldName": "n_characters",
       "fieldType": "Integer"
     },
     {

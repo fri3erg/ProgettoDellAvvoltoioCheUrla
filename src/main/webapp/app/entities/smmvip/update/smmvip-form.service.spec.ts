@@ -20,7 +20,7 @@ describe('SMMVIP Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
           })
         );
       });
@@ -31,7 +31,7 @@ describe('SMMVIP Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            userId: expect.any(Object),
+            user_id: expect.any(Object),
           })
         );
       });

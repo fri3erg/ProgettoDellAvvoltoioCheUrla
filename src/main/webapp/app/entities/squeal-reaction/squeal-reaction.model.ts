@@ -1,8 +1,8 @@
 export interface ISquealReaction {
   id?: string | null;
-  userId?: string | null;
+  user_id?: string | null;
   username?: string | null;
-  squealId?: string | null;
+  squeal_id?: string | null;
   positive?: boolean | null;
   emoji?: string | null;
 }

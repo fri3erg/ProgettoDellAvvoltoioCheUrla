@@ -14,8 +14,8 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.userId" for="field_userId">User Id</label>
-          <input type="text" class="form-control" name="userId" id="field_userId" data-cy="userId" formControlName="userId" />
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.user_id" for="field_userId">User Id</label>
+          <input type="text" class="form-control" name="user_id" id="field_userId" data-cy="user_id" formControlName="user_id" />
         </div>
 
         <div class="mb-3">
@@ -32,16 +32,16 @@
           <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.img" for="field_img">Img</label>
           <div>
             <img
-              [src]="'data:' + editForm.get('imgContentType')!.value + ';base64,' + editForm.get('img')!.value"
+              [src]="'data:' + editForm.get('img_content_type')!.value + ';base64,' + editForm.get('img')!.value"
               style="max-height: 100px"
               *ngIf="editForm.get('img')!.value"
               alt="squeal image"
             />
             <div *ngIf="editForm.get('img')!.value" class="form-text text-danger clearfix">
-              <span class="pull-start">{{ editForm.get('imgContentType')!.value }}, {{ byteSize(editForm.get('img')!.value!) }}</span>
+              <span class="pull-start">{{ editForm.get('img_content_type')!.value }}, {{ byteSize(editForm.get('img')!.value!) }}</span>
               <button
                 type="button"
-                (click)="clearInputImage('img', 'imgContentType', 'file_img')"
+                (click)="clearInputImage('img', 'img_content_type', 'file_img')"
                 class="btn btn-secondary btn-xs pull-end"
               >
                 <fa-icon icon="times"></fa-icon>
@@ -50,68 +50,75 @@
             <input type="file" id="file_img" data-cy="img" (change)="setFileData($event, 'img', true)" accept="image/*" />
           </div>
           <input type="hidden" class="form-control" name="img" id="field_img" data-cy="img" formControlName="img" />
-          <input type="hidden" class="form-control" name="imgContentType" id="field_imgContentType" formControlName="imgContentType" />
+          <input type="hidden" class="form-control" name="img_content_type" id="field_imgContentType" formControlName="img_content_type" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.imgName" for="field_imgName">Img Name</label>
-          <input type="text" class="form-control" name="imgName" id="field_imgName" data-cy="imgName" formControlName="imgName" />
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.img_name" for="field_imgName">Img Name</label>
+          <input type="text" class="form-control" name="img_name" id="field_imgName" data-cy="img_name" formControlName="img_name" />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.videoContentType" for="field_videoContentType"
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.video_content_type" for="field_videoContentType"
             >Video Content Type</label
           >
           <input
             type="text"
             class="form-control"
-            name="videoContentType"
+            name="video_content_type"
             id="field_videoContentType"
-            data-cy="videoContentType"
-            formControlName="videoContentType"
+            data-cy="video_content_type"
+            formControlName="video_content_type"
           />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.videoName" for="field_videoName">Video Name</label>
-          <input type="text" class="form-control" name="videoName" id="field_videoName" data-cy="videoName" formControlName="videoName" />
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.video_name" for="field_videoName">Video Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="video_name"
+            id="field_videoName"
+            data-cy="video_name"
+            formControlName="video_name"
+          />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.nCharacters" for="field_nCharacters">N Characters</label>
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.n_characters" for="field_n_characters">N Characters</label>
           <input
             type="number"
             class="form-control"
-            name="nCharacters"
-            id="field_nCharacters"
-            data-cy="nCharacters"
-            formControlName="nCharacters"
+            name="n_characters"
+            id="field_n_characters"
+            data-cy="n_characters"
+            formControlName="n_characters"
           />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.squealIdResponse" for="field_squealIdResponse"
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.squeal_id_response" for="field_squealIdResponse"
             >Squeal Id Response</label
           >
           <input
             type="text"
             class="form-control"
-            name="squealIdResponse"
+            name="squeal_id_response"
             id="field_squealIdResponse"
-            data-cy="squealIdResponse"
-            formControlName="squealIdResponse"
+            data-cy="squeal_id_response"
+            formControlName="squeal_id_response"
           />
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.refreshTime" for="field_refreshTime">Refresh Time</label>
+          <label class="form-label" jhiTranslate="avvoltoioCheUrlaApp.squeal.refresh_time" for="field_refreshTime">Refresh Time</label>
           <input
             type="number"
             class="form-control"
-            name="refreshTime"
+            name="refresh_time"
             id="field_refreshTime"
-            data-cy="refreshTime"
-            formControlName="refreshTime"
+            data-cy="refresh_time"
+            formControlName="refresh_time"
           />
         </div>
       </div>

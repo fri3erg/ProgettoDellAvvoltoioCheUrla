@@ -14,13 +14,13 @@ import { Account } from 'app/core/auth/account.model';
   styleUrls: ['./users-of-channel.component.scss'],
 })
 export class UsersOfChannelComponent implements OnInit {
-  channelId?: string;
+  channel_id?: string;
   users: Account[] = [];
   constructor(protected channelService: ChannelService, protected activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.channelId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
-    this.channelService.getUsersSubbedToChannel(this.channelId ?? '').subscribe(r => {
+    this.channel_id = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
+    this.channelService.getUsersSubbedToChannel(this.channel_id ?? '').subscribe(r => {
       if (r.body) {
         console.log(r.body);
         this.users = r.body;

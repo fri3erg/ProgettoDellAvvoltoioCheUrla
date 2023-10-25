@@ -121,8 +121,8 @@ class GeolocationCoordinatesResourceIT {
         List<GeolocationCoordinates> geolocationCoordinatesList = geolocationCoordinatesRepository.findAll();
         assertThat(geolocationCoordinatesList).hasSize(databaseSizeBeforeCreate + 1);
         GeolocationCoordinates testGeolocationCoordinates = geolocationCoordinatesList.get(geolocationCoordinatesList.size() - 1);
-        assertThat(testGeolocationCoordinates.getSquealId()).isEqualTo(DEFAULT_SQUEAL_ID);
-        assertThat(testGeolocationCoordinates.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testGeolocationCoordinates.getSqueal_id()).isEqualTo(DEFAULT_SQUEAL_ID);
+        assertThat(testGeolocationCoordinates.getUser_id()).isEqualTo(DEFAULT_USER_ID);
         assertThat(testGeolocationCoordinates.getLatitude()).isEqualTo(DEFAULT_LATITUDE);
         assertThat(testGeolocationCoordinates.getLongitude()).isEqualTo(DEFAULT_LONGITUDE);
         assertThat(testGeolocationCoordinates.getAccuracy()).isEqualTo(DEFAULT_ACCURACY);
@@ -164,7 +164,7 @@ class GeolocationCoordinatesResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(geolocationCoordinates.getId())))
             .andExpect(jsonPath("$.[*].squealId").value(hasItem(DEFAULT_SQUEAL_ID)))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].latitude").value(hasItem(DEFAULT_LATITUDE.doubleValue())))
             .andExpect(jsonPath("$.[*].longitude").value(hasItem(DEFAULT_LONGITUDE.doubleValue())))
             .andExpect(jsonPath("$.[*].accuracy").value(hasItem(DEFAULT_ACCURACY.doubleValue())))
@@ -185,7 +185,7 @@ class GeolocationCoordinatesResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(geolocationCoordinates.getId()))
             .andExpect(jsonPath("$.squealId").value(DEFAULT_SQUEAL_ID))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.latitude").value(DEFAULT_LATITUDE.doubleValue()))
             .andExpect(jsonPath("$.longitude").value(DEFAULT_LONGITUDE.doubleValue()))
             .andExpect(jsonPath("$.accuracy").value(DEFAULT_ACCURACY.doubleValue()))
@@ -233,8 +233,8 @@ class GeolocationCoordinatesResourceIT {
         List<GeolocationCoordinates> geolocationCoordinatesList = geolocationCoordinatesRepository.findAll();
         assertThat(geolocationCoordinatesList).hasSize(databaseSizeBeforeUpdate);
         GeolocationCoordinates testGeolocationCoordinates = geolocationCoordinatesList.get(geolocationCoordinatesList.size() - 1);
-        assertThat(testGeolocationCoordinates.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
-        assertThat(testGeolocationCoordinates.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testGeolocationCoordinates.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testGeolocationCoordinates.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testGeolocationCoordinates.getLatitude()).isEqualTo(UPDATED_LATITUDE);
         assertThat(testGeolocationCoordinates.getLongitude()).isEqualTo(UPDATED_LONGITUDE);
         assertThat(testGeolocationCoordinates.getAccuracy()).isEqualTo(UPDATED_ACCURACY);
@@ -333,8 +333,8 @@ class GeolocationCoordinatesResourceIT {
         List<GeolocationCoordinates> geolocationCoordinatesList = geolocationCoordinatesRepository.findAll();
         assertThat(geolocationCoordinatesList).hasSize(databaseSizeBeforeUpdate);
         GeolocationCoordinates testGeolocationCoordinates = geolocationCoordinatesList.get(geolocationCoordinatesList.size() - 1);
-        assertThat(testGeolocationCoordinates.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
-        assertThat(testGeolocationCoordinates.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testGeolocationCoordinates.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testGeolocationCoordinates.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testGeolocationCoordinates.getLatitude()).isEqualTo(UPDATED_LATITUDE);
         assertThat(testGeolocationCoordinates.getLongitude()).isEqualTo(UPDATED_LONGITUDE);
         assertThat(testGeolocationCoordinates.getAccuracy()).isEqualTo(UPDATED_ACCURACY);
@@ -376,8 +376,8 @@ class GeolocationCoordinatesResourceIT {
         List<GeolocationCoordinates> geolocationCoordinatesList = geolocationCoordinatesRepository.findAll();
         assertThat(geolocationCoordinatesList).hasSize(databaseSizeBeforeUpdate);
         GeolocationCoordinates testGeolocationCoordinates = geolocationCoordinatesList.get(geolocationCoordinatesList.size() - 1);
-        assertThat(testGeolocationCoordinates.getSquealId()).isEqualTo(UPDATED_SQUEAL_ID);
-        assertThat(testGeolocationCoordinates.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testGeolocationCoordinates.getSqueal_id()).isEqualTo(UPDATED_SQUEAL_ID);
+        assertThat(testGeolocationCoordinates.getUser_id()).isEqualTo(UPDATED_USER_ID);
         assertThat(testGeolocationCoordinates.getLatitude()).isEqualTo(UPDATED_LATITUDE);
         assertThat(testGeolocationCoordinates.getLongitude()).isEqualTo(UPDATED_LONGITUDE);
         assertThat(testGeolocationCoordinates.getAccuracy()).isEqualTo(UPDATED_ACCURACY);

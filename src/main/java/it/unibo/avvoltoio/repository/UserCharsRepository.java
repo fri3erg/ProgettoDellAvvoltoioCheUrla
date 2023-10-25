@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface UserCharsRepository extends MongoRepository<UserChars, String> {
-    Optional<UserChars> findByUserId(String currentUserId);
+    Optional<UserChars> findByUser_id(String currentUserId);
 }

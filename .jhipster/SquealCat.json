@@ -4,7 +4,7 @@
   "entityTableName": "squeal_cat",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {
@@ -17,7 +17,7 @@
       "fieldValues": "POPULAR,UNPOPULAR,CONTROVERSIAL"
     },
     {
-      "fieldName": "nCharacters",
+      "fieldName": "n_characters",
       "fieldType": "Integer"
     },
     {

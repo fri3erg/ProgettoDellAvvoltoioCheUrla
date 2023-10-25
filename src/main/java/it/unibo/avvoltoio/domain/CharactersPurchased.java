@@ -19,22 +19,22 @@ public class CharactersPurchased implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("n_characters")
-    private Integer nCharacters;
+    private Integer n_characters;
 
     @Field("timestamp_bought")
-    private Long timestampBought;
+    private Long timestamp_bought;
 
     @Field("timestamp_expire")
-    private Long timestampExpire;
+    private Long timestamp_expire;
 
     @Field("amount")
     private BigDecimal amount;
 
     @Field("admin_discount")
-    private Boolean adminDiscount;
+    private Boolean admin_discount;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -51,56 +51,56 @@ public class CharactersPurchased implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public CharactersPurchased userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
-    public Integer getnCharacters() {
-        return this.nCharacters;
+    public Integer getN_characters() {
+        return this.n_characters;
     }
 
     public CharactersPurchased nCharacters(Integer nCharacters) {
-        this.setnCharacters(nCharacters);
+        this.setN_characters(nCharacters);
         return this;
     }
 
-    public void setnCharacters(Integer nCharacters) {
-        this.nCharacters = nCharacters;
+    public void setN_characters(Integer nCharacters) {
+        this.n_characters = nCharacters;
     }
 
-    public Long getTimestampBought() {
-        return this.timestampBought;
+    public Long getTimestamp_bought() {
+        return this.timestamp_bought;
     }
 
     public CharactersPurchased timestampBought(Long timestampBought) {
-        this.setTimestampBought(timestampBought);
+        this.setTimestamp_bought(timestampBought);
         return this;
     }
 
-    public void setTimestampBought(Long timestampBought) {
-        this.timestampBought = timestampBought;
+    public void setTimestamp_bought(Long timestampBought) {
+        this.timestamp_bought = timestampBought;
     }
 
-    public Long getTimestampExpire() {
-        return this.timestampExpire;
+    public Long getTimestamp_expire() {
+        return this.timestamp_expire;
     }
 
     public CharactersPurchased timestampExpire(Long timestampExpire) {
-        this.setTimestampExpire(timestampExpire);
+        this.setTimestamp_expire(timestampExpire);
         return this;
     }
 
-    public void setTimestampExpire(Long timestampExpire) {
-        this.timestampExpire = timestampExpire;
+    public void setTimestamp_expire(Long timestampExpire) {
+        this.timestamp_expire = timestampExpire;
     }
 
     public BigDecimal getAmount() {
@@ -116,17 +116,17 @@ public class CharactersPurchased implements Serializable {
         this.amount = amount;
     }
 
-    public Boolean getAdminDiscount() {
-        return this.adminDiscount;
+    public Boolean getAdmin_discount() {
+        return this.admin_discount;
     }
 
     public CharactersPurchased adminDiscount(Boolean adminDiscount) {
-        this.setAdminDiscount(adminDiscount);
+        this.setAdmin_discount(adminDiscount);
         return this;
     }
 
-    public void setAdminDiscount(Boolean adminDiscount) {
-        this.adminDiscount = adminDiscount;
+    public void setAdmin_discount(Boolean adminDiscount) {
+        this.admin_discount = adminDiscount;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -153,12 +153,12 @@ public class CharactersPurchased implements Serializable {
     public String toString() {
         return "CharactersPurchased{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
-            ", nCharacters=" + getnCharacters() +
-            ", timestampBought=" + getTimestampBought() +
-            ", timestampExpire=" + getTimestampExpire() +
+            ", userId='" + getUser_id() + "'" +
+            ", nCharacters=" + getN_characters() +
+            ", timestampBought=" + getTimestamp_bought() +
+            ", timestampExpire=" + getTimestamp_expire() +
             ", amount=" + getAmount() +
-            ", adminDiscount='" + getAdminDiscount() + "'" +
+            ", adminDiscount='" + getAdmin_discount() + "'" +
             "}";
     }
 }

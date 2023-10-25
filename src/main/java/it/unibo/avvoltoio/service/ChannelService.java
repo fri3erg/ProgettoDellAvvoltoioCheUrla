@@ -66,7 +66,7 @@ public class ChannelService {
     }
 
     private boolean isUserSubscribed(String id, ChannelDTO cDTO) {
-        return cDTO.getUsers().stream().anyMatch(c -> c.getUserId() != null && c.getUserId().equals(id));
+        return cDTO.getUsers().stream().anyMatch(c -> c.getUser_id() != null && c.getUser_id().equals(id));
         // return  cDTO.getUsers().stream().map(ChannelUser::getUserId).toList().contains(id);
     }
 
@@ -125,8 +125,8 @@ public class ChannelService {
         // TODO : check createOwner
         if (createOwner) {
             ChannelUser user = new ChannelUser();
-            user.setUserId(id);
-            user.setChannelId(channelId);
+            user.setUser_id(id);
+            user.setChannel_id(channelId);
             user.setPrivilege(PrivilegeType.ADMIN);
             channelUserRepository.save(user);
         }
@@ -152,14 +152,14 @@ public class ChannelService {
         }
         ChannelDTO c = new ChannelDTO();
         c.setChannel(channel);
-        c.setUsers(channelUserRepository.findAllByChannelId(c.getChannel().getId()));
+        c.setUsers(channelUserRepository.findAllByChannel_id(c.getChannel().getId()));
         return c;
     }
 
     public boolean isCurrentUserInChannel(ChannelDTO channel, String uid) {
         if (isUserAuthorized(uid)) {
             for (ChannelUser u : channel.getUsers()) {
-                if (uid.equals(u.getUserId())) {
+                if (uid.equals(u.getUser_id())) {
                     return true;
                 }
             }
@@ -196,10 +196,10 @@ public class ChannelService {
     public List<ChannelDTO> getSub(String name) {
         String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
         List<ChannelDTO> channels = new ArrayList<>();
-        List<ChannelUser> channeluser = channelUserRepository.findAllByUserId(userId);
+        List<ChannelUser> channeluser = channelUserRepository.findAllByUser_id(userId);
         Channel temp;
         for (ChannelUser c : channeluser) {
-            temp = channelRepository.findFirstById(c.getChannelId());
+            temp = channelRepository.findFirstById(c.getChannel_id());
             if ((temp.getType() == ChannelTypes.PRIVATEGROUP && !isUserAuthorized(userId)) || temp.getType() == ChannelTypes.MESSAGE) {
                 continue;
             }
@@ -213,14 +213,14 @@ public class ChannelService {
     }
 
     public Long getChannelSubsCount(String id) {
-        return channelUserRepository.countByChannelId(id);
+        return channelUserRepository.countByChannel_id(id);
     }
 
     public List<AdminUserDTO> getSubscribedToChannel(String id) {
         List<String> chUsers = channelUserRepository
-            .findAllByChannelId(id)
+            .findAllByChannel_id(id)
             .stream()
-            .map(ChannelUser::getUserId)
+            .map(ChannelUser::getUser_id)
             .collect(Collectors.toList());
 
         return userRepository.findAllById(chUsers).stream().map(AdminUserDTO::new).collect(Collectors.toList());

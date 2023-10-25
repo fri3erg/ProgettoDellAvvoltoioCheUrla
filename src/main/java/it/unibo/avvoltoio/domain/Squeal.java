@@ -20,7 +20,7 @@ public class Squeal implements Serializable {
     private String id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("timestamp")
     private Long timestamp;
@@ -32,25 +32,25 @@ public class Squeal implements Serializable {
     private byte[] img;
 
     @Field("img_content_type")
-    private String imgContentType;
+    private String img_content_type;
 
     @Field("img_name")
-    private String imgName;
+    private String img_name;
 
     @Field("video_content_type")
-    private String videoContentType;
+    private String video_content_type;
 
     @Field("video_name")
-    private String videoName;
+    private String video_name;
 
     @Field("n_characters")
-    private Integer nCharacters;
+    private Integer n_characters;
 
     @Field("squeal_id_response")
-    private String squealIdResponse;
+    private String squeal_id_response;
 
     @Field("refresh_time")
-    private Integer refreshTime;
+    private Integer refresh_time;
 
     @Field("destination")
     @JsonIgnoreProperties(value = { "squeal" }, allowSetters = true)
@@ -71,17 +71,17 @@ public class Squeal implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public Squeal userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public Long getTimestamp() {
@@ -123,95 +123,95 @@ public class Squeal implements Serializable {
         this.img = img;
     }
 
-    public String getImgContentType() {
-        return this.imgContentType;
+    public String getImg_content_type() {
+        return this.img_content_type;
     }
 
     public Squeal imgContentType(String imgContentType) {
-        this.imgContentType = imgContentType;
+        this.img_content_type = imgContentType;
         return this;
     }
 
-    public void setImgContentType(String imgContentType) {
-        this.imgContentType = imgContentType;
+    public void setImg_content_type(String imgContentType) {
+        this.img_content_type = imgContentType;
     }
 
-    public String getImgName() {
-        return this.imgName;
+    public String getImg_name() {
+        return this.img_name;
     }
 
     public Squeal imgName(String imgName) {
-        this.setImgName(imgName);
+        this.setImg_name(imgName);
         return this;
     }
 
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
+    public void setImg_name(String imgName) {
+        this.img_name = imgName;
     }
 
-    public String getVideoContentType() {
-        return this.videoContentType;
+    public String getVideo_content_type() {
+        return this.video_content_type;
     }
 
     public Squeal videoContentType(String videoContentType) {
-        this.setVideoContentType(videoContentType);
+        this.setVideo_content_type(videoContentType);
         return this;
     }
 
-    public void setVideoContentType(String videoContentType) {
-        this.videoContentType = videoContentType;
+    public void setVideo_content_type(String videoContentType) {
+        this.video_content_type = videoContentType;
     }
 
-    public String getVideoName() {
-        return this.videoName;
+    public String getVideo_name() {
+        return this.video_name;
     }
 
     public Squeal videoName(String videoName) {
-        this.setVideoName(videoName);
+        this.setVideo_name(videoName);
         return this;
     }
 
-    public void setVideoName(String videoName) {
-        this.videoName = videoName;
+    public void setVideo_name(String videoName) {
+        this.video_name = videoName;
     }
 
-    public Integer getnCharacters() {
-        return this.nCharacters;
+    public Integer getN_characters() {
+        return this.n_characters;
     }
 
     public Squeal nCharacters(Integer nCharacters) {
-        this.setnCharacters(nCharacters);
+        this.setN_characters(nCharacters);
         return this;
     }
 
-    public void setnCharacters(Integer nCharacters) {
-        this.nCharacters = nCharacters;
+    public void setN_characters(Integer nCharacters) {
+        this.n_characters = nCharacters;
     }
 
-    public String getSquealIdResponse() {
-        return this.squealIdResponse;
+    public String getSqueal_id_response() {
+        return this.squeal_id_response;
     }
 
     public Squeal squealIdResponse(String squealIdResponse) {
-        this.setSquealIdResponse(squealIdResponse);
+        this.setSqueal_id_response(squealIdResponse);
         return this;
     }
 
-    public void setSquealIdResponse(String squealIdResponse) {
-        this.squealIdResponse = squealIdResponse;
+    public void setSqueal_id_response(String squealIdResponse) {
+        this.squeal_id_response = squealIdResponse;
     }
 
-    public Integer getRefreshTime() {
-        return this.refreshTime;
+    public Integer getRefresh_time() {
+        return this.refresh_time;
     }
 
     public Squeal refreshTime(Integer refreshTime) {
-        this.setRefreshTime(refreshTime);
+        this.setRefresh_time(refreshTime);
         return this;
     }
 
-    public void setRefreshTime(Integer refreshTime) {
-        this.refreshTime = refreshTime;
+    public void setRefresh_time(Integer refreshTime) {
+        this.refresh_time = refreshTime;
     }
 
     public Set<SquealDestination> getDestinations() {
@@ -267,17 +267,17 @@ public class Squeal implements Serializable {
     public String toString() {
         return "Squeal{" +
             "id=" + getId() +
-            ", userId='" + getUserId() + "'" +
+            ", userId='" + getUser_id() + "'" +
             ", timestamp=" + getTimestamp() +
             ", body='" + getBody() + "'" +
             ", img='" + getImg() + "'" +
-            ", imgContentType='" + getImgContentType() + "'" +
-            ", imgName='" + getImgName() + "'" +
-            ", videoContentType='" + getVideoContentType() + "'" +
-            ", videoName='" + getVideoName() + "'" +
-            ", nCharacters=" + getnCharacters() +
-            ", squealIdResponse='" + getSquealIdResponse() + "'" +
-            ", refreshTime=" + getRefreshTime() +
+            ", imgContentType='" + getImg_content_type() + "'" +
+            ", imgName='" + getImg_name() + "'" +
+            ", videoContentType='" + getVideo_content_type() + "'" +
+            ", videoName='" + getVideo_name() + "'" +
+            ", nCharacters=" + getN_characters() +
+            ", squealIdResponse='" + getSqueal_id_response() + "'" +
+            ", refreshTime=" + getRefresh_time() +
             "}";
     }
 }

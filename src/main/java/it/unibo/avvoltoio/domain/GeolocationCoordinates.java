@@ -18,10 +18,10 @@ public class GeolocationCoordinates implements Serializable {
     private String id;
 
     @Field("squeal_id")
-    private String squealId;
+    private String squeal_id;
 
     @Field("user_id")
-    private String userId;
+    private String user_id;
 
     @Field("latitude")
     private Double latitude;
@@ -56,30 +56,30 @@ public class GeolocationCoordinates implements Serializable {
         this.id = id;
     }
 
-    public String getSquealId() {
-        return this.squealId;
+    public String getSqueal_id() {
+        return this.squeal_id;
     }
 
     public GeolocationCoordinates squealId(String squealId) {
-        this.setSquealId(squealId);
+        this.setSqueal_id(squealId);
         return this;
     }
 
-    public void setSquealId(String squealId) {
-        this.squealId = squealId;
+    public void setSqueal_id(String squealId) {
+        this.squeal_id = squealId;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getUser_id() {
+        return this.user_id;
     }
 
     public GeolocationCoordinates userId(String userId) {
-        this.setUserId(userId);
+        this.setUser_id(userId);
         return this;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public Double getLatitude() {
@@ -184,8 +184,8 @@ public class GeolocationCoordinates implements Serializable {
     public String toString() {
         return "GeolocationCoordinates{" +
             "id=" + getId() +
-            ", squealId='" + getSquealId() + "'" +
-            ", userId='" + getUserId() + "'" +
+            ", squealId='" + getSqueal_id() + "'" +
+            ", userId='" + getUser_id() + "'" +
             ", latitude=" + getLatitude() +
             ", longitude=" + getLongitude() +
             ", accuracy=" + getAccuracy() +

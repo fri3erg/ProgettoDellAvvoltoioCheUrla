@@ -13,19 +13,19 @@ import org.springframework.stereotype.Repository;
 public interface SquealRepository extends MongoRepository<Squeal, String> {
     List<Squeal> findAllByDestinations_DestinationIgnoreCaseOrderByTimestampDesc(String destination);
 
-    List<Squeal> findAllByDestinations_DestinationIdInOrderByTimestampDesc(List<String> destinationIds, Pageable page);
+    List<Squeal> findAllByDestinations_Destination_idInOrderByTimestampDesc(List<String> destinationIds, Pageable page);
 
-    List<Squeal> findAllByUserIdAndTimestampGreaterThanOrderByTimestamp(String userId, long smTime);
+    List<Squeal> findAllByUser_idAndTimestampGreaterThanOrderByTimestamp(String userId, long smTime);
 
-    List<Squeal> findAllByDestinations_DestinationIdOrderByUserId(String currentUserId);
+    List<Squeal> findAllByDestinations_DestinationIdOrderByUser_id(String currentUserId);
 
-    List<Squeal> findAllByUserIdAndDestinations_DestinationIdOrderByTimestamp(String userId, String currentUserId, Pageable page);
+    List<Squeal> findAllByUser_idAndDestinations_Destination_idOrderByTimestamp(String userId, String currentUserId, Pageable page);
 
-    Long countByDestinations_DestinationId(String id);
+    Long countByDestinations_Destination_id(String id);
 
-    List<Squeal> findAllByUserId(String currentUserId, Pageable page);
+    List<Squeal> findAllByUser_id(String currentUserId, Pageable page);
 
-    Long countByUserId(String userId);
+    Long countByUser_id(String userId);
 
-    List<Squeal> findAllByUserId(String id);
+    List<Squeal> findAllByUser_id(String id);
 }

@@ -122,11 +122,11 @@ public class GeolocationCoordinatesResource {
         Optional<GeolocationCoordinates> result = geolocationCoordinatesRepository
             .findById(geolocationCoordinates.getId())
             .map(existingGeolocationCoordinates -> {
-                if (geolocationCoordinates.getSquealId() != null) {
-                    existingGeolocationCoordinates.setSquealId(geolocationCoordinates.getSquealId());
+                if (geolocationCoordinates.getSqueal_id() != null) {
+                    existingGeolocationCoordinates.setSqueal_id(geolocationCoordinates.getSqueal_id());
                 }
-                if (geolocationCoordinates.getUserId() != null) {
-                    existingGeolocationCoordinates.setUserId(geolocationCoordinates.getUserId());
+                if (geolocationCoordinates.getUser_id() != null) {
+                    existingGeolocationCoordinates.setUser_id(geolocationCoordinates.getUser_id());
                 }
                 if (geolocationCoordinates.getLatitude() != null) {
                     existingGeolocationCoordinates.setLatitude(geolocationCoordinates.getLatitude());

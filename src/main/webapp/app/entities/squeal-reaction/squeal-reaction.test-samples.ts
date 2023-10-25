@@ -6,15 +6,15 @@ export const sampleWithRequiredData: ISquealReaction = {
 
 export const sampleWithPartialData: ISquealReaction = {
   id: '65b942c3-736a-4cbe-9992-471773bec0a9',
-  userId: 'Health Blues',
+  user_id: 'Health Blues',
   username: 'Modern West',
 };
 
 export const sampleWithFullData: ISquealReaction = {
   id: 'e3dc79af-643b-4efb-b51b-9cfea3696d87',
-  userId: 'below Pants',
+  user_id: 'below Pants',
   username: 'newton',
-  squealId: 'Fish Concrete',
+  squeal_id: 'Fish Concrete',
   positive: true,
   emoji: 'Branding meaningfully',
 };

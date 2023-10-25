@@ -8,13 +8,13 @@ export const sampleWithRequiredData: IChannelUser = {
 
 export const sampleWithPartialData: IChannelUser = {
   id: 'be50061b-05c3-4658-8f65-5ce4b49d4a80',
-  userId: 'input',
+  user_id: 'input',
 };
 
 export const sampleWithFullData: IChannelUser = {
   id: 'f6085293-3fcd-41ec-9af8-810f06cd34ed',
-  userId: 'Minivan plum Connecticut',
-  channelId: 'East',
+  user_id: 'Minivan plum Connecticut',
+  channel_id: 'East',
   privilege: 'ADMIN',
 };
 

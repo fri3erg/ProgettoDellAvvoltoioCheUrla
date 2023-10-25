@@ -38,15 +38,15 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="squealId">
+          <th scope="col" jhiSortBy="squeal_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.squealId">Squeal Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.squeal_id">Squeal Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.geolocationCoordinates.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -94,8 +94,8 @@
           <td>
             <a [routerLink]="['/geolocation-coordinates', geolocationCoordinates.id, 'view']">{{ geolocationCoordinates.id }}</a>
           </td>
-          <td>{{ geolocationCoordinates.squealId }}</td>
-          <td>{{ geolocationCoordinates.userId }}</td>
+          <td>{{ geolocationCoordinates.squeal_id }}</td>
+          <td>{{ geolocationCoordinates.user_id }}</td>
           <td>{{ geolocationCoordinates.latitude }}</td>
           <td>{{ geolocationCoordinates.longitude }}</td>
           <td>{{ geolocationCoordinates.accuracy }}</td>

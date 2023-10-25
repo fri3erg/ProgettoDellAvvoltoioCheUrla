@@ -38,21 +38,21 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="maxChars">
+          <th scope="col" jhiSortBy="max_chars">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.maxChars">Max Chars</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.max_chars">Max Chars</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="remaningChars">
+          <th scope="col" jhiSortBy="remaning_chars">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.remaningChars">Remaning Chars</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.userChars.remaning_chars">Remaning Chars</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -64,9 +64,9 @@
           <td>
             <a [routerLink]="['/user-chars', userChars.id, 'view']">{{ userChars.id }}</a>
           </td>
-          <td>{{ userChars.userId }}</td>
-          <td>{{ userChars.maxChars }}</td>
-          <td>{{ userChars.remaningChars }}</td>
+          <td>{{ userChars.user_id }}</td>
+          <td>{{ userChars.max_chars }}</td>
+          <td>{{ userChars.remaning_chars }}</td>
           <td class="text-end">
             <div class="btn-group">
               <button

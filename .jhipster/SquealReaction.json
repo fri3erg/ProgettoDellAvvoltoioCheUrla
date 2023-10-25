@@ -4,7 +4,7 @@
   "entityTableName": "squeal_reaction",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {

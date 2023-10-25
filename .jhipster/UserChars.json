@@ -4,7 +4,7 @@
   "entityTableName": "user_chars",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     },
     {

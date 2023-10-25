@@ -14,16 +14,16 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type CharactersPurchasedFormGroupInput = ICharactersPurchased | PartialWithRequiredKeyOf<NewCharactersPurchased>;
 
-type CharactersPurchasedFormDefaults = Pick<NewCharactersPurchased, 'id' | 'adminDiscount'>;
+type CharactersPurchasedFormDefaults = Pick<NewCharactersPurchased, 'id' | 'admin_discount'>;
 
 type CharactersPurchasedFormGroupContent = {
   id: FormControl<ICharactersPurchased['id'] | NewCharactersPurchased['id']>;
-  userId: FormControl<ICharactersPurchased['userId']>;
-  nCharacters: FormControl<ICharactersPurchased['nCharacters']>;
-  timestampBought: FormControl<ICharactersPurchased['timestampBought']>;
-  timestampExpire: FormControl<ICharactersPurchased['timestampExpire']>;
+  user_id: FormControl<ICharactersPurchased['user_id']>;
+  n_characters: FormControl<ICharactersPurchased['n_characters']>;
+  timestamp_bought: FormControl<ICharactersPurchased['timestamp_bought']>;
+  timestamp_expire: FormControl<ICharactersPurchased['timestamp_expire']>;
   amount: FormControl<ICharactersPurchased['amount']>;
-  adminDiscount: FormControl<ICharactersPurchased['adminDiscount']>;
+  admin_discount: FormControl<ICharactersPurchased['admin_discount']>;
 };
 
 export type CharactersPurchasedFormGroup = FormGroup<CharactersPurchasedFormGroupContent>;
@@ -43,12 +43,12 @@ export class CharactersPurchasedFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(charactersPurchasedRawValue.userId),
-      nCharacters: new FormControl(charactersPurchasedRawValue.nCharacters),
-      timestampBought: new FormControl(charactersPurchasedRawValue.timestampBought),
-      timestampExpire: new FormControl(charactersPurchasedRawValue.timestampExpire),
+      user_id: new FormControl(charactersPurchasedRawValue.user_id),
+      n_characters: new FormControl(charactersPurchasedRawValue.n_characters),
+      timestamp_bought: new FormControl(charactersPurchasedRawValue.timestamp_bought),
+      timestamp_expire: new FormControl(charactersPurchasedRawValue.timestamp_expire),
       amount: new FormControl(charactersPurchasedRawValue.amount),
-      adminDiscount: new FormControl(charactersPurchasedRawValue.adminDiscount),
+      admin_discount: new FormControl(charactersPurchasedRawValue.admin_discount),
     });
   }
 
@@ -69,7 +69,7 @@ export class CharactersPurchasedFormService {
   private getFormDefaults(): CharactersPurchasedFormDefaults {
     return {
       id: null,
-      adminDiscount: false,
+      admin_discount: false,
     };
   }
 }

@@ -3,7 +3,7 @@
     <div class="p-field">
       <label for="field_notificationImage">Immagine</label>
       <div>
-        <img [src]="'data:' + account.imgContentType + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
+        <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
 
         <div *ngIf="newphoto" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
           <button title="clear" type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">

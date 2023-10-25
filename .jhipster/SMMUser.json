@@ -5,7 +5,7 @@
   "entityTableName": "smm_user",
   "fields": [
     {
-      "fieldName": "userId",
+      "fieldName": "user_id",
       "fieldType": "String"
     }
   ],

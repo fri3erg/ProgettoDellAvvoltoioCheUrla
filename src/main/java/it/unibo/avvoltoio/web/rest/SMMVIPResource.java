@@ -6,14 +6,12 @@ import it.unibo.avvoltoio.repository.SMMVIPRepository;
 import it.unibo.avvoltoio.security.AuthoritiesConstants;
 import it.unibo.avvoltoio.service.SMMVIPService;
 import it.unibo.avvoltoio.web.rest.errors.BadRequestAlertException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class SMMVIPResource {
     private String applicationName;
 
     private final SMMVIPRepository sMMVIPRepository;
-    
+
     @Autowired
     private SMMVIPService smmvipservice;
 
@@ -178,7 +176,7 @@ public class SMMVIPResource {
         sMMVIPRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
-    
+
     /**
      * {@code POST  /add-smm/:id} : Add a SMM.
      *
@@ -195,21 +193,19 @@ public class SMMVIPResource {
             .created(new URI("/api/add-smm/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
             .body(result);
-        }
-   
+    }
 
-	/**
-	 * {@code GET  /smmclients/:id} : get all SMM clients.
-	 *
-	 * @param id of the smm
-	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the sMMVIP, or with status {@code 404 (Not Found)}.
-	 */
+    /**
+     * {@code GET  /smmclients/:id} : get all SMM clients.
+     *
+     * @param id of the smm
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the sMMVIP, or with status {@code 404 (Not Found)}.
+     */
     @GetMapping("/smmclients/{id}")
     @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<Set<SMMUser>> getSMMclients(@PathVariable String id) {
         log.debug("REST request to get SMM clients : {}", id);
-        Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUserId(id).map(SMMVIP::getUsers).orElse(null);
+        Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUser_id(id).map(SMMVIP::getUsers).orElse(null);
         return new ResponseEntity<>(sMMclients, HttpStatus.OK);
     }
 }
-

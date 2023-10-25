@@ -18,7 +18,7 @@ type SMMVIPFormDefaults = Pick<NewSMMVIP, 'id'>;
 
 type SMMVIPFormGroupContent = {
   id: FormControl<ISMMVIP['id'] | NewSMMVIP['id']>;
-  userId: FormControl<ISMMVIP['userId']>;
+  user_id: FormControl<ISMMVIP['user_id']>;
 };
 
 export type SMMVIPFormGroup = FormGroup<SMMVIPFormGroupContent>;
@@ -38,7 +38,7 @@ export class SMMVIPFormService {
           validators: [Validators.required],
         }
       ),
-      userId: new FormControl(sMMVIPRawValue.userId),
+      user_id: new FormControl(sMMVIPRawValue.user_id),
     });
   }
 

@@ -6,12 +6,12 @@ export const sampleWithRequiredData: ISquealViews = {
 
 export const sampleWithPartialData: ISquealViews = {
   id: '58bd7b94-65d4-498c-ac41-a0e4e133abc4',
-  squealId: 'indigo',
+  squeal_id: 'indigo',
 };
 
 export const sampleWithFullData: ISquealViews = {
   id: 'ed5e142d-1d94-438a-b314-c3e3eff42b49',
-  squealId: 'vastly',
+  squeal_id: 'vastly',
   number: 7645,
 };
 

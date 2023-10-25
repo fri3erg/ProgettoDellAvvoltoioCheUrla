@@ -27,9 +27,9 @@ export class SquealService {
     const url = this.applicationConfigService.getEndpointFor(`api/reactions-positive/get/${id}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
-  getSquealByChannel(channelId: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
+  getSquealByChannel(channel_id: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
     const params = new HttpParams().append('page', page).append('size', size);
-    const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channelId}`);
+    const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channel_id}`);
     return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
 
@@ -43,8 +43,8 @@ export class SquealService {
     return this.http.get<number>(url, { observe: 'response' });
   }
 
-  getReactions(squealId: string): Observable<HttpResponse<ISquealReaction>> {
-    const url = this.applicationConfigService.getEndpointFor(`api/reactions-by-id/${squealId}`);
+  getReactions(squeal_id: string): Observable<HttpResponse<ISquealReaction>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/reactions-by-id/${squeal_id}`);
     return this.http.get<ISquealReaction>(url, { observe: 'response' });
   }
 

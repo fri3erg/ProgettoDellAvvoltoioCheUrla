@@ -56,8 +56,8 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
 
     const nu: NewChannelUser = {
       id: null,
-      userId: this.account?.id,
-      channelId: c.channel.id,
+      user_id: this.account?.id,
+      channel_id: c.channel.id,
       privilege: PrivilegeType.READ,
     };
     this.channelUserService.create(nu).subscribe(r => {
@@ -91,7 +91,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
     if (c == null) {
       return;
     }
-    const u = c.users.find(ch => ch.userId === this.account?.id);
+    const u = c.users.find(ch => ch.user_id === this.account?.id);
     if (!u) {
       return;
     }
@@ -101,7 +101,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
   }
 
   isUserSubscribed(c?: IChannelDTO): boolean {
-    const u = c?.users.find(ch => ch.userId === this.account?.id);
+    const u = c?.users.find(ch => ch.user_id === this.account?.id);
     return !!u;
   }
 

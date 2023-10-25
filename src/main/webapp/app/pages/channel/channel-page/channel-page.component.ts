@@ -28,7 +28,7 @@ import { ChannelSubscribeComponent } from '../channel-subscribe/channel-subscrib
 export class ChannelPageComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   channel?: IChannelDTO;
-  channelId?: string;
+  channel_id?: string;
   squeals: ISquealDTO[] = [];
   page = 0;
   size = 5;
@@ -55,14 +55,14 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
         console.log(account);
       });
 
-    this.channelId = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
+    this.channel_id = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
     this.loadChannel();
     this.loadSqueals();
   }
 
   loadChannel(): void {
     console.log('load');
-    this.channelService.findDTO(this.channelId ?? '').subscribe(r => {
+    this.channelService.findDTO(this.channel_id ?? '').subscribe(r => {
       if (r.body) {
         this.channel = r.body;
         this.loadOther();
@@ -71,7 +71,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   }
 
   loadSqueals(): void {
-    this.squealService.getSquealByChannel(this.channelId ?? '', this.page, this.size).subscribe(r => {
+    this.squealService.getSquealByChannel(this.channel_id ?? '', this.page, this.size).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;

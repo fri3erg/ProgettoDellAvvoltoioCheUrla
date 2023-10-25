@@ -20,10 +20,10 @@ describe('Home Component', () => {
     authorities: [],
     email: '',
     firstName: null,
-    langKey: '',
+    lang_key: '',
     lastName: null,
     login: 'login',
-    imageUrl: null,
+    image_url: null,
   };
 
   beforeEach(waitForAsync(() => {

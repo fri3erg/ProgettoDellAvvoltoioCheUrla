@@ -8,16 +8,16 @@ export const sampleWithRequiredData: ISquealCat = {
 
 export const sampleWithPartialData: ISquealCat = {
   id: '492a69c6-93c9-48e0-a20f-2b227f5affd8',
-  userId: 'violently',
-  nCharacters: 12122,
+  user_id: 'violently',
+  n_characters: 12122,
 };
 
 export const sampleWithFullData: ISquealCat = {
   id: 'f4c9fc3b-f920-434d-a810-e4febcbd225b',
-  userId: 'pitiful',
-  squealId: 'Persevering monitor',
+  user_id: 'pitiful',
+  squeal_id: 'Persevering monitor',
   category: 'CONTROVERSIAL',
-  nCharacters: 16875,
+  n_characters: 16875,
   timestamp: 16733,
 };
 

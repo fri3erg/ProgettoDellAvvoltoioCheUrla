@@ -5,7 +5,7 @@ export interface IUser {
   lastName?: string | null;
   email?: string;
   activated?: boolean;
-  langKey?: string;
+  lang_key?: string;
   authorities?: string[];
   createdBy?: string;
   createdDate?: Date;
@@ -21,7 +21,7 @@ export class User implements IUser {
     public lastName?: string | null,
     public email?: string,
     public activated?: boolean,
-    public langKey?: string,
+    public lang_key?: string,
     public authorities?: string[],
     public createdBy?: string,
     public createdDate?: Date,

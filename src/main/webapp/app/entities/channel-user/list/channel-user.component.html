@@ -38,15 +38,15 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="userId">
+          <th scope="col" jhiSortBy="user_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.channelUser.userId">User Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.channelUser.user_id">User Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="channelId">
+          <th scope="col" jhiSortBy="channel_id">
             <div class="d-flex">
-              <span jhiTranslate="avvoltoioCheUrlaApp.channelUser.channelId">Channel Id</span>
+              <span jhiTranslate="avvoltoioCheUrlaApp.channelUser.channel_id">Channel Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -64,8 +64,8 @@
           <td>
             <a [routerLink]="['/channel-user', channelUser.id, 'view']">{{ channelUser.id }}</a>
           </td>
-          <td>{{ channelUser.userId }}</td>
-          <td>{{ channelUser.channelId }}</td>
+          <td>{{ channelUser.user_id }}</td>
+          <td>{{ channelUser.channel_id }}</td>
           <td jhiTranslate="{{ 'avvoltoioCheUrlaApp.PrivilegeType.' + channelUser.privilege }}">{{ channelUser.privilege }}</td>
           <td class="text-end">
             <div class="btn-group">

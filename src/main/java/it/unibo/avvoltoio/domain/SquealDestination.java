@@ -24,10 +24,10 @@ public class SquealDestination implements Serializable {
     private Integer seen;
 
     @Field("destination_type")
-    private ChannelTypes destinationType;
+    private ChannelTypes destination_type;
 
     @Field("admin_add")
-    private Boolean adminAdd;
+    private Boolean admin_add;
 
     @DBRef
     @Field("squeal")
@@ -49,30 +49,30 @@ public class SquealDestination implements Serializable {
         this.destination = destination;
     }
 
-    public ChannelTypes getDestinationType() {
-        return this.destinationType;
+    public ChannelTypes getDestination_type() {
+        return this.destination_type;
     }
 
     public SquealDestination destinationType(ChannelTypes destinationType) {
-        this.setDestinationType(destinationType);
+        this.setDestination_type(destinationType);
         return this;
     }
 
-    public void setDestinationType(ChannelTypes destinationType) {
-        this.destinationType = destinationType;
+    public void setDestination_type(ChannelTypes destinationType) {
+        this.destination_type = destinationType;
     }
 
-    public Boolean getAdminAdd() {
-        return this.adminAdd;
+    public Boolean getAdmin_add() {
+        return this.admin_add;
     }
 
     public SquealDestination adminAdd(Boolean adminAdd) {
-        this.setAdminAdd(adminAdd);
+        this.setAdmin_add(adminAdd);
         return this;
     }
 
-    public void setAdminAdd(Boolean adminAdd) {
-        this.adminAdd = adminAdd;
+    public void setAdmin_add(Boolean adminAdd) {
+        this.admin_add = adminAdd;
     }
 
     public Squeal getSqueal() {
@@ -113,7 +113,7 @@ public class SquealDestination implements Serializable {
 	@Override
 	public String toString() {
 		return "SquealDestination{" + ", destination='" + getDestination() + "'" + ", destinationType='"
-				+ getDestinationType() + "'" + ", adminAdd='" + getAdminAdd() + "'" + "}";
+				+ getDestination_type() + "'" + ", adminAdd='" + getAdmin_add() + "'" + "}";
 	}
 
     public Integer getSeen() {

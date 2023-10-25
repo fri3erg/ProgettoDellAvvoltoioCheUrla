@@ -10,7 +10,7 @@ export const sampleWithPartialData: ISMMVIP = {
 
 export const sampleWithFullData: ISMMVIP = {
   id: 'f3ea2c5e-d3fb-4f02-ab81-9f426c8c9e40',
-  userId: 'Cheese',
+  user_id: 'Cheese',
 };
 
 export const sampleWithNewData: NewSMMVIP = {

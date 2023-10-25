@@ -20,8 +20,8 @@ describe('GeolocationCoordinates Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            squealId: expect.any(Object),
-            userId: expect.any(Object),
+            squeal_id: expect.any(Object),
+            user_id: expect.any(Object),
             latitude: expect.any(Object),
             longitude: expect.any(Object),
             accuracy: expect.any(Object),
@@ -38,8 +38,8 @@ describe('GeolocationCoordinates Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            squealId: expect.any(Object),
-            userId: expect.any(Object),
+            squeal_id: expect.any(Object),
+            user_id: expect.any(Object),
             latitude: expect.any(Object),
             longitude: expect.any(Object),
             accuracy: expect.any(Object),

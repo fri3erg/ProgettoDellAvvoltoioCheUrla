@@ -1,19 +1,19 @@
 entity UserChars {
-    userId String
+    user_id String
     maxChars Integer
     remaningChars Integer
 }
 
 
 entity Squeal {
-	userId String
+	user_id String
     timestamp Long
     body String
     img  ImageBlob
     imgName String
     videoContentType String
     videoName String
-    nCharacters Integer
+    n_characters Integer
     squealIdResponse String
     refreshTime Integer
 }
@@ -36,7 +36,7 @@ entity SquealViews{
 
 
 entity SquealReaction{
-userId String
+user_id String
 username String
 squealId String
 positive Boolean
@@ -45,7 +45,7 @@ emoji String
 
 entity GeolocationCoordinates{
 squealId String
-userId String
+user_id String
 latitude Double
 longitude Double 
 accuracy Double
@@ -56,10 +56,10 @@ timestamp Long
 }
 
 entity SquealCat{
-    userId String
+    user_id String
     squealId String
     category CategoryTypes
-    nCharacters Integer
+    n_characters Integer
     timestamp Long
 }
 
@@ -71,8 +71,8 @@ enum CategoryTypes{
 }
 
 entity CharactersPurchased{
-userId String
-nCharacters Integer
+user_id String
+n_characters Integer
 timestampBought Long
 timestampExpire Long
 amount BigDecimal
@@ -94,7 +94,7 @@ enum ChannelTypes{
 }
 
 entity ChannelUser{
-    userId String
+    user_id String
     channelId String
     privilege PrivilegeType
 
@@ -108,13 +108,13 @@ READ
 }
 
 entity SMMVIP{
-    userId String
+    user_id String
 
 }
 
 @embedded
 entity SMMUser{
-    userId String
+    user_id String
 }
 
 relationship OneToMany {

@@ -86,9 +86,9 @@ class UserCharsResourceIT {
         List<UserChars> userCharsList = userCharsRepository.findAll();
         assertThat(userCharsList).hasSize(databaseSizeBeforeCreate + 1);
         UserChars testUserChars = userCharsList.get(userCharsList.size() - 1);
-        assertThat(testUserChars.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testUserChars.getMaxChars()).isEqualTo(DEFAULT_MAX_CHARS);
-        assertThat(testUserChars.getRemaningChars()).isEqualTo(DEFAULT_REMANING_CHARS);
+        assertThat(testUserChars.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testUserChars.getMax_chars()).isEqualTo(DEFAULT_MAX_CHARS);
+        assertThat(testUserChars.getRemaning_chars()).isEqualTo(DEFAULT_REMANING_CHARS);
     }
 
     @Test
@@ -119,7 +119,7 @@ class UserCharsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(userChars.getId())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID)))
+            .andExpect(jsonPath("$.[*].user_id").value(hasItem(DEFAULT_USER_ID)))
             .andExpect(jsonPath("$.[*].maxChars").value(hasItem(DEFAULT_MAX_CHARS)))
             .andExpect(jsonPath("$.[*].remaningChars").value(hasItem(DEFAULT_REMANING_CHARS)));
     }
@@ -135,7 +135,7 @@ class UserCharsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(userChars.getId()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID))
+            .andExpect(jsonPath("$.user_id").value(DEFAULT_USER_ID))
             .andExpect(jsonPath("$.maxChars").value(DEFAULT_MAX_CHARS))
             .andExpect(jsonPath("$.remaningChars").value(DEFAULT_REMANING_CHARS));
     }
@@ -169,9 +169,9 @@ class UserCharsResourceIT {
         List<UserChars> userCharsList = userCharsRepository.findAll();
         assertThat(userCharsList).hasSize(databaseSizeBeforeUpdate);
         UserChars testUserChars = userCharsList.get(userCharsList.size() - 1);
-        assertThat(testUserChars.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testUserChars.getMaxChars()).isEqualTo(UPDATED_MAX_CHARS);
-        assertThat(testUserChars.getRemaningChars()).isEqualTo(UPDATED_REMANING_CHARS);
+        assertThat(testUserChars.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testUserChars.getMax_chars()).isEqualTo(UPDATED_MAX_CHARS);
+        assertThat(testUserChars.getRemaning_chars()).isEqualTo(UPDATED_REMANING_CHARS);
     }
 
     @Test
@@ -252,9 +252,9 @@ class UserCharsResourceIT {
         List<UserChars> userCharsList = userCharsRepository.findAll();
         assertThat(userCharsList).hasSize(databaseSizeBeforeUpdate);
         UserChars testUserChars = userCharsList.get(userCharsList.size() - 1);
-        assertThat(testUserChars.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testUserChars.getMaxChars()).isEqualTo(UPDATED_MAX_CHARS);
-        assertThat(testUserChars.getRemaningChars()).isEqualTo(DEFAULT_REMANING_CHARS);
+        assertThat(testUserChars.getUser_id()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testUserChars.getMax_chars()).isEqualTo(UPDATED_MAX_CHARS);
+        assertThat(testUserChars.getRemaning_chars()).isEqualTo(DEFAULT_REMANING_CHARS);
     }
 
     @Test
@@ -282,9 +282,9 @@ class UserCharsResourceIT {
         List<UserChars> userCharsList = userCharsRepository.findAll();
         assertThat(userCharsList).hasSize(databaseSizeBeforeUpdate);
         UserChars testUserChars = userCharsList.get(userCharsList.size() - 1);
-        assertThat(testUserChars.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testUserChars.getMaxChars()).isEqualTo(UPDATED_MAX_CHARS);
-        assertThat(testUserChars.getRemaningChars()).isEqualTo(UPDATED_REMANING_CHARS);
+        assertThat(testUserChars.getUser_id()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testUserChars.getMax_chars()).isEqualTo(UPDATED_MAX_CHARS);
+        assertThat(testUserChars.getRemaning_chars()).isEqualTo(UPDATED_REMANING_CHARS);
     }
 
     @Test
