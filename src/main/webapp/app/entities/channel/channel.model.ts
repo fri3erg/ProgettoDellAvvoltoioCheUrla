@@ -4,7 +4,7 @@ export interface IChannel {
   id?: string;
   name?: string | null;
   type?: keyof typeof ChannelTypes | null;
-  modType?: string | null;
+  mod_type?: string | null;
   emergency?: boolean | null;
 }
 

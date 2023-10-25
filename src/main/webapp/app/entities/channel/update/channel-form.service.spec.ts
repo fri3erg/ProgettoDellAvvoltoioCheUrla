@@ -22,7 +22,7 @@ describe('Channel Form Service', () => {
             id: expect.any(Object),
             name: expect.any(Object),
             type: expect.any(Object),
-            modType: expect.any(Object),
+            mod_type: expect.any(Object),
             emergency: expect.any(Object),
           })
         );
@@ -36,7 +36,7 @@ describe('Channel Form Service', () => {
             id: expect.any(Object),
             name: expect.any(Object),
             type: expect.any(Object),
-            modType: expect.any(Object),
+            mod_type: expect.any(Object),
             emergency: expect.any(Object),
           })
         );

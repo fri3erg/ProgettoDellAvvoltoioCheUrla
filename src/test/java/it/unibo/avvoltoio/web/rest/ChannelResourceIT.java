@@ -92,7 +92,7 @@ class ChannelResourceIT {
         Channel testChannel = channelList.get(channelList.size() - 1);
         assertThat(testChannel.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testChannel.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testChannel.getModType()).isEqualTo(DEFAULT_MOD_TYPE);
+        assertThat(testChannel.getMod_type()).isEqualTo(DEFAULT_MOD_TYPE);
         assertThat(testChannel.getEmergency()).isEqualTo(DEFAULT_EMERGENCY);
     }
 
@@ -178,7 +178,7 @@ class ChannelResourceIT {
         Channel testChannel = channelList.get(channelList.size() - 1);
         assertThat(testChannel.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testChannel.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testChannel.getModType()).isEqualTo(UPDATED_MOD_TYPE);
+        assertThat(testChannel.getMod_type()).isEqualTo(UPDATED_MOD_TYPE);
         assertThat(testChannel.getEmergency()).isEqualTo(UPDATED_EMERGENCY);
     }
 
@@ -262,7 +262,7 @@ class ChannelResourceIT {
         Channel testChannel = channelList.get(channelList.size() - 1);
         assertThat(testChannel.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testChannel.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testChannel.getModType()).isEqualTo(UPDATED_MOD_TYPE);
+        assertThat(testChannel.getMod_type()).isEqualTo(UPDATED_MOD_TYPE);
         assertThat(testChannel.getEmergency()).isEqualTo(UPDATED_EMERGENCY);
     }
 
@@ -293,7 +293,7 @@ class ChannelResourceIT {
         Channel testChannel = channelList.get(channelList.size() - 1);
         assertThat(testChannel.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testChannel.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testChannel.getModType()).isEqualTo(UPDATED_MOD_TYPE);
+        assertThat(testChannel.getMod_type()).isEqualTo(UPDATED_MOD_TYPE);
         assertThat(testChannel.getEmergency()).isEqualTo(UPDATED_EMERGENCY);
     }
 

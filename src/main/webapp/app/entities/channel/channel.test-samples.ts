@@ -16,7 +16,7 @@ export const sampleWithFullData: IChannel = {
   id: 'c0909d62-3fb8-4ae5-b73c-89a3ec775ace',
   name: 'Molybdenum Loan',
   type: 'PRIVATEGROUP',
-  modType: 'Nissan',
+  mod_type: 'Nissan',
   emergency: true,
 };
 

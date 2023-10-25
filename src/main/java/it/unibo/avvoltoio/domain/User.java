@@ -64,12 +64,12 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
     @Size(max = 20)
     @Field("activation_key")
     @JsonIgnore
-    private String activation_key;
+    private String activationKey;
 
     @Size(max = 20)
     @Field("reset_key")
     @JsonIgnore
-    private String reset_key;
+    private String resetKey;
 
     @Field("reset_date")
     private Instant reset_date = null;
@@ -164,20 +164,20 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
         this.activated = activated;
     }
 
-    public String getActivation_key() {
-        return activation_key;
+    public String getActivationKey() {
+        return activationKey;
     }
 
-    public void setActivation_key(String activationKey) {
-        this.activation_key = activationKey;
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
     }
 
-    public String getReset_key() {
-        return reset_key;
+    public String getResetKey() {
+        return resetKey;
     }
 
-    public void setReset_key(String resetKey) {
-        this.reset_key = resetKey;
+    public void setResetKey(String resetKey) {
+        this.resetKey = resetKey;
     }
 
     public Instant getReset_date() {
@@ -232,7 +232,7 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
             ", imageUrl='" + image_url + '\'' +
             ", activated='" + activated + '\'' +
             ", langKey='" + lang_key + '\'' +
-            ", activationKey='" + activation_key + '\'' +
+            ", activationKey='" + activationKey + '\'' +
             ", img='" + img + '\'' +
             ", imgContentType='" + img_content_type + '\'' +
             "}";

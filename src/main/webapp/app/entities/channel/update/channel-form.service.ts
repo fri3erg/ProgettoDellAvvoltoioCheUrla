@@ -20,7 +20,7 @@ type ChannelFormGroupContent = {
   id: FormControl<IChannel['id'] | NewChannel['id']>;
   name: FormControl<IChannel['name']>;
   type: FormControl<IChannel['type']>;
-  modType: FormControl<IChannel['modType']>;
+  mod_type: FormControl<IChannel['mod_type']>;
   emergency: FormControl<IChannel['emergency']>;
 };
 
@@ -43,7 +43,7 @@ export class ChannelFormService {
       ),
       name: new FormControl(channelRawValue.name),
       type: new FormControl(channelRawValue.type),
-      modType: new FormControl(channelRawValue.modType),
+      mod_type: new FormControl(channelRawValue.mod_type),
       emergency: new FormControl(channelRawValue.emergency),
     });
   }

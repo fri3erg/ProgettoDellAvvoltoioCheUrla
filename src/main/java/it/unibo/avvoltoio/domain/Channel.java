@@ -25,7 +25,7 @@ public class Channel implements Serializable {
     private ChannelTypes type;
 
     @Field("mod_type")
-    private String modType;
+    private String mod_type;
 
     @Field("emergency")
     private Boolean emergency;
@@ -71,17 +71,17 @@ public class Channel implements Serializable {
         this.type = type;
     }
 
-    public String getModType() {
-        return this.modType;
+    public String getMod_type() {
+        return this.mod_type;
     }
 
     public Channel modType(String modType) {
-        this.setModType(modType);
+        this.setMod_type(modType);
         return this;
     }
 
-    public void setModType(String modType) {
-        this.modType = modType;
+    public void setMod_type(String modType) {
+        this.mod_type = modType;
     }
 
     public Boolean getEmergency() {
@@ -123,7 +123,7 @@ public class Channel implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +
-            ", modType='" + getModType() + "'" +
+            ", modType='" + getMod_type() + "'" +
             ", emergency='" + getEmergency() + "'" +
             "}";
     }

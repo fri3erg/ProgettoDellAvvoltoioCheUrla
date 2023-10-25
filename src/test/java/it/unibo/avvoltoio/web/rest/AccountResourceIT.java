@@ -379,7 +379,7 @@ class AccountResourceIT {
         user.setEmail("activate-account@example.com");
         user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setActivated(false);
-        user.setActivation_key(activationKey);
+        user.setActivationKey(activationKey);
 
         userRepository.save(user);
 
@@ -680,11 +680,11 @@ class AccountResourceIT {
         user.setLogin("finish-password-reset");
         user.setEmail("finish-password-reset@example.com");
         user.setReset_date(Instant.now().plusSeconds(60));
-        user.setReset_key("reset key");
+        user.setResetKey("reset key");
         userRepository.save(user);
 
         KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getReset_key());
+        keyAndPassword.setKey(user.getResetKey());
         keyAndPassword.setNewPassword("new password");
 
         restAccountMockMvc
@@ -706,11 +706,11 @@ class AccountResourceIT {
         user.setLogin("finish-password-reset-too-small");
         user.setEmail("finish-password-reset-too-small@example.com");
         user.setReset_date(Instant.now().plusSeconds(60));
-        user.setReset_key("reset key too small");
+        user.setResetKey("reset key too small");
         userRepository.save(user);
 
         KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getReset_key());
+        keyAndPassword.setKey(user.getResetKey());
         keyAndPassword.setNewPassword("foo");
 
         restAccountMockMvc
