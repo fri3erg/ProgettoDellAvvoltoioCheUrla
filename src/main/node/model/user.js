@@ -9,7 +9,7 @@ const authoritySchema = new Schema(
 
 const userSchema = new Schema(
   {
-    _id: { type: String, unique: true, alias: 'id' },
+    _id: { type: String, unique: true },
     first_name: { type: String, default: null },
     last_name: { type: String, default: null },
     login: { type: String, unique: true, index: true },
