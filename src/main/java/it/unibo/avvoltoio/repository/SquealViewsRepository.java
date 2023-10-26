@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface SquealViewsRepository extends MongoRepository<SquealViews, String> {
-    Optional<SquealViews> findFirstBySqueal_id(String id);
+    Optional<SquealViews> findFirstBySqueal__id(String id);
 }

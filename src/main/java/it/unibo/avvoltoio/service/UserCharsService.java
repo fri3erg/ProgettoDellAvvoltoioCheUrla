@@ -44,7 +44,7 @@ public class UserCharsService {
         if (!isUserAuthorized(id)) {
             return Optional.ofNullable(null);
         }
-        return userCharsRepository.findByUser_id(id);
+        return userCharsRepository.findByUser__id(id);
     }
 
     private Boolean isUserAuthorized(String id) {

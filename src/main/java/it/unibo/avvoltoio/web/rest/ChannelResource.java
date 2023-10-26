@@ -177,8 +177,8 @@ public class ChannelResource {
                 if (channel.getType() != null) {
                     existingChannel.setType(channel.getType());
                 }
-                if (channel.getModType() != null) {
-                    existingChannel.setModType(channel.getModType());
+                if (channel.getMod_type() != null) {
+                    existingChannel.setMod_type(channel.getMod_type());
                 }
                 if (channel.getEmergency() != null) {
                     existingChannel.setEmergency(channel.getEmergency());

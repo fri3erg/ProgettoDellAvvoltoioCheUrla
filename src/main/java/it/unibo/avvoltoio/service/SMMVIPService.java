@@ -22,7 +22,7 @@ public class SMMVIPService {
     }
 
     public SMMVIP addSMM(String id) {
-        Optional<SMMVIP> smmvip = smmvipRepository.findFirstByUser_id(id);
+        Optional<SMMVIP> smmvip = smmvipRepository.findFirstByUser__id(id);
 
         if (smmvip.isPresent()) {
             SMMUser smmUser = new SMMUser();

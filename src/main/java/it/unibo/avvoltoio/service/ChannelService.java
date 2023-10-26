@@ -152,7 +152,7 @@ public class ChannelService {
         }
         ChannelDTO c = new ChannelDTO();
         c.setChannel(channel);
-        c.setUsers(channelUserRepository.findAllByChannel_id(c.getChannel().getId()));
+        c.setUsers(channelUserRepository.findAllByChannel__id(c.getChannel().getId()));
         return c;
     }
 
@@ -196,7 +196,7 @@ public class ChannelService {
     public List<ChannelDTO> getSub(String name) {
         String userId = userRepository.findOneByLogin(name).map(User::getId).orElse("");
         List<ChannelDTO> channels = new ArrayList<>();
-        List<ChannelUser> channeluser = channelUserRepository.findAllByUser_id(userId);
+        List<ChannelUser> channeluser = channelUserRepository.findAllByUser__id(userId);
         Channel temp;
         for (ChannelUser c : channeluser) {
             temp = channelRepository.findFirstById(c.getChannel_id());
@@ -213,12 +213,12 @@ public class ChannelService {
     }
 
     public Long getChannelSubsCount(String id) {
-        return channelUserRepository.countByChannel_id(id);
+        return channelUserRepository.countByChannel__id(id);
     }
 
     public List<AdminUserDTO> getSubscribedToChannel(String id) {
         List<String> chUsers = channelUserRepository
-            .findAllByChannel_id(id)
+            .findAllByChannel__id(id)
             .stream()
             .map(ChannelUser::getUser_id)
             .collect(Collectors.toList());

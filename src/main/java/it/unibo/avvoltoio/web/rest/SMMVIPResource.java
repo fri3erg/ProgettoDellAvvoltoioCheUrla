@@ -205,7 +205,7 @@ public class SMMVIPResource {
     @PreAuthorize("hasAnyAuthority('" + AuthoritiesConstants.ADMIN + "','" + AuthoritiesConstants.SMM + "')")
     public ResponseEntity<Set<SMMUser>> getSMMclients(@PathVariable String id) {
         log.debug("REST request to get SMM clients : {}", id);
-        Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUser_id(id).map(SMMVIP::getUsers).orElse(null);
+        Set<SMMUser> sMMclients = sMMVIPRepository.findFirstByUser__id(id).map(SMMVIP::getUsers).orElse(null);
         return new ResponseEntity<>(sMMclients, HttpStatus.OK);
     }
 }

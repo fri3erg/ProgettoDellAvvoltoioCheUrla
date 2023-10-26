@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SMMVIPRepository extends MongoRepository<SMMVIP, String> {
-    Optional<SMMVIP> findFirstByUser_id(String id);
+    Optional<SMMVIP> findFirstByUser__id(String id);
 }

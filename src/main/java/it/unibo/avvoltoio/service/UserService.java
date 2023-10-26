@@ -72,7 +72,7 @@ public class UserService {
             .map(user -> {
                 // activate given user for the registration key.
                 user.setActivated(true);
-                user.setActivation_key(null);
+                user.setActivationKey(null);
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 log.debug("Activated user: {}", user);
@@ -87,7 +87,7 @@ public class UserService {
             .filter(user -> user.getReset_date().isAfter(Instant.now().minus(1, ChronoUnit.DAYS)))
             .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
-                user.setReset_key(null);
+                user.setResetKey(null);
                 user.setReset_date(null);
                 userRepository.save(user);
                 this.clearUserCaches(user);
@@ -100,7 +100,7 @@ public class UserService {
             .findOneByEmailIgnoreCase(mail)
             .filter(User::isActivated)
             .map(user -> {
-                user.setReset_key(RandomUtil.generateResetKey());
+                user.setResetKey(RandomUtil.generateResetKey());
                 user.setReset_date(Instant.now());
                 userRepository.save(user);
                 this.clearUserCaches(user);
@@ -140,7 +140,7 @@ public class UserService {
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
-        newUser.setActivation_key(RandomUtil.generateActivationKey());
+        newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
@@ -183,7 +183,7 @@ public class UserService {
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
-        newUser.setActivation_key(RandomUtil.generateActivationKey());
+        newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
@@ -225,7 +225,7 @@ public class UserService {
         }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
-        user.setReset_key(RandomUtil.generateResetKey());
+        user.setResetKey(RandomUtil.generateResetKey());
         user.setReset_date(Instant.now());
         user.setActivated(true);
         if (userDTO.getAuthorities() != null) {

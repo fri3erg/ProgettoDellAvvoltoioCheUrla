@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SquealCatRepository extends MongoRepository<SquealCat, String> {
-    Optional<SquealCat> findFirstBySqueal_id(String squealId);
+    Optional<SquealCat> findFirstBySqueal__id(String squealId);
 }

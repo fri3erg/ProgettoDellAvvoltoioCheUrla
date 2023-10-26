@@ -12,13 +12,13 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface SquealReactionRepository extends MongoRepository<SquealReaction, String> {
-    List<SquealReaction> findAllBySquealId(String id);
+    List<SquealReaction> findAllBySqueal__id(String id);
 
-    Optional<SquealReaction> findFirstByUserId(String id);
+    Optional<SquealReaction> findFirstByUser__id(String id);
 
-    List<SquealReaction> findAllByUserIdOrderByEmoji();
+    List<SquealReaction> findAllByUser__idOrderByEmoji();
 
-    Optional<SquealReaction> findFirstByUserIdAndSquealId(String userId, String squealId);
+    Optional<SquealReaction> findFirstByUser__idAndSqueal__id(String userId, String squealId);
 
-    Long countBySquealIdAndPositive(List<String> ids, boolean b);
+    Long countBySqueal__idAndPositive(List<String> ids, boolean b);
 }
