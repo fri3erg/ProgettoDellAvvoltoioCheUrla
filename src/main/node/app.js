@@ -3,6 +3,8 @@ require('./config/database').connect();
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
 
 const User = require('./model/user');
 const auth = require('./middleware/auth');
@@ -14,6 +16,9 @@ const squealResource = require('./resources/SquealResource');
 const app = express();
 
 app.use(express.json({ limit: '50mb' }));
+
+//cors
+app.use(cors(corsOptions));
 
 app.use('/api', tea);
 app.use('/api', accountResource);

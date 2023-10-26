@@ -19,8 +19,8 @@ router.post('/authenticate', async (req, res) => {
     if (!(username && password)) {
       res.status(400).send('All input is required');
     }
-    // Validate if user exist in our database
 
+    // Validate if user exist in our database
     const user = await User.findOne({ login: username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -81,8 +81,7 @@ router.post('/register', async (req, res) => {
       res.status(400).send('All input is required');
     }
 
-    // check if user already exist
-    // Validate if user exist in our database
+    // Check if user already exist
     let oldUser = await User.findOne({ email });
     if (oldUser) {
       return res.status(409).send('User Already Exist. Please Login');
