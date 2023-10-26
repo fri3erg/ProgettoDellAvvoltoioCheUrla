@@ -33,4 +33,14 @@ router.get('/squeal-by-user/:username', auth, async (req, res) => {
   }
 });
 
+router.post('/squeals', async (req, res) => {
+  try {
+    let squeal = req.squeal;
+    squeal = await new squealService().insertOrUpdate(squeal);
+    res.status(201).json(squeal);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router; // export to use in server.js
