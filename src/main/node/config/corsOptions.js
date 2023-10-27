@@ -1,8 +1,8 @@
-const whitelist = ['http://localhost:8080', 'http://localhost:9000', 'http://localhost:9001', 'http://localhost:27017'];
+const allowedOrigins = require('./allowedOrigins');
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       //togliere !origin dopo lo sviluppo
       callback(null, true);
     } else {
