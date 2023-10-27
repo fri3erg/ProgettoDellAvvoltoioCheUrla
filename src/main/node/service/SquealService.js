@@ -1,11 +1,11 @@
 const Squeal = require('../model/squeal');
 const SquealDestination = require('../model/squealDestination');
 const ChannelUser = require('../model/channelUser');
+const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
 const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-const squeal = require('../model/squeal');
 class ReactionDTO {
   n_characters;
   number = 0;
@@ -74,40 +74,137 @@ class SquealService {
   }
 
   async insertOrUpdate(squeal, user, username) {
-    const ret = {};
+    let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!squeal || !thisUser) {
       return ret;
     }
-    if (this.isUserAuthorized(thisUser._id, user.username)) {
-      newSqueal = new Squeal({
+    if (this.isUserAuthorized(thisUser._id, user.user_id)) {
+      let newSqueal = new Squeal({
         user_id: thisUser._id,
         timestamp: Date.now(),
         body: squeal.body,
-        img: squeal.img,
+        img: this.resizeImg(squeal.img),
         img_content_type: squeal.img_content_type,
         img_name: squeal.img_name,
         video_content_type: squeal.video_content_type,
         video_name: squeal.video_name,
-        n_characters: getNCharacters(squeal) ?? 0,
+        n_characters: this.getNCharacters(squeal) ?? 0,
         destination: [],
       });
-      validDest = [];
-      for (dest of squeal.destination) {
-        let type;
+      for (const dest of squeal.destinations) {
+        if (await this.checkAuth(dest, thisUser)) {
+          newSqueal.destination.seen = false;
+          newSqueal.destination.push(dest);
+        }
       }
-      for (dest of validDest) {
-        newSqueal.destination.push(dest);
-      }
-      await newSqueal.save();
 
-      const dto = await this.loadSquealData(squeal);
+      newSqueal = await newSqueal.save();
+      await SquealViews.create({
+        squeal_id: newSqueal._id.toString(),
+        number: 0,
+      });
+
+      const dto = await this.loadSquealData(newSqueal);
 
       if (dto) {
-        ret = squeal;
+        ret = newSqueal;
       }
     }
     return ret;
+  }
+
+  async getSquealDestination(myUser, username, search) {
+    let validDest = [];
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      return validDest;
+    }
+    if (this.isUserAuthorized(thisUser._id, myUser.user_id)) {
+      if (!search.startsWith('§') && !search.startsWith('#')) {
+        const userDest = await this.searchUser(search);
+        for (const us of userDest) {
+          const dest = new SquealDestination({
+            destination_id: us._id,
+            destination: us.login ?? '',
+            destination_type: 'MESSAGE',
+          });
+          validDest.push(dest);
+        }
+      }
+      if (!search.startsWith('#') && !search.startsWith('@')) {
+        const ChannelDest = await this.searchChannel('§', search, username);
+
+        for (const ch of ChannelDest) {
+          const dest = new SquealDestination({
+            destination_id: ch._id,
+            destination: ch.name ?? '',
+            destination_type: ch.type,
+          });
+          if (this.checkAuth(dest, thisUser)) {
+            validDest.push(dest);
+          }
+        }
+      }
+      if (!search.startsWith('§') && !search.startsWith('@')) {
+        const publicFind = await this.searchChannel('#', search, username);
+        for (const ch of publicFind) {
+          const dest = new SquealDestination({
+            destination_id: ch._id,
+            destination: ch.name ?? '',
+            destination_type: 'PUBLICGROUP',
+          });
+          validDest.push(dest);
+        }
+        if (search.startsWith('#')) {
+          validDest.push({
+            destination: search,
+            destination_type: 'PUBLICGROUP',
+          });
+        }
+      }
+    }
+    return validDest;
+  }
+  async searchUser(search) {
+    return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+  }
+  async searchChannel(ch, search, username) {
+    if (search.startsWith('§') || search.startsWith('@')) {
+      search = search.substring(1);
+    }
+    return await Channel.find({ name: { $regex: ch + '(?i).*' + search + '.*' } });
+  }
+
+  async checkAuth(destination, thisUser) {
+    switch (destination.destination_type) {
+      case 'MOD':
+        for (const a of thisUser.authorities) {
+          if (a._id === 'ROLE_ADMIN') {
+            return true;
+          }
+        }
+        return false;
+        break;
+      case 'PRIVATEGROUP':
+        if (await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id })) {
+          return true;
+        }
+        break;
+      case 'PUBLICGROUP':
+        if (!destination.destination_id && destination.destination) {
+          const newdest = await Channel.create({
+            name: destination.destination,
+            type: 'PUBLICGROUP',
+          });
+          destination = newdest;
+        }
+        return true;
+      case 'MESSAGE':
+        return true;
+      default:
+        return false;
+    }
   }
 
   async loadSquealData(squeal) {
@@ -133,6 +230,11 @@ class SquealService {
     };
     return ret;
   }
+  resizeImg(img) {
+    //TODO:implement
+    return img;
+  }
+
   async getReaction(id) {
     const reactions = await SquealReaction.find({ squeal_id: id });
 
@@ -154,8 +256,8 @@ class SquealService {
     return id == currentUserId;
   }
   getNCharacters(squeal) {
-    let n = squeal.body.length();
-    if (squeal.img != null || squeal.img != '') {
+    let n = squeal.body.length;
+    if (squeal.img != null && squeal.img != '') {
       n = n + 100;
     }
     return n;

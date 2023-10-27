@@ -17,6 +17,7 @@ import { Subject, takeUntil } from 'rxjs';
 import SharedModule from 'app/shared/shared.module';
 import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
 import { ChannelSubscribeComponent } from '../channel-subscribe/channel-subscribe.component';
+import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 
 @Component({
   selector: 'jhi-channel-page',
@@ -36,6 +37,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   isLoad = false;
   usersFollowing = 0;
   squealsSquealed = 0;
+  connectedDestination: ISquealDestination = {};
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -82,6 +84,9 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
 
   loadOther(): void {
     this.usersFollowing = this.channel?.users.length ?? 0;
+    this.connectedDestination.destination = this.channel?.channel.name;
+    this.connectedDestination.destinationId = this.channel?.channel.id;
+    this.connectedDestination.destination_type = this.channel?.channel.type;
   }
 
   appendSqueals(): void {

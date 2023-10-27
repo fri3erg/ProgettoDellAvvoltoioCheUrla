@@ -20,10 +20,10 @@ import { Buffer } from 'buffer';
 })
 export class CreateSquealComponent implements OnInit {
   message = '';
-  results?: string[];
+  results?: ISquealDestination[];
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
-  @Input() destinations: string[] = [];
+  @Input() destinations: ISquealDestination[] = [];
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
@@ -57,7 +57,8 @@ export class CreateSquealComponent implements OnInit {
   }
 
   getRemainingChars(): number {
-    return (this.charsDTO?.remainingChars ?? 0) - this.message.length;
+    //TODO:change back to 0 in each
+    return (this.charsDTO?.remainingChars ?? 100) - this.message.length;
   }
 
   search(event: any): void {
@@ -67,7 +68,9 @@ export class CreateSquealComponent implements OnInit {
     this.squealService.findDestinations(q).subscribe(r => {
       this.results = [];
       if (r.body) {
-        this.results = r.body;
+        for (const dest of r.body) {
+          this.results.push(dest);
+        }
       }
     });
   }
@@ -77,14 +80,7 @@ export class CreateSquealComponent implements OnInit {
     }
 
     this.dto.squeal.body = this.message;
-    const dest: ISquealDestination[] = [];
-    for (const d of this.destinations) {
-      dest.push({
-        destination: d,
-      });
-    }
-
-    this.dto.squeal.destinations = dest;
+    this.dto.squeal.destinations = this.destinations;
     console.log('insert');
     console.log(this.dto);
     this.squealService.insertOrUpdate(this.dto).subscribe(r => {
@@ -95,7 +91,7 @@ export class CreateSquealComponent implements OnInit {
         if (this.dto.squeal?.destinations) {
           for (const d of this.dto.squeal.destinations) {
             if (d.destination) {
-              this.destinations.push(d.destination);
+              this.destinations.push(d);
             }
           }
         }

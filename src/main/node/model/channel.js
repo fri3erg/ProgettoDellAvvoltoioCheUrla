@@ -8,7 +8,7 @@ const DestType = {
 };
 const channelSchema = new Schema(
   {
-    name: { type: String, unique: true },
+    name: { type: String },
     type: { type: DestType, default: null },
     mod_type: { type: String, default: null },
     emergency: { type: Boolean, default: null },

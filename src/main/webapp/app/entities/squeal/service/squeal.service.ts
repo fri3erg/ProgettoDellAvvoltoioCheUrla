@@ -8,6 +8,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { ISqueal, NewSqueal } from '../squeal.model';
 import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
+import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, 'id'>;
 
@@ -48,10 +49,10 @@ export class SquealService {
     return this.http.get<ISquealReaction>(url, { observe: 'response' });
   }
 
-  findDestinations(name: string): Observable<HttpResponse<string[]>> {
+  findDestinations(name: string): Observable<HttpResponse<ISquealDestination[]>> {
     const url = this.applicationConfigService.getEndpointFor(`api/squeals-destination`);
     const params = new HttpParams().append('name', name);
-    return this.http.get<string[]>(url, { params, observe: 'response' });
+    return this.http.get<ISquealDestination[]>(url, { params, observe: 'response' });
   }
 
   getSquealByUser(username: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {

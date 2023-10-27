@@ -34,10 +34,20 @@ router.get('/squeal-by-user/:username', auth, async (req, res) => {
   }
 });
 
-router.post('/squeals', async (req, res) => {
+router.get('/squeals-destination', auth, async (req, res) => {
   try {
-    let squeal = req.squeal;
-    squeal = await new squealService().insertOrUpdate(squeal);
+    const ret = await new squealService().getSquealDestination(req.user, req.user.username, req.query.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
+router.post('/squeals', auth, async (req, res) => {
+  try {
+    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username);
+    console.log(squeal);
     res.status(201).json(squeal);
   } catch (err) {
     console.log(err);

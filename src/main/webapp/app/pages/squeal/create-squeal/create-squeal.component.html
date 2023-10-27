@@ -10,12 +10,13 @@
         [suggestions]="results ?? []"
         (completeMethod)="search($event)"
         [multiple]="true"
+        field="destination"
       ></p-autoComplete>
     </div>
   </div>
   <div class="form-floating">
     <textarea
-      [maxlength]="charsDTO?.remainingChars ?? 0"
+      [maxlength]="charsDTO?.remainingChars ?? 100"
       class="form-control"
       name="body"
       [(ngModel)]="message"
