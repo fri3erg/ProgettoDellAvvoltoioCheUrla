@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { isPresent } from 'app/core/util/operators';
@@ -47,7 +47,8 @@ export class ChannelService {
 
   search(name: string): Observable<HttpResponse<IChannelDTO[]>> {
     const url = this.applicationConfigService.getEndpointFor('api/channel-search');
-    return this.http.get<IChannelDTO[]>(`${url}/${name}`, { observe: 'response' });
+    const params = new HttpParams().append('name', name);
+    return this.http.get<IChannelDTO[]>(url, { params, observe: 'response' });
   }
 
   create(channel: NewChannel): Observable<EntityResponseType> {

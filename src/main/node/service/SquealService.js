@@ -36,7 +36,10 @@ class SquealService {
         chId.push(us.channel_id.toString());
       }
 
-      const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } }).sort({ timestamp: -1 });
+      const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
+        .limit(size)
+        .skip(size * page)
+        .sort({ timestamp: -1 });
 
       console.log(sq);
       for (const s of sq) {
@@ -58,13 +61,51 @@ class SquealService {
       if (!theirUser || !myUser) {
         return ret;
       }
-      let squealsReceived = await Squeal.find({ 'destination.destination_id': myUser._id, user_id: theirUser._id });
-      let squealsSent = await Squeal.find({ 'destination.destination_id': theirUser._id, user_id: myUser._id });
-      let squeals = squealsReceived.concat(squealsSent).sort((a, b) => a.timestamp - b.timestamp);
+      let squealsSent = [];
+      let squealsReceived = await Squeal.find({ 'destination.destination_id': myUser._id, user_id: theirUser._id })
+        .limit(size)
+        .skip(size * page)
+        .sort({ timestamp: 1 });
+      if (theirUser.login === myUsername) {
+        squealsSent = await Squeal.find({ 'destination.destination_id': theirUser._id, user_id: myUser._id })
+          .limit(size)
+          .skip(size * page)
+          .sort({ timestamp: 1 });
+      }
+      let squeals = squealsReceived.concat(squealsSent);
 
       for (const s of squeals) {
         const dto = await this.loadSquealData(s);
 
+        if (dto) {
+          ret.push(dto);
+        }
+      }
+    }
+    return ret;
+  }
+
+  async getDirectSquealPreview(user, myUsername) {
+    const ret = [];
+    if (this.isUserAuthorized(myUsername, user.username)) {
+      const myUser = await User.findOne({ login: myUsername });
+      if (!myUser) {
+        return ret;
+      }
+      let squeals = await Squeal.find({ 'destination.destination_id': myUser._id });
+      let squealsSent = await Squeal.find({ user_id: myUser._id, 'destination.destination_id': { $regex: '(?i)' + '@' + '.*' } });
+      squeals = squeals.concat(squealsSent);
+      const map = new Map();
+      for (const s of squeals) {
+        const user = s.user_id;
+        let n = s;
+        map.set(user, n);
+      }
+
+      squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+
+      for (const s of squeals) {
+        const dto = await this.loadSquealData(s);
         if (dto) {
           ret.push(dto);
         }
@@ -212,6 +253,9 @@ class SquealService {
       return null;
     }
     const user = await User.findOne({ _id: squeal.user_id });
+    if (!user) {
+      return null;
+    }
 
     const squealId = squeal._id.toString();
 
