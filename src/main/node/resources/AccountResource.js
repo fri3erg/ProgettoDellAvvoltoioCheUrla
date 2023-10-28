@@ -1,13 +1,14 @@
 const express = require('express'); //import express
 require('dotenv').config();
 require('../config/database');
+const mongoose = require('mongoose');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../model/user');
+const SmmVIP = require('../model/smmVIP');
 const auth = require('../middleware/auth');
 const verifyAuth = require('../middleware/verifyAuth');
-
 
 // 1.
 const router = express.Router();
@@ -124,6 +125,71 @@ router.post('/register', async (req, res) => {
 
     // return new user
     res.status(201).json(user);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post('/register/smm', async (req, res) => {
+  try {
+    // Get user input
+    const { email, login, password } = req.body;
+
+    // Validate user input
+    if (!(email && password && login)) {
+      res.status(400).send('All input is required');
+    }
+
+    // Check if user already exist
+    let oldUser = await User.findOne({ email });
+    if (oldUser) {
+      return res.status(409).send('User Already Exist. Please Login');
+    }
+
+    if (password.length < 4 || password.length > 100) {
+      return res.status(409).send('password of invalid length');
+    }
+
+    //Encrypt user password
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const user = await User.create({
+      login: login,
+      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      password: encryptedPassword,
+      authorities: [
+        {
+          _id: 'ROLE_USER',
+        },
+        {
+          _id: 'ROLE_SMM',
+        },
+      ],
+    });
+
+    // Create token
+    const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, {
+      expiresIn: '2h',
+    });
+
+    res.setHeader('Authorization', 'Bearer ' + token);
+
+    // save user token
+    user.token = token;
+    //sendActivationMail();
+
+    // Create userVIP in our database
+    const smmVIP = await SmmVIP.create({
+      user_id: user._id,
+      $set: {
+        users: [],
+      },
+    });
+
+    // return new user
+    res.status(201).json(user);
+    return;
   } catch (err) {
     console.log(err);
   }
