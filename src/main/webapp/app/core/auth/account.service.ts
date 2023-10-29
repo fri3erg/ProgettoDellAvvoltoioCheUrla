@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
@@ -27,9 +27,10 @@ export class AccountService {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/img-update'), user, { observe: 'response' });
   }
 
-  search(name: string): Observable<HttpResponse<Account[]>> {
+  search(search: string): Observable<HttpResponse<Account[]>> {
     const url = this.applicationConfigService.getEndpointFor('api/users/search');
-    return this.http.get<Account[]>(`${url}/${name}`, { observe: 'response' });
+    const params = new HttpParams().append('search', search);
+    return this.http.get<Account[]>(url, { params, observe: 'response' });
   }
   save(account: Account): Observable<{}> {
     return this.http.post(this.applicationConfigService.getEndpointFor('api/account'), account);

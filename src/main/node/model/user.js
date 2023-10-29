@@ -15,6 +15,7 @@ const userSchema = new Schema(
     password: { type: String },
     email: { type: String },
     token: { type: String },
+    activation_key: { type: String, default: null },
     activated: { type: Boolean, default: false },
     img: { type: Array, default: null },
     img_content_type: { type: String, default: null },

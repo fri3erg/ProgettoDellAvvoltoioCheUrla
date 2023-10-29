@@ -2,14 +2,14 @@ const express = require('express'); //import express
 require('dotenv').config();
 require('../config/database');
 const mongoose = require('mongoose');
-
+const { v1: uuidv1, v4: uuidv4 } = require('uuid');
+const accountService = require('../service/AccountService');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const SmmVIP = require('../model/smmVIP');
 const auth = require('../middleware/auth');
 const verifyAuth = require('../middleware/verifyAuth');
-
 // 1.
 const router = express.Router();
 
@@ -48,8 +48,8 @@ router.post('/authenticate', async (req, res) => {
 
 router.get('/account', auth, async (req, res) => {
   try {
-    const cId = req.user.user_id;
-    let user = await User.findOne({ _id: cId });
+    const cUsername = req.user.username;
+    let user = await User.findOne({ login: cUsername });
     if (!user) {
       res.status(404).send('user not found');
     }
@@ -74,13 +74,25 @@ router.get('/account', auth, async (req, res) => {
   }
 });
 
+router.get('/users/search', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUsersByName(req.user, req.user.username, req.query.search);
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.post('/register', async (req, res) => {
   try {
     // Get user input
-    const { first_name, last_name, email, password } = req.body;
+    const { email, login, password } = req.body;
 
     // Validate user input
-    if (!(email && password && first_name && last_name)) {
+    if (!(email && password && login)) {
       res.status(400).send('All input is required');
     }
 
@@ -90,24 +102,18 @@ router.post('/register', async (req, res) => {
       return res.status(409).send('User Already Exist. Please Login');
     }
 
-    oldUser = await User.findOne({ first_name });
-    if (oldUser) {
-      return res.status(409).send('User Already Exist. Please Login');
-    }
-
     if (password.length < 4 || password.length > 100) {
       return res.status(409).send('password of invalid length');
     }
-
     //Encrypt user password
     const encryptedPassword = await bcrypt.hash(password, 10);
 
     // Create user in our database
     const user = await User.create({
-      first_name,
-      last_name,
+      login,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      activation_key: uuidv4(),
       authorities: [
         {
           _id: 'ROLE_USER',
@@ -119,12 +125,16 @@ router.post('/register', async (req, res) => {
     const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, {
       expiresIn: '2h',
     });
+
+    res.setHeader('Authorization', 'Bearer ' + token);
+
     // save user token
     user.token = token;
     //sendActivationMail();
 
     // return new user
     res.status(201).json(user);
+    return;
   } catch (err) {
     console.log(err);
   }
@@ -155,9 +165,10 @@ router.post('/register/smm', async (req, res) => {
 
     // Create user in our database
     const user = await User.create({
-      login: login,
+      login,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      activation_key: uuidv4(),
       authorities: [
         {
           _id: 'ROLE_USER',
@@ -181,7 +192,7 @@ router.post('/register/smm', async (req, res) => {
 
     // Create userVIP in our database
     const smmVIP = await SmmVIP.create({
-      user_id: user._id,
+      user_id: user._id.toString(),
       $set: {
         users: [],
       },

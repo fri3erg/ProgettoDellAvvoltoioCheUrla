@@ -37,7 +37,7 @@ class ChannelService {
   }
 
   async checkSubscribed(ch, myUser) {
-    const check = await ChannelUser.find({ channel_id: ch._id, user_id: myUser._id });
+    const check = await ChannelUser.find({ channel_id: ch._id.toString(), user_id: myUser._id.toString() });
     return check != null;
   }
 
@@ -45,7 +45,7 @@ class ChannelService {
     if (!channel) {
       return null;
     }
-    const users = await ChannelUser.find({ channel_id: channel._id });
+    const users = await ChannelUser.find({ channel_id: channel._id.toString() });
     return {
       channel: channel,
       users: users,

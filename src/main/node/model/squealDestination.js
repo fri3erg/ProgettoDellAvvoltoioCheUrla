@@ -16,11 +16,4 @@ const squealDestinationSchema = new Schema({
   squeal: { type: ObjectId, ref: 'squeal' },
 });
 
-function transformDocument(doc) {
-  return {
-    destinationId: destination_id,
-    destination: doc.destination,
-  };
-}
-
 module.exports = model('squealDestination', squealDestinationSchema);
