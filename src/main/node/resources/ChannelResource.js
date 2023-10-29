@@ -22,4 +22,15 @@ router.get('/channel-search', auth, async (req, res) => {
   }
 });
 
+router.post('/channels', auth, async (req, res) => {
+  try {
+    let channel = await new channelService().insertOrUpdateChannel(req.body.channel.channel, req.user, req.user.username);
+    console.log(channel);
+    res.status(201).json(channel);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err.message);
+  }
+});
+
 module.exports = router; // export to use in server.js

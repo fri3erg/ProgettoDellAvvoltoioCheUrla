@@ -62,7 +62,7 @@ router.get('/squeals-destination', auth, async (req, res) => {
 
 router.post('/squeals', auth, async (req, res) => {
   try {
-    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username);
+    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, 'admin');
     console.log(squeal);
     res.status(201).json(squeal);
   } catch (err) {

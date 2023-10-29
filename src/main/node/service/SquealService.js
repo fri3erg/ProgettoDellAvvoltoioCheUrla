@@ -127,37 +127,38 @@ class SquealService {
     if (!squeal || !thisUser) {
       return ret;
     }
-    if (this.isUserAuthorized(thisUser._id, user.user_id)) {
-      let newSqueal = new Squeal({
-        user_id: thisUser._id.toString(),
-        timestamp: Date.now(),
-        body: squeal.body,
-        img: this.resizeImg(squeal.img),
-        img_content_type: squeal.img_content_type,
-        img_name: squeal.img_name,
-        video_content_type: squeal.video_content_type,
-        video_name: squeal.video_name,
-        n_characters: this.getNCharacters(squeal) ?? 0,
-        destination: [],
-      });
-      for (const dest of squeal.destinations) {
-        if (await this.checkAuth(dest, thisUser)) {
-          newSqueal.destination.seen = false;
-          newSqueal.destination.push(dest);
-        }
+    if (!this.isUserAuthorized(thisUser._id, user.user_id)) {
+      throw new Error('Not authorized');
+    }
+    let newSqueal = new Squeal({
+      user_id: thisUser._id.toString(),
+      timestamp: Date.now(),
+      body: squeal.body,
+      img: this.resizeImg(squeal.img),
+      img_content_type: squeal.img_content_type,
+      img_name: squeal.img_name,
+      video_content_type: squeal.video_content_type,
+      video_name: squeal.video_name,
+      n_characters: this.getNCharacters(squeal) ?? 0,
+      destination: [],
+    });
+    for (const dest of squeal.destinations) {
+      if (await this.checkAuth(dest, thisUser)) {
+        newSqueal.destination.seen = false;
+        newSqueal.destination.push(dest);
       }
+    }
 
-      newSqueal = await newSqueal.save();
-      await SquealViews.create({
-        squeal_id: newSqueal._id.toString(),
-        number: 0,
-      });
+    newSqueal = await newSqueal.save();
+    await SquealViews.create({
+      squeal_id: newSqueal._id.toString(),
+      number: 0,
+    });
 
-      const dto = await this.loadSquealData(newSqueal);
+    const dto = await this.loadSquealData(newSqueal);
 
-      if (dto) {
-        ret = newSqueal;
-      }
+    if (dto) {
+      ret = newSqueal;
     }
     return ret;
   }
@@ -227,12 +228,7 @@ class SquealService {
   async checkAuth(destination, thisUser) {
     switch (destination.destination_type) {
       case 'MOD':
-        for (const a of thisUser.authorities) {
-          if (a._id === 'ROLE_ADMIN') {
-            return true;
-          }
-        }
-        return false;
+        return this.isMod(thisUser);
         break;
       case 'PRIVATEGROUP':
         if (await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser.toString() })) {
@@ -253,6 +249,15 @@ class SquealService {
       default:
         return false;
     }
+  }
+
+  isMod(user) {
+    for (const a of user.authorities) {
+      if (a._id === 'ROLE_ADMIN') {
+        return true;
+      }
+    }
+    return false;
   }
 
   async loadSquealData(squeal) {
