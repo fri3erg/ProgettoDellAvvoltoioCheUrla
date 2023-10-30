@@ -10,7 +10,6 @@ const auth = require('../middleware/auth');
 const verifyAuth = require('../middleware/verifyAuth');
 const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
-const roles = require('../model/authority');
 
 const router = express.Router();
 

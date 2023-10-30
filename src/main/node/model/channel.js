@@ -4,7 +4,7 @@ const DestType = ['PRIVATEGROUP', 'PUBLICGROUP', 'MOD', 'MESSAGE'];
 const channelSchema = new Schema(
   {
     name: { type: String },
-    type: { type: String, enum: DestType, default: null },
+    type: { type: String, enum: DestType, default: 'MESSAGE' },
     mod_type: { type: String, default: null },
     emergency: { type: Boolean, default: null },
   },

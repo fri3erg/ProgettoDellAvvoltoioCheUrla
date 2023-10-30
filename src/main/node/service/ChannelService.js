@@ -60,7 +60,8 @@ class ChannelService {
 
     const oldChannel = await Channel.findOne({ name: channel.name });
     if (oldChannel) {
-      if (await ChannelUser.findOne({ channel_id: oldChannel._id.toString(), user_id: thisUser._id.toString() })) {
+      const userSub = await ChannelUser.findOne({ channel_id: oldChannel._id.toString(), user_id: thisUser._id.toString() });
+      if (userSub) {
         throw new Error('You can only have one channel with this name');
       }
     }
@@ -73,6 +74,7 @@ class ChannelService {
     await ChannelUser.create({
       channel_id: newChannel._id.toString(),
       user_id: thisUser._id.toString(),
+      privilege: 'ADMIN',
     });
 
     const dto = await this.loadChannelData(newChannel);

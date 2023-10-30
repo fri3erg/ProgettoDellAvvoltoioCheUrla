@@ -9,7 +9,7 @@ const User = require('../model/user');
 
 class ChannelService {
   async getUsersByName(user, myUsername, search) {
-    if (this.isUserAuthorized(myUsername, user.username)) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('unauthorized');
     }
     const myUser = await User.findOne({ login: myUsername });
@@ -21,6 +21,9 @@ class ChannelService {
       search = search.substring(1);
     }
     return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+  }
+  isUserAuthorized(id, currentUserId) {
+    return id.toString() == currentUserId.toString();
   }
 }
 

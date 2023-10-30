@@ -4,7 +4,7 @@ const DestType = ['PRIVATEGROUP', 'PUBLICGROUP', 'MOD', 'MESSAGE'];
 const destinationSchema = new Schema({
   destination_id: { type: String },
   destination: { type: String, default: null },
-  destination_type: { type: String, enum: DestType, default: null },
+  destination_type: { type: String, enum: DestType, default: 'MESSAGE' },
   seen: { type: Number, default: false },
   admin_add: { type: Boolean, default: false },
 });

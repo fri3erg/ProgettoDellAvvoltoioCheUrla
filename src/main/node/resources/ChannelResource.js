@@ -1,10 +1,6 @@
 const express = require('express'); //import express
-require('dotenv').config();
-require('../config/database');
-const squealService = require('../service/SquealService');
+
 const channelService = require('../service/ChannelService');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const auth = require('../middleware/auth');
 const verifyAuth = require('../middleware/verifyAuth');

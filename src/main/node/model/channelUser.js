@@ -6,7 +6,7 @@ const channelUserSchema = new Schema(
   {
     user_id: { type: String },
     channel_id: { type: String },
-    privilege: { type: String, enum: PrivilegeType, default: null },
+    privilege: { type: String, enum: PrivilegeType, default: 'READ' },
   },
   { collection: 'channel_user', _id: true }
 );

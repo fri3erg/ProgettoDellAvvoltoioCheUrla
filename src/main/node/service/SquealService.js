@@ -18,14 +18,46 @@ class ReactionDTO {
     number++;
   }
 }
+
+const chDay = 100;
+const chWeek = chDay * 4;
+const chMonth = chWeek * 3;
+const msinMonth = 2629800000;
+const msinWeek = 604800000;
+const msinDay = 86400000;
 //params:
 //page and size for paging
 //user for auth and isUserAuthorized
 //username,user to do action on, default: you, but smm
 class SquealService {
+  async getUserChars(user, username) {
+    const ret = [];
+    if (!this.isUserAuthorized(username, user.username)) {
+      throw new Error('Unauthorized');
+    }
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
+    let chUsedMonth = 0;
+    let chUsedWeek = 0;
+    let chUsedDay = 0;
+    for (const s of squeals) {
+      if (s.timestamp > Date.now() - msinWeek) {
+        chUsedWeek = chUsedWeek + s.n_characters;
+        if (s.timestamp > Date.now() - msinDay) {
+          chUsedDay = chUsedDay + s.n_characters;
+        }
+      }
+      chUsedMonth = chUsedMonth + s.n_characters;
+    }
+  }
+
   async getSquealList(page, size, user, username) {
     const ret = [];
-    if (this.isUserAuthorized(username, user.username)) {
+    if (!this.isUserAuthorized(username, user.username)) {
       throw new Error('Unauthorized');
     }
     const thisUser = await User.findOne({ login: username });
@@ -60,7 +92,7 @@ class SquealService {
 
   async getSquealsSentByUser(page, size, user, myUsername, theirUsername) {
     const ret = [];
-    if (this.isUserAuthorized(myUsername, user.username)) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: theirUsername });
@@ -93,7 +125,7 @@ class SquealService {
 
   async getDirectSquealPreview(user, myUsername) {
     const ret = [];
-    if (this.isUserAuthorized(myUsername, user.username)) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
 
@@ -153,7 +185,9 @@ class SquealService {
         newSqueal.destination.push(dest);
       }
     }
-
+    if (newSqueal.destination.length == 0) {
+      throw new Error('no valid destinations');
+    }
     newSqueal = await newSqueal.save();
     await SquealViews.create({
       squeal_id: newSqueal._id.toString(),
@@ -174,7 +208,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
-    if (this.isUserAuthorized(thisUser._id, myUser.user_id)) {
+    if (!this.isUserAuthorized(thisUser._id, myUser.user_id)) {
       throw new Error('Unathorized');
     }
 
@@ -237,7 +271,8 @@ class SquealService {
       case 'MOD':
         return this.isMod(thisUser);
       case 'PRIVATEGROUP':
-        if (await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser.toString() })) {
+        const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+        if (userSub) {
           return true;
         }
         break;

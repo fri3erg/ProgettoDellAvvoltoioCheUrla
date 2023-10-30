@@ -1,7 +1,4 @@
 const express = require('express'); //import express
-require('dotenv').config();
-require('../config/database');
-const mongoose = require('mongoose');
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 const accountService = require('../service/AccountService');
 const bcrypt = require('bcryptjs');
