@@ -3,7 +3,6 @@ const express = require('express'); //import express
 const channelService = require('../service/ChannelService');
 const User = require('../model/user');
 const auth = require('../middleware/auth');
-const verifyAuth = require('../middleware/verifyAuth');
 
 // 1.
 const router = express.Router();

@@ -18,7 +18,6 @@ const SMMVIPResource = require('./resources/SMMVIPResource');
 const app = express();
 
 app.use(express.json({ limit: '50mb' }));
-
 //cors
 app.use(cors(corsOptions));
 

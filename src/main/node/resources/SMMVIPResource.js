@@ -7,15 +7,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const user = require('../model/user');
 const auth = require('../middleware/auth');
-const verifyAuth = require('../middleware/verifyAuth');
 const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
 
 const router = express.Router();
 
-//!gestone degli errori e dei ROLE
+//!gestone degli errori 
 
-//ritorna tutti gli oggetti smmvip ✅
+//ritorna tutti i smmvip ✅
 router.get('/smmvips', auth, async (req, res) => {
   try {
     const vips = await smmVIP.find({});
@@ -44,27 +43,49 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 });
 
 //aggiungimi come cliente del smm ✅
-//!togliere la possibilità di duplicati
+//!togliere la possibilità di duplicati 
 router.post('/add-smm/:_id', auth, async (req, res) => {
   try {
-    verifyAuth('ROLE_VIP', 'ROLE_ADMIN');
     const smmId = req.params._id;
     const userName = req.user.username;
     const thisUser = await user.findOne({ login: userName });
-    await new SMMVIPService().addSMM(smmId, thisUser._id);
-    res.status(200);
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      authArray = ['ROLE_ADMIN', 'ROLE_VIP'];
+      const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
+
+      if (!result) {
+        res.status(401).send('Non hai i permessi');
+      } else {
+        await new SMMVIPService().addSMM(smmId, thisUser._id);
+        res.status(200);
+      }
+    }
   } catch (err) {
     console.log(err);
   }
 });
 
-//dammi tutti i clienti del smm
+//dammi tutti i clienti del smm 
 router.get('/smmclients/:_id', auth, async (req, res) => {
   try {
-    verifyAuth('ROLE_SMM', 'ROLE_ADMIN');
-    const vip = await smmVIP.find(req.params._id); //prendo il smm che ha l'id dell'url
-    const result = vip.users;
-    res.status(200).json(result);
+    const userName = req.user.username;
+    const thisUser = await user.findOne({ login: userName });
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      authArray = ['ROLE_ADMIN', 'ROLE_SMM'];
+      const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
+
+      if (!result) {
+        res.status(401).send('Non hai i permessi');
+      } else {
+        const vip = await smmVIP.find(req.params._id); //prendo il smm che ha l'id dell'url
+        const result = vip.users;
+        res.status(200).json(result);
+      }
+    }
   } catch (err) {
     console.log(err);
   }
