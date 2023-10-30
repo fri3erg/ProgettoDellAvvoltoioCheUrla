@@ -85,13 +85,13 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   loadOther(): void {
     this.usersFollowing = this.channel?.users.length ?? 0;
     this.connectedDestination.destination = this.channel?.channel.name;
-    this.connectedDestination.destinationId = this.channel?.channel.id;
+    this.connectedDestination.destinationId = this.channel?.channel._id;
     this.connectedDestination.destination_type = this.channel?.channel.type;
   }
 
   appendSqueals(): void {
     console.log('load');
-    this.squealService.getSquealByChannel(this.channel?.channel.id ?? '', this.page, 5).subscribe(r => {
+    this.squealService.getSquealByChannel(this.channel?.channel._id ?? '', this.page, 5).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;

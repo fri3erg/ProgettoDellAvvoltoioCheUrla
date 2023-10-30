@@ -1,11 +1,11 @@
 import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 
 export interface IChannel {
-  id?: string;
+  _id?: string;
   name?: string | null;
   type?: keyof typeof ChannelTypes | null;
   mod_type?: string | null;
   emergency?: boolean | null;
 }
 
-export type NewChannel = Omit<IChannel, 'id'> & { id: null };
+export type NewChannel = Omit<IChannel, '_id'> & { _id: null };

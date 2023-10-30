@@ -68,7 +68,7 @@
       <tbody>
         <tr *ngFor="let channel of channels; trackBy: trackId" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/channel', channel.id, 'view']">{{ channel.id }}</a>
+            <a [routerLink]="['/channel', channel._id, 'view']">{{ channel._id }}</a>
           </td>
           <td>{{ channel.name }}</td>
           <td jhiTranslate="{{ 'avvoltoioCheUrlaApp.ChannelTypes.' + channel.type }}">{{ channel.type }}</td>
@@ -78,7 +78,7 @@
             <div class="btn-group">
               <button
                 type="submit"
-                [routerLink]="['/channel', channel.id, 'view']"
+                [routerLink]="['/channel', channel._id, 'view']"
                 class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
@@ -88,7 +88,7 @@
 
               <button
                 type="submit"
-                [routerLink]="['/channel', channel.id, 'edit']"
+                [routerLink]="['/channel', channel._id, 'edit']"
                 class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >

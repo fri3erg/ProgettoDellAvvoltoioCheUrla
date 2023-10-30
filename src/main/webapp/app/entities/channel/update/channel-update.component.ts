@@ -47,7 +47,7 @@ export class ChannelUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const channel = this.channelFormService.getChannel(this.editForm);
-    if (channel.id !== null) {
+    if (channel._id !== null) {
       this.subscribeToSaveResponse(this.channelService.update(channel));
     } else {
       this.subscribeToSaveResponse(this.channelService.create(channel));

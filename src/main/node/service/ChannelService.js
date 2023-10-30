@@ -9,29 +9,57 @@ const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
 
 class ChannelService {
+  async getChannel(user, myUsername, id) {
+    const ret = [];
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('Unathorized');
+    }
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('username invalid');
+    }
+    let channel = await Channel.findById(id);
+    switch (channel.type) {
+      case 'PRIVATEGROUP':
+        if (await this.checkSubscribed(channel, myUser)) {
+          ret.push(await this.loadChannelData(channel));
+        }
+        break;
+      case 'PUBLICGROUP':
+      case 'MOD':
+        ret.push(await this.loadChannelData(channel));
+        break;
+      default:
+        break;
+    }
+    return ret;
+  }
+
   async searchChannel(user, myUsername, search) {
     const ret = [];
-    if (this.isUserAuthorized(myUsername, user.username)) {
-      const myUser = await User.findOne({ login: myUsername });
-      if (!myUser) {
-        return ret;
-      }
-      let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('Unathorized');
+    }
 
-      for (const ch of channels) {
-        switch (ch.type) {
-          case 'PRIVATEGROUP':
-            if (await this.checkSubscribed(ch, myUser)) {
-              ret.push(await this.loadChannelData(ch));
-            }
-            break;
-          case 'PUBLICGROUP':
-          case 'MOD':
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      return ret;
+    }
+    let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
+
+    for (const ch of channels) {
+      switch (ch.type) {
+        case 'PRIVATEGROUP':
+          if (await this.checkSubscribed(ch, myUser)) {
             ret.push(await this.loadChannelData(ch));
-            break;
-          default:
-            break;
-        }
+          }
+          break;
+        case 'PUBLICGROUP':
+        case 'MOD':
+          ret.push(await this.loadChannelData(ch));
+          break;
+        default:
+          break;
       }
     }
     return ret;

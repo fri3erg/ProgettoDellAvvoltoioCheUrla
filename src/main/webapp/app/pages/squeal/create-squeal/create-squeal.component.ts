@@ -46,10 +46,10 @@ export class CreateSquealComponent implements OnInit {
   }
 
   getType(): string {
-    if (this.charsDTO?.type === Type.DAY) {
+    if (this.charsDTO?.type === 'DAY') {
       return 'giorno';
     }
-    if (this.charsDTO?.type === Type.WEEK) {
+    if (this.charsDTO?.type === 'WEEK') {
       return 'settimana';
     } else {
       return 'mese';

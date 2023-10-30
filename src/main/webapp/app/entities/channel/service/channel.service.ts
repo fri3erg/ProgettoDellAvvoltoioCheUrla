@@ -9,7 +9,7 @@ import { IChannel, NewChannel } from '../channel.model';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { Account } from 'app/core/auth/account.model';
 
-export type PartialUpdateChannel = Partial<IChannel> & Pick<IChannel, 'id'>;
+export type PartialUpdateChannel = Partial<IChannel> & Pick<IChannel, '_id'>;
 
 export type EntityResponseType = HttpResponse<IChannel>;
 export type EntityArrayResponseType = HttpResponse<IChannel[]>;
@@ -76,15 +76,15 @@ export class ChannelService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getChannelIdentifier(channel: Pick<IChannel, 'id'>): string {
-    return channel.id ?? '';
+  getChannelIdentifier(channel: Pick<IChannel, '_id'>): string {
+    return channel._id ?? '';
   }
 
-  compareChannel(o1: Pick<IChannel, 'id'> | null, o2: Pick<IChannel, 'id'> | null): boolean {
+  compareChannel(o1: Pick<IChannel, '_id'> | null, o2: Pick<IChannel, '_id'> | null): boolean {
     return o1 && o2 ? this.getChannelIdentifier(o1) === this.getChannelIdentifier(o2) : o1 === o2;
   }
 
-  addChannelToCollectionIfMissing<Type extends Pick<IChannel, 'id'>>(
+  addChannelToCollectionIfMissing<Type extends Pick<IChannel, '_id'>>(
     channelCollection: Type[],
     ...channelsToCheck: (Type | null | undefined)[]
   ): Type[] {

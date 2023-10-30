@@ -10,9 +10,9 @@ export interface IUserCharsDTO {
 }
 
 export enum Type {
-  MONTH,
-  WEEK,
-  DAY,
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  DAY = 'DAY',
 }
 
 export type NewUserChars = Omit<IUserChars, 'id'> & { id: null };

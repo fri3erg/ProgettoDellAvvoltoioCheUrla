@@ -18,6 +18,16 @@ router.get('/channel-search', auth, async (req, res) => {
   }
 });
 
+router.get('/channels/:id', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().getChannel(req.user, req.user.username, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.post('/channels', auth, async (req, res) => {
   try {
     let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.user.username);

@@ -41,18 +41,37 @@ class SquealService {
     }
 
     const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
-    let chUsedMonth = 0;
-    let chUsedWeek = 0;
-    let chUsedDay = 0;
+    let chRemMonth = chMonth;
+    let chRemWeek = chWeek;
+    let chRemDay = chDay;
     for (const s of squeals) {
+      const destId = [];
+      for (const d of s.destination) {
+        destId.push(d.destination_type);
+      }
+      if (!(destId.includes('MOD') || destId.includes('PUBLICGROUP') || destId.includes('PRIVATEGROUP'))) {
+        continue;
+      }
       if (s.timestamp > Date.now() - msinWeek) {
-        chUsedWeek = chUsedWeek + s.n_characters;
+        chRemWeek = chRemWeek - s.n_characters;
         if (s.timestamp > Date.now() - msinDay) {
-          chUsedDay = chUsedDay + s.n_characters;
+          chRemDay = chRemDay - s.n_characters;
         }
       }
-      chUsedMonth = chUsedMonth + s.n_characters;
+      chRemMonth = chRemMonth - s.n_characters;
     }
+    let type = 'DAY';
+    const remainingChars = Math.min(chRemDay, chRemWeek, chRemMonth);
+    if (chRemWeek == remainingChars) {
+      type = 'WEEK';
+    }
+    if (chRemMonth == remainingChars) {
+      type = 'MONTH';
+    }
+    return {
+      remainingChars,
+      type,
+    };
   }
 
   async getSquealList(page, size, user, username) {

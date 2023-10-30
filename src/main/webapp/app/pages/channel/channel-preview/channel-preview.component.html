@@ -1,6 +1,6 @@
 <div class="col-12">
   <div class="channel-layout">
-    <div style="flex: 1" [routerLink]="['/channels/view', channel?.channel?.id]">
+    <div style="flex: 1" [routerLink]="['/channels/view', (channel?.channel?._id || '').toString()]">
       <h2>{{ channel?.channel?.name }}</h2>
     </div>
     <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>

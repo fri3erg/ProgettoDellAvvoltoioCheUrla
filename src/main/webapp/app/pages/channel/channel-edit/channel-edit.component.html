@@ -15,6 +15,6 @@
       />
     </div>
     <div style="color: red" *ngIf="isIncorrect()"><small>Channel name is invalid</small></div>
-    <button type="submit" class="btn btn-success" [disabled]="isIncorrect()" *ngIf="!dto.channel.id">Create</button>
+    <button type="submit" class="btn btn-success" [disabled]="isIncorrect()" *ngIf="!dto.channel._id">Create</button>
   </form>
 </div>

@@ -57,7 +57,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
     const nu: NewChannelUser = {
       id: null,
       user_id: this.account?.id,
-      channel_id: c.channel.id,
+      channel_id: c.channel._id,
       privilege: PrivilegeType.READ,
     };
     this.channelUserService.create(nu).subscribe(r => {
