@@ -58,8 +58,7 @@ router.get('/account', auth, async (req, res) => {
     const auth = user.authorities;
     const authNew = [];
     for (let i = 0; i < auth.length; i++) {
-      authNew.push(auth[i]._id);
-      // user.authorities.push(auth[i]._id);
+      authNew.push(auth[i]);
     }
 
     console.log(authNew);
@@ -114,11 +113,7 @@ router.post('/register', async (req, res) => {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
       activation_key: uuidv4(),
-      authorities: [
-        {
-          _id: 'ROLE_USER',
-        },
-      ],
+      authorities: ['ROLE_USER'],
     });
 
     // Create token
@@ -169,14 +164,7 @@ router.post('/register/smm', async (req, res) => {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
       activation_key: uuidv4(),
-      authorities: [
-        {
-          _id: 'ROLE_USER',
-        },
-        {
-          _id: 'ROLE_SMM',
-        },
-      ],
+      authorities: ['ROLE_USER', 'ROLE_SMM'],
     });
 
     // Create token

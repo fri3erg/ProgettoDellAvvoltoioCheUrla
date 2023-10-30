@@ -1,16 +1,11 @@
 const { Schema, model, ObjectId } = require('mongoose');
 
-const DestType = {
-  PRIVATEGROUP: 'PRIVATEGROUP',
-  PUBLICGROUP: 'PUBLICGROUP',
-  MOD: 'MOD',
-  MESSAGE: 'MESSAGE',
-};
+const DestType = ['PRIVATEGROUP', 'PUBLICGROUP', 'MOD', 'MESSAGE'];
 
 const squealDestinationSchema = new Schema({
   destination_id: { type: String },
   destination: { type: String, default: null },
-  destination_type: { type: DestType, default: null },
+  destination_type: { type: String, enum: DestType, default: null },
   seen: { type: Number, default: false },
   admin_add: { type: Boolean, default: false },
   squeal: { type: ObjectId, ref: 'squeal' },

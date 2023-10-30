@@ -1,17 +1,12 @@
 const { Schema, model, ObjectId } = require('mongoose');
 
-const DestType = {
-  PRIVATEGROUP: 'PRIVATEGROUP',
-  PUBLICGROUP: 'PUBLICGROUP',
-  MOD: 'MOD',
-  MESSAGE: 'MESSAGE',
-};
+const DestType = ['PRIVATEGROUP', 'PUBLICGROUP', 'MOD', 'MESSAGE'];
 const destinationSchema = new Schema({
-  destination_id: { type: String, alias: 'destinationId' },
+  destination_id: { type: String },
   destination: { type: String, default: null },
-  destination_type: { type: DestType, default: null, alias: 'destinationType' },
+  destination_type: { type: String, enum: DestType, default: null },
   seen: { type: Number, default: false },
-  admin_add: { type: Boolean, default: false, alias: 'adminAdd' },
+  admin_add: { type: Boolean, default: false },
 });
 
 const squealSchema = new Schema(
@@ -31,22 +26,5 @@ const squealSchema = new Schema(
   },
   { collection: 'squeal', _id: true }
 );
-
-function transformSqueal(doc) {
-  return {
-    userId: doc.user_id,
-    timestamp: doc.timestamp,
-    body: doc.body,
-    img: doc.img,
-    imgContentType: doc.img_content_type,
-    imgName: doc.img_name,
-    videoContentType: doc.video_content_type,
-    videoName: doc.video_name,
-    nCharacters: doc.n_characters,
-    squealIdResponse: doc.squeal_id_response,
-    refresh_time: doc.refreshTime,
-    destination: doc.destination,
-  };
-}
 
 module.exports = model('squeal', squealSchema);

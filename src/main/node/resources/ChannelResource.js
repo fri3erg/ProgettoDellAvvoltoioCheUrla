@@ -18,18 +18,18 @@ router.get('/channel-search', auth, async (req, res) => {
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(400).send(err.message);
   }
 });
 
 router.post('/channels', auth, async (req, res) => {
   try {
-    let channel = await new channelService().insertOrUpdateChannel(req.body.channel.channel, req.user, req.user.username);
+    let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.user.username);
     console.log(channel);
     res.status(201).json(channel);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err.message);
+    return res.status(400).send(err.message);
   }
 });
 

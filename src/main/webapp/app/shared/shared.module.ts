@@ -15,6 +15,8 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { AlertComponent } from './alert/alert.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 /**
  * Application wide Module
  */
@@ -32,6 +34,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ButtonModule,
     MessagesModule,
     ConfirmDialogModule,
+    SelectButtonModule,
+    ToggleButtonModule,
   ],
   exports: [
     CommonModule,
@@ -51,6 +55,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ButtonModule,
     MessagesModule,
     ConfirmDialogModule,
+    SelectButtonModule,
+    ToggleButtonModule,
   ],
 })
 export default class SharedModule {}

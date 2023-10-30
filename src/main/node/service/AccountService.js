@@ -9,18 +9,18 @@ const User = require('../model/user');
 
 class ChannelService {
   async getUsersByName(user, myUsername, search) {
-    let ret = [];
     if (this.isUserAuthorized(myUsername, user.username)) {
-      const myUser = await User.findOne({ login: myUsername });
-      if (!myUser) {
-        return ret;
-      }
-      if (search.startsWith('@')) {
-        search = search.substring(1);
-      }
-      ret = await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+      throw new Error('unauthorized');
     }
-    return ret;
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('bad username');
+    }
+
+    if (search.startsWith('@')) {
+      search = search.substring(1);
+    }
+    return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
 }
 

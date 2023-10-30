@@ -1,9 +1,4 @@
 const { Schema, model, ObjectId } = require('mongoose');
-const PrivilegeType = {
-  POPULAR: 'POPULAR',
-  UNPOPULAR: 'UNPOPULAR',
-  CONTROVERSIAL: 'CONTROVERSIAL',
-};
 const squealCatSchema = new Schema(
   {
     squealId: { type: String },

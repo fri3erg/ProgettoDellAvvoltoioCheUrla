@@ -20,7 +20,7 @@ router.get('/squeal-list', auth, async (req, res) => {
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(400).send(err.message);
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/squeal-by-user/:username', auth, async (req, res) => {
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(400).send(err.message);
   }
 });
 
@@ -46,7 +46,7 @@ router.get('/direct-squeal-preview', auth, async (req, res) => {
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(400).send(err.message);
   }
 });
 
@@ -56,17 +56,18 @@ router.get('/squeals-destination', auth, async (req, res) => {
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(400).send(err.message);
   }
 });
 
 router.post('/squeals', auth, async (req, res) => {
   try {
-    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, 'admin');
+    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username);
     console.log(squeal);
     res.status(201).json(squeal);
   } catch (err) {
     console.log(err);
+    return res.status(400).send(err.message);
   }
 });
 

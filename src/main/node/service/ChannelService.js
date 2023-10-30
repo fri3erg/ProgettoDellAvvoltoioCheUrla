@@ -38,11 +38,10 @@ class ChannelService {
   }
 
   async insertOrUpdateChannel(channel, user, username) {
-    let createOwner = true;
     let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!channel || !thisUser) {
-      throw new Error('Not authorized');
+      throw new Error('invalid data');
     }
     if (!this.isUserAuthorized(thisUser._id, user.user_id)) {
       throw new Error('Not authorized');
@@ -50,29 +49,32 @@ class ChannelService {
     if (this.isIncorrectName(channel.name)) {
       throw new Error('Name Invalid');
     }
-    const oldChannel = await Channel.findOne({ name: channel.name });
-    if (oldChannel) {
-      createOwner = false;
-      if (await ChannelUser.findOne({ channel_id: oldChannel._id.toString(), user_id: thisUser._id.toString() })) {
-        throw new Error('You can only have one channel with this name');
-      }
+    if (!channel.name || !channel.type) {
+      throw new Error('Incomplete');
     }
     if (channel.type == 'MOD' && !this.isMod(thisUser)) {
       throw new Error('You do not have permission');
     }
-    if (!channel.name || !channel.type) {
-      throw new Error('Incomplete');
-    }
 
+    channel.name = this.addPrefix(channel);
+
+    const oldChannel = await Channel.findOne({ name: channel.name });
+    if (oldChannel) {
+      if (await ChannelUser.findOne({ channel_id: oldChannel._id.toString(), user_id: thisUser._id.toString() })) {
+        throw new Error('You can only have one channel with this name');
+      }
+    }
     let newChannel = new Channel({
       name: channel.name,
       type: channel.type,
     });
 
     newChannel = await newChannel.save();
-    if (createOwner) {
-      await ChannelUser.create({});
-    }
+    await ChannelUser.create({
+      channel_id: newChannel._id.toString(),
+      user_id: thisUser._id.toString(),
+    });
+
     const dto = await this.loadChannelData(newChannel);
 
     if (dto) {
@@ -82,16 +84,23 @@ class ChannelService {
     return ret;
   }
 
-  isIncorrectName(q) {
-    if (q.includes('§') || q.includes('#') || q.includes('@') || !(q.toLowerCase() === q)) {
-      return true;
+  addPrefix(channel) {
+    switch (channel.type) {
+      case 'MOD':
+      case 'PRIVATEGROUP':
+        return '§' + channel.name;
+      case 'PUBLICGROUP':
+        return '#' + channel.name;
     }
-    return false;
+  }
+
+  isIncorrectName(q) {
+    return q.includes('§') || q.includes('#') || q.includes('@') || q.toLowerCase() !== q;
   }
 
   isMod(user) {
     for (const a of user.authorities) {
-      if (a._id === 'ROLE_ADMIN') {
+      if (a === 'ROLE_ADMIN') {
         return true;
       }
     }
@@ -105,7 +114,7 @@ class ChannelService {
 
   async loadChannelData(channel) {
     if (!channel) {
-      return null;
+      throw new Error('loading data failed');
     }
     const users = await ChannelUser.find({ channel_id: channel._id.toString() });
     return {

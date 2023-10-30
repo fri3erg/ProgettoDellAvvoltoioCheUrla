@@ -4,7 +4,9 @@ import { ChannelService } from 'app/entities/channel/service/channel.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import SharedModule from 'app/shared/shared.module';
-import { MessageService } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
+import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
+import { IChannel } from 'app/entities/channel/channel.model';
 
 @Component({
   selector: 'jhi-channel-edit',
@@ -14,8 +16,12 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./channel-edit.component.scss'],
 })
 export class ChannelEditComponent implements OnInit {
-  dto?: IChannelDTO;
+  dto: IChannelDTO = {
+    channel: { name: '' },
+    users: [],
+  };
   messages = {};
+  private = 'true';
 
   constructor(protected activatedRoute: ActivatedRoute, protected channelService: ChannelService, private messageService: MessageService) {}
 
@@ -30,22 +36,26 @@ export class ChannelEditComponent implements OnInit {
   }
 
   isIncorrect(): boolean {
-    const q: string = this.dto?.channel.name ?? '';
-    return !this.dto || q.includes('§') || q.includes('#') || q.includes('@') || q.toLowerCase() !== q;
+    const q: string = this.dto.channel.name ?? '';
+    return q.includes('§') || q.includes('#') || q.includes('@') || q.includes(' ') || q === '' || q.toLowerCase() !== q;
   }
 
   createChannel(): void {
-    const q: string = this.dto?.channel.name ?? '';
-    if (!this.dto) {
+    if (this.isIncorrect()) {
+      this.addSingle();
       return;
     }
-    this.dto.channel.name = '§' + q;
+    this.dto.channel.type = this.addType();
     this.channelService.insertOrUpdate(this.dto).subscribe(r => {
       if (r.body) {
-        this.dto = r.body;
-        console.log(this.dto);
         this.dto.channel.name = '';
       }
     });
+  }
+  addType(): ChannelTypes {
+    if (this.private) {
+      return ChannelTypes.PRIVATEGROUP;
+    }
+    return ChannelTypes.PUBLICGROUP;
   }
 }

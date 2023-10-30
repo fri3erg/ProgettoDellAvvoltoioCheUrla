@@ -1,7 +1,9 @@
 <div class="input-group mb-3">
   <form (ngSubmit)="createChannel()" *ngIf="dto">
     <div class="input-group">
-      <span class="input-group-text" id="basic-addon1">§</span>
+      <span class="input-group-text" id="basic-addon1">
+        <p-toggleButton name="prefix" [(ngModel)]="private" onLabel="§" offLabel="#"></p-toggleButton
+      ></span>
       <input
         [(ngModel)]="dto.channel.name"
         name="channel-name"
