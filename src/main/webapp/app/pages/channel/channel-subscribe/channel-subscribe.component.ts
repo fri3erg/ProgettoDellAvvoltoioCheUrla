@@ -107,14 +107,16 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
 
   returnColor(c?: IChannelDTO): string {
     switch (c?.channel.type) {
-      case ChannelTypes.PRIVATEGROUP:
+      case 'PRIVATEGROUP':
         return 'text-bg-info';
         break;
-      case ChannelTypes.PUBLICGROUP:
+      case 'PUBLICGROUP':
         return 'text-bg-success';
         break;
-      case ChannelTypes.MOD:
+      case 'MOD':
         return 'text-bg-warning';
+      default:
+        return '';
     }
     return '';
   }

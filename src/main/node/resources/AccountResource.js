@@ -42,6 +42,16 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+router.get('/user-by-name', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUser(req.user, req.user.username, req.query.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/account', auth, async (req, res) => {
   try {
     const cUsername = req.user.username;

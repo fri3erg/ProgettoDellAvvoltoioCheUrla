@@ -13,7 +13,7 @@ export interface ISqueal {
   n_characters?: number | null;
   squeal_id_response?: string | null;
   refresh_time?: number | null;
-  destinations?: ISquealDestination[];
+  destination?: ISquealDestination[];
 }
 
 export type NewSqueal = Omit<ISqueal, 'id'> & { id: null };

@@ -37,7 +37,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   isLoad = false;
   usersFollowing = 0;
   squealsSquealed = 0;
-  connectedDestination: ISquealDestination = {};
+  connectedDestination?: ISquealDestination;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -67,7 +67,8 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     this.channelService.findDTO(this.channel_id ?? '').subscribe(r => {
       if (r.body) {
         this.channel = r.body;
-        this.loadOther();
+        console.log(r.body);
+        this.loadOther(this.channel);
       }
     });
   }
@@ -82,11 +83,13 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOther(): void {
-    this.usersFollowing = this.channel?.users.length ?? 0;
-    this.connectedDestination.destination = this.channel?.channel.name;
-    this.connectedDestination.destinationId = this.channel?.channel._id;
-    this.connectedDestination.destination_type = this.channel?.channel.type;
+  loadOther(channel: IChannelDTO): void {
+    this.usersFollowing = channel.users.length;
+    this.connectedDestination = {
+      destination: channel.channel.name?.substring(1),
+      destination_id: channel.channel._id,
+      destination_type: channel.channel.type,
+    };
   }
 
   appendSqueals(): void {

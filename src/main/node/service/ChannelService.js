@@ -10,7 +10,7 @@ const { isModuleNamespaceObject } = require('util/types');
 
 class ChannelService {
   async getChannel(user, myUsername, id) {
-    const ret = [];
+    let ret = {};
     if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
@@ -22,12 +22,12 @@ class ChannelService {
     switch (channel.type) {
       case 'PRIVATEGROUP':
         if (await this.checkSubscribed(channel, myUser)) {
-          ret.push(await this.loadChannelData(channel));
+          ret = await this.loadChannelData(channel);
         }
         break;
       case 'PUBLICGROUP':
       case 'MOD':
-        ret.push(await this.loadChannelData(channel));
+        ret = await this.loadChannelData(channel);
         break;
       default:
         break;
@@ -43,7 +43,7 @@ class ChannelService {
 
     const myUser = await User.findOne({ login: myUsername });
     if (!myUser) {
-      return ret;
+      throw new Error('invalid username');
     }
     let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
 
@@ -112,6 +112,53 @@ class ChannelService {
     }
 
     return ret;
+  }
+
+  async getSubs(user, myUsername, search) {
+    const ret = [];
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('Unathorized');
+    }
+
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('invalid username');
+    }
+    const theirUser = await User.findOne({ login: search });
+    if (!theirUser) {
+      throw new Error('invalid username');
+    }
+
+    const chUs = await ChannelUser.find({ user_id: theirUser._id.toString() });
+    const chId = [];
+    for (const c of chUs) {
+      chId.push(c.channel_id);
+    }
+    let channels = [];
+    for (const id of chId) {
+      channels.push(await Channel.findById(id));
+    }
+    for (const ch of channels) {
+      switch (ch.type) {
+        case 'PRIVATEGROUP':
+          if (await this.checkSubscribed(ch, myUser)) {
+            ret.push(await this.loadChannelData(ch));
+          }
+          break;
+        case 'PUBLICGROUP':
+        case 'MOD':
+          ret.push(await this.loadChannelData(ch));
+          break;
+        default:
+          break;
+      }
+    }
+    return ret;
+  }
+
+  async countSubs(user, myUsername, search) {
+    const subs = await this.getSubs(user, myUsername, search);
+    return subs.length;
   }
 
   addPrefix(channel) {

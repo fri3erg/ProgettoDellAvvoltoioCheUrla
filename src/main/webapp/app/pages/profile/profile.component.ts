@@ -21,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   account: Account | null = null;
+  myAccount: Account | null = null;
   nChannels = 0;
   squeals?: ISquealDTO[];
   profileName?: string;
@@ -46,13 +47,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
       .subscribe(account => {
-        this.account = account;
+        this.myAccount = account;
         console.log(account);
         if (!this.profileName) {
-          this.profileName = account?.login;
-          console.log(this.profileName);
+          this.profileName = this.myAccount?.login;
         }
       });
+
+    this.accountService.getUser(this.profileName ?? '').subscribe(r => {
+      if (r.body) {
+        this.account = r.body;
+        console.log(r.body);
+      }
+    });
+
     this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
       if (r.body) {
         this.squeals = r.body;

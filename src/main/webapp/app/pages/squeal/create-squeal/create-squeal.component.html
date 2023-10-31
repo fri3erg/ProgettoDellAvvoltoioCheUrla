@@ -4,9 +4,9 @@
     <div style="flex: 1">
       <p-autoComplete
         [style]="{ width: '100%' }"
-        name="destinations"
+        name="destination"
         [minLength]="2"
-        [(ngModel)]="destinations"
+        [(ngModel)]="destination"
         [suggestions]="results ?? []"
         (completeMethod)="search($event)"
         [multiple]="true"

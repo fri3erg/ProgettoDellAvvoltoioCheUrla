@@ -23,7 +23,7 @@ export class CreateSquealComponent implements OnInit {
   results?: ISquealDestination[];
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
-  @Input() destinations: ISquealDestination[] = [];
+  @Input() destination: ISquealDestination[] = [];
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
@@ -80,24 +80,24 @@ export class CreateSquealComponent implements OnInit {
     }
 
     this.dto.squeal.body = this.message;
-    this.dto.squeal.destinations = this.destinations;
+    this.dto.squeal.destination = this.destination;
     console.log('insert');
     console.log(this.dto);
     this.squealService.insertOrUpdate(this.dto).subscribe(r => {
       if (r.body) {
         this.dto = r.body;
         this.message = this.dto.squeal?.body ?? '';
-        this.destinations = [];
-        if (this.dto.squeal?.destinations) {
-          for (const d of this.dto.squeal.destinations) {
+        this.destination = [];
+        if (this.dto.squeal?.destination) {
+          for (const d of this.dto.squeal.destination) {
             if (d.destination) {
-              this.destinations.push(d);
+              this.destination.push(d);
             }
           }
         }
         console.log(this.dto);
         this.messageService.add({ severity: 'success', summary: 'Squeal Squealed', detail: 'you squealed' });
-        this.destinations = [];
+        this.destination = [];
         this.message = '';
         this.dto = { squeal: {} };
         this.squealed.emit(true);

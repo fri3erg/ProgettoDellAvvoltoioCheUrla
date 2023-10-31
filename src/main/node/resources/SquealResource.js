@@ -33,6 +33,48 @@ router.get('/user-chars', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-made-by-user/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealMadeByUser(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.user.username,
+      req.params.name
+    );
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-made-by-user-count/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().countSquealMadeByUser(req.user, req.user.username, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-by-channel/:id', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealByChannel(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.user.username,
+      req.params.id
+    );
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeal-by-user/:username', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealsSentByUser(

@@ -25,6 +25,25 @@ class ChannelService {
   isUserAuthorized(id, currentUserId) {
     return id.toString() == currentUserId.toString();
   }
+
+  async getUser(user, myUsername, name) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('unauthorized');
+    }
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('bad username');
+    }
+
+    if (name.startsWith('@')) {
+      name = name.substring(1);
+    }
+    return await User.findOne({ login: name });
+  }
+
+  isUserAuthorized(id, currentUserId) {
+    return id.toString() == currentUserId.toString();
+  }
 }
 
 module.exports = ChannelService;

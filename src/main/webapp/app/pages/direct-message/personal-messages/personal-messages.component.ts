@@ -96,8 +96,8 @@ export class PersonalMessagesComponent implements OnInit {
     const dest: ISquealDestination[] = [];
     this.dto.squeal.body = this.message;
     dest.push(this.destinationMessage);
-    this.dto.squeal.destinations = dest;
-    console.log(this.dto.squeal.destinations);
+    this.dto.squeal.destination = dest;
+    console.log(this.dto.squeal.destination);
     console.log('insert');
     console.log(this.dto);
     this.squealService.insertOrUpdate(this.dto).subscribe(r => {

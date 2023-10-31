@@ -6,7 +6,7 @@
 
 <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>
 
-<jhi-create-squeal [destinations]="[connectedDestination]"></jhi-create-squeal>
+<jhi-create-squeal *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
   <jhi-squeal-view [squeal]="squeal"></jhi-squeal-view>
 </ng-container>

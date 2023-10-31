@@ -10,7 +10,15 @@
             <fa-icon icon="times"></fa-icon>
           </button>
         </div>
-        <button *ngIf="!edit" class="btn btn-block btn-primary" type="button" (click)="edit = true" title="edit">Edit photo</button>
+        <button
+          *ngIf="!edit && account.login == myAccount?.login"
+          class="btn btn-block btn-primary"
+          type="button"
+          (click)="edit = true"
+          title="edit"
+        >
+          Edit photo
+        </button>
 
         <div class="p-grid" *ngIf="edit">
           <div class="p-col-12">
