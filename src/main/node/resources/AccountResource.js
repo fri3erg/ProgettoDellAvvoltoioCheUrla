@@ -45,6 +45,9 @@ router.post('/authenticate', async (req, res) => {
 router.get('/user-by-name', auth, async (req, res) => {
   try {
     const ret = await new accountService().getUser(req.user, req.user.username, req.query.name);
+    if (!ret) {
+      throw new Error('invalid username');
+    }
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

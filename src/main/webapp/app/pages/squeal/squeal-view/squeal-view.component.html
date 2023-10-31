@@ -1,6 +1,6 @@
 <div class="message bg-gradient rounded-4 m-3" *ngIf="squeal">
   <div class="squeal-layout pb-2 head-message">
-    <div class="username fw-semibold fs-5" [routerLink]="['/profile']">@{{ squeal.userName }}</div>
+    <div class="username fw-semibold fs-5" [routerLink]="['/profile', squeal.userName]">@{{ squeal.userName }}</div>
     <div>{{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}</div>
   </div>
   <div class="squeal-layout pt-0 pb-3 head-message">

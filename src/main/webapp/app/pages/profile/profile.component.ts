@@ -42,44 +42,44 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.profileName = this.activatedRoute.snapshot.paramMap.get('name')?.toString();
+    this.profileName = this.activatedRoute.snapshot.paramMap.get('name')?.toString() ?? '';
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(account => {
-        this.myAccount = account;
-        console.log(account);
-        if (!this.profileName) {
+      .subscribe(r => {
+        this.myAccount = r;
+        if (this.profileName === '') {
           this.profileName = this.myAccount?.login;
+          this.account = this.myAccount;
+        } else {
+          this.accountService.getUser(this.profileName ?? '').subscribe(r => {
+            if (r.body) {
+              this.account = r.body;
+              console.log(r.body);
+            }
+          });
         }
+
+        this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
+          if (r.body) {
+            this.squeals = r.body;
+            console.log('users squeals:');
+            console.log(this.squeals);
+          }
+        });
+        this.squealService.countSquealMadeByUser(this.profileName ?? '').subscribe(r => {
+          if (r.body) {
+            this.squealslength = r.body;
+            console.log('users squeals:');
+            console.log(this.squeals);
+          }
+        });
+        this.channelService.countChannelsUserIsSubbed(this.profileName ?? '').subscribe(r => {
+          if (r.body) {
+            this.nChannels = r.body;
+          }
+        });
       });
-
-    this.accountService.getUser(this.profileName ?? '').subscribe(r => {
-      if (r.body) {
-        this.account = r.body;
-        console.log(r.body);
-      }
-    });
-
-    this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
-      if (r.body) {
-        this.squeals = r.body;
-        console.log('users squeals:');
-        console.log(this.squeals);
-      }
-    });
-    this.squealService.countSquealMadeByUser(this.profileName ?? '').subscribe(r => {
-      if (r.body) {
-        this.squealslength = r.body;
-        console.log('users squeals:');
-        console.log(this.squeals);
-      }
-    });
-    this.channelService.countChannelsUserIsSubbed(this.profileName ?? '').subscribe(r => {
-      if (r.body) {
-        this.nChannels = r.body;
-      }
-    });
   }
 
   setImage(): void {
