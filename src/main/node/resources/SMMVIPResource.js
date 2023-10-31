@@ -12,9 +12,10 @@ const SMMVIPService = require('../service/SMMVIPService');
 
 const router = express.Router();
 
-//!gestone degli errori 
+//!non puoi essere cliente di più smm
 
 //ritorna tutti i smmvip ✅
+//chiamata dall'utente quando vuole visualizzare tutti i smm
 router.get('/smmvips', auth, async (req, res) => {
   try {
     const vips = await smmVIP.find({});
@@ -43,7 +44,8 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 });
 
 //aggiungimi come cliente del smm ✅
-//!togliere la possibilità di duplicati 
+//chiamata dall'utente quando vuole diventare cliente di un smm
+//!togliere la possibilità di duplicati
 router.post('/add-smm/:_id', auth, async (req, res) => {
   try {
     const smmId = req.params._id;
@@ -67,11 +69,13 @@ router.post('/add-smm/:_id', auth, async (req, res) => {
   }
 });
 
-//dammi tutti i clienti del smm 
+//dammi tutti i clienti del smm ✅
+//chiamato dal smm quando vuole visualizzare tutti i suoi clienti
 router.get('/smmclients/:_id', auth, async (req, res) => {
   try {
     const userName = req.user.username;
     const thisUser = await user.findOne({ login: userName });
+
     if (!thisUser.authorities) {
       return res.status(401).send('Non hai i permessi');
     } else {
@@ -81,11 +85,23 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
       if (!result) {
         res.status(401).send('Non hai i permessi');
       } else {
-        const vip = await smmVIP.find(req.params._id); //prendo il smm che ha l'id dell'url
-        const result = vip.users;
-        res.status(200).json(result);
+        const urlId = req.params._id;
+        if (urlId.match(/^[0-9a-fA-F]{24}$/)) {
+          const vip = await smmVIP.findOne({ _id: urlId }); //!trovare qualcuno con l'id passato come parametro
+          const result = vip.users;
+          res.status(200).json(result);
+        }
       }
     }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//da user_id dell'oggetto smm al suo oggetto utente
+//chiamato dal cliente quando vuole visualizzare il profilo del suo smm
+router.get('/usersmm/:_id', auth, async (req, res) => {
+  try {
   } catch (err) {
     console.log(err);
   }
