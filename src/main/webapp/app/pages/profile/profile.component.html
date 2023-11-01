@@ -58,7 +58,7 @@
       {{ squealslength }} squeals squealed
     </span>
   </div>
-  <jhi-create-squeal></jhi-create-squeal>
+  <jhi-create-squeal *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
   <p-dataView #dv [value]="squeals" *ngIf="squeals">
     <ng-template let-s pTemplate="listItem">
       <jhi-squeal-view [squeal]="s"></jhi-squeal-view>

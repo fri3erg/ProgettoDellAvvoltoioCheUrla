@@ -114,6 +114,45 @@ class ChannelService {
     return ret;
   }
 
+  async getPeopleFollowing(user, myUsername, id) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('Unathorized');
+    }
+
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('invalid username');
+    }
+    const ch = await Channel.findById(id);
+    if (ch.type == 'PRIVATEGROUP') {
+      if (!(await ChannelUser.find({ user_id: myUser._id.toString(), channel_id: id }))) {
+        throw new Error('Unauthorized');
+      }
+    }
+
+    const chUs = await ChannelUser.find({ channel_id: id });
+    const chId = [];
+    for (const c of chUs) {
+      chId.push(c.user_id);
+    }
+    let ret = [];
+    for (const user_id of chId) {
+      ret.push(this.hideSensitive(await User.findById(user_id)));
+    }
+    return ret;
+  }
+
+  hideSensitive(account) {
+    return {
+      login: account.login,
+      _id: account._id,
+      img: account.img,
+      imgContentType: account.imgContentType,
+      authorities: account.authorities,
+      lang_key: account.lang_key,
+    };
+  }
+
   async getSubs(user, myUsername, search) {
     const ret = [];
     if (!this.isUserAuthorized(myUsername, user.username)) {

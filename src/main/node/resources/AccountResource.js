@@ -94,6 +94,28 @@ router.get('/users/search', auth, async (req, res) => {
   }
 });
 
+router.post('/account/img-update', auth, async (req, res) => {
+  try {
+    const account = req.body;
+
+    if (!account || !account.img) {
+      throw new Error('invalid account');
+    }
+    console.log(account.img);
+
+    const ret = await new accountService().imgUpdate(req.user, req.user.username, account);
+    if (account.img != ret.img) {
+      console.log('test');
+    }
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.post('/register', async (req, res) => {
   try {
     // Get user input

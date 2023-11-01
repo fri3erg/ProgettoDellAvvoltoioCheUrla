@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const { MONGO_URI } = process.env;
 
 exports.connect = () => {
+  mongoose.set('useCreateIndex', true);
+  mongoose.set('useFindAndModify', false);
   // Connecting to the database
   mongoose
     .connect(MONGO_URI, {

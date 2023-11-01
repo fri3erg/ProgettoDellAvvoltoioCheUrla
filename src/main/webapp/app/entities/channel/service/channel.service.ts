@@ -21,7 +21,7 @@ export class ChannelService {
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   getUsersSubbedToChannel(id: string): Observable<HttpResponse<Account[]>> {
-    return this.http.get<Account[]>(`api/channels/getSubscribed/${id}`, { observe: 'response' });
+    return this.http.get<Account[]>(`api/channels/get-subscribed/${id}`, { observe: 'response' });
   }
 
   countUsersFollowing(id: string): Observable<HttpResponse<number>> {

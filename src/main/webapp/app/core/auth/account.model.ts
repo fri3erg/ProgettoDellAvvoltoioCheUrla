@@ -10,7 +10,7 @@ export class Account {
     public img: string | null,
     public img_content_type: string | null,
     public image_url: string | null,
-    public id?: string,
+    public _id?: string,
     public lang_key?: string
   ) {}
 }

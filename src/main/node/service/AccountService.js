@@ -20,7 +20,12 @@ class ChannelService {
     if (search.startsWith('@')) {
       search = search.substring(1);
     }
-    return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+    const users = await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+    let ret = [];
+    for (const us of users) {
+      ret.push(this.hideSensitive(us));
+    }
+    return ret;
   }
   isUserAuthorized(id, currentUserId) {
     return id.toString() == currentUserId.toString();
@@ -38,7 +43,32 @@ class ChannelService {
     if (name.startsWith('@')) {
       name = name.substring(1);
     }
-    return await User.findOne({ login: name });
+    return this.hideSensitive(await User.findOne({ login: name }));
+  }
+
+  async imgUpdate(user, myUsername, account) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('unauthorized');
+    }
+    const myUser = await User.findOne({ login: myUsername });
+    if (!myUser) {
+      throw new Error('bad username');
+    }
+    await User.findOneAndUpdate({ login: myUser.login }, { img: account.img, img_content_type: account.img_content_type });
+    const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
+    console.log(updated.img);
+    return updated;
+  }
+
+  hideSensitive(account) {
+    return {
+      login: account.login,
+      _id: account._id,
+      img: account.img,
+      imgContentType: account.imgContentType,
+      authorities: account.authorities,
+      lang_key: account.lang_key,
+    };
   }
 
   isUserAuthorized(id, currentUserId) {

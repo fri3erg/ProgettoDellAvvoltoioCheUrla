@@ -11,6 +11,7 @@ import { CreateSquealComponent } from '../squeal/create-squeal/create-squeal.com
 import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component';
 import SharedModule from 'app/shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
+import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 
 @Component({
   selector: 'jhi-profile',
@@ -31,6 +32,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   page = 0;
   sizeofpage = 5;
   hasMorePage = false;
+  connectedDestination?: ISquealDestination;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -46,20 +48,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(r => {
-        this.myAccount = r;
+      .subscribe(a => {
+        this.myAccount = a;
         if (this.profileName === '') {
           this.profileName = this.myAccount?.login;
           this.account = this.myAccount;
+
+          this.loadOther();
         } else {
           this.accountService.getUser(this.profileName ?? '').subscribe(r => {
             if (r.body) {
               this.account = r.body;
               console.log(r.body);
+              this.loadOther();
             }
           });
         }
-
         this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
           if (r.body) {
             this.squeals = r.body;
@@ -82,11 +86,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  loadOther(): void {
+    this.connectedDestination = {
+      destination: this.account?.login,
+      destination_id: this.account?._id,
+      destination_type: 'MESSAGE',
+    };
+  }
+
   setImage(): void {
     console.log(this.account?.img);
     if (this.account) {
       this.accountService.setPhoto(this.account).subscribe(r => {
-        if (r.body && this.account) {
+        if (r.body) {
           this.account = r.body;
           this.newphoto = false;
           this.edit = false;
