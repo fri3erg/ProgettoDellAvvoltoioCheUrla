@@ -9,6 +9,7 @@ const user = require('../model/user');
 const auth = require('../middleware/auth');
 const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
+const squealService = require('../service/SquealService');
 
 const router = express.Router();
 
@@ -91,8 +92,7 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
   }
 });
 
-//restituisce uno user dallo user_id dell'array clienti smm
-//chiamato dal smm per visualizzare la sidebar e la dashboard quando clicca su un cliente
+//id -> user ✅
 router.get('/clientuser/:_id', auth, async (req, res) => {
   try {
     const User = await user.findOne({ _id: req.params._id });
@@ -101,5 +101,26 @@ router.get('/clientuser/:_id', auth, async (req, res) => {
     res.status(500).send();
   }
 });
+
+//feed del cliente
+router.get('/client-feed/:name', auth, async (req, res) => {
+  try {
+    const client = await user.findOne({ login: req.params.name });
+    const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), client, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+
+/*
+router.get('/client-post/:name', auth, async (req, res) => {
+  try {
+    res.status(200).json(ret);
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+*/
 
 module.exports = router; // export to use in server.js

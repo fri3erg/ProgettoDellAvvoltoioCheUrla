@@ -34,6 +34,15 @@ class SMMVIPService {
     }
     return clientsArray;
   }
-}
 
+  async getSMMList() {
+    const vips = await smmVIP.find({});
+    return vips;
+  }
+
+  async getSMMById(id) {
+    const vip = await smmVIP.find({ _id: id });
+    return vip;
+  }
+}
 module.exports = SMMVIPService;

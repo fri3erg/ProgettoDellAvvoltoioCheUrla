@@ -65,7 +65,7 @@ class SquealService {
 
   async getSquealList(page, size, user, username) {
     const ret = [];
-    if (!this.isUserAuthorized(username, user.username)) {
+    if (!this.isUserAuthorized(username, user.login)) {
       throw new Error('Unauthorized');
     }
     const thisUser = await User.findOne({ login: username });

@@ -120,6 +120,7 @@ router.post('/squeals', auth, async (req, res) => {
     console.log(err);
     return res.status(400).send(err.message);
   }
+
 });
 
 module.exports = router; // export to use in server.js
