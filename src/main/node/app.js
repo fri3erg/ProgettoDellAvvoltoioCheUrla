@@ -14,7 +14,7 @@ const accountResource = require('./resources/AccountResource'); // import the ro
 const squealResource = require('./resources/SquealResource');
 const channelResource = require('./resources/ChannelResource');
 const SMMVIPResource = require('./resources/SMMVIPResource');
-
+const ReactionResource = require('./resources/ReactionResource');
 const app = express();
 
 app.use(express.json({ limit: '50mb' }));
@@ -26,6 +26,7 @@ app.use('/api', accountResource);
 app.use('/api', squealResource);
 app.use('/api', channelResource);
 app.use('/api', SMMVIPResource);
+app.use('/api', ReactionResource);
 
 app.get('/welcome', auth, (req, res) => {
   res.status(200).send('Welcome 🙌 ');

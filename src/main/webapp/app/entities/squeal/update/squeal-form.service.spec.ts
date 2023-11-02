@@ -96,7 +96,7 @@ describe('Squeal Form Service', () => {
         const formGroup = service.createSquealFormGroup(sampleWithRequiredData);
         expect(formGroup.controls.id.disabled).toBe(true);
 
-        service.resetForm(formGroup, { id: null });
+        service.resetForm(formGroup, { _id: null });
 
         expect(formGroup.controls.id.disabled).toBe(true);
       });

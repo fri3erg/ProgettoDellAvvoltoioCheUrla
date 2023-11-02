@@ -23,8 +23,8 @@ export class SquealReactionService {
     return this.http.post<ISquealReaction>(this.resourceUrl, squealReaction, { observe: 'response' });
   }
 
-  createorUpdate(squealReaction: ISquealReaction): Observable<HttpResponse<IReactionDTO[]>> {
-    return this.http.post<IReactionDTO[]>('api/squeal-reaction/create', squealReaction, { observe: 'response' });
+  createorUpdate(squealReaction: ISquealReaction): Observable<HttpResponse<ISquealReaction>> {
+    return this.http.post<ISquealReaction>('api/squeal-reaction/create', squealReaction, { observe: 'response' });
   }
 
   update(squealReaction: ISquealReaction): Observable<EntityResponseType> {

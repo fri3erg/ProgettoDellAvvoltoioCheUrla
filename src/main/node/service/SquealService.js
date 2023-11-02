@@ -7,17 +7,7 @@ const SquealCat = require('../model/squealCat');
 const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-class ReactionDTO {
-  n_characters;
-  number = 0;
-  reaction = '';
-  constructor(emoji) {
-    this.reaction = emoji;
-  }
-  add() {
-    number++;
-  }
-}
+const reactionService = require('../service/ReactionService');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -105,7 +95,7 @@ class SquealService {
         }
       }
       s.destination = validDest;
-      const dto = await this.loadSquealData(s);
+      const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
         ret.push(dto);
@@ -139,7 +129,7 @@ class SquealService {
     let squeals = squealsReceived.concat(squealsSent);
 
     for (const s of squeals) {
-      const dto = await this.loadSquealData(s);
+      const dto = await this.loadSquealData(s, myUser);
 
       if (dto) {
         ret.push(dto);
@@ -171,7 +161,7 @@ class SquealService {
         }
       }
       s.destination = validDest;
-      const dto = await this.loadSquealData(s);
+      const dto = await this.loadSquealData(s, myUser);
 
       if (dto) {
         ret.push(dto);
@@ -180,13 +170,26 @@ class SquealService {
     return ret;
   }
 
+  async countSquealMadeByUser(user, myUsername, theirUsername) {
+    if (!this.isUserAuthorized(myUsername, user.username)) {
+      throw new Error('Unathorized');
+    }
+    const theirUser = await User.findOne({ login: theirUsername });
+    const myUser = await User.findOne({ login: myUsername });
+    if (!theirUser || !myUser) {
+      throw new Error('Username Invalid');
+    }
+    const chTypes = ['MOD', 'PUBLICGROUP'];
+    return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
+  }
+
   async getSquealByChannel(page, size, user, myUsername, id) {
     const ret = [];
     if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('Username Invalid');
     }
     const squeals = await Squeal.find({ 'destination.destination_id': id })
@@ -196,12 +199,12 @@ class SquealService {
     for (const s of squeals) {
       let validDest = [];
       for (const d of s.destination) {
-        if (d.destination_id == id || (await this.checkSubscribed(d, myUser))) {
+        if (d.destination_id == id || (await this.checkSubscribed(d, thisUser))) {
           validDest.push(d);
         }
       }
       s.destination = validDest;
-      const dto = await this.loadSquealData(s);
+      const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
         ret.push(dto);
@@ -225,33 +228,20 @@ class SquealService {
     }
   }
 
-  async countSquealMadeByUser(user, myUsername, theirUsername) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
-    const theirUser = await User.findOne({ login: theirUsername });
-    const myUser = await User.findOne({ login: myUsername });
-    if (!theirUser || !myUser) {
-      throw new Error('Username Invalid');
-    }
-    const chTypes = ['MOD', 'PUBLICGROUP'];
-    return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
-  }
-
   async getDirectSquealPreview(user, myUsername) {
     const ret = [];
     if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
 
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('Username Invalid');
     }
 
-    let squeals = await Squeal.find({ 'destination.destination_id': myUser._id.toString() });
+    let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
     let squealsSent = await Squeal.find({
-      user_id: myUser._id.toString(),
+      user_id: thisUser._id.toString(),
       'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
     });
     squeals = squeals.concat(squealsSent);
@@ -265,7 +255,7 @@ class SquealService {
     squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
 
     for (const s of squeals) {
-      const dto = await this.loadSquealData(s);
+      const dto = await this.loadSquealData(s, thisUser);
       if (dto) {
         ret.push(dto);
       }
@@ -309,7 +299,7 @@ class SquealService {
       number: 1,
     });
 
-    const dto = await this.loadSquealData(newSqueal);
+    const dto = await this.loadSquealData(newSqueal, thisUser);
 
     if (dto) {
       ret = newSqueal;
@@ -371,9 +361,11 @@ class SquealService {
     }
     return validDest;
   }
+
   async searchUser(search) {
     return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
+
   async searchChannel(ch, search, username) {
     if (search.startsWith('§') || search.startsWith('@')) {
       search = search.substring(1);
@@ -416,52 +408,38 @@ class SquealService {
     return false;
   }
 
-  async loadSquealData(squeal) {
+  async loadSquealData(squeal, thisUser) {
     if (!squeal) {
       throw new Error('Nothing to Load');
     }
-    const user = await User.findById({ _id: squeal.user_id });
-    if (!user) {
+    const squeal_user = await User.findById({ _id: squeal.user_id });
+    if (!squeal_user) {
       throw new Error('User not found');
     }
 
     const squeal_id = squeal._id.toString();
 
-    const cat = await SquealCat.findOne({ squeal_id });
+    const category = await SquealCat.findOne({ squeal_id });
 
-    const reactions = await this.getReaction(squeal_id);
+    const reactions = await new reactionService().getReaction(squeal_id);
+
+    const active_reaction = await new reactionService().getActiveReaction(thisUser._id.toString(), squeal_id);
 
     const views = await SquealViews.findOne({ squeal_id });
 
     const ret = {
-      userName: user.login,
-      squeal: squeal,
-      category: cat,
-      reactions: reactions,
-      views: views,
+      userName: squeal_user.login,
+      squeal,
+      category,
+      reactions,
+      active_reaction,
+      views,
     };
     return ret;
   }
   resizeImg(img) {
     //TODO:implement
     return img;
-  }
-
-  async getReaction(id) {
-    const reactions = await SquealReaction.find({ squeal_id: id });
-
-    const map = new Map();
-    for (const reaction of reactions) {
-      const emoji = reaction.emoji;
-      let r = map.get(emoji);
-      if (r == null) {
-        r = new ReactionDTO(emoji);
-        map.set(emoji, r);
-      }
-      r.number++;
-    }
-
-    return Array.from(map.values()).sort((a, b) => a.number - b.number);
   }
 
   isUserAuthorized(id, currentUserId) {

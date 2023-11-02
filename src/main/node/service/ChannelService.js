@@ -153,6 +153,13 @@ class ChannelService {
     };
   }
 
+  /**
+   *
+   * @param {*} user
+   * @param {*} myUsername
+   * @param {*} search
+   * @returns
+   */
   async getSubs(user, myUsername, search) {
     const ret = [];
     if (!this.isUserAuthorized(myUsername, user.username)) {

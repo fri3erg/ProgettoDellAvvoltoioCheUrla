@@ -1,11 +1,11 @@
 import { ISqueal, NewSqueal } from './squeal.model';
 
 export const sampleWithRequiredData: ISqueal = {
-  id: '64ddc71b-8f47-4ad9-a61b-36934b414d0a',
+  _id: '64ddc71b-8f47-4ad9-a61b-36934b414d0a',
 };
 
 export const sampleWithPartialData: ISqueal = {
-  id: '9c51a355-9f12-4fa5-866e-52c1be95c592',
+  _id: '9c51a355-9f12-4fa5-866e-52c1be95c592',
   body: 'Steel',
   video_content_type: 'Switzerland',
   video_name: 'Rhodium Senior background',
@@ -14,7 +14,7 @@ export const sampleWithPartialData: ISqueal = {
 };
 
 export const sampleWithFullData: ISqueal = {
-  id: '5952c162-a1d2-491b-bed8-2e2323008cc7',
+  _id: '5952c162-a1d2-491b-bed8-2e2323008cc7',
   user_id: 'Diesel',
   timestamp: 16098,
   body: 'Small lime gold',

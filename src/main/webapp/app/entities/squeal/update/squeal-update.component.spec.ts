@@ -45,7 +45,7 @@ describe('Squeal Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should update editForm', () => {
-      const squeal: ISqueal = { id: 'CBA' };
+      const squeal: ISqueal = { _id: 'CBA' };
 
       activatedRoute.data = of({ squeal });
       comp.ngOnInit();
@@ -82,7 +82,7 @@ describe('Squeal Management Update Component', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ISqueal>>();
       const squeal = { id: 'ABC' };
-      jest.spyOn(squealFormService, 'getSqueal').mockReturnValue({ id: null });
+      jest.spyOn(squealFormService, 'getSqueal').mockReturnValue({ _id: null });
       jest.spyOn(squealService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ squeal: null });

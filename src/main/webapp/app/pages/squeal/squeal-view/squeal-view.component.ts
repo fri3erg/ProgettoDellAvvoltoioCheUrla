@@ -63,18 +63,51 @@ export class SquealViewComponent implements OnInit {
     console.log(this.squeal);
   }
 
+  isActive(reaction: string): string {
+    if (reaction === this.squeal?.active_reaction) {
+      return 'active-emoji';
+    }
+    return '';
+  }
+
   addReaction(emoji: string, positive: boolean): void {
     const r: ISquealReaction = {
       positive,
       emoji,
-      squeal_id: this.squeal?.squeal?.id,
+      squeal_id: this.squeal?.squeal?._id?.toString(),
     };
+
     this.squealReactionService.createorUpdate(r).subscribe(ret => {
-      if (ret.body) {
+      if (ret.body && this.squeal) {
         console.log(ret.body);
-        if (this.squeal) {
-          this.squeal.reactions = ret.body;
+        const reaction = ret.body;
+        let cr = this.squeal.reactions?.find(i => i.reaction === this.squeal?.active_reaction);
+
+        if (this.squeal.active_reaction) {
+          if (cr?.number) {
+            cr.number--;
+            if (cr.number <= 0) {
+              this.squeal.reactions?.splice(this.squeal.reactions.indexOf(cr));
+            }
+          }
+          if (reaction.emoji === 'deleted') {
+            this.squeal.active_reaction = null;
+            return;
+          }
         }
+        cr = this.squeal.reactions?.find(i => i.reaction === reaction.emoji);
+        if (cr?.number) {
+          cr.number++;
+        } else {
+          const dto: IReactionDTO = {
+            number: 1,
+            reaction: reaction.emoji ?? 'deleted',
+            user: false,
+          };
+          this.squeal.reactions?.push(dto);
+        }
+        this.squeal.active_reaction = reaction.emoji;
+        console.log(this.squeal);
       }
     });
   }

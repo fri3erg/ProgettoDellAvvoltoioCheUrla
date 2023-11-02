@@ -1,7 +1,7 @@
 import { ISquealDestination } from '../squeal-destination/squeal-destination.model';
 
 export interface ISqueal {
-  id?: string;
+  _id?: string;
   user_id?: string | null;
   timestamp?: number | null;
   body?: string | null;
@@ -16,4 +16,4 @@ export interface ISqueal {
   destination?: ISquealDestination[];
 }
 
-export type NewSqueal = Omit<ISqueal, 'id'> & { id: null };
+export type NewSqueal = Omit<ISqueal, '_id'> & { _id: undefined };

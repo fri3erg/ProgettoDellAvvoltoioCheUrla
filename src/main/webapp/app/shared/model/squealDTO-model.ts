@@ -9,6 +9,7 @@ export interface ISquealDTO {
   reactions?: IReactionDTO[];
   views?: ISquealViews;
   userName?: string;
+  active_reaction?: string | null | undefined;
 }
 export interface IDirectDTO {
   user?: string;

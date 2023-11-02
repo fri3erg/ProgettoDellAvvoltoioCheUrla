@@ -6,7 +6,7 @@ import { ISqueal, NewSqueal } from '../squeal.model';
 /**
  * A partial Type with required key is used as form input.
  */
-type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>> & { id: T['id'] };
+type PartialWithRequiredKeyOf<T extends { _id: unknown }> = Partial<Omit<T, '_id'>> & { _id: T['_id'] };
 
 /**
  * Type for createFormGroup and resetForm argument.
@@ -14,10 +14,10 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type SquealFormGroupInput = ISqueal | PartialWithRequiredKeyOf<NewSqueal>;
 
-type SquealFormDefaults = Pick<NewSqueal, 'id'>;
+type SquealFormDefaults = Pick<NewSqueal, '_id'>;
 
 type SquealFormGroupContent = {
-  id: FormControl<ISqueal['id'] | NewSqueal['id']>;
+  id: FormControl<ISqueal['_id'] | NewSqueal['_id']>;
   user_id: FormControl<ISqueal['user_id']>;
   timestamp: FormControl<ISqueal['timestamp']>;
   body: FormControl<ISqueal['body']>;
@@ -35,14 +35,14 @@ export type SquealFormGroup = FormGroup<SquealFormGroupContent>;
 
 @Injectable({ providedIn: 'root' })
 export class SquealFormService {
-  createSquealFormGroup(squeal: SquealFormGroupInput = { id: null }): SquealFormGroup {
+  createSquealFormGroup(squeal: SquealFormGroupInput = { _id: undefined }): SquealFormGroup {
     const squealRawValue = {
       ...this.getFormDefaults(),
       ...squeal,
     };
     return new FormGroup<SquealFormGroupContent>({
       id: new FormControl(
-        { value: squealRawValue.id, disabled: true },
+        { value: squealRawValue._id, disabled: true },
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -71,14 +71,14 @@ export class SquealFormService {
     form.reset(
       {
         ...squealRawValue,
-        id: { value: squealRawValue.id, disabled: true },
+        _id: { value: squealRawValue._id, disabled: true },
       } as any /* cast to workaround https://github.com/angular/angular/issues/46458 */
     );
   }
 
   private getFormDefaults(): SquealFormDefaults {
     return {
-      id: null,
+      _id: undefined,
     };
   }
 }

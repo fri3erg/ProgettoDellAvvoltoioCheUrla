@@ -7,7 +7,7 @@ const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 
-class ChannelService {
+class AccountService {
   async getUsersByName(user, myUsername, search) {
     if (!this.isUserAuthorized(myUsername, user.username)) {
       throw new Error('unauthorized');
@@ -76,4 +76,4 @@ class ChannelService {
   }
 }
 
-module.exports = ChannelService;
+module.exports = AccountService;

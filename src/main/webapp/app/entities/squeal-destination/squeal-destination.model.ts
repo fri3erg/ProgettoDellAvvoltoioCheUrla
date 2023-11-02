@@ -7,5 +7,5 @@ export interface ISquealDestination {
   seen?: boolean | null;
   destination_type?: keyof typeof ChannelTypes | null;
   admin_add?: boolean | null;
-  squeal?: Pick<ISqueal, 'id'> | null;
+  squeal?: Pick<ISqueal, '_id'> | null;
 }

@@ -34,7 +34,7 @@
       </div>
       <div style="padding-left: 6rem">
         <ng-container *ngFor="let r of squeal.reactions">
-          <span [class]="r.reaction">{{ r.number }}</span>
+          <span [class]="isActive(r.reaction)" [class]="r.reaction">{{ r.number }}</span>
         </ng-container>
       </div>
     </div>

@@ -1,4 +1,4 @@
-<form *ngIf="squeal" name="deleteForm" (ngSubmit)="confirmDelete(squeal.id!)">
+<form *ngIf="squeal" name="deleteForm" (ngSubmit)="confirmDelete(squeal._id!)">
   <div class="modal-header">
     <h4 class="modal-title" data-cy="squealDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
 
@@ -7,8 +7,8 @@
 
   <div class="modal-body">
     <jhi-alert-error></jhi-alert-error>
-    <p id="jhi-delete-squeal-heading" jhiTranslate="avvoltoioCheUrlaApp.squeal.delete.question" [translateValues]="{ id: squeal.id }">
-      Are you sure you want to delete Squeal {{ squeal.id }}?
+    <p id="jhi-delete-squeal-heading" jhiTranslate="avvoltoioCheUrlaApp.squeal.delete.question" [translateValues]="{ id: squeal._id }">
+      Are you sure you want to delete Squeal {{ squeal._id }}?
     </p>
   </div>
 

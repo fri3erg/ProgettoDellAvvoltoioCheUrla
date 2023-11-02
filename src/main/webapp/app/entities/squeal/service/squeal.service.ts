@@ -10,7 +10,7 @@ import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 
-export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, 'id'>;
+export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, '_id'>;
 
 export type EntityResponseType = HttpResponse<ISqueal>;
 export type EntityArrayResponseType = HttpResponse<ISqueal[]>;
@@ -103,15 +103,15 @@ export class SquealService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getSquealIdentifier(squeal: Pick<ISqueal, 'id'>): string {
-    return squeal.id ?? '';
+  getSquealIdentifier(squeal: Pick<ISqueal, '_id'>): string {
+    return squeal._id ?? '';
   }
 
-  compareSqueal(o1: Pick<ISqueal, 'id'> | null, o2: Pick<ISqueal, 'id'> | null): boolean {
+  compareSqueal(o1: Pick<ISqueal, '_id'> | null, o2: Pick<ISqueal, '_id'> | null): boolean {
     return o1 && o2 ? this.getSquealIdentifier(o1) === this.getSquealIdentifier(o2) : o1 === o2;
   }
 
-  addSquealToCollectionIfMissing<Type extends Pick<ISqueal, 'id'>>(
+  addSquealToCollectionIfMissing<Type extends Pick<ISqueal, '_id'>>(
     squealCollection: Type[],
     ...squealsToCheck: (Type | null | undefined)[]
   ): Type[] {

@@ -76,7 +76,7 @@ export class SquealUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const squeal = this.squealFormService.getSqueal(this.editForm);
-    if (squeal.id !== null) {
+    if (squeal._id !== null) {
       this.subscribeToSaveResponse(this.squealService.update(squeal));
     } else {
       this.subscribeToSaveResponse(this.squealService.create(squeal));
