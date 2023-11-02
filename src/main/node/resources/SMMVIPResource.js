@@ -21,7 +21,7 @@ router.get('/smmvips', auth, async (req, res) => {
     const vips = await smmVIP.find({});
     res.status(200).json(vips);
   } catch (err) {
-    console.log(err);
+    res.status(500).send();
   }
 });
 
@@ -30,16 +30,8 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
   try {
     const vip = await smmVIP.find({ _id: req.params._id });
     res.status(200).json(vip);
-    /*smmVIP
-      .findById(req.params._id)
-      .then(vip => {
-        res.status(200).json(vip);
-      })
-      .catch(err => {
-        console.log(err);
-      });*/
   } catch (err) {
-    console.log(err);
+    res.status(500).send();
   }
 });
 
@@ -65,11 +57,11 @@ router.post('/add-smm/:_id', auth, async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).send();
   }
 });
 
-//dammi tutti i clienti del smm ✅
+//dammi oggetto di tutti i clienti del smm ✅
 //chiamato dal smm quando vuole visualizzare tutti i suoi clienti
 router.get('/smmclients/:_id', auth, async (req, res) => {
   try {
@@ -87,23 +79,26 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
       } else {
         const urlId = req.params._id;
         if (urlId.match(/^[0-9a-fA-F]{24}$/)) {
-          const vip = await smmVIP.findOne({ _id: urlId }); //!trovare qualcuno con l'id passato come parametro
+          const vip = await smmVIP.findOne({ _id: urlId });
           const result = vip.users;
-          res.status(200).json(result);
+          const clientsArray = await new SMMVIPService().idToObj(result);
+          res.status(200).json(clientsArray);
         }
       }
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).send();
   }
 });
 
-//da user_id dell'oggetto smm al suo oggetto utente
-//chiamato dal cliente quando vuole visualizzare il profilo del suo smm
-router.get('/usersmm/:_id', auth, async (req, res) => {
+//restituisce uno user dallo user_id dell'array clienti smm
+//chiamato dal smm per visualizzare la sidebar e la dashboard quando clicca su un cliente
+router.get('/clientuser/:_id', auth, async (req, res) => {
   try {
+    const User = await user.findOne({ _id: req.params._id });
+    res.status(200).json(User);
   } catch (err) {
-    console.log(err);
+    res.status(500).send();
   }
 });
 
