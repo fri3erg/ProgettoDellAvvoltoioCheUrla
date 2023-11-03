@@ -27,9 +27,6 @@ class AccountService {
     }
     return ret;
   }
-  isUserAuthorized(id, currentUserId) {
-    return id.toString() == currentUserId.toString();
-  }
 
   async getUser(user, myUsername, name) {
     if (!this.isUserAuthorized(myUsername, user.username)) {
@@ -61,6 +58,9 @@ class AccountService {
   }
 
   hideSensitive(account) {
+    if (!account) {
+      throw new Error('account not found');
+    }
     return {
       login: account.login,
       _id: account._id,

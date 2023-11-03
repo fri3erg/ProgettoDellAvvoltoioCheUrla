@@ -44,6 +44,9 @@ class ReactionService {
       positive: reaction.positive,
       username,
     });
+    if (!ret) {
+      throw new Error('could not create');
+    }
     return ret;
   }
 

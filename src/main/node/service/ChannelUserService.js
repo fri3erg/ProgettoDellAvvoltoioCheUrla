@@ -51,7 +51,7 @@ class ChannelUserService {
     if (!myUser) {
       throw new Error('Invalid username');
     }
-    const theirUser = await User.findOne({ login: username });
+    const theirUser = await User.findOne({ login: guy_name });
     if (!theirUser) {
       throw new Error('Invalid username');
     }
@@ -59,7 +59,7 @@ class ChannelUserService {
     if (!channel) {
       throw new Error('Channel not found');
     }
-    if (!(await this.canAdd(thisUser, theirUser, channel))) {
+    if (!(await this.canAdd(myUser, theirUser, channel))) {
       throw new Error('request invalid');
     }
     const created = await ChannelUser.create({ user_id: theirUser._id.toString(), channel_id });
@@ -67,6 +67,32 @@ class ChannelUserService {
       throw new Error('error in creation');
     }
     return created;
+  }
+
+  async removeSomeoneSubscription(user, username, channel_id, guy_name) {
+    if (!new accountService().isUserAuthorized(username, user.username)) {
+      throw new Error('Unauthorized');
+    }
+    const myUser = await User.findOne({ login: username });
+    if (!myUser) {
+      throw new Error('Invalid username');
+    }
+    const theirUser = await User.findOne({ login: guy_name });
+    if (!theirUser) {
+      throw new Error('Invalid username');
+    }
+    const channel = Channel.findById(id);
+    if (!channel) {
+      throw new Error('Channel not found');
+    }
+    if (!(await this.canAdd(myUser, theirUser, channel))) {
+      throw new Error('request invalid');
+    }
+    const deleted = await ChannelUser.deleteOne({ user_id: theirUser._id.toString(), channel_id });
+    if (!deleted) {
+      throw new Error('error in deletion');
+    }
+    return deleted;
   }
 
   async getPeopleFollowing(user, myUsername, id) {
@@ -79,6 +105,9 @@ class ChannelUserService {
       throw new Error('invalid username');
     }
     const ch = await Channel.findById(id);
+    if (!ch || !ch.type) {
+      throw new Error('channel not found or without type');
+    }
     if (ch.type == 'PRIVATEGROUP') {
       if (!(await ChannelUser.find({ user_id: myUser._id.toString(), channel_id: id }))) {
         throw new Error('Unauthorized');
@@ -86,6 +115,9 @@ class ChannelUserService {
     }
 
     const chUs = await ChannelUser.find({ channel_id: id });
+    if (!chUs || !chUs.user_id) {
+      throw new Error('subscription not found or incomplete');
+    }
     const chId = [];
     for (const c of chUs) {
       chId.push(c.user_id);
@@ -102,11 +134,11 @@ class ChannelUserService {
     if (alreadySubbed) {
       throw new Error('already subscribed');
     }
-    if (thisUser.authorities.include('MOD')) {
+    if (new accountService().isMod()) {
       return true;
     }
     const subbed = await ChannelUser.find({ channel_id: channel._id.toString(), user_id: thisUser._id.toString() });
-    if (channel.type == 'PRIVATEGROUP' && !channel.type && !subbed) {
+    if (channel.type == 'PRIVATEGROUP' && channel.type && subbed) {
       return true;
     }
     return false;

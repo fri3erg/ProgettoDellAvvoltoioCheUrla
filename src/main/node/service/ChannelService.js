@@ -21,6 +21,9 @@ class ChannelService {
       throw new Error('username invalid');
     }
     let channel = await Channel.findById(id);
+    if (!channel || !channel.type) {
+      throw new Error('channel not found or without type');
+    }
     switch (channel.type) {
       case 'PRIVATEGROUP':
         if (await new channelUserService().checkSubscribed(channel, myUser)) {
@@ -68,7 +71,6 @@ class ChannelService {
   }
 
   async insertOrUpdateChannel(channel, user, username) {
-    let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!channel || !thisUser) {
       throw new Error('invalid data');
@@ -101,19 +103,21 @@ class ChannelService {
     });
 
     newChannel = await newChannel.save();
-    await ChannelUser.create({
+    if (!newChannel) {
+      throw new Error('could not save channel');
+    }
+    const chUser = await ChannelUser.create({
       channel_id: newChannel._id.toString(),
       user_id: thisUser._id.toString(),
       privilege: 'ADMIN',
     });
+    if (!chUser) {
+      throw new Error('could not create subscription');
+    }
 
     const dto = await this.loadChannelData(newChannel);
 
-    if (dto) {
-      ret = newChannel;
-    }
-
-    return ret;
+    return dto;
   }
 
   async getChannelSubscribedTo(user, myUsername, search) {

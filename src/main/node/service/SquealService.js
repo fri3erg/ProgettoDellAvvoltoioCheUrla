@@ -38,7 +38,9 @@ class SquealService {
     for (const s of squeals) {
       const destId = [];
       for (const d of s.destination) {
-        destId.push(d.destination_type);
+        if (d.destination_type) {
+          destId.push(d.destination_type);
+        }
       }
       if (!(destId.includes('MOD') || destId.includes('PUBLICGROUP') || destId.includes('PRIVATEGROUP'))) {
         continue;
@@ -75,7 +77,6 @@ class SquealService {
       throw new Error('Invalid username');
     }
     const chUs = await ChannelUser.find({ user_id: thisUser._id.toString() });
-
     let chId = [];
     for (const us of chUs) {
       chId.push(us.channel_id);
@@ -216,6 +217,9 @@ class SquealService {
   }
 
   async checkSubscribed(d, thisUser) {
+    if (!d || !d.destination_type) {
+      throw new Error('destination not found');
+    }
     switch (d.destination_type) {
       case 'MOD':
       case 'PUBLICGROUP':
@@ -376,6 +380,9 @@ class SquealService {
   }
 
   async checkAuth(destination, thisUser) {
+    if (!destination || !destination.destination_type) {
+      throw new Error('destination not foun or incomplete');
+    }
     switch (destination.destination_type) {
       case 'MOD':
         return new accountService().isMod(thisUser);
@@ -391,6 +398,9 @@ class SquealService {
             name: destination.destination,
             type: 'PUBLICGROUP',
           });
+          if (!newdest) {
+            throw new Error('unable to create new channel');
+          }
           destination.destination_id = newdest._id.toString();
         }
         return true;
@@ -436,6 +446,9 @@ class SquealService {
   }
 
   getNCharacters(squeal) {
+    if (!squeal || !squeal.body) {
+      throw new Error('channel not found');
+    }
     let n = squeal.body.length;
     if (squeal.img && squeal.img != '') {
       n = n + 100;
