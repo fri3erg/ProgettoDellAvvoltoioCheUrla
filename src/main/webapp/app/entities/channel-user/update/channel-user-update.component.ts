@@ -50,7 +50,7 @@ export class ChannelUserUpdateComponent implements OnInit {
     if (channelUser.id !== null) {
       this.subscribeToSaveResponse(this.channelUserService.update(channelUser));
     } else {
-      this.subscribeToSaveResponse(this.channelUserService.create(channelUser));
+      this.subscribeToSaveResponse(this.channelUserService.sub(channelUser.channel_id ?? ''));
     }
   }
 

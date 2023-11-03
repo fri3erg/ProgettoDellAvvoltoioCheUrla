@@ -8,6 +8,8 @@ const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const reactionService = require('../service/ReactionService');
+const accountService = require('./AccountService');
+const channelUserService = require('./ChannelUserService');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -21,7 +23,7 @@ const msinDay = 86400000;
 //username,user to do action on, default: you, but smm
 class SquealService {
   async getUserChars(user, username) {
-    if (!this.isUserAuthorized(username, user.username)) {
+    if (!new accountService().isUserAuthorized(username, user.username)) {
       throw new Error('Unauthorized');
     }
     const thisUser = await User.findOne({ login: username });
@@ -65,7 +67,7 @@ class SquealService {
 
   async getSquealList(page, size, user, username) {
     const ret = [];
-    if (!this.isUserAuthorized(username, user.username)) {
+    if (!new accountService().isUserAuthorized(username, user.username)) {
       throw new Error('Unauthorized');
     }
     const thisUser = await User.findOne({ login: username });
@@ -107,7 +109,7 @@ class SquealService {
 
   async getSquealsSentByUser(page, size, user, myUsername, theirUsername) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: theirUsername });
@@ -140,7 +142,7 @@ class SquealService {
 
   async getSquealMadeByUser(page, size, user, myUsername, theirUsername) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: theirUsername });
@@ -171,7 +173,7 @@ class SquealService {
   }
 
   async countSquealMadeByUser(user, myUsername, theirUsername) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: theirUsername });
@@ -185,7 +187,7 @@ class SquealService {
 
   async getSquealByChannel(page, size, user, myUsername, id) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const thisUser = await User.findOne({ login: myUsername });
@@ -199,7 +201,7 @@ class SquealService {
     for (const s of squeals) {
       let validDest = [];
       for (const d of s.destination) {
-        if (d.destination_id == id || (await this.checkSubscribed(d, thisUser))) {
+        if (d.destination_id == id || (await new channelUserService().checkSubscribed(d, thisUser))) {
           validDest.push(d);
         }
       }
@@ -269,14 +271,14 @@ class SquealService {
     if (!squeal || !thisUser) {
       throw new Error('Invalid data');
     }
-    if (!this.isUserAuthorized(thisUser._id, user.user_id)) {
+    if (!new accountService().isUserAuthorized(thisUser._id, user.user_id)) {
       throw new Error('Not authorized');
     }
     let newSqueal = new Squeal({
       user_id: thisUser._id.toString(),
       timestamp: Date.now(),
       body: squeal.body,
-      img: this.resizeImg(squeal.img),
+      img: this.resizeSquealImg(squeal.img),
       img_content_type: squeal.img_content_type,
       img_name: squeal.img_name,
       video_content_type: squeal.video_content_type,
@@ -313,7 +315,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
-    if (!this.isUserAuthorized(thisUser._id, myUser.user_id)) {
+    if (!new accountService().isUserAuthorized(thisUser._id, myUser.user_id)) {
       throw new Error('Unathorized');
     }
 
@@ -376,7 +378,7 @@ class SquealService {
   async checkAuth(destination, thisUser) {
     switch (destination.destination_type) {
       case 'MOD':
-        return this.isMod(thisUser);
+        return new accountService().isMod(thisUser);
       case 'PRIVATEGROUP':
         const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
         if (userSub) {
@@ -397,15 +399,6 @@ class SquealService {
       default:
         return false;
     }
-  }
-
-  isMod(user) {
-    for (const a of user.authorities) {
-      if (a === 'ROLE_ADMIN') {
-        return true;
-      }
-    }
-    return false;
   }
 
   async loadSquealData(squeal, thisUser) {
@@ -437,14 +430,11 @@ class SquealService {
     };
     return ret;
   }
-  resizeImg(img) {
+  resizeSquealImg(img) {
     //TODO:implement
     return img;
   }
 
-  isUserAuthorized(id, currentUserId) {
-    return id.toString() == currentUserId.toString();
-  }
   getNCharacters(squeal) {
     let n = squeal.body.length;
     if (squeal.img && squeal.img != '') {

@@ -54,7 +54,7 @@ class AccountService {
     if (!myUser) {
       throw new Error('bad username');
     }
-    await User.findOneAndUpdate({ login: myUser.login }, { img: account.img, img_content_type: account.img_content_type });
+    await User.findOneAndUpdate({ login: myUser.login }, { img: resizeUserImg(account.img), img_content_type: account.img_content_type });
     const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
     console.log(updated.img);
     return updated;
@@ -71,7 +71,24 @@ class AccountService {
     };
   }
 
+  isMod(user) {
+    for (const a of user.authorities) {
+      if (a === 'ROLE_ADMIN') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  resizeUserImg(img) {
+    //TODO:implement
+    return img;
+  }
+
   isUserAuthorized(id, currentUserId) {
+    if (!id || !currentUserId) {
+      throw new Error('invalid username');
+    }
     return id.toString() == currentUserId.toString();
   }
 }

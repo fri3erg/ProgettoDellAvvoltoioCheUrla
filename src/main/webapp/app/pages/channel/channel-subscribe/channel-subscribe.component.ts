@@ -54,13 +54,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
 
     //TO DO check security
 
-    const nu: NewChannelUser = {
-      id: null,
-      user_id: this.account?._id,
-      channel_id: c.channel._id,
-      privilege: PrivilegeType.READ,
-    };
-    this.channelUserService.create(nu).subscribe(r => {
+    this.channelUserService.sub(c.channel._id ?? '').subscribe(r => {
       if (r.body) {
         c.users.push(r.body);
         console.log(c);
@@ -95,7 +89,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
     if (!u) {
       return;
     }
-    this.channelUserService.delete(u.id).subscribe(() => {
+    this.channelUserService.delete(c.channel._id ?? '').subscribe(() => {
       c.users = c.users.filter(obj => obj.id !== u.id);
     });
   }

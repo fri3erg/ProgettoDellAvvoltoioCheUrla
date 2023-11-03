@@ -7,11 +7,13 @@ const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
+const channelUserService = require('../service/ChannelUserService');
+const accountService = require('../service/AccountService');
 
 class ChannelService {
   async getChannel(user, myUsername, id) {
     let ret = {};
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
     const myUser = await User.findOne({ login: myUsername });
@@ -21,7 +23,7 @@ class ChannelService {
     let channel = await Channel.findById(id);
     switch (channel.type) {
       case 'PRIVATEGROUP':
-        if (await this.checkSubscribed(channel, myUser)) {
+        if (await new channelUserService().checkSubscribed(channel, myUser)) {
           ret = await this.loadChannelData(channel);
         }
         break;
@@ -37,7 +39,7 @@ class ChannelService {
 
   async searchChannel(user, myUsername, search) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
 
@@ -50,7 +52,7 @@ class ChannelService {
     for (const ch of channels) {
       switch (ch.type) {
         case 'PRIVATEGROUP':
-          if (await this.checkSubscribed(ch, myUser)) {
+          if (await new channelUserService().checkSubscribed(ch, myUser)) {
             ret.push(await this.loadChannelData(ch));
           }
           break;
@@ -71,7 +73,7 @@ class ChannelService {
     if (!channel || !thisUser) {
       throw new Error('invalid data');
     }
-    if (!this.isUserAuthorized(thisUser._id, user.user_id)) {
+    if (!new accountService().isUserAuthorized(thisUser._id, user.user_id)) {
       throw new Error('Not authorized');
     }
     if (this.isIncorrectName(channel.name)) {
@@ -80,7 +82,7 @@ class ChannelService {
     if (!channel.name || !channel.type) {
       throw new Error('Incomplete');
     }
-    if (channel.type == 'MOD' && !this.isMod(thisUser)) {
+    if (channel.type == 'MOD' && !new accountService().isMod(thisUser)) {
       throw new Error('You do not have permission');
     }
 
@@ -114,55 +116,9 @@ class ChannelService {
     return ret;
   }
 
-  async getPeopleFollowing(user, myUsername, id) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
-
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
-      throw new Error('invalid username');
-    }
-    const ch = await Channel.findById(id);
-    if (ch.type == 'PRIVATEGROUP') {
-      if (!(await ChannelUser.find({ user_id: myUser._id.toString(), channel_id: id }))) {
-        throw new Error('Unauthorized');
-      }
-    }
-
-    const chUs = await ChannelUser.find({ channel_id: id });
-    const chId = [];
-    for (const c of chUs) {
-      chId.push(c.user_id);
-    }
-    let ret = [];
-    for (const user_id of chId) {
-      ret.push(this.hideSensitive(await User.findById(user_id)));
-    }
-    return ret;
-  }
-
-  hideSensitive(account) {
-    return {
-      login: account.login,
-      _id: account._id,
-      img: account.img,
-      imgContentType: account.imgContentType,
-      authorities: account.authorities,
-      lang_key: account.lang_key,
-    };
-  }
-
-  /**
-   *
-   * @param {*} user
-   * @param {*} myUsername
-   * @param {*} search
-   * @returns
-   */
-  async getSubs(user, myUsername, search) {
+  async getChannelSubscribedTo(user, myUsername, search) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
+    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
       throw new Error('Unathorized');
     }
 
@@ -187,7 +143,7 @@ class ChannelService {
     for (const ch of channels) {
       switch (ch.type) {
         case 'PRIVATEGROUP':
-          if (await this.checkSubscribed(ch, myUser)) {
+          if (await new channelUserService().checkSubscribed(ch, myUser)) {
             ret.push(await this.loadChannelData(ch));
           }
           break;
@@ -202,8 +158,8 @@ class ChannelService {
     return ret;
   }
 
-  async countSubs(user, myUsername, search) {
-    const subs = await this.getSubs(user, myUsername, search);
+  async countChannelSubscribedTo(user, myUsername, search) {
+    const subs = await this.getChannelSubscribedTo(user, myUsername, search);
     return subs.length;
   }
 
@@ -221,20 +177,6 @@ class ChannelService {
     return q.includes('§') || q.includes('#') || q.includes('@') || q.toLowerCase() !== q;
   }
 
-  isMod(user) {
-    for (const a of user.authorities) {
-      if (a === 'ROLE_ADMIN') {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  async checkSubscribed(ch, myUser) {
-    const check = await ChannelUser.find({ channel_id: ch._id.toString(), user_id: myUser._id.toString() });
-    return check != null;
-  }
-
   async loadChannelData(channel) {
     if (!channel) {
       throw new Error('loading data failed');
@@ -244,10 +186,6 @@ class ChannelService {
       channel: channel,
       users: users,
     };
-  }
-
-  isUserAuthorized(id, currentUserId) {
-    return id.toString() == currentUserId.toString();
   }
 }
 

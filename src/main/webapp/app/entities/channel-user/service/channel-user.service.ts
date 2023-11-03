@@ -18,8 +18,8 @@ export class ChannelUserService {
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
-  create(channelUser: NewChannelUser): Observable<EntityResponseType> {
-    return this.http.post<IChannelUser>(this.resourceUrl, channelUser, { observe: 'response' });
+  sub(id: string): Observable<EntityResponseType> {
+    return this.http.get<IChannelUser>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
   update(channelUser: IChannelUser): Observable<EntityResponseType> {

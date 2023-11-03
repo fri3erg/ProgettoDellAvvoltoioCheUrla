@@ -7,6 +7,7 @@ const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
+const AccountService = require('./AccountService');
 class ReactionDTO {
   user;
   number = 0;
@@ -20,7 +21,7 @@ class ReactionDTO {
 }
 class ReactionService {
   async insertOrUpdateReaction(reaction, user, username) {
-    if (!this.isUserAuthorized(username, user.username)) {
+    if (!new AccountService().isUserAuthorized(username, user.username)) {
       throw new Error('Unauthorized');
     }
     const thisUser = await User.findOne({ login: username });
@@ -70,10 +71,6 @@ class ReactionService {
     }
 
     return null;
-  }
-
-  isUserAuthorized(id, currentUserId) {
-    return id.toString() == currentUserId.toString();
   }
 }
 
