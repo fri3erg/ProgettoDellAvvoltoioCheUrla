@@ -57,9 +57,13 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
         console.log(account);
       });
 
-    this.channel_id = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
-    this.loadChannel();
-    this.loadSqueals();
+    this.activatedRoute.params.subscribe(params => {
+      this.channel_id = params['id'];
+      this.page = 0;
+      this.size = 5;
+      this.loadChannel();
+      this.loadSqueals();
+    });
   }
 
   loadChannel(): void {
