@@ -368,6 +368,16 @@ class SquealService {
     return validDest;
   }
 
+  async getSquealRankByReaction(myUser, theirUsername) {
+    let squealRank = [];
+
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      return squealRank;
+    } else {
+      throw new Error('Unathorized');
+    }
+  }
+
   async searchUser(search) {
     return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
@@ -443,6 +453,22 @@ class SquealService {
   resizeSquealImg(img) {
     //TODO:implement
     return img;
+  }
+
+  //nome cliente , mio user
+  async isUserClient(userUsername, user) {
+    const smmUser = await smmVIP.findOne({ user_id: user.user_id });
+    const client = await User.findOne({ login: userUsername });
+    if (user) {
+      for (const user of smmUser.users) {
+        if (client._id === user) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      throw new Error('You dont have clients!!!!');
+    }
   }
 
   getNCharacters(squeal) {

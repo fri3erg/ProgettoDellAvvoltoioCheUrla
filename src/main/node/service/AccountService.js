@@ -93,21 +93,23 @@ class AccountService {
     if (!myUser || !theirUser) {
       throw new Error('invalid username');
     }
-    return myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(myUser, theirUser);
+    return myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(theirUser, myUser);
   }
 
-  async isUserClient(myUser, theirUser) {
-    const smmVip = await SMMVIP.findById(myUser._id.toString());
-    if (!smmVip) {
-      return false;
-    }
-    for (const user of smmVip.users) {
-      if (theirUser.login === user) {
-        return true;
+  async isUserClient(client, user) {
+    const smmUser = await SMMVIP.findOne({ user_id: user.user_id });
+    if (user) {
+      for (const user of smmUser.users) {
+        if (client._id === user) {
+          return true;
+        }
       }
+      return false;
+    } else {
+      throw new Error('You dont have clients');
     }
-    return false;
   }
+
   isUserVip(user) {
     for (const a of user.authorities) {
       if (a === 'ROLE_VIP') {

@@ -54,7 +54,7 @@ router.post('/add-smm/:_id', auth, async (req, res) => {
         res.status(401).send('Non hai i permessi');
       } else {
         await new SMMVIPService().addSMM(smmId, thisUser._id);
-        res.status(200);
+        res.status(201);
       }
     }
   } catch (err) {
@@ -126,7 +126,17 @@ router.post('/client-post/:name', auth, async (req, res) => {
 router.get('/squeals-destination/smm/', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealDestination(req.user, req.query.name, req.query.search);
-    res.status(201).json(ret);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-reaction/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByReaction(req.user, req.params.name);
+    res.status(200).json(ret);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
