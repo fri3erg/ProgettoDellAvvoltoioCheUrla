@@ -448,7 +448,6 @@ class SquealService {
     return img;
   }
 
-
   async isUserClient(username, user) {
     const thisUser = await User.findOne({ login: user.username });
     const smmUser = await smmVIP.findOne({ user_id: thisUser._id.toString() });
