@@ -105,22 +105,32 @@ router.get('/clientuser/:_id', auth, async (req, res) => {
 //feed del cliente
 router.get('/client-feed/:name', auth, async (req, res) => {
   try {
-    const client = await user.findOne({ login: req.params.name });
-    const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), client, req.params.name);
+    const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
     res.status(200).json(ret);
   } catch (err) {
     return res.status(400).send(err.message);
   }
 });
 
-/*
-router.get('/client-post/:name', auth, async (req, res) => {
+//postare per clienti
+router.post('/client-post/:name', auth, async (req, res) => {
   try {
-    res.status(200).json(ret);
+    let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name);
+    console.log(squeal);
+    res.status(201).json(squeal);
   } catch (err) {
     return res.status(400).send(err.message);
   }
 });
-*/
+
+router.get('/squeals-destination/smm/', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealDestination(req.user, req.query.name, req.query.search);
+    res.status(201).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
 
 module.exports = router; // export to use in server.js
