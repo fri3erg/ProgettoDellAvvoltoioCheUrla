@@ -13,12 +13,12 @@ const accountService = require('../service/AccountService');
 class ChannelService {
   async getChannel(user, myUsername, id) {
     let ret = {};
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('username invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
     }
     let channel = await Channel.findById(id);
     if (!channel || !channel.type) {
@@ -26,7 +26,7 @@ class ChannelService {
     }
     switch (channel.type) {
       case 'PRIVATEGROUP':
-        if (await new channelUserService().checkSubscribed(channel, myUser)) {
+        if (await new channelUserService().checkSubscribed(channel, thisUser)) {
           ret = await this.loadChannelData(channel);
         }
         break;
@@ -42,20 +42,19 @@ class ChannelService {
 
   async searchChannel(user, myUsername, search) {
     const ret = [];
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
-
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
     }
     let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
 
     for (const ch of channels) {
       switch (ch.type) {
         case 'PRIVATEGROUP':
-          if (await new channelUserService().checkSubscribed(ch, myUser)) {
+          if (await new channelUserService().checkSubscribed(ch, thisUser)) {
             ret.push(await this.loadChannelData(ch));
           }
           break;
@@ -75,7 +74,7 @@ class ChannelService {
     if (!channel || !thisUser) {
       throw new Error('invalid data');
     }
-    if (!new accountService().isUserAuthorized(thisUser._id, user.user_id)) {
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
       throw new Error('Not authorized');
     }
     if (this.isIncorrectName(channel.name)) {
@@ -122,13 +121,14 @@ class ChannelService {
 
   async getChannelSubscribedTo(user, myUsername, search) {
     const ret = [];
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
 
     const myUser = await User.findOne({ login: myUsername });
     if (!myUser) {
       throw new Error('invalid username');
+    }
+
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: search });
     if (!theirUser) {

@@ -24,12 +24,12 @@ const msinDay = 86400000;
 //username,user to do action on, default: you, but smm
 class SquealService {
   async getUserChars(user, username) {
-    if (!new accountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
     }
 
     const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
@@ -70,56 +70,55 @@ class SquealService {
 
   async getSquealList(page, size, user, username) {
     const ret = [];
-    if (this.isUserClient(username, user) || new accountService().isUserAuthorized(username, user.username)) {
-      const thisUser = await User.findOne({ login: username });
-      if (!thisUser) {
-        throw new Error('Invalid username');
-      }
-      const chUs = await ChannelUser.find({ user_id: thisUser._id.toString() });
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
+    }
+    const chUs = await ChannelUser.find({ user_id: thisUser._id.toString() });
 
-      let chId = [];
-      for (const us of chUs) {
-        chId.push(us.channel_id);
-      }
-      const chMod = await Channel.find({ type: 'MOD' });
-      for (const c of chMod) {
-        chId.push(c._id.toString());
-      }
-      const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
-        .limit(size)
-        .skip(size * page)
-        .sort({ timestamp: +1 });
+    let chId = [];
+    for (const us of chUs) {
+      chId.push(us.channel_id);
+    }
+    const chMod = await Channel.find({ type: 'MOD' });
+    for (const c of chMod) {
+      chId.push(c._id.toString());
+    }
+    const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: +1 });
 
-      for (const s of sq) {
-        let validDest = [];
-        for (const d of s.destination) {
-          if (chId.includes(d.destination_id)) {
-            validDest.push(d);
-          }
+    for (const s of sq) {
+      let validDest = [];
+      for (const d of s.destination) {
+        if (chId.includes(d.destination_id)) {
+          validDest.push(d);
         }
-        s.destination = validDest;
-        const dto = await this.loadSquealData(s, thisUser);
+      }
+      s.destination = validDest;
+      const dto = await this.loadSquealData(s, thisUser);
 
-        if (dto) {
-          ret.push(dto);
-        }
+      if (dto) {
+        ret.push(dto);
       }
 
       return ret;
-    } else {
-      throw new Error('Unauthorized');
     }
   }
 
   async getSquealsSentByUser(page, size, user, myUsername, theirUsername) {
     const ret = [];
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unathorized');
     }
     let squealsSent = [];
     let squealsReceived = await Squeal.find({ 'destination.destination_id': myUser._id.toString(), user_id: theirUser._id.toString() })
@@ -146,13 +145,13 @@ class SquealService {
 
   async getSquealMadeByUser(page, size, user, myUsername, theirUsername) {
     const ret = [];
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unathorized');
     }
     const chTypes = ['MOD', 'PUBLICGROUP'];
     const squeals = await Squeal.find({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } })
@@ -177,13 +176,13 @@ class SquealService {
   }
 
   async countSquealMadeByUser(user, myUsername, theirUsername) {
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unathorized');
     }
     const chTypes = ['MOD', 'PUBLICGROUP'];
     return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
@@ -191,12 +190,12 @@ class SquealService {
 
   async getSquealByChannel(page, size, user, myUsername, id) {
     const ret = [];
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
       throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
     }
     const squeals = await Squeal.find({ 'destination.destination_id': id })
       .limit(size)
@@ -239,13 +238,13 @@ class SquealService {
 
   async getDirectSquealPreview(user, myUsername) {
     const ret = [];
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
 
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
       throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
     }
 
     let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
@@ -278,43 +277,42 @@ class SquealService {
     if (!squeal || !thisUser) {
       throw new Error('Invalid data');
     }
-    if (this.isUserClient(username, user) || new accountService().isUserAuthorized(thisUser._id, user.user_id)) {
-      let newSqueal = new Squeal({
-        user_id: thisUser._id.toString(),
-        timestamp: Date.now(),
-        body: squeal.body,
-        img: this.resizeSquealImg(squeal.img),
-        img_content_type: squeal.img_content_type,
-        img_name: squeal.img_name,
-        video_content_type: squeal.video_content_type,
-        video_name: squeal.video_name,
-        n_characters: this.getNCharacters(squeal) ?? 0,
-        destination: [],
-      });
-      for (const dest of squeal.destination) {
-        if (await this.checkAuth(dest, thisUser)) {
-          newSqueal.destination.seen = false;
-          newSqueal.destination.push(dest);
-        }
-      }
-      if (newSqueal.destination.length == 0) {
-        throw new Error('no valid destinations');
-      }
-      newSqueal = await newSqueal.save();
-      await SquealViews.create({
-        squeal_id: newSqueal._id.toString(),
-        number: 1,
-      });
-
-      const dto = await this.loadSquealData(newSqueal, thisUser);
-
-      if (dto) {
-        ret = newSqueal;
-      }
-      return ret;
-    } else {
-      throw new Error('Not authorized');
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
     }
+    let newSqueal = new Squeal({
+      user_id: thisUser._id.toString(),
+      timestamp: Date.now(),
+      body: squeal.body,
+      img: this.resizeSquealImg(squeal.img),
+      img_content_type: squeal.img_content_type,
+      img_name: squeal.img_name,
+      video_content_type: squeal.video_content_type,
+      video_name: squeal.video_name,
+      n_characters: this.getNCharacters(squeal) ?? 0,
+      destination: [],
+    });
+    for (const dest of squeal.destination) {
+      if (await this.checkAuth(dest, thisUser)) {
+        newSqueal.destination.seen = false;
+        newSqueal.destination.push(dest);
+      }
+    }
+    if (newSqueal.destination.length == 0) {
+      throw new Error('no valid destinations');
+    }
+    newSqueal = await newSqueal.save();
+    await SquealViews.create({
+      squeal_id: newSqueal._id.toString(),
+      number: 1,
+    });
+
+    const dto = await this.loadSquealData(newSqueal, thisUser);
+
+    if (dto) {
+      ret = newSqueal;
+    }
+    return ret;
   }
   async getSquealDestination(myUser, username, search) {
     let validDest = [];
@@ -322,53 +320,52 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
-    if (this.isUserClient(username, myUser) || new accountService().isUserAuthorized(thisUser._id, myUser.user_id)) {
-      if (!search.startsWith('§') && !search.startsWith('#')) {
-        const userDest = await this.searchUser(search);
-        for (const us of userDest) {
-          const dest = new SquealDestination({
-            destination_id: us._id.toString(),
-            destination: us.login ?? '',
-            destination_type: 'MESSAGE',
-          });
-          validDest.push(dest);
-        }
-      }
-      if (!search.startsWith('#') && !search.startsWith('@')) {
-        const ChannelDest = await this.searchChannel('§', search, username);
-
-        for (const ch of ChannelDest) {
-          const dest = new SquealDestination({
-            destination_id: ch._id.toString(),
-            destination: ch.name ?? '',
-            destination_type: ch.type,
-          });
-          if (this.checkAuth(dest, thisUser)) {
-            validDest.push(dest);
-          }
-        }
-      }
-      if (!search.startsWith('§') && !search.startsWith('@')) {
-        const publicFind = await this.searchChannel('#', search, username);
-        for (const ch of publicFind) {
-          const dest = new SquealDestination({
-            destination_id: ch._id.toString(),
-            destination: ch.name ?? '',
-            destination_type: 'PUBLICGROUP',
-          });
-          validDest.push(dest);
-        }
-        if (search.startsWith('#')) {
-          validDest.push({
-            destination: search,
-            destination_type: 'PUBLICGROUP',
-          });
-        }
-      }
-      return validDest;
-    } else {
-      throw new Error('Unathorized');
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unauthorized');
     }
+    if (!search.startsWith('§') && !search.startsWith('#')) {
+      const userDest = await this.searchUser(search);
+      for (const us of userDest) {
+        const dest = new SquealDestination({
+          destination_id: us._id.toString(),
+          destination: us.login ?? '',
+          destination_type: 'MESSAGE',
+        });
+        validDest.push(dest);
+      }
+    }
+    if (!search.startsWith('#') && !search.startsWith('@')) {
+      const ChannelDest = await this.searchChannel('§', search, username);
+
+      for (const ch of ChannelDest) {
+        const dest = new SquealDestination({
+          destination_id: ch._id.toString(),
+          destination: ch.name ?? '',
+          destination_type: ch.type,
+        });
+        if (this.checkAuth(dest, thisUser)) {
+          validDest.push(dest);
+        }
+      }
+    }
+    if (!search.startsWith('§') && !search.startsWith('@')) {
+      const publicFind = await this.searchChannel('#', search, username);
+      for (const ch of publicFind) {
+        const dest = new SquealDestination({
+          destination_id: ch._id.toString(),
+          destination: ch.name ?? '',
+          destination_type: 'PUBLICGROUP',
+        });
+        validDest.push(dest);
+      }
+      if (search.startsWith('#')) {
+        validDest.push({
+          destination: search,
+          destination_type: 'PUBLICGROUP',
+        });
+      }
+    }
+    return validDest;
   }
 
   async searchUser(search) {
@@ -446,17 +443,6 @@ class SquealService {
   resizeSquealImg(img) {
     //TODO:implement
     return img;
-  }
-
-  async isUserClient(username, user) {
-    const thisUser = await User.findOne({ login: user.username });
-    const smmUser = await smmVIP.findOne({ user_id: thisUser._id.toString() });
-    for (const user of smmUser.users) {
-      if (username === user) {
-        return true;
-      }
-    }
-    return false;
   }
 
   getNCharacters(squeal) {

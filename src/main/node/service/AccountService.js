@@ -5,18 +5,19 @@ const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
 const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
+const SMMVIP = require('../model/smmVIP');
 const User = require('../model/user');
 
 class AccountService {
   async getUsersByName(user, myUsername, search) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('unauthorized');
-    }
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('bad username');
     }
 
+    if (!this.isUserAuthorized(user, thisUser)) {
+      throw new Error('unauthorized');
+    }
     if (search.startsWith('@')) {
       search = search.substring(1);
     }
@@ -29,12 +30,12 @@ class AccountService {
   }
 
   async getUser(user, myUsername, name) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('unauthorized');
-    }
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('bad username');
+    }
+    if (!this.isUserAuthorized(user, thisUser)) {
+      throw new Error('unauthorized');
     }
 
     if (name.startsWith('@')) {
@@ -44,14 +45,17 @@ class AccountService {
   }
 
   async imgUpdate(user, myUsername, account) {
-    if (!this.isUserAuthorized(myUsername, user.username)) {
-      throw new Error('unauthorized');
-    }
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('bad username');
     }
-    await User.findOneAndUpdate({ login: myUser.login }, { img: resizeUserImg(account.img), img_content_type: account.img_content_type });
+    if (!this.isUserAuthorized(user, thisUser)) {
+      throw new Error('unauthorized');
+    }
+    await User.findOneAndUpdate(
+      { login: thisUser.login },
+      { img: this.resizeUserImg(account.img), img_content_type: account.img_content_type }
+    );
     const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
     console.log(updated.img);
     return updated;
@@ -85,11 +89,32 @@ class AccountService {
     return img;
   }
 
-  isUserAuthorized(id, currentUserId) {
-    if (!id || !currentUserId) {
+  isUserAuthorized(myUser, theirUser) {
+    if (!myUser || !theirUser) {
       throw new Error('invalid username');
     }
-    return id.toString() == currentUserId.toString();
+    return myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(myUser, theirUser);
+  }
+
+  async isUserClient(myUser, theirUser) {
+    const smmVip = await SMMVIP.findById(myUser._id.toString());
+    if (!smmVip) {
+      return false;
+    }
+    for (const user of smmVip.users) {
+      if (theirUser.login === user) {
+        return true;
+      }
+    }
+    return false;
+  }
+  isUserVip(user) {
+    for (const a of user.authorities) {
+      if (a === 'ROLE_VIP') {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

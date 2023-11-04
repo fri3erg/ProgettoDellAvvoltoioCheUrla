@@ -21,12 +21,12 @@ class ReactionDTO {
 }
 class ReactionService {
   async insertOrUpdateReaction(reaction, user, username) {
-    if (!new AccountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
+    }
+    if (!new AccountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
     }
     const found = await SquealReaction.findOne({ user_id: thisUser._id.toString(), squeal_id: reaction.squeal_id });
     if (found) {

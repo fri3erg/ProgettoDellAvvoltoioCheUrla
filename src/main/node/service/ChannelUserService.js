@@ -11,12 +11,12 @@ const accountService = require('../service/AccountService');
 
 class ChannelUserService {
   async deleteSubscription(user, username, channel_id) {
-    if (!new accountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
     }
     const deleted = await ChannelUser.deleteOne({ user_id: thisUser._id.toString(), channel_id });
     if (!deleted) {
@@ -25,18 +25,18 @@ class ChannelUserService {
     return deleted;
   }
   async addSubscription(user, username, channel_id) {
-    if (!new accountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    const channel = Channel.findById(id);
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
+    }
+    const channel = Channel.findById(channel_id);
     if (channel.type == 'PRIVATEGROUP' || channel.type == 'MESSAGE') {
       throw new Error('Channel type invalid');
     }
-    const created = await ChannelUser.create({ user_id: thisUser._id.toString(), channel_id });
+    const created = await ChannelUser.create({ channel_id, user_id: thisUser._id.toString() });
     if (!created) {
       throw new Error('error in creation');
     }
@@ -44,12 +44,12 @@ class ChannelUserService {
   }
 
   async addSomeoneSubscription(user, username, channel_id, guy_name) {
-    if (!new accountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const myUser = await User.findOne({ login: username });
     if (!myUser) {
       throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unauthorized');
     }
     const theirUser = await User.findOne({ login: guy_name });
     if (!theirUser) {
@@ -70,12 +70,12 @@ class ChannelUserService {
   }
 
   async removeSomeoneSubscription(user, username, channel_id, guy_name) {
-    if (!new accountService().isUserAuthorized(username, user.username)) {
-      throw new Error('Unauthorized');
-    }
     const myUser = await User.findOne({ login: username });
     if (!myUser) {
       throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, myUser)) {
+      throw new Error('Unauthorized');
     }
     const theirUser = await User.findOne({ login: guy_name });
     if (!theirUser) {
@@ -96,27 +96,26 @@ class ChannelUserService {
   }
 
   async getPeopleFollowing(user, myUsername, id) {
-    if (!new accountService().isUserAuthorized(myUsername, user.username)) {
-      throw new Error('Unathorized');
-    }
-
-    const myUser = await User.findOne({ login: myUsername });
-    if (!myUser) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
       throw new Error('invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
     }
     const ch = await Channel.findById(id);
     if (!ch || !ch.type) {
       throw new Error('channel not found or without type');
     }
     if (ch.type == 'PRIVATEGROUP') {
-      if (!(await ChannelUser.find({ user_id: myUser._id.toString(), channel_id: id }))) {
+      if (!(await ChannelUser.find({ user_id: thisUser._id.toString(), channel_id: id }))) {
         throw new Error('Unauthorized');
       }
     }
 
     const chUs = await ChannelUser.find({ channel_id: id });
-    if (!chUs || !chUs.user_id) {
-      throw new Error('subscription not found or incomplete');
+    if (!chUs) {
+      throw new Error('subscription not found');
     }
     const chId = [];
     for (const c of chUs) {
