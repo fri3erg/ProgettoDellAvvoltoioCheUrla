@@ -17,6 +17,7 @@ import { AlertComponent } from './alert/alert.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+
 /**
  * Application wide Module
  */

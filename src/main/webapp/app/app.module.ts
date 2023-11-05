@@ -22,7 +22,7 @@ import MainModule from './layouts/main/main.module';
 import { AppPageTitleStrategy } from './app-page-title-strategy';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ObserveElementDirective } from './shared/directive/observe-element-directive';
+
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({

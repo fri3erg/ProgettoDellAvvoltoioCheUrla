@@ -33,6 +33,10 @@ export class SquealService {
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channel_id}`);
     return this.http.get<ISquealDTO[]>(url, { params, observe: 'response' });
   }
+  getSquealById(id: string): Observable<HttpResponse<ISquealDTO>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/squeal-response/${id}`);
+    return this.http.get<ISquealDTO>(url, { observe: 'response' });
+  }
 
   getSquealMadeByUser(name: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
     const params = new HttpParams().append('page', page).append('size', size);

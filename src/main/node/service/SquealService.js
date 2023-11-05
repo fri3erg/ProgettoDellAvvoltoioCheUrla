@@ -90,7 +90,7 @@ class SquealService {
     const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
       .limit(size)
       .skip(size * page)
-      .sort({ timestamp: +1 });
+      .sort({ timestamp: -1 });
 
     for (const s of sq) {
       let validDest = [];
@@ -99,15 +99,29 @@ class SquealService {
           validDest.push(d);
         }
       }
+      if (validDest == []) {
+        continue;
+      }
       s.destination = validDest;
       const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
         ret.push(dto);
       }
-
-      return ret;
     }
+    return ret;
+  }
+
+  async getSquealById(user, username, id) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
+    }
+    const s = await Squeal.findById(id);
+    return await this.loadSquealData(s, thisUser);
   }
 
   async getSquealsSentByUser(page, size, user, myUsername, theirUsername) {
@@ -280,6 +294,23 @@ class SquealService {
     if (!new accountService().isUserAuthorized(user, thisUser)) {
       throw new Error('Unauthorized');
     }
+
+    if (squeal.squeal_id_response) {
+      let valid = false;
+      const referencing_squeal = await Squeal.findById(squeal.squeal_id_response);
+      if (!referencing_squeal) {
+        throw new Error('referencing squeal not found');
+      }
+      for (const dest of referencing_squeal.destination) {
+        if (this.userHasReadPrivilege(thisUser, dest)) {
+          valid = true;
+        }
+      }
+      if (!valid) {
+        throw new Error('Unauthorized');
+      }
+    }
+
     let newSqueal = new Squeal({
       user_id: thisUser._id.toString(),
       timestamp: Date.now(),
@@ -291,9 +322,10 @@ class SquealService {
       video_name: squeal.video_name,
       n_characters: this.getNCharacters(squeal) ?? 0,
       destination: [],
+      squeal_id_response: squeal.squeal_id_response,
     });
     for (const dest of squeal.destination) {
-      if (await this.checkAuth(dest, thisUser)) {
+      if (await this.userHasWritePrivilege(dest, thisUser)) {
         newSqueal.destination.seen = false;
         newSqueal.destination.push(dest);
       }
@@ -343,7 +375,7 @@ class SquealService {
           destination: ch.name ?? '',
           destination_type: ch.type,
         });
-        if (this.checkAuth(dest, thisUser)) {
+        if (this.userHasWritePrivilege(dest, thisUser)) {
           validDest.push(dest);
         }
       }
@@ -389,7 +421,7 @@ class SquealService {
     return await Channel.find({ name: { $regex: ch + '(?i).*' + search + '.*' } });
   }
 
-  async checkAuth(destination, thisUser) {
+  async userHasWritePrivilege(destination, thisUser) {
     if (!destination || !destination.destination_type) {
       throw new Error('destination not foun or incomplete');
     }
@@ -419,6 +451,94 @@ class SquealService {
       default:
         return false;
     }
+  }
+
+  async userHasReadPrivilege(thisUser, destination) {
+    if (!destination || !destination.destination_type) {
+      throw new Error('destination not found or incomplete');
+    }
+    switch (destination.destination_type) {
+      case 'PRIVATEGROUP':
+        const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+        if (userSub) {
+          return true;
+        }
+        break;
+      case 'MOD':
+      case 'PUBLICGROUP':
+      case 'MESSAGE':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  async calcCharsChangedWithPopularity(user, myUsername) {
+    const ret = [];
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    let squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
+    let squealsSent = await Squeal.find({
+      user_id: thisUser._id.toString(),
+      'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
+    });
+    squeals = squeals.concat(squealsSent);
+    const map = new Map();
+    for (const s of squeals) {
+      const user = s.user_id;
+      let n = s;
+      map.set(user, n);
+    }
+
+    squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
+  }
+  async calcCharsChangedbySqueal(squeal) {
+    const ret = [];
+
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
+    let squealsSent = await Squeal.find({
+      user_id: thisUser._id.toString(),
+      'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
+    });
+    squeals = squeals.concat(squealsSent);
+    const map = new Map();
+    for (const s of squeals) {
+      const user = s.user_id;
+      let n = s;
+      map.set(user, n);
+    }
+
+    squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
   }
 
   async loadSquealData(squeal, thisUser) {

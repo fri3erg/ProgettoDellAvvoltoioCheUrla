@@ -43,6 +43,7 @@ class ChannelUserService {
     return created;
   }
 
+  //not tested
   async addSomeoneSubscription(user, username, channel_id, guy_name) {
     const myUser = await User.findOne({ login: username });
     if (!myUser) {
@@ -68,7 +69,7 @@ class ChannelUserService {
     }
     return created;
   }
-
+  //not tested
   async removeSomeoneSubscription(user, username, channel_id, guy_name) {
     const myUser = await User.findOne({ login: username });
     if (!myUser) {

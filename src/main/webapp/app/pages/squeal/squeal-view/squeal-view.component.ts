@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -9,17 +9,22 @@ import { MenuItem } from 'primeng/api';
 import { ChipModule } from 'primeng/chip';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { Router } from '@angular/router';
+import SharedModule from 'app/shared/shared.module';
+import { Button } from 'primeng/button';
+import { CreateSquealComponent } from '../create-squeal/create-squeal.component';
 
 @Component({
   selector: 'jhi-squeal-view',
   standalone: true,
-  imports: [CommonModule, SpeedDialModule, ChipModule],
+  imports: [CommonModule, SpeedDialModule, ChipModule, SharedModule, CreateSquealComponent],
   templateUrl: './squeal-view.component.html',
   styleUrls: ['./squeal-view.component.scss'],
 })
 export class SquealViewComponent implements OnInit {
   @Input() squeal?: ISquealDTO;
   reactionAdded?: string;
+  response_squeal?: ISquealDTO;
+  reply = false;
   reactions: MenuItem[] = [
     {
       icon: 'heart',
@@ -63,6 +68,13 @@ export class SquealViewComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.squeal);
+    if (this.squeal?.squeal?.squeal_id_response) {
+      this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
+        if (r.body) {
+          this.response_squeal = r.body;
+        }
+      });
+    }
   }
 
   isActive(reaction: string): string {

@@ -44,6 +44,22 @@ class AccountService {
     return this.hideSensitive(await User.findOne({ login: name }));
   }
 
+  //not tested
+  async addVip(user, myUsername) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    if (!this.isUserAuthorized(user, thisUser)) {
+      throw new Error('unauthorized');
+    }
+    if (thisUser.authorities.includes('ROLE_VIP')) {
+      throw new Error('you already have that role');
+    }
+    const auth = thisUser.authorities.push('ROLE_VIP');
+    return this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, { authorities: auth }));
+  }
+
   async imgUpdate(user, myUsername, account) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
@@ -84,6 +100,14 @@ class AccountService {
     return false;
   }
 
+  isUserVip(user) {
+    for (const a of user.authorities) {
+      if (a === 'ROLE_VIP') {
+        return true;
+      }
+    }
+    return false;
+  }
   resizeUserImg(img) {
     //TODO:implement
     return img;

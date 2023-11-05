@@ -24,6 +24,7 @@ export class CreateSquealComponent implements OnInit {
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
   @Input() destination: ISquealDestination[] = [];
+  @Input() response?: string;
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
@@ -78,7 +79,7 @@ export class CreateSquealComponent implements OnInit {
     if (!this.dto?.squeal) {
       return;
     }
-
+    this.dto.squeal.squeal_id_response = this.response;
     this.dto.squeal.body = this.message;
     this.dto.squeal.destination = this.destination;
     console.log('insert');

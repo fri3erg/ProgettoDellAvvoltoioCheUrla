@@ -55,6 +55,19 @@ router.get('/user-by-name', auth, async (req, res) => {
   }
 });
 
+router.get('/add-vip', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().addVip(req.user, req.user.username);
+    if (!ret) {
+      throw new Error('operation unsuccessful');
+    }
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/account', auth, async (req, res) => {
   try {
     const cUsername = req.user.username;
@@ -195,7 +208,7 @@ router.post('/register/smm', async (req, res) => {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
       activation_key: uuidv4(),
-      authorities: ['ROLE_USER', 'ROLE_SMM'],
+      authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP'],
     });
 
     // Create token
