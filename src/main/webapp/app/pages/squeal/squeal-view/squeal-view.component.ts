@@ -5,7 +5,7 @@ import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
 import { SquealReactionService } from 'app/entities/squeal-reaction/service/squeal-reaction.service';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ChipModule } from 'primeng/chip';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { Router } from '@angular/router';
@@ -25,6 +25,7 @@ export class SquealViewComponent implements OnInit {
   reactionAdded?: string;
   response_squeal?: ISquealDTO;
   reply = false;
+  innerBody = '';
   reactions: MenuItem[] = [
     {
       icon: 'heart',
@@ -64,11 +65,27 @@ export class SquealViewComponent implements OnInit {
     },
   ];
 
-  constructor(private squealService: SquealService, private squealReactionService: SquealReactionService, private router: Router) {}
+  constructor(
+    private squealService: SquealService,
+    private messageService: MessageService,
+    private squealReactionService: SquealReactionService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.squeal);
-    if (this.squeal?.squeal?.squeal_id_response) {
+    if (!this.squeal?.squeal) {
+      this.messageService.add({ severity: 'error', summary: 'Squeal not found', detail: 'squeal does not exist' });
+      return;
+    }
+    if (!this.squeal.squeal.body) {
+      this.squeal.squeal.body = 'squeal not found';
+    }
+
+    console.log(this.squeal.squeal.body);
+    this.innerBody = this.urlify(this.squeal.squeal.body);
+    console.log(this.innerBody);
+
+    if (this.squeal.squeal.squeal_id_response) {
       this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
         if (r.body) {
           this.response_squeal = r.body;
@@ -76,7 +93,10 @@ export class SquealViewComponent implements OnInit {
       });
     }
   }
-
+  urlify(text: string): string {
+    const urlRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\\/~+#-]*[\w@?^=%&\\/~+#-])/g;
+    return text.replace(urlRegex, url => '<a href="' + url + '">' + url + '</a>');
+  }
   isActive(reaction: string): string {
     if (reaction === this.squeal?.active_reaction) {
       return 'active-emoji';

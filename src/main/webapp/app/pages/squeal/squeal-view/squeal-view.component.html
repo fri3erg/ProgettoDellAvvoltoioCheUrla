@@ -12,9 +12,7 @@
     <div>{{ squeal.squeal?.n_characters }} characters</div>
   </div>
   <hr class="m-0" />
-  <div class="ps-4 pt-3 fs-4 fw-light">
-    {{ squeal.squeal?.body }}
-  </div>
+  <div [innerHTML]="innerBody" class="ps-4 pt-3 fs-4 fw-light"></div>
   <div>
     {{ squeal.squeal?.video_content_type }}
     {{ squeal.squeal?.video_name }}
@@ -26,8 +24,7 @@
     />
   </div>
   <hr />
-  <jhi-squeal-view [squeal]="response_squeal"></jhi-squeal-view>
-  {{ response_squeal?.squeal?.body }}
+  <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
   <div class="squeal-layout pt-0">
     <div style="flex: 1">
       <div class="pb-1">
@@ -40,7 +37,7 @@
         </ng-container>
       </div>
     </div>
-    <button type="button" class="btn btn-secondary" (click)="reply = true">
+    <button title="reply" type="button" class="btn btn-secondary" (click)="reply = true">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
         <path
           fill-rule="evenodd"
@@ -51,6 +48,6 @@
     <div>{{ squeal.views?.number }} views</div>
   </div>
   <div>
-    <jhi-create-squeal *ngIf="reply" [response]="squeal?.squeal?._id?.toString()"></jhi-create-squeal>
+    <jhi-create-squeal *ngIf="reply" [response]="squeal.squeal?._id?.toString()"></jhi-create-squeal>
   </div>
 </div>

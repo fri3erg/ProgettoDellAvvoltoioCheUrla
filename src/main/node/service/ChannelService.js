@@ -77,7 +77,7 @@ class ChannelService {
     if (!new accountService().isUserAuthorized(user, thisUser)) {
       throw new Error('Not authorized');
     }
-    if (this.isIncorrectName(channel.name)) {
+    if (this.isIncorrectName(channel)) {
       throw new Error('Name Invalid');
     }
     if (!channel.name || !channel.type) {
@@ -178,7 +178,19 @@ class ChannelService {
   }
 
   isIncorrectName(q) {
-    return q.includes('§') || q.includes('#') || q.includes('@') || q.toLowerCase() !== q;
+    let includes = q.name.includes('§') || q.name.includes('#') || q.name.includes('@');
+    let valid = false;
+    switch (q.type) {
+      case 'MOD':
+        valid = q.name.toUpperCase() === q.name;
+        break;
+      case 'PRIVATEGROUP':
+        valid = q.name.toLowerCase() === q.name;
+        break;
+      default:
+        break;
+    }
+    return !valid || includes;
   }
 
   async loadChannelData(channel) {
