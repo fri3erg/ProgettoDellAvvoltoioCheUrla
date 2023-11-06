@@ -23,24 +23,6 @@ router.get('/squeal-list', auth, async (req, res) => {
   }
 });
 
-router.get('/squeal-list-smm/:client_username', auth, async (req, res) => {
-  try {
-    if (!auth) {
-      //TODO: AnonymousSqueals()
-    }
-    const ret = await new squealService().getSquealList(
-      parseInt(req.query.page),
-      parseInt(req.query.size),
-      req.user,
-      req.params.client_username
-    );
-    res.status(200).json(ret);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
 router.get('/user-chars', auth, async (req, res) => {
   try {
     const ret = await new squealService().getUserChars(req.user, req.user.username);

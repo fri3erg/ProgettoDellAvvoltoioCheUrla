@@ -123,9 +123,9 @@ router.post('/client-post/:name', auth, async (req, res) => {
   }
 });
 
-router.get('/squeals-destination/smm/', auth, async (req, res) => {
+router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealDestination(req.user, req.query.name, req.query.search);
+    const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -136,6 +136,16 @@ router.get('/squeals-destination/smm/', auth, async (req, res) => {
 router.get('/squeal-rank-reaction/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealRankByReaction(req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/client-chars/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getUserChars(req.user, req.params.name);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

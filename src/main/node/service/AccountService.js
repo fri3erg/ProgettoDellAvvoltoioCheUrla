@@ -122,16 +122,15 @@ class AccountService {
 
   async isUserClient(client, user) {
     const smmUser = await SMMVIP.findOne({ user_id: user.user_id });
-    if (user) {
-      for (const user of smmUser.users) {
-        if (client._id === user) {
-          return true;
-        }
-      }
-      return false;
-    } else {
-      throw new Error('You dont have clients');
+    if (!smmUser.users) {
+      throw new Error('you dont have any clients');
     }
+    for (const user of smmUser.users) {
+      if (client._id === user) {
+        return true;
+      }
+    }
+    return false;
   }
 
   isUserVip(user) {

@@ -77,6 +77,7 @@ class SquealService {
     if (!new accountService().isUserAuthorized(user, thisUser)) {
       throw new Error('Unauthorized');
     }
+
     const chUs = await ChannelUser.find({ user_id: thisUser._id.toString() });
 
     let chId = [];
@@ -87,12 +88,15 @@ class SquealService {
     for (const c of chMod) {
       chId.push(c._id.toString());
     }
+
     const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: -1 });
 
     for (const s of sq) {
+      console.log(s);
+      console.log(s.destination);
       let validDest = [];
       for (const d of s.destination) {
         if (chId.includes(d.destination_id)) {
@@ -330,6 +334,7 @@ class SquealService {
         newSqueal.destination.push(dest);
       }
     }
+
     if (newSqueal.destination.length == 0) {
       throw new Error('no valid destinations');
     }
@@ -423,7 +428,7 @@ class SquealService {
 
   async userHasWritePrivilege(destination, thisUser) {
     if (!destination || !destination.destination_type) {
-      throw new Error('destination not foun or incomplete');
+      throw new Error('destination not found or incomplete');
     }
     switch (destination.destination_type) {
       case 'MOD':
@@ -573,22 +578,6 @@ class SquealService {
   resizeSquealImg(img) {
     //TODO:implement
     return img;
-  }
-
-  //nome cliente , mio user
-  async isUserClient(userUsername, user) {
-    const smmUser = await smmVIP.findOne({ user_id: user.user_id });
-    const client = await User.findOne({ login: userUsername });
-    if (user) {
-      for (const user of smmUser.users) {
-        if (client._id === user) {
-          return true;
-        }
-      }
-      return false;
-    } else {
-      throw new Error('You dont have clients!!!!');
-    }
   }
 
   getNCharacters(squeal) {
