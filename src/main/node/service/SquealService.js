@@ -11,6 +11,7 @@ const smmVIP = require('../model/smmVIP');
 const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
+const ChannelService = require('./ChannelService');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -95,8 +96,6 @@ class SquealService {
       .sort({ timestamp: -1 });
 
     for (const s of sq) {
-      console.log(s);
-      console.log(s.destination);
       let validDest = [];
       for (const d of s.destination) {
         if (chId.includes(d.destination_id)) {
@@ -351,6 +350,7 @@ class SquealService {
     }
     return ret;
   }
+
   async getSquealDestination(myUser, username, search) {
     let validDest = [];
     const thisUser = await User.findOne({ login: username });

@@ -10,6 +10,7 @@ const auth = require('../middleware/auth');
 const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
 const squealService = require('../service/SquealService');
+const reactionService = require('../service/ReactionService');
 
 const router = express.Router();
 
@@ -102,7 +103,7 @@ router.get('/clientuser/:_id', auth, async (req, res) => {
   }
 });
 
-//feed del cliente
+//feed del cliente ✅
 router.get('/client-feed/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
@@ -112,13 +113,23 @@ router.get('/client-feed/:name', auth, async (req, res) => {
   }
 });
 
-//postare per clienti
+//postare per clienti ✅
 router.post('/client-post/:name', auth, async (req, res) => {
   try {
     let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name);
-    console.log(squeal);
     res.status(201).json(squeal);
   } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
+  try {
+    let reaction = await new reactionService().insertOrUpdateReaction(req.body, req.user, req.params.name);
+    console.log(reaction);
+    res.status(201).json(reaction);
+  } catch (err) {
+    console.log(err);
     return res.status(400).send(err.message);
   }
 });
