@@ -27,6 +27,17 @@ router.get('/smmvips', auth, async (req, res) => {
   }
 });
 
+router.get('/get-id/smm', auth, async (req, res) => {
+  try {
+    const ret = await smmVIP.findOne({ user_id: req.user.user_id });
+    console.log('SMM: ', ret);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 //ritorna l'oggetto smmvip che ha come ID quello che passiamo come parametro ✅
 router.get('/smmvips/:_id', auth, async (req, res) => {
   try {
@@ -63,6 +74,7 @@ router.post('/add-smm/:_id', auth, async (req, res) => {
   }
 });
 
+//! non restituire password
 //dammi oggetto di tutti i clienti del smm ✅
 //chiamato dal smm quando vuole visualizzare tutti i suoi clienti
 router.get('/smmclients/:_id', auth, async (req, res) => {
