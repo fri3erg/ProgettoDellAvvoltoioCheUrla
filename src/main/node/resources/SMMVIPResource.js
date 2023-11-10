@@ -105,6 +105,16 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-response/smm/:id/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealById(req.user, req.params.name, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 //id -> user ✅
 router.get('/clientuser/:_id', auth, async (req, res) => {
   try {
