@@ -5,11 +5,10 @@ import { RouterModule } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
-import { IUserCharsDTO, Type } from 'app/entities/user-chars/user-chars.model';
+import { IUserCharsDTO } from 'app/entities/user-chars/user-chars.model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import SharedModule from 'app/shared/shared.module';
 import { MessageService } from 'primeng/api';
-import { Buffer } from 'buffer';
 
 @Component({
   standalone: true,
@@ -58,7 +57,7 @@ export class CreateSquealComponent implements OnInit {
   }
 
   getRemainingChars(): number {
-    //TODO:change back to 0 in each
+    // TODO:change back to 0 in each
     return (this.charsDTO?.remainingChars ?? 100) - this.message.length;
   }
 

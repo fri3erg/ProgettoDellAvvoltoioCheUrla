@@ -6,7 +6,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ISqueal, NewSqueal } from '../squeal.model';
-import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
+import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 

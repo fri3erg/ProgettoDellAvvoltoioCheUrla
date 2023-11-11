@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -10,7 +10,6 @@ import { ChipModule } from 'primeng/chip';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { Router } from '@angular/router';
 import SharedModule from 'app/shared/shared.module';
-import { Button } from 'primeng/button';
 import { CreateSquealComponent } from '../create-squeal/create-squeal.component';
 import { Loader, LoaderOptions } from 'google-maps';
 
@@ -86,17 +85,27 @@ export class SquealViewComponent implements OnInit {
     this.innerBody = this.urlify(this.squeal.squeal.body);
     console.log(this.innerBody);
 
-    const options: LoaderOptions = {
-      /* todo */
-    };
-    const loader = new Loader('my-api-key', options);
-
-    const google = await loader.load();
-    const map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat: -34.397, lng: 150.644 },
+    let map: google.maps.Map;
+    const center: google.maps.LatLngLiteral = { lat: 30, lng: -110 };
+    map = new google.maps.Map(document.getElementById('map') as HTMLElement, {
+      center,
       zoom: 8,
     });
-
+    /*
+    const options: LoaderOptions = {
+      language: 'en', 
+      region: 'IT' 
+    };
+    const loader = new Loader('AIzaSyBRyAQHyJBPIxViP0UzEEPN9YhuNzyzWPM', options);
+    const myMap = document.getElementById('map');
+    if (myMap) {
+      loader.load().then(function (google) {
+        const map = new google.maps.Map(myMap, {
+          center: { lat: -34.397, lng: 150.644 },
+          zoom: 8
+        });
+      });
+    }*/
     if (this.squeal.squeal.squeal_id_response) {
       this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
         if (r.body) {
@@ -133,7 +142,7 @@ export class SquealViewComponent implements OnInit {
           if (cr?.number) {
             cr.number--;
             if (cr.number <= 0) {
-              this.squeal.reactions?.splice(this.squeal.reactions.indexOf(cr));
+              this.squeal.reactions?.splice(this.squeal.reactions.indexOf(cr), 1);
             }
           }
           if (reaction.emoji === 'deleted') {
@@ -178,15 +187,15 @@ export class SquealViewComponent implements OnInit {
     navigator.geolocation.getCurrentPosition(
       position => {
         if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
-          this.squeal?.geoLoc?.longitude = position.coords.longitude + '';
-          this.squeal?.geoLoc?.latitude = position.coords.latitude + '';
+          this.squeal.geoLoc.longitude = position.coords.longitude;
+          this.squeal.geoLoc.latitude = position.coords.latitude;
         }
       },
       error => {
         console.log(error);
         if (alertError) {
           alert(error);
-          this.messageService.add({ severity: 'error', summary: 'Posizione', detail: error + '' });
+          this.messageService.add({ severity: 'error', summary: 'Posizione', detail: error.message });
         }
       },
       options
