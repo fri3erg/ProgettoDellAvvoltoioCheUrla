@@ -17,7 +17,7 @@ class ChannelService {
     if (!thisUser) {
       throw new Error('username invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
     let channel = await Channel.findById(id);
@@ -46,7 +46,7 @@ class ChannelService {
     if (!thisUser) {
       throw new Error('invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
     let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
@@ -74,7 +74,7 @@ class ChannelService {
     if (!channel || !thisUser) {
       throw new Error('invalid data');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Not authorized');
     }
     if (this.isIncorrectName(channel)) {
@@ -127,7 +127,7 @@ class ChannelService {
       throw new Error('invalid username');
     }
 
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unathorized');
     }
     const theirUser = await User.findOne({ login: search });

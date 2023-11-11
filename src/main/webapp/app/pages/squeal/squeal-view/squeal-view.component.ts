@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import SharedModule from 'app/shared/shared.module';
 import { Button } from 'primeng/button';
 import { CreateSquealComponent } from '../create-squeal/create-squeal.component';
+import { Loader, LoaderOptions } from 'google-maps';
 
 @Component({
   selector: 'jhi-squeal-view',
@@ -85,6 +86,17 @@ export class SquealViewComponent implements OnInit {
     this.innerBody = this.urlify(this.squeal.squeal.body);
     console.log(this.innerBody);
 
+    const options: LoaderOptions = {
+      /* todo */
+    };
+    const loader = new Loader('my-api-key', options);
+
+    const google = await loader.load();
+    const map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: -34.397, lng: 150.644 },
+      zoom: 8,
+    });
+
     if (this.squeal.squeal.squeal_id_response) {
       this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
         if (r.body) {
@@ -154,5 +166,30 @@ export class SquealViewComponent implements OnInit {
     }
 
     this.router.navigate([type, id]);
+  }
+
+  setCoordinates(alertError = false): void {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
+          this.squeal?.geoLoc?.longitude = position.coords.longitude + '';
+          this.squeal?.geoLoc?.latitude = position.coords.latitude + '';
+        }
+      },
+      error => {
+        console.log(error);
+        if (alertError) {
+          alert(error);
+          this.messageService.add({ severity: 'error', summary: 'Posizione', detail: error + '' });
+        }
+      },
+      options
+    );
   }
 }

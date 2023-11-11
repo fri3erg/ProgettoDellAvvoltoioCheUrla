@@ -69,6 +69,17 @@ router.get('/squeal-made-by-user-count/:name', auth, async (req, res) => {
   }
 });
 
+router.post('/update-geoloc', auth, async (req, res) => {
+  try {
+    const geo_loc = await new squealService().updateGeoLoc(req.body.geoLoc, req.user, req.user.username);
+    console.log(geo_loc);
+    res.status(201).json(geo_loc);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeal-by-channel/:id', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealByChannel(
@@ -123,7 +134,7 @@ router.get('/squeals-destination', auth, async (req, res) => {
 
 router.post('/squeals', auth, async (req, res) => {
   try {
-    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username);
+    let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username, req.body.geoLoc);
     console.log(squeal);
     res.status(201).json(squeal);
   } catch (err) {

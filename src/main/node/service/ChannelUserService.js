@@ -15,7 +15,7 @@ class ChannelUserService {
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
     const deleted = await ChannelUser.deleteOne({ user_id: thisUser._id.toString(), channel_id });
@@ -29,7 +29,7 @@ class ChannelUserService {
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
     const channel = Channel.findById(channel_id);
@@ -49,7 +49,7 @@ class ChannelUserService {
     if (!myUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unauthorized');
     }
     const theirUser = await User.findOne({ login: guy_name });
@@ -75,7 +75,7 @@ class ChannelUserService {
     if (!myUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unauthorized');
     }
     const theirUser = await User.findOne({ login: guy_name });
@@ -101,7 +101,7 @@ class ChannelUserService {
     if (!thisUser) {
       throw new Error('invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
     const ch = await Channel.findById(id);

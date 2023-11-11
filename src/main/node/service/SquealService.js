@@ -12,6 +12,7 @@ const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
 const ChannelService = require('./ChannelService');
+const GeoLoc = require('../model/geoLoc');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -29,7 +30,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
 
@@ -75,7 +76,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
 
@@ -120,7 +121,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
     const s = await Squeal.findById(id);
@@ -134,7 +135,7 @@ class SquealService {
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unathorized');
     }
     let squealsSent = [];
@@ -167,7 +168,7 @@ class SquealService {
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unathorized');
     }
     const chTypes = ['MOD', 'PUBLICGROUP'];
@@ -198,7 +199,7 @@ class SquealService {
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, myUser)) {
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unathorized');
     }
     const chTypes = ['MOD', 'PUBLICGROUP'];
@@ -211,7 +212,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
     const squeals = await Squeal.find({ 'destination.destination_id': id })
@@ -233,6 +234,52 @@ class SquealService {
       }
     }
     return ret;
+  }
+
+  async countSquealMadeByUser(user, myUsername, theirUsername) {
+    const theirUser = await User.findOne({ login: theirUsername });
+    const myUser = await User.findOne({ login: myUsername });
+    if (!theirUser || !myUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
+      throw new Error('Unathorized');
+    }
+    const chTypes = ['MOD', 'PUBLICGROUP'];
+    return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
+  }
+
+  async updateGeoLoc(geoLoc, user, myUsername) {
+    if (this.geoLocIsInvalid(geoLoc)) {
+      throw new Error('GeoLoc invalid');
+    }
+    const ret = [];
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+    loc = await GeoLoc.findByIdAndUpdate(geoLoc._id.toString(), {
+      latitude: geoLoc.latitude,
+      longitude: geoLoc.longitude,
+      accuracy: geoLoc.accuracy,
+      speed: geoLoc.speed,
+      heading: geoLoc.heading,
+      timestamp: Date.now(),
+    });
+    if (!loc) {
+      throw new Error('could not add geoloc');
+    }
+    return loc;
+  }
+
+  geoLocIsInvalid(geoLoc) {
+    if (!geoLoc.latitude || !geoLoc.longitude || !geoLoc._id.toString() || !geoLoc.squeal_id) {
+      return treu;
+    }
+    return false;
   }
 
   async checkSubscribed(d, thisUser) {
@@ -260,7 +307,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
 
@@ -288,13 +335,13 @@ class SquealService {
     return ret;
   }
 
-  async insertOrUpdate(squeal, user, username) {
+  async insertOrUpdate(squeal, user, username, geoLoc) {
     let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!squeal || !thisUser) {
       throw new Error('Invalid data');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
 
@@ -338,11 +385,24 @@ class SquealService {
       throw new Error('no valid destinations');
     }
     newSqueal = await newSqueal.save();
+
     await SquealViews.create({
       squeal_id: newSqueal._id.toString(),
       number: 1,
     });
 
+    if (geoLoc) {
+      await GeoLoc.create({
+        squeal_id: newSqueal._id.toString(),
+        user_id: thisUser._id.toString(),
+        latitude: geoLoc.latitude,
+        longitude: geoLoc.longitude,
+        accuracy: geoLoc.accuracy,
+        heading: geoLoc.heading,
+        speed: geoLoc.speed,
+        timestamp: newSqueal.timestamp,
+      });
+    }
     const dto = await this.loadSquealData(newSqueal, thisUser);
 
     if (dto) {
@@ -357,7 +417,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
-    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       throw new Error('Unauthorized');
     }
     if (!search.startsWith('§') && !search.startsWith('#')) {
@@ -408,7 +468,7 @@ class SquealService {
   async getSquealRankByReaction(myUser, theirUsername) {
     let squealRank = [];
 
-    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       return squealRank;
     } else {
       throw new Error('Unathorized');
@@ -484,7 +544,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
 
@@ -518,7 +578,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
 
@@ -565,6 +625,8 @@ class SquealService {
 
     const views = await SquealViews.findOne({ squeal_id });
 
+    const geoLoc = await GeoLoc.findOne({ squeal_id });
+
     const ret = {
       userName: squeal_user.login,
       squeal,
@@ -572,6 +634,7 @@ class SquealService {
       reactions,
       active_reaction,
       views,
+      geoLoc,
     };
     return ret;
   }
@@ -582,7 +645,7 @@ class SquealService {
 
   getNCharacters(squeal) {
     if (!squeal || !squeal.body) {
-      throw new Error('channel not found');
+      throw new Error('squeal not found');
     }
     let n = squeal.body.length;
     if (squeal.img && squeal.img != '') {

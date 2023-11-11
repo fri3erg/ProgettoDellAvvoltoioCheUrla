@@ -15,7 +15,7 @@ class AccountService {
       throw new Error('bad username');
     }
 
-    if (!this.isUserAuthorized(user, thisUser)) {
+    if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
     if (search.startsWith('@')) {
@@ -34,7 +34,7 @@ class AccountService {
     if (!thisUser) {
       throw new Error('bad username');
     }
-    if (!this.isUserAuthorized(user, thisUser)) {
+    if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
 
@@ -50,7 +50,7 @@ class AccountService {
     if (!thisUser) {
       throw new Error('bad username');
     }
-    if (!this.isUserAuthorized(user, thisUser)) {
+    if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
     if (thisUser.authorities.includes('ROLE_VIP')) {
@@ -65,7 +65,7 @@ class AccountService {
     if (!thisUser) {
       throw new Error('bad username');
     }
-    if (!this.isUserAuthorized(user, thisUser)) {
+    if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
     await User.findOneAndUpdate(
@@ -91,7 +91,10 @@ class AccountService {
     };
   }
 
-  isMod(user) {
+  async isMod(user) {
+    if (!user.authorities) {
+      user = await User.findById(user.user_id);
+    }
     for (const a of user.authorities) {
       if (a === 'ROLE_ADMIN') {
         return true;
@@ -100,7 +103,10 @@ class AccountService {
     return false;
   }
 
-  isUserVip(user) {
+  async isUserVip(user) {
+    if (!user.authorities) {
+      user = await User.findOne({ login: user.user_id });
+    }
     for (const a of user.authorities) {
       if (a === 'ROLE_VIP') {
         return true;
@@ -108,14 +114,18 @@ class AccountService {
     }
     return false;
   }
+
   resizeUserImg(img) {
     //TODO:implement
     return img;
   }
 
-  isUserAuthorized(myUser, theirUser) {
+  async isUserAuthorized(myUser, theirUser) {
     if (!myUser || !theirUser) {
       throw new Error('invalid username');
+    }
+    if (await this.isMod(myUser)) {
+      return true;
     }
     return myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(theirUser, myUser);
   }
@@ -132,15 +142,5 @@ class AccountService {
     }
     return false;
   }
-
-  isUserVip(user) {
-    for (const a of user.authorities) {
-      if (a === 'ROLE_VIP') {
-        return true;
-      }
-    }
-    return false;
-  }
 }
-
 module.exports = AccountService;
