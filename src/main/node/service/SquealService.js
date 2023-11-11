@@ -116,6 +116,56 @@ class SquealService {
     return ret;
   }
 
+  async getSquealListCmt(page, size, user, username) {
+    const ret = [];
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!new accountService().isUserAuthorized(user, thisUser)) {
+      throw new Error('Unauthorized');
+    }
+
+    const chUs = await ChannelUser.find({ user_id: thisUser._id.toString() });
+
+    let chId = [];
+    for (const us of chUs) {
+      chId.push(us.channel_id);
+    }
+    const chMod = await Channel.find({ type: 'MOD' });
+    for (const c of chMod) {
+      chId.push(c._id.toString());
+    }
+
+    const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: -1 });
+
+    for (const s of sq) {
+      let validDest = [];
+      if (s.squeal_id_response == null) {
+        for (const d of s.destination) {
+          if (chId.includes(d.destination_id)) {
+            validDest.push(d);
+          }
+        }
+
+        if (validDest == []) {
+          continue;
+        }
+
+        s.destination = validDest;
+        const dto = await this.loadSquealData(s, thisUser);
+
+        if (dto) {
+          ret.push(dto);
+        }
+      }
+    }
+    return ret;
+  }
+
   async getSquealById(user, username, id) {
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
@@ -465,12 +515,32 @@ class SquealService {
     return validDest;
   }
 
+  async getSquealComments(myUser, theirUsername, squeal_id) {
+    const ret = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+    const squeals = await Squeal.find({ squeal_id_response: squeal_id });
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
+  }
+
   async getSquealRankByReaction(myUser, theirUsername) {
     let squealRank = [];
-
-    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
-      return squealRank;
-    } else {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
       throw new Error('Unathorized');
     }
   }

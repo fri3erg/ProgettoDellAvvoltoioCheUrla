@@ -128,7 +128,7 @@ router.get('/clientuser/:_id', auth, async (req, res) => {
 //feed del cliente ✅
 router.get('/client-feed/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealListCmt(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
     res.status(200).json(ret);
   } catch (err) {
     return res.status(400).send(err.message);

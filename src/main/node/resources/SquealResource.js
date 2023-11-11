@@ -43,6 +43,16 @@ router.get('/squeal-response/:id', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-comments/:id/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealComments(req.user, req.params.name, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeal-made-by-user/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealMadeByUser(
