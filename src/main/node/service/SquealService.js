@@ -122,7 +122,7 @@ class SquealService {
     if (!thisUser) {
       throw new Error('Invalid username');
     }
-    if (!new accountService().isUserAuthorized(user, thisUser)) {
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
 
