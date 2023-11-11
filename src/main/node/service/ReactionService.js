@@ -7,7 +7,7 @@ const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
-const AccountService = require('./AccountService');
+const accountService = require('./AccountService');
 class ReactionDTO {
   user;
   number = 0;

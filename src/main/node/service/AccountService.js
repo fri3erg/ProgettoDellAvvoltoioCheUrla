@@ -136,7 +136,7 @@ class AccountService {
       throw new Error('you dont have any clients');
     }
     for (const user of smmUser.users) {
-      if (client._id === user) {
+      if (client._id.toString() === user) {
         return true;
       }
     }
