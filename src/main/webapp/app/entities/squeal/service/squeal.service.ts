@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { ISqueal, NewSqueal } from '../squeal.model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.model';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
-
+import { Loader, LoaderOptions } from 'google-maps';
+import { ISqueal, NewSqueal } from '../squeal.model';
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, '_id'>;
 
 export type EntityResponseType = HttpResponse<ISqueal>;
@@ -18,9 +18,24 @@ export type EntityArrayResponseType = HttpResponse<ISqueal[]>;
 @Injectable({ providedIn: 'root' })
 export class SquealService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/squeals');
+  private loader?: Loader;
+  private apikey = 'AIzaSyBRyAQHyJBPIxViP0UzEEPN9YhuNzyzWPM';
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
+  getLoader(): Loader {
+    if (this.loader) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return this.loader;
+    }
+    const options: LoaderOptions = {
+      language: 'en',
+      region: 'IT',
+    };
+    this.loader = new Loader(this.apikey, options);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.loader;
+  }
   getPositiveReactions(id?: string): Observable<HttpResponse<number>> {
     if (!id) {
       id = '';

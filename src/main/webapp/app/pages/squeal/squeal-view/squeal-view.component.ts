@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -20,12 +20,13 @@ import { Loader, LoaderOptions } from 'google-maps';
   templateUrl: './squeal-view.component.html',
   styleUrls: ['./squeal-view.component.scss'],
 })
-export class SquealViewComponent implements OnInit {
+export class SquealViewComponent implements OnInit, AfterViewInit {
   @Input() squeal?: ISquealDTO;
   reactionAdded?: string;
   response_squeal?: ISquealDTO;
   reply = false;
   innerBody = '';
+  squealed = false;
   reactions: MenuItem[] = [
     {
       icon: 'heart',
@@ -83,29 +84,7 @@ export class SquealViewComponent implements OnInit {
 
     console.log(this.squeal.squeal.body);
     this.innerBody = this.urlify(this.squeal.squeal.body);
-    console.log(this.innerBody);
 
-    let map: google.maps.Map;
-    const center: google.maps.LatLngLiteral = { lat: 30, lng: -110 };
-    map = new google.maps.Map(document.getElementById('map') as HTMLElement, {
-      center,
-      zoom: 8,
-    });
-    /*
-    const options: LoaderOptions = {
-      language: 'en', 
-      region: 'IT' 
-    };
-    const loader = new Loader('AIzaSyBRyAQHyJBPIxViP0UzEEPN9YhuNzyzWPM', options);
-    const myMap = document.getElementById('map');
-    if (myMap) {
-      loader.load().then(function (google) {
-        const map = new google.maps.Map(myMap, {
-          center: { lat: -34.397, lng: 150.644 },
-          zoom: 8
-        });
-      });
-    }*/
     if (this.squeal.squeal.squeal_id_response) {
       this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
         if (r.body) {
@@ -113,6 +92,28 @@ export class SquealViewComponent implements OnInit {
         }
       });
     }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
+      const loader = this.squealService.getLoader();
+      const myMap = document.getElementById('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
+      console.log('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
+      if (myMap && loader) {
+        const lat = this.squeal.geoLoc.latitude;
+        const lng = this.squeal.geoLoc.longitude;
+        loader.load().then(function (google) {
+          const map = new google.maps.Map(myMap, {
+            center: { lat, lng },
+            zoom: 8,
+          });
+        });
+      }
+    }
+  }
+
+  onSquealed(event: any): void {
+    this.squealed = true;
   }
   urlify(text: string): string {
     const urlRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\\/~+#-]*[\w@?^=%&\\/~+#-])/g;
@@ -131,7 +132,7 @@ export class SquealViewComponent implements OnInit {
       emoji,
       squeal_id: this.squeal?.squeal?._id?.toString(),
     };
-
+    console.log(r);
     this.squealReactionService.createorUpdate(r).subscribe(ret => {
       if (ret.body && this.squeal) {
         console.log(ret.body);

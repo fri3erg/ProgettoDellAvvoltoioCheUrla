@@ -22,7 +22,7 @@
       *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
       alt="Immagine"
     />
-    <div id="map"></div>
+    <div style="height: 100px; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
   </div>
   <hr />
   <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
@@ -49,7 +49,11 @@
     <div>{{ squeal.views?.number }} views</div>
   </div>
   <div>
-    <jhi-create-squeal *ngIf="reply" [response]="squeal.squeal?._id?.toString()"></jhi-create-squeal>
+    <jhi-create-squeal
+      (squealed)="onSquealed($event)"
+      *ngIf="reply && !squealed"
+      [response]="squeal.squeal?._id?.toString()"
+    ></jhi-create-squeal>
   </div>
 </div>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>

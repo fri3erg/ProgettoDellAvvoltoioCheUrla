@@ -1,3 +1,4 @@
+const OpenAI = require('openai');
 const Squeal = require('../model/squeal');
 const SquealDestination = require('../model/squealDestination');
 const ChannelUser = require('../model/channelUser');
@@ -9,16 +10,30 @@ const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
 const squealService = require('./SquealService');
 class CronService {
+  openai;
+
+  async GptSqueal() {
+    if (!openai) {
+      this.openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+    }
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: 'user', content: 'Say this is a test' }],
+      model: 'gpt-3.5-turbo',
+    });
+    return chatCompletion;
+  }
   async tempSqueal() {
     const user = {
       user_id: '653fada9242fae4b641c1e84',
       username: 'user',
     };
-
+    const message = await this.GptSqueal();
     const username = 'user';
 
     const squeal = {
-      body: 'cron',
+      body: message,
       destination: [
         {
           admin_add: true,

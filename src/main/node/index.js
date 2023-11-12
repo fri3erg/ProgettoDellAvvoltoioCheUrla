@@ -9,7 +9,7 @@ server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 console.log('running');
-var task = cron.schedule(' */5 * * * * ', () => {
+var task = cron.schedule(' */55 * * * * ', () => {
   console.log(new cronService().tempSqueal());
 });
 task.start();
