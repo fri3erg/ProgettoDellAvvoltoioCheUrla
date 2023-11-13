@@ -253,8 +253,7 @@ class SquealService {
     if (!(await new accountService().isUserAuthorized(user, myUser))) {
       throw new Error('Unathorized');
     }
-    const chTypes = ['MOD', 'PUBLICGROUP'];
-    return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
+    return await Squeal.countDocuments({ user_id: theirUser._id.toString() });
   }
 
   async getSquealByChannel(page, size, user, myUsername, id) {
@@ -549,7 +548,7 @@ class SquealService {
 
     for (const s of squeals) {
       const dto = await this.loadSquealData(s, thisUser);
-      if (dto) {
+      if (dto && s.squeal_id_response == null) {
         squealRank.push(dto);
       }
     }
@@ -572,7 +571,7 @@ class SquealService {
 
     for (const s of squeals) {
       const dto = await this.loadSquealData(s, thisUser);
-      if (dto) {
+      if (dto && s.squeal_id_response == null) {
         squealRank.push(dto);
       }
     }
