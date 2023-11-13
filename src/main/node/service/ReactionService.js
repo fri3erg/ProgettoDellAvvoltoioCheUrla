@@ -75,6 +75,11 @@ class ReactionService {
 
     return null;
   }
+
+  async getReactionNumber(squeal_id) {
+    const reactions = await SquealReaction.find({ squeal_id: squeal_id });
+    return reactions.length;
+  }
 }
 
 module.exports = ReactionService;

@@ -176,6 +176,16 @@ router.get('/squeal-rank-reaction/:name', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-rank-reaction-inverse/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByReactionInverse(req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/client-chars/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getUserChars(req.user, req.params.name);

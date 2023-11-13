@@ -13,6 +13,7 @@ const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
 const ChannelService = require('./ChannelService');
 const GeoLoc = require('../model/geoLoc');
+const squeal = require('../model/squeal');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -536,13 +537,48 @@ class SquealService {
 
   async getSquealRankByReaction(myUser, theirUsername) {
     let squealRank = [];
-    const thisUser = await User.findOne({ login: username });
+    const thisUser = await User.findOne({ login: theirUsername });
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
     if (!new accountService().isUserAuthorized(myUser, thisUser)) {
       throw new Error('Unathorized');
     }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => b.reaction_number - a.reaction_number);
+
+    return squealRank;
+  }
+
+  async getSquealRankByReactionInverse(myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => a.reaction_number - b.reaction_number);
+
+    return squealRank;
   }
 
   async searchUser(search) {
@@ -691,6 +727,8 @@ class SquealService {
 
     const reactions = await new reactionService().getReaction(squeal_id);
 
+    const reaction_number = await new reactionService().getReactionNumber(squeal_id);
+
     const active_reaction = await new reactionService().getActiveReaction(thisUser._id.toString(), squeal_id);
 
     const views = await SquealViews.findOne({ squeal_id });
@@ -703,6 +741,7 @@ class SquealService {
       category,
       reactions,
       active_reaction,
+      reaction_number,
       views,
       geoLoc,
     };
