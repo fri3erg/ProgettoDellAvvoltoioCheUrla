@@ -31,7 +31,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.21",
     "node-cron": "^3.0.3",
-    "openai": "^4.17.4",
+    "openai": "^4.17.5",
+    "readline-sync": "^1.4.10",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

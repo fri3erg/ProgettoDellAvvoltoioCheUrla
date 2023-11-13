@@ -66,6 +66,9 @@
               Scatta foto
             </button>
           </div>
+          <div class="p-col-6">
+            <button class="btn btn-block btn-success" type="button" (click)="addGeo()">Aggiungi geolocalizazzione</button>
+          </div>
         </div>
 
         <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />

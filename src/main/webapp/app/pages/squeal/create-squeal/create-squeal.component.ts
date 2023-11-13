@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { IGeolocationCoordinates } from 'app/entities/geolocation-coordinates/geolocation-coordinates.model';
 
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -22,6 +23,8 @@ export class CreateSquealComponent implements OnInit {
   results?: ISquealDestination[];
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
+  loader = this.squealService.getLoader();
+  geoLoc?: IGeolocationCoordinates;
   @Input() destination: ISquealDestination[] = [];
   @Input() response?: string;
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
@@ -81,6 +84,7 @@ export class CreateSquealComponent implements OnInit {
     this.dto.squeal.squeal_id_response = this.response;
     this.dto.squeal.body = this.message;
     this.dto.squeal.destination = this.destination;
+    this.dto.geoLoc = this.geoLoc;
     console.log('insert');
     console.log(this.dto);
     this.squealService.insertOrUpdate(this.dto).subscribe(r => {
@@ -103,6 +107,20 @@ export class CreateSquealComponent implements OnInit {
         this.squealed.emit(true);
       }
     });
+  }
+  addGeo(): void {
+    const myMap = document.getElementById('map_create');
+    console.log('map_create');
+    if (myMap && this.loader) {
+      const lat = 3;
+      const lng = 3;
+      this.loader.load().then(function (google) {
+        const map = new google.maps.Map(myMap, {
+          center: { lat, lng },
+          zoom: 8,
+        });
+      });
+    }
   }
 
   setFileData(event: any): void {

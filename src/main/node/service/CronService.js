@@ -1,28 +1,26 @@
-const OpenAI = require('openai');
+const { OpenAI } = require('openai');
+require('dotenv').config();
 const Squeal = require('../model/squeal');
-const SquealDestination = require('../model/squealDestination');
-const ChannelUser = require('../model/channelUser');
-const Channel = require('../model/channel');
-const SquealCat = require('../model/squealCat');
-const SquealReaction = require('../model/squealReaction');
-const SquealViews = require('../model/squealViews');
-const User = require('../model/user');
-const { isModuleNamespaceObject } = require('util/types');
 const squealService = require('./SquealService');
 class CronService {
-  openai;
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  async updateLoc() {}
 
   async GptSqueal() {
-    if (!openai) {
-      this.openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
-    }
-    const chatCompletion = await openai.chat.completions.create({
-      messages: [{ role: 'user', content: 'Say this is a test' }],
+    const chatCompletion = await this.openai.chat.completions.create({
+      messages: [
+        {
+          role: 'user',
+          content: 'tell ONE between an original fun fact OR a pun , but make it SHORT and just give one of the two responses',
+        },
+      ],
       model: 'gpt-3.5-turbo',
     });
-    return chatCompletion;
+
+    return chatCompletion.choices[0].message.content;
   }
   async tempSqueal() {
     const user = {
@@ -30,6 +28,9 @@ class CronService {
       username: 'user',
     };
     const message = await this.GptSqueal();
+    if (!message) {
+      throw new Error('referencing squeal not found');
+    }
     const username = 'user';
 
     const squeal = {
