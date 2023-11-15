@@ -227,6 +227,7 @@ class SquealService {
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: -1 });
+
     for (const s of squeals) {
       let validDest = [];
       for (const d of s.destination) {
@@ -738,6 +739,47 @@ class SquealService {
     squealRank.sort((a, b) => b.positive - b.negative - (a.positive - a.negative));
 
     return squealRank.slice((page - 1) * size, page * size);
+  }
+
+  async getSquealTimeChart(myUser, theirUsername) {
+    let userDataset = [];
+    let num = 1;
+    let prevTimestamp = new Date();
+    var firstDate = true;
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() }).sort({ timestamp: 1 });
+
+    for (const s of squeals) {
+      var timestamp = new Date(s.timestamp);
+      if (!firstDate) {
+        if (timestamp.toLocaleDateString('it-IT') === prevTimestamp.toLocaleDateString('it-IT')) {
+          num++;
+        } else {
+          userDataset.push({
+            x: prevTimestamp.toLocaleDateString('it-IT'),
+            y: num,
+          });
+          num = 1;
+        }
+      } else {
+        firstDate = false;
+      }
+      prevTimestamp = timestamp;
+    }
+    userDataset.push({
+      x: prevTimestamp.toLocaleDateString('it-IT'),
+      y: num,
+    });
+    console.log('SQUEALS: ', userDataset);
+
+    return userDataset;
   }
 
   async searchUser(search) {
