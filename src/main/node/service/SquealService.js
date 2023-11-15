@@ -625,6 +625,121 @@ class SquealService {
     return squealRank.slice((page - 1) * size, page * size);
   }
 
+  async getSquealRankByViews(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => b.views.number - a.views.number);
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
+  async getSquealRankByViewsInverse(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => a.views.number - b.views.number);
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
+  async getSquealRankByPositive(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => b.positive - a.positive);
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
+  async getSquealRankByNegative(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => b.negative - a.negative);
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
+  async getSquealRankByPosNegRateo(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => b.positive - b.negative - (a.positive - a.negative));
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
   async searchUser(search) {
     return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
@@ -780,6 +895,10 @@ class SquealService {
 
     const reaction_number = await new reactionService().getReactionNumber(squeal_id);
 
+    const positive = await new reactionService().getPositiveReactionNumber(squeal_id);
+
+    const negative = await new reactionService().getNegativeReactionNumber(squeal_id);
+
     const active_reaction = await new reactionService().getActiveReaction(thisUser._id.toString(), squeal_id);
 
     const comments_number = await this.getCommentsNumber(squeal_id);
@@ -795,6 +914,8 @@ class SquealService {
       reactions,
       active_reaction,
       reaction_number,
+      positive,
+      negative,
       comments_number,
       views,
       geoLoc,

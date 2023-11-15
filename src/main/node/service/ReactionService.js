@@ -80,6 +80,16 @@ class ReactionService {
     const reactions = await SquealReaction.find({ squeal_id: squeal_id });
     return reactions.length;
   }
+
+  async getPositiveReactionNumber(squeal_id) {
+    const reaction = await SquealReaction.find({ squeal_id: squeal_id, positive: true });
+    return reaction.length;
+  }
+
+  async getNegativeReactionNumber(squeal_id) {
+    const reactions = await SquealReaction.find({ squeal_id: squeal_id, positive: false });
+    return reactions.length;
+  }
 }
 
 module.exports = ReactionService;

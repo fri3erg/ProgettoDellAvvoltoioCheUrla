@@ -206,6 +206,66 @@ router.get('/squeal-rank-comments-inverse/:name', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-rank-views/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByViews(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-views-inverse/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByViewsInverse(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-positive/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByPositive(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-negative/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByNegative(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-posneg-rateo/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByPosNegRateo(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-time-chart/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealTimeChar(req.user, req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/client-chars/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getUserChars(req.user, req.params.name);
