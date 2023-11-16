@@ -138,30 +138,29 @@ class SquealService {
       chId.push(c._id.toString());
     }
 
-    const sq = await Squeal.find({ 'destination.destination_id': { $in: chId } })
+    const sq = await Squeal.find({ 'destination.destination_id': { $in: chId }, squeal_id_response: null })
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: -1 });
+    console.log(sq);
 
     for (const s of sq) {
       let validDest = [];
-      if (s.squeal_id_response == null) {
-        for (const d of s.destination) {
-          if (chId.includes(d.destination_id)) {
-            validDest.push(d);
-          }
+      for (const d of s.destination) {
+        if (chId.includes(d.destination_id)) {
+          validDest.push(d);
         }
+      }
 
-        if (validDest == []) {
-          continue;
-        }
+      if (validDest == []) {
+        continue;
+      }
 
-        s.destination = validDest;
-        const dto = await this.loadSquealData(s, thisUser);
+      s.destination = validDest;
+      const dto = await this.loadSquealData(s, thisUser);
 
-        if (dto) {
-          ret.push(dto);
-        }
+      if (dto) {
+        ret.push(dto);
       }
     }
     return ret;
