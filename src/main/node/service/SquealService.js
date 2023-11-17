@@ -516,27 +516,6 @@ class SquealService {
     return validDest;
   }
 
-  async getSMM(myUser, username, search) {
-    let smmArray = [];
-    const thisUser = await User.findOne({ login: username });
-    if (!thisUser) {
-      throw new Error('Invalid Username');
-    }
-    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
-      throw new Error('Unauthorized');
-    }
-
-    const user = await this.searchUser(search);
-    for (const us of user) {
-      const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
-      console.log(SMMUser);
-      if (SMMUser) {
-        smmArray.push(us);
-      }
-    }
-    return smmArray;
-  }
-
   async getSquealComments(myUser, theirUsername, squeal_id) {
     const ret = [];
     const thisUser = await User.findOne({ login: theirUsername });

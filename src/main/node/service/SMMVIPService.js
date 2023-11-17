@@ -26,6 +26,27 @@ class SMMVIPService {
     return;
   }
 
+  async getSMM(myUser, username, search) {
+    let smmArray = [];
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+
+    const user = await this.searchUser(search);
+    for (const us of user) {
+      const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
+      console.log(SMMUser);
+      if (SMMUser) {
+        smmArray.push(us);
+      }
+    }
+    return smmArray;
+  }
+
   async idToObj(idArray) {
     const clientsArray = [];
     for (let i = 0; i < idArray.length; i++) {
