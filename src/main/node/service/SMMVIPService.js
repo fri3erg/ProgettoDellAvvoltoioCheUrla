@@ -1,5 +1,6 @@
 const smmVIP = require('../model/smmVIP');
 const user = require('../model/user');
+const accountService = require('./AccountService');
 
 class SMMVIPService {
   async addSMM(smmId, currentId) {
@@ -32,7 +33,7 @@ class SMMVIPService {
       throw new Error('Unauthorized');
     }
 
-    const user = await this.searchUser(search);
+    const user = await new accountService().searchUser(search);
     for (const us of user) {
       const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
       console.log(SMMUser);

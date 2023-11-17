@@ -28,6 +28,9 @@ class AccountService {
     }
     return ret;
   }
+  async searchUser(search) {
+    return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+  }
 
   async getUser(user, myUsername, name) {
     const thisUser = await User.findOne({ login: myUsername });

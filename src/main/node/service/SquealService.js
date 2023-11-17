@@ -472,7 +472,7 @@ class SquealService {
       throw new Error('Unauthorized');
     }
     if (!search.startsWith('§') && !search.startsWith('#')) {
-      const userDest = await this.searchUser(search);
+      const userDest = await new accountService().searchUser(search);
       for (const us of userDest) {
         const dest = new SquealDestination({
           destination_id: us._id.toString(),
@@ -835,10 +835,6 @@ class SquealService {
     userDataset.sort((a, b) => parseDMY(a.x) - parseDMY(b.x));
 
     return userDataset.slice(-7);
-  }
-
-  async searchUser(search) {
-    return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
 
   async searchChannel(ch, search, username) {
