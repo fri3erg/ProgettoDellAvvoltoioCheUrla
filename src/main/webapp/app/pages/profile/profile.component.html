@@ -57,6 +57,21 @@
       </span>
       {{ squealslength }} squeals squealed
     </span>
+    <button *ngIf="isVip()" class="btn btn-success" (click)="openSearch()">add a SMM</button>
+    <span *ngIf="openmySearch" class="input-group-text" id="inputGroup-sizing-default">SMM</span>
+    <div *ngIf="openmySearch" style="flex: 1">
+      <p-autoComplete
+        [style]="{ width: '100%' }"
+        name="destination"
+        [minLength]="2"
+        [(ngModel)]="smm"
+        [suggestions]="results ?? []"
+        (completeMethod)="search($event)"
+        [multiple]="true"
+        field="destination"
+      ></p-autoComplete>
+      <button [disabled]="!smm" class="btn btn-primary mt-2" type="button" (click)="addSMM()">Invia</button>
+    </div>
   </div>
   <jhi-create-squeal *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
   <p-dataView #dv [value]="squeals" *ngIf="squeals">

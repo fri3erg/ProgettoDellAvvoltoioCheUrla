@@ -99,13 +99,31 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
       const loader = this.squealService.getLoader();
       const myMap = document.getElementById('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
       console.log('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
+      const svgMarker = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        fillColor: 'red',
+        fillOpacity: 0,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 7,
+        anchor: new google.maps.Point(0, 0),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (myMap && loader) {
         const lat = this.squeal.geoLoc.latitude;
         const lng = this.squeal.geoLoc.longitude;
+        const heading = this.squeal.geoLoc.heading;
         loader.load().then(function (google) {
           const map = new google.maps.Map(myMap, {
             center: { lat, lng },
+            heading: heading ?? 0,
             zoom: 8,
+          });
+          const marker = new google.maps.Marker({
+            position: { lat, lng },
+            map,
+            icon: svgMarker,
+            title: 'You!',
           });
         });
       }
@@ -176,30 +194,5 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
     }
 
     this.router.navigate([type, id]);
-  }
-
-  setCoordinates(alertError = false): void {
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
-    };
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
-          this.squeal.geoLoc.longitude = position.coords.longitude;
-          this.squeal.geoLoc.latitude = position.coords.latitude;
-        }
-      },
-      error => {
-        console.log(error);
-        if (alertError) {
-          alert(error);
-          this.messageService.add({ severity: 'error', summary: 'Posizione', detail: error.message });
-        }
-      },
-      options
-    );
   }
 }

@@ -51,10 +51,11 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 //aggiungimi come cliente del smm ✅
 //chiamata dall'utente quando vuole diventare cliente di un smm
 //!togliere la possibilità di duplicati
-router.post('/add-smm/:_id', auth, async (req, res) => {
+router.post('/add-smm', auth, async (req, res) => {
   try {
-    const smmId = req.params._id;
-    const thisUser = await user.findOne({ login: req.user.username });
+    const smmId = req.body.id;
+    const userName = req.user.username;
+    const thisUser = await user.findOne({ login: userName });
     if (!thisUser.authorities) {
       return res.status(401).send('Non hai i permessi');
     } else {

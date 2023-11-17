@@ -22,7 +22,7 @@
       *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
       alt="Immagine"
     />
-    <div *ngif="squeal.geoLoc" style="height: 30rem; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
+    <div *ngIf="squeal.geoLoc" style="height: 30rem; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
   </div>
   <hr />
   <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>

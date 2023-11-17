@@ -10,6 +10,7 @@ import { ISquealReaction } from 'app/entities/squeal-reaction/squeal-reaction.mo
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { Loader, LoaderOptions } from 'google-maps';
 import { ISqueal, NewSqueal } from '../squeal.model';
+import { Account } from 'app/core/auth/account.model';
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, '_id'>;
 
 export type EntityResponseType = HttpResponse<ISqueal>;
@@ -42,6 +43,13 @@ export class SquealService {
     }
     const url = this.applicationConfigService.getEndpointFor(`api/reactions-positive/get/${id}`);
     return this.http.get<number>(url, { observe: 'response' });
+  }
+  findSMM(search?: string): Observable<HttpResponse<Account[]>> {
+    if (!search) {
+      search = '';
+    }
+    const url = this.applicationConfigService.getEndpointFor(`api/account/findsmm/${search}`);
+    return this.http.get<Account[]>(url, { observe: 'response' });
   }
   getSquealByChannel(channel_id: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
     const params = new HttpParams().append('page', page).append('size', size);

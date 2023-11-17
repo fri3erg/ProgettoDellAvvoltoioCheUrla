@@ -1,5 +1,5 @@
 export interface IGeolocationCoordinates {
-  id: string;
+  id?: string;
   squeal_id?: string | null;
   user_id?: string | null;
   latitude?: number | null;

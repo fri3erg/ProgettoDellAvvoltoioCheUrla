@@ -12,11 +12,13 @@ import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component
 import SharedModule from 'app/shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
+import { MessageService } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'jhi-profile',
   standalone: true,
-  imports: [SharedModule, CommonModule, CreateSquealComponent, SquealViewComponent],
+  imports: [SharedModule, FormsModule, CommonModule, CreateSquealComponent, SquealViewComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
@@ -32,6 +34,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   page = 0;
   sizeofpage = 5;
   hasMorePage = false;
+  response?: string;
+  smm?: Account;
+  results?: Account[];
+  openmySearch = false;
+
   connectedDestination?: ISquealDestination;
   private readonly destroy$ = new Subject<void>();
 
@@ -40,7 +47,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     protected channelService: ChannelService,
     private accountService: AccountService,
     protected channelUserService: ChannelUserService,
-    protected squealService: SquealService
+    protected squealService: SquealService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -84,6 +92,36 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+  openSearch(): void {
+    this.openmySearch = !this.openmySearch;
+  }
+  isVip(): boolean {
+    //TODO: remove
+    return true;
+    return this.account?.authorities.includes('ROLE_VIP') ?? false;
+  }
+  search(event: any): void {
+    const q: string = event.query;
+    console.log(q);
+
+    this.squealService.findSMM(q).subscribe(r => {
+      this.results = [];
+      if (r.body) {
+        for (const dest of r.body) {
+          this.results.push(dest);
+        }
+      }
+    });
+  }
+
+  addSMM(): void {
+    this.accountService.addSMM(this.smm?._id?.toString()).subscribe(r => {
+      if (r.body) {
+        console.log(this.account);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'SMM added' });
+      }
+    });
   }
 
   loadOther(): void {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IGeolocationCoordinates } from 'app/entities/geolocation-coordinates/geolocation-coordinates.model';
@@ -24,16 +24,36 @@ export class CreateSquealComponent implements OnInit {
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
   loader = this.squealService.getLoader();
-  geoLoc?: IGeolocationCoordinates;
+  geoLoc: IGeolocationCoordinates;
+  map?: google.maps.Map;
+
+  //infoWindow?: google.maps.InfoWindow;
+  display: any;
+  zoom = 10;
+  // @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
   @Input() destination: ISquealDestination[] = [];
   @Input() response?: string;
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
+
+  markerOptions: google.maps.MarkerOptions = {
+    draggable: false,
+  };
+
+  markerPositions: google.maps.LatLngLiteral[] = [];
 
   constructor(
     protected squealService: SquealService,
     private messageService: MessageService,
     protected userCharsService: UserCharsService
-  ) {}
+  ) {
+    this.geoLoc = {
+      latitude: 0,
+      longitude: 0,
+      accuracy: 0,
+      speed: 0,
+      heading: 0,
+    };
+  }
 
   ngOnInit(): void {
     // TODO: To edit arrive with id
@@ -108,16 +128,68 @@ export class CreateSquealComponent implements OnInit {
       }
     });
   }
+  findCurrentLoc(alertError = false): void {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.geoLoc.longitude = position.coords.longitude;
+        this.geoLoc.latitude = position.coords.latitude;
+        this.geoLoc.accuracy = position.coords.accuracy;
+        this.geoLoc.heading = position.coords.heading;
+        this.geoLoc.speed = position.coords.speed;
+        this.geoLoc.timestamp = position.timestamp;
+      },
+      error => {
+        console.log(error);
+        if (alertError) {
+          alert(error);
+          this.messageService.add({ severity: 'error', summary: 'Posizione', detail: error.message });
+        }
+      },
+      options
+    );
+  }
+
   addGeo(): void {
-    const myMap = document.getElementById('map_create');
-    console.log('map_create');
-    if (myMap && this.loader) {
-      const lat = 3;
-      const lng = 3;
-      this.loader.load().then(function (google) {
+    this.findCurrentLoc();
+    const loader = this.squealService.getLoader();
+    const myMap = document.getElementById('map_create') as HTMLInputElement | null;
+    console.log(myMap?.outerHTML);
+    if (myMap) {
+      console.log(this.geoLoc.latitude, this.geoLoc.longitude);
+      if (!this.geoLoc.latitude || !this.geoLoc.longitude) {
+        this.messageService.add({ severity: 'error', summary: 'Posizione', detail: 'Posizione non trovata' });
+        return;
+      }
+      const lat = this.geoLoc.latitude;
+      const lng = this.geoLoc.longitude;
+      const heading = this.geoLoc.heading;
+      const svgMarker = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        fillColor: 'red',
+        fillOpacity: 0,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 7,
+        anchor: new google.maps.Point(0, 0),
+      };
+
+      loader.load().then(function (google) {
         const map = new google.maps.Map(myMap, {
           center: { lat, lng },
-          zoom: 8,
+          heading: heading ?? 0,
+          zoom: 13,
+        });
+        const marker = new google.maps.Marker({
+          position: { lat, lng },
+          map,
+          icon: svgMarker,
+          title: 'You!',
         });
       });
     }

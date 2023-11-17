@@ -52,7 +52,7 @@ export class GeolocationCoordinatesService {
   }
 
   getGeolocationCoordinatesIdentifier(geolocationCoordinates: Pick<IGeolocationCoordinates, 'id'>): string {
-    return geolocationCoordinates.id;
+    return geolocationCoordinates.id ?? '';
   }
 
   compareGeolocationCoordinates(o1: Pick<IGeolocationCoordinates, 'id'> | null, o2: Pick<IGeolocationCoordinates, 'id'> | null): boolean {
