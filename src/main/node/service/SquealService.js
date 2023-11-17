@@ -499,7 +499,7 @@ class SquealService {
     if (!search.startsWith('§') && !search.startsWith('@')) {
       const publicFind = await this.searchChannel('#', search, username);
       for (const ch of publicFind) {
-        const dest = new SquealDestination({
+        const dest = new User({
           destination_id: ch._id.toString(),
           destination: ch.name ?? '',
           destination_type: 'PUBLICGROUP',
@@ -514,6 +514,27 @@ class SquealService {
       }
     }
     return validDest;
+  }
+
+  async getSMM(myUser, username, search) {
+    let smmArray = [];
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+
+    const user = await this.searchUser(search);
+    for (const us of user) {
+      const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
+      console.log(SMMUser);
+      if (SMMUser) {
+        smmArray.push(us);
+      }
+    }
+    return smmArray;
   }
 
   async getSquealComments(myUser, theirUsername, squeal_id) {

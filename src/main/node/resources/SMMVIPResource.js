@@ -158,7 +158,7 @@ router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
 
 router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);
+    const ret = await new squealService().getSMM(req.user, req.params.name, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

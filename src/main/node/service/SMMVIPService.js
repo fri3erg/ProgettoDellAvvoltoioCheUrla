@@ -41,7 +41,7 @@ class SMMVIPService {
   }
 
   async getSMMById(id) {
-    const vip = await smmVIP.find({ _id: id });
+    const vip = await smmVIP.findOne({ _id: id });
     return vip;
   }
 }
