@@ -54,8 +54,7 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 router.post('/add-smm/:_id', auth, async (req, res) => {
   try {
     const smmId = req.params._id;
-    const userName = req.user.username;
-    const thisUser = await user.findOne({ login: userName });
+    const thisUser = await user.findOne({ login: req.user.username });
     if (!thisUser.authorities) {
       return res.status(401).send('Non hai i permessi');
     } else {
@@ -68,6 +67,21 @@ router.post('/add-smm/:_id', auth, async (req, res) => {
         await new SMMVIPService().addSMM(smmId, thisUser._id);
         res.status(201);
       }
+    }
+  } catch (err) {
+    res.status(500).send();
+  }
+});
+
+router.post('/remove-smm/:_id', auth, async (req, res) => {
+  try {
+    const smmId = req.params._id;
+    const thisUser = await user.findOne({ login: req.user.username });
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      await new SMMVIPService().removeSMM(smmId, thisUser._id);
+      res.status(201);
     }
   } catch (err) {
     res.status(500).send();

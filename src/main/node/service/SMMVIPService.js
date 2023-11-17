@@ -6,9 +6,7 @@ class SMMVIPService {
     const opt = { new: true };
     smmVIP.findOneAndUpdate({ _id: smmId }, { $push: { users: currentId } }, opt, (error, data) => {
       if (error) {
-        console.log(error);
-      } else {
-        console.log(data);
+        throw new Error(error);
       }
     });
     return;
@@ -18,9 +16,7 @@ class SMMVIPService {
     const opt = { new: true };
     smmVIP.findOneAndUpdate({ _id: smmId }, { $pull: { users: currentId } }, opt, (error, data) => {
       if (error) {
-        console.log(error);
-      } else {
-        console.log(data);
+        throw new Error(error);
       }
     });
     return;
