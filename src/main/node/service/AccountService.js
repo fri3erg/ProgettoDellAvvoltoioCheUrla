@@ -94,6 +94,9 @@ class AccountService {
   async isMod(user) {
     if (!user.authorities) {
       user = await User.findById(user.user_id);
+      if (!user) {
+        throw new Error('invalid user');
+      }
     }
     for (const a of user.authorities) {
       if (a === 'ROLE_ADMIN') {

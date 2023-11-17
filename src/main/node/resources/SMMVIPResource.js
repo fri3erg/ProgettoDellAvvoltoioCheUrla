@@ -168,7 +168,12 @@ router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-reaction/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByReaction(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByReaction(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -178,7 +183,12 @@ router.get('/squeal-rank-reaction/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-reaction-inverse/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByReactionInverse(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByReactionInverse(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -188,7 +198,12 @@ router.get('/squeal-rank-reaction-inverse/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-comments/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByComments(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByComments(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -198,7 +213,12 @@ router.get('/squeal-rank-comments/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-comments-inverse/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByCommentsInverse(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByCommentsInverse(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -208,7 +228,12 @@ router.get('/squeal-rank-comments-inverse/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-views/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByViews(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByViews(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -218,7 +243,12 @@ router.get('/squeal-rank-views/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-views-inverse/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByViewsInverse(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByViewsInverse(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -228,7 +258,12 @@ router.get('/squeal-rank-views-inverse/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-positive/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByPositive(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByPositive(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -238,7 +273,12 @@ router.get('/squeal-rank-positive/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-negative/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByNegative(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByNegative(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -248,7 +288,27 @@ router.get('/squeal-rank-negative/:name', auth, async (req, res) => {
 
 router.get('/squeal-rank-posneg-rateo/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealRankByPosNegRateo(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
+    const ret = await new squealService().getSquealRankByPosNegRateo(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-rank-posneg-rateo-inverse/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealRankByPosNegRateoInverse(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.params.name
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

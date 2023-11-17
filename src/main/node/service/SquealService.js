@@ -14,6 +14,7 @@ const channelUserService = require('./ChannelUserService');
 const ChannelService = require('./ChannelService');
 const GeoLoc = require('../model/geoLoc');
 const squeal = require('../model/squeal');
+const moment = require('moment');
 
 const chDay = 100;
 const chWeek = chDay * 4;
@@ -740,6 +741,29 @@ class SquealService {
     return squealRank.slice((page - 1) * size, page * size);
   }
 
+  async getSquealRankByPosNegRateoInverse(page, size, myUser, theirUsername) {
+    let squealRank = [];
+    const thisUser = await User.findOne({ login: theirUsername });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!new accountService().isUserAuthorized(myUser, thisUser)) {
+      throw new Error('Unathorized');
+    }
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString() });
+
+    for (const s of squeals) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto && s.squeal_id_response == null) {
+        squealRank.push(dto);
+      }
+    }
+    squealRank.sort((a, b) => a.positive - a.negative - (b.positive - b.negative));
+
+    return squealRank.slice((page - 1) * size, page * size);
+  }
+
   async getSquealTimeChart(myUser, theirUsername) {
     let userDataset = [];
     let num = 1;
@@ -754,6 +778,15 @@ class SquealService {
     }
 
     const squeals = await Squeal.find({ user_id: thisUser._id.toString() }).sort({ timestamp: 1 });
+
+    const dates = [];
+    const NUM_OF_DAYS = 7; // get last 12 dates.
+
+    for (let i = 0; i < NUM_OF_DAYS; i++) {
+      let date = moment();
+      date.subtract(i, 'day').format('DD-MM-YYYY');
+      dates.push(date.toDate().toLocaleDateString('it-IT'));
+    }
 
     for (const s of squeals) {
       var timestamp = new Date(s.timestamp);
@@ -776,9 +809,32 @@ class SquealService {
       x: prevTimestamp.toLocaleDateString('it-IT'),
       y: num,
     });
-    console.log('SQUEALS: ', userDataset);
 
-    return userDataset;
+    var found = false;
+    for (const date of dates) {
+      for (const post of userDataset) {
+        if (post.x == date) {
+          found = true;
+        }
+      }
+      if (found) {
+        found = false;
+      } else {
+        userDataset.push({
+          x: date,
+          y: 0,
+        });
+      }
+    }
+
+    function parseDMY(s) {
+      var b = s.split(/\D+/);
+      return new Date(b[2], b[1] - 1, b[0]);
+    }
+
+    userDataset.sort((a, b) => parseDMY(a.x) - parseDMY(b.x));
+
+    return userDataset.slice(-7);
   }
 
   async searchUser(search) {
