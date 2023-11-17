@@ -28,7 +28,7 @@ class SMMVIPService {
 
   async getSMM(myUser, username, search) {
     let smmArray = [];
-    const thisUser = await User.findOne({ login: username });
+    const thisUser = await user.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
