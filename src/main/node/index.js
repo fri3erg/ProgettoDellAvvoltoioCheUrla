@@ -11,7 +11,7 @@ server.listen(port, () => {
 console.log('running');
 try {
   mycron = new cronService();
-  var task = cron.schedule(' */20 * * * * ', () => {
+  var task = cron.schedule(' */30 * * * * ', () => {
     console.log(mycron.tempSqueal());
   });
   task.start();

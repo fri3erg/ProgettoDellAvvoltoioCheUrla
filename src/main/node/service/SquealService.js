@@ -312,6 +312,9 @@ class SquealService {
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
+    if (geoLoc.timestamp < Date.now() - (3600000 - 10000)) {
+      geoLoc.refresh = false;
+    }
     loc = await GeoLoc.findByIdAndUpdate(geoLoc._id.toString(), {
       latitude: geoLoc.latitude,
       longitude: geoLoc.longitude,
@@ -319,6 +322,7 @@ class SquealService {
       speed: geoLoc.speed,
       heading: geoLoc.heading,
       timestamp: Date.now(),
+      refresh: geoLoc.refresh,
     });
     if (!loc) {
       throw new Error('could not add geoloc');
@@ -328,7 +332,7 @@ class SquealService {
 
   geoLocIsInvalid(geoLoc) {
     if (!geoLoc.latitude || !geoLoc.longitude || !geoLoc._id.toString() || !geoLoc.squeal_id) {
-      return treu;
+      return true;
     }
     return false;
   }
@@ -452,6 +456,7 @@ class SquealService {
         heading: geoLoc.heading,
         speed: geoLoc.speed,
         timestamp: newSqueal.timestamp,
+        refresh: geoLoc.refresh,
       });
     }
     const dto = await this.loadSquealData(newSqueal, thisUser);

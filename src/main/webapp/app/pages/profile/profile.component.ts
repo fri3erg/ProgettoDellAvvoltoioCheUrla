@@ -105,7 +105,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const q: string = event.query;
     console.log(q);
 
-    this.squealService.findSMM(q).subscribe(r => {
+    this.accountService.findSMM(q).subscribe(r => {
       this.results = [];
       if (r.body) {
         for (const dest of r.body) {

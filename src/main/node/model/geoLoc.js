@@ -10,6 +10,7 @@ const geoLocSchema = new Schema(
     heading: { type: String, default: null },
     speed: { type: String, default: null },
     timestamp: { type: Number, default: null },
+    refresh: { type: Boolean, default: false },
   },
   { collection: 'geo_loc', _id: true }
 );

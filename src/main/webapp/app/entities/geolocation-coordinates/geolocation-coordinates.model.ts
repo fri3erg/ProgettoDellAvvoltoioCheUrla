@@ -8,6 +8,7 @@ export interface IGeolocationCoordinates {
   heading?: number | null;
   speed?: number | null;
   timestamp?: number | null;
+  refresh?: boolean | null;
 }
 
 export type NewGeolocationCoordinates = Omit<IGeolocationCoordinates, 'id'> & { id: null };

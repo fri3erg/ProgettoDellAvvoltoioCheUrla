@@ -79,7 +79,7 @@ router.get('/squeal-made-by-user-count/:name', auth, async (req, res) => {
   }
 });
 
-router.post('/update-geoloc', auth, async (req, res) => {
+router.post('/geoloc/update', auth, async (req, res) => {
   try {
     const geo_loc = await new squealService().updateGeoLoc(req.body.geoLoc, req.user, req.user.username);
     console.log(geo_loc);

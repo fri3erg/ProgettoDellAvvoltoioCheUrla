@@ -12,6 +12,9 @@ import { Router } from '@angular/router';
 import SharedModule from 'app/shared/shared.module';
 import { CreateSquealComponent } from '../create-squeal/create-squeal.component';
 import { Loader, LoaderOptions } from 'google-maps';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/auth/account.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'jhi-squeal-view',
@@ -65,12 +68,15 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
       },
     },
   ];
+  account: Account | null = null;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private squealService: SquealService,
     private messageService: MessageService,
     private squealReactionService: SquealReactionService,
-    private router: Router
+    private router: Router,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -81,7 +87,15 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
     if (!this.squeal.squeal.body) {
       this.squeal.squeal.body = 'squeal not found';
     }
-
+    if (!this.squeal.geoLoc?.refresh) {
+      this.accountService
+        .getAuthenticationState()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(a => {
+          this.account = a;
+          this.startRefresh();
+        });
+    }
     console.log(this.squeal.squeal.body);
     this.innerBody = this.urlify(this.squeal.squeal.body);
 
@@ -113,11 +127,12 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
         const lat = this.squeal.geoLoc.latitude;
         const lng = this.squeal.geoLoc.longitude;
         const heading = this.squeal.geoLoc.heading;
+        const latlng = new google.maps.LatLng(this.squeal.geoLoc.latitude, this.squeal.geoLoc.longitude);
         loader.load().then(function (google) {
           const map = new google.maps.Map(myMap, {
-            center: { lat, lng },
+            center: latlng,
             heading: heading ?? 0,
-            zoom: 8,
+            zoom: 13,
           });
           const marker = new google.maps.Marker({
             position: { lat, lng },
@@ -126,6 +141,46 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
             title: 'You!',
           });
         });
+      }
+    }
+  }
+  startRefresh(): void {
+    if (this.squeal?.geoLoc?.timestamp && this.squeal.geoLoc.refresh && this.squeal.geoLoc.timestamp > Date.now() - 3600000) {
+      if (this.squeal.userName === this.account?.login) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            if (this.squeal?.geoLoc) {
+              this.squeal.geoLoc.longitude = position.coords.longitude;
+              this.squeal.geoLoc.latitude = position.coords.latitude;
+              this.squeal.geoLoc.accuracy = position.coords.accuracy;
+              this.squeal.geoLoc.heading = position.coords.heading;
+              this.squeal.geoLoc.speed = position.coords.speed;
+              this.squeal.geoLoc.timestamp = position.timestamp;
+              this.squeal.geoLoc.refresh = true;
+              this.squealService.updateGeoLoc(this.squeal.geoLoc).subscribe(r => {
+                if (r.body && this.squeal) {
+                  console.log(r.body);
+                  this.squeal.geoLoc = r.body;
+                }
+              });
+            }
+          },
+          error => {
+            console.log(error);
+          },
+          { enableHighAccuracy: true }
+        );
+        setTimeout(this.startRefresh, 10000);
+        return;
+      } else {
+        this.squealService.getPosition(this.squeal.squeal?._id?.toString() ?? '').subscribe(r => {
+          if (r.body && this.squeal) {
+            console.log(r.body);
+            this.squeal.geoLoc = r.body;
+          }
+        });
+        setTimeout(this.startRefresh, 10000);
+        return;
       }
     }
   }
@@ -194,5 +249,9 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
     }
 
     this.router.navigate([type, id]);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

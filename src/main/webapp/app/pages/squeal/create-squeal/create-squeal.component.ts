@@ -26,6 +26,7 @@ export class CreateSquealComponent implements OnInit {
   loader = this.squealService.getLoader();
   geoLoc: IGeolocationCoordinates;
   map?: google.maps.Map;
+  geo = false;
 
   //infoWindow?: google.maps.InfoWindow;
   display: any;
@@ -52,6 +53,8 @@ export class CreateSquealComponent implements OnInit {
       accuracy: 0,
       speed: 0,
       heading: 0,
+      timestamp: 0,
+      refresh: false,
     };
   }
 
@@ -143,6 +146,7 @@ export class CreateSquealComponent implements OnInit {
         this.geoLoc.heading = position.coords.heading;
         this.geoLoc.speed = position.coords.speed;
         this.geoLoc.timestamp = position.timestamp;
+        this.createMap();
       },
       error => {
         console.log(error);
@@ -154,9 +158,7 @@ export class CreateSquealComponent implements OnInit {
       options
     );
   }
-
-  addGeo(): void {
-    this.findCurrentLoc();
+  createMap(): void {
     const loader = this.squealService.getLoader();
     const myMap = document.getElementById('map_create') as HTMLInputElement | null;
     console.log(myMap?.outerHTML);
@@ -193,6 +195,10 @@ export class CreateSquealComponent implements OnInit {
         });
       });
     }
+  }
+  addGeo(): void {
+    this.geo = true;
+    this.findCurrentLoc();
   }
 
   setFileData(event: any): void {

@@ -11,6 +11,7 @@ import { ISquealDestination } from 'app/entities/squeal-destination/squeal-desti
 import { Loader, LoaderOptions } from 'google-maps';
 import { ISqueal, NewSqueal } from '../squeal.model';
 import { Account } from 'app/core/auth/account.model';
+import { IGeolocationCoordinates } from 'app/entities/geolocation-coordinates/geolocation-coordinates.model';
 export type PartialUpdateSqueal = Partial<ISqueal> & Pick<ISqueal, '_id'>;
 
 export type EntityResponseType = HttpResponse<ISqueal>;
@@ -44,13 +45,15 @@ export class SquealService {
     const url = this.applicationConfigService.getEndpointFor(`api/reactions-positive/get/${id}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
-  findSMM(search?: string): Observable<HttpResponse<Account[]>> {
-    if (!search) {
-      search = '';
-    }
-    const url = this.applicationConfigService.getEndpointFor(`api/account/findsmm/${search}`);
-    return this.http.get<Account[]>(url, { observe: 'response' });
+  getPosition(id: string): Observable<HttpResponse<IGeolocationCoordinates>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/geoloc/get/${id}`);
+    return this.http.get<IGeolocationCoordinates>(url, { observe: 'response' });
   }
+  updateGeoLoc(geoLoc: IGeolocationCoordinates): Observable<HttpResponse<IGeolocationCoordinates>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/geoloc/update`);
+    return this.http.post<IGeolocationCoordinates>(url, geoLoc, { observe: 'response' });
+  }
+
   getSquealByChannel(channel_id: string, page: number, size: number): Observable<HttpResponse<ISquealDTO[]>> {
     const params = new HttpParams().append('page', page).append('size', size);
     const url = this.applicationConfigService.getEndpointFor(`api/squeal-by-channel/${channel_id}`);

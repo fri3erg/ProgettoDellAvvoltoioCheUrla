@@ -67,11 +67,30 @@
             </button>
           </div>
           <div class="p-col-6">
-            <button class="btn btn-block btn-success" type="button" (click)="addGeo()">Aggiungi geolocalizazione</button>
+            <button *ngIf="!geo" class="btn btn-block btn-success" type="button" (click)="addGeo()">Aggiungi geolocalizazione</button>
+            <button *ngIf="geo" class="btn btn-block btn-danger" type="button" (click)="geo = false">Togli geolocalizazione</button>
+            <button
+              *ngIf="!this.geoLoc.refresh && geo"
+              class="btn btn-block btn-warning"
+              type="button"
+              (click)="this.geoLoc.refresh = true"
+            >
+              add refresh
+            </button>
+            <button
+              *ngIf="this.geoLoc.refresh && geo"
+              class="btn btn-block btn-warning"
+              type="button"
+              (click)="this.geoLoc.refresh = false"
+            >
+              togli refresh
+            </button>
           </div>
         </div>
 
-        <div [hidden]="!geoLoc.latitude" class="geo" [id]="'map_create'"></div>
+        <div [hidden]="!geo" class="geo" [id]="'map_create'">
+          <p-progressSpinner></p-progressSpinner>
+        </div>
         <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
         <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
       </div>

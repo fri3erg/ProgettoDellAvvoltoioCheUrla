@@ -17,6 +17,7 @@ import { AlertComponent } from './alert/alert.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 /**
  * Application wide Module
@@ -37,6 +38,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
     ConfirmDialogModule,
     SelectButtonModule,
     ToggleButtonModule,
+    ProgressSpinnerModule,
   ],
   exports: [
     CommonModule,
@@ -58,6 +60,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
     ConfirmDialogModule,
     SelectButtonModule,
     ToggleButtonModule,
+    ProgressSpinnerModule,
   ],
 })
 export default class SharedModule {}
