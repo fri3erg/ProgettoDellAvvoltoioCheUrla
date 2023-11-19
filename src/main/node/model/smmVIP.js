@@ -1,6 +1,6 @@
 const { Schema, model, ObjectId } = require('mongoose');
 
-const userSchema = new Schema(
+const smmvipSchema = new Schema(
   {
     user_id: { type: String },
     users: {
@@ -10,5 +10,5 @@ const userSchema = new Schema(
   },
   { collection: 'smmvip', _id: true }
 );
-
-module.exports = model('smmVIP', userSchema);
+smmvipSchema.index({ user_id: 1 });
+module.exports = model('smmVIP', smmvipSchema);

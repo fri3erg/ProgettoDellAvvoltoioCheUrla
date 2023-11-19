@@ -67,10 +67,14 @@
             </button>
           </div>
           <div class="p-col-6">
-            <button *ngIf="!geo" class="btn btn-block btn-success" type="button" (click)="addGeo()">Aggiungi geolocalizazione</button>
-            <button *ngIf="geo" class="btn btn-block btn-danger" type="button" (click)="geo = false">Togli geolocalizazione</button>
+            <button *ngIf="!geo && !isResponse" class="btn btn-block btn-success" type="button" (click)="addGeo()">
+              Aggiungi geolocalizazione
+            </button>
+            <button *ngIf="geo && !isResponse" class="btn btn-block btn-danger" type="button" (click)="geo = false">
+              Togli geolocalizazione
+            </button>
             <button
-              *ngIf="!this.geoLoc.refresh && geo"
+              *ngIf="!this.geoLoc.refresh && geo && !isResponse"
               class="btn btn-block btn-warning"
               type="button"
               (click)="this.geoLoc.refresh = true"
@@ -78,7 +82,7 @@
               add refresh
             </button>
             <button
-              *ngIf="this.geoLoc.refresh && geo"
+              *ngIf="this.geoLoc.refresh && geo && !isResponse"
               class="btn btn-block btn-warning"
               type="button"
               (click)="this.geoLoc.refresh = false"

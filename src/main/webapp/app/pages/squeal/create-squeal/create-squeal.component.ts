@@ -23,7 +23,6 @@ export class CreateSquealComponent implements OnInit {
   results?: ISquealDestination[];
   dto?: ISquealDTO;
   charsDTO?: IUserCharsDTO;
-  loader = this.squealService.getLoader();
   geoLoc: IGeolocationCoordinates;
   map?: google.maps.Map;
   geo = false;
@@ -32,6 +31,7 @@ export class CreateSquealComponent implements OnInit {
   display: any;
   zoom = 10;
   // @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
+  @Input() isResponse = false;
   @Input() destination: ISquealDestination[] = [];
   @Input() response?: string;
   @Output() squealed: EventEmitter<boolean> = new EventEmitter();
@@ -107,7 +107,9 @@ export class CreateSquealComponent implements OnInit {
     this.dto.squeal.squeal_id_response = this.response;
     this.dto.squeal.body = this.message;
     this.dto.squeal.destination = this.destination;
-    this.dto.geoLoc = this.geoLoc;
+    if (this.dto.geoLoc?.accuracy) {
+      this.dto.geoLoc = this.geoLoc;
+    }
     console.log('insert');
     console.log(this.dto);
     this.squealService.insertOrUpdate(this.dto).subscribe(r => {
@@ -127,6 +129,7 @@ export class CreateSquealComponent implements OnInit {
         this.destination = [];
         this.message = '';
         this.dto = { squeal: {} };
+        this.geo = false;
         this.squealed.emit(true);
       }
     });
@@ -159,7 +162,6 @@ export class CreateSquealComponent implements OnInit {
     );
   }
   createMap(): void {
-    const loader = this.squealService.getLoader();
     const myMap = document.getElementById('map_create') as HTMLInputElement | null;
     console.log(myMap?.outerHTML);
     if (myMap) {
@@ -168,27 +170,29 @@ export class CreateSquealComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Posizione', detail: 'Posizione non trovata' });
         return;
       }
-      const lat = this.geoLoc.latitude;
-      const lng = this.geoLoc.longitude;
-      const heading = this.geoLoc.heading;
-      const svgMarker = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        fillColor: 'red',
-        fillOpacity: 0,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 7,
-        anchor: new google.maps.Point(0, 0),
-      };
 
-      loader.load().then(function (google) {
+      this.squealService.getGoogle().subscribe(() => {
+        if (!(this.geoLoc.latitude && this.geoLoc.longitude)) {
+          return;
+        }
+        const heading = this.geoLoc.heading;
+        const latlng = new google.maps.LatLng(this.geoLoc.latitude, this.geoLoc.longitude);
         const map = new google.maps.Map(myMap, {
-          center: { lat, lng },
+          center: latlng,
           heading: heading ?? 0,
           zoom: 13,
         });
+        const svgMarker = {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          fillColor: 'red',
+          fillOpacity: 1,
+          strokeWeight: 0,
+          rotation: 0,
+          scale: 5,
+          anchor: new google.maps.Point(0, 0),
+        };
         const marker = new google.maps.Marker({
-          position: { lat, lng },
+          position: latlng,
           map,
           icon: svgMarker,
           title: 'You!',

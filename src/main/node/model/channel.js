@@ -10,4 +10,5 @@ const channelSchema = new Schema(
   },
   { collection: 'channel', _id: true }
 );
+channelSchema.index({ name: 1 });
 module.exports = model('channel', channelSchema);

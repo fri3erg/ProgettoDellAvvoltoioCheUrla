@@ -26,5 +26,5 @@ const squealSchema = new Schema(
   },
   { collection: 'squeal', _id: true }
 );
-
+squealSchema.index({ user_id: 1 });
 module.exports = model('squeal', squealSchema);

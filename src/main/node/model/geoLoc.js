@@ -14,4 +14,6 @@ const geoLocSchema = new Schema(
   },
   { collection: 'geo_loc', _id: true }
 );
+geoLocSchema.index({ squeal_id: 1 });
+geoLocSchema.index({ user_id: 1 });
 module.exports = model('geoLoc', geoLocSchema);

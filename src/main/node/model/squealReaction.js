@@ -10,4 +10,6 @@ const squealReactionSchema = new Schema(
   },
   { collection: 'squeal_reaction', _id: true }
 );
+squealReactionSchema.index({ squeal_id: 1 });
+squealReactionSchema.index({ user_id: 1 });
 module.exports = model('squealReaction', squealReactionSchema);

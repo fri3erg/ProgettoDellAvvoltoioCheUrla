@@ -8,4 +8,6 @@ const squealCatSchema = new Schema(
   },
   { collection: 'squeal_cat', _id: true }
 );
+squealCatSchema.index({ squealId: 1 });
+squealCatSchema.index({ user_id: 1 });
 module.exports = model('squealCat', squealCatSchema);

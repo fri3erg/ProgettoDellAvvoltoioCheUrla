@@ -300,11 +300,7 @@ class SquealService {
     return await Squeal.countDocuments({ user_id: theirUser._id.toString(), 'destination.destination_type': { $in: chTypes } });
   }
 
-  async updateGeoLoc(geoLoc, user, myUsername) {
-    if (this.geoLocIsInvalid(geoLoc)) {
-      throw new Error('GeoLoc invalid');
-    }
-    const ret = [];
+  async getGeoLoc(id, user, myUsername) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
       throw new Error('Username Invalid');
@@ -312,10 +308,31 @@ class SquealService {
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
+    const geoLoc = await GeoLoc.findOne({ squeal_id: id });
+    if (!(await this.checkCanSeeGeoLoc(geoLoc, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+    return geoLoc;
+  }
+  async updateGeoLoc(geoLoc, user, myUsername) {
+    if (this.geoLocIsInvalid(geoLoc)) {
+      throw new Error('GeoLoc invalid');
+    }
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+    if (!this.checkGeoMine(geoLoc, thisUser)) {
+      throw new Error('Unauthorized');
+    }
+
     if (geoLoc.timestamp < Date.now() - (3600000 - 10000)) {
       geoLoc.refresh = false;
     }
-    loc = await GeoLoc.findByIdAndUpdate(geoLoc._id.toString(), {
+    const loc = await GeoLoc.findByIdAndUpdate(geoLoc._id.toString(), {
       latitude: geoLoc.latitude,
       longitude: geoLoc.longitude,
       accuracy: geoLoc.accuracy,
@@ -336,7 +353,18 @@ class SquealService {
     }
     return false;
   }
-
+  checkGeoMine(geoLoc, thisUser) {
+    return geoLoc.user_id === thisUser._id.toString();
+  }
+  async checkCanSeeGeoLoc(geoLoc, thisUser) {
+    const squeal = await Squeal.findById(geoLoc.squeal_id);
+    for (let dest of squeal.destination) {
+      if (this.checkSubscribed(dest, thisUser)) {
+        return true;
+      }
+    }
+    return false;
+  }
   async checkSubscribed(d, thisUser) {
     if (!d || !d.destination_type) {
       throw new Error('destination not found');
@@ -504,7 +532,7 @@ class SquealService {
     if (!search.startsWith('§') && !search.startsWith('@')) {
       const publicFind = await this.searchChannel('#', search, username);
       for (const ch of publicFind) {
-        const dest = new User({
+        const dest = new SquealDestination({
           destination_id: ch._id.toString(),
           destination: ch.name ?? '',
           destination_type: 'PUBLICGROUP',

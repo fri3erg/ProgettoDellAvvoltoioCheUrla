@@ -14,7 +14,7 @@ class CronService {
       messages: [
         {
           role: 'user',
-          content: 'tell ONE between an original fun fact OR a pun , but make it SHORT and just give one of the two responses',
+          content: 'tell me a joke',
         },
       ],
       model: 'gpt-3.5-turbo',

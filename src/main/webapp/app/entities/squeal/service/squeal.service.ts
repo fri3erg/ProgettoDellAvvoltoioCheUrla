@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
@@ -19,24 +19,35 @@ export type EntityArrayResponseType = HttpResponse<ISqueal[]>;
 
 @Injectable({ providedIn: 'root' })
 export class SquealService {
+  google?: any;
+  subject = new Subject<any>();
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/squeals');
   private loader?: Loader;
   private apikey = 'AIzaSyBRyAQHyJBPIxViP0UzEEPN9YhuNzyzWPM';
+  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {
+    this.initMaps();
+  }
 
-  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
-
-  getLoader(): Loader {
-    if (this.loader) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return this.loader;
+  getGoogle(): Observable<any> {
+    if (this.google) {
+      return of(this.google);
+    } else {
+      return this.subject.asObservable();
     }
+  }
+  initMaps(): void {
     const options: LoaderOptions = {
       language: 'en',
       region: 'IT',
     };
     this.loader = new Loader(this.apikey, options);
+    console.log('create loader');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.loader;
+    this.loader.load().then(g => {
+      this.google = g;
+      console.log('loader loaded');
+      this.subject.next(g);
+    });
   }
   getPositiveReactions(id?: string): Observable<HttpResponse<number>> {
     if (!id) {

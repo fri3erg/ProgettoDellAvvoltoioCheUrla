@@ -14,11 +14,12 @@ import { ActivatedRoute } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
+import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
 
 @Component({
   selector: 'jhi-profile',
   standalone: true,
-  imports: [SharedModule, FormsModule, CommonModule, CreateSquealComponent, SquealViewComponent],
+  imports: [SharedModule, ObserveElementDirective, FormsModule, CommonModule, CreateSquealComponent, SquealViewComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
@@ -34,6 +35,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   page = 0;
   sizeofpage = 5;
   hasMorePage = false;
+  isLoad = false;
   response?: string;
   smm?: Account;
   results?: Account[];
@@ -75,6 +77,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
           if (r.body) {
             this.squeals = r.body;
+            this.hasMorePage = r.body.length >= this.sizeofpage;
+            this.page++;
             console.log('users squeals:');
             console.log(this.squeals);
           }
@@ -92,6 +96,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+  createdSqueal(): void {
+    this.page = 0;
+    this.squeals = [];
+    this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
+      if (r.body) {
+        this.squeals = r.body;
+        this.hasMorePage = r.body.length >= this.sizeofpage;
+        this.page++;
+        console.log('users squeals:');
+        console.log(this.squeals);
+      }
+    });
   }
   openSearch(): void {
     this.openmySearch = !this.openmySearch;
@@ -226,6 +243,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return '';
     }
     return this.formatAsBytes(this.size(base64String));
+  }
+
+  appendSqueals(): void {
+    this.squealService.getSquealMadeByUser(this.profileName ?? '', this.page, this.sizeofpage).subscribe(r => {
+      if (r.body) {
+        this.hasMorePage = r.body.length >= this.sizeofpage;
+        this.page++;
+        if (!this.squeals) {
+          this.squeals = [];
+        }
+        this.squeals = [...this.squeals.concat(r.body)];
+      }
+    });
+  }
+
+  isIntersecting(event: boolean): void {
+    console.log(`Element is intersecting`);
+    console.log(event);
+    if (!event) {
+      this.isLoad = true;
+    } else if (this.isLoad && this.hasMorePage) {
+      this.appendSqueals();
+      this.isLoad = false;
+    }
   }
 
   ngOnDestroy(): void {

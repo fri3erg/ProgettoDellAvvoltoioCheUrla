@@ -10,5 +10,6 @@ const squealDestinationSchema = new Schema({
   admin_add: { type: Boolean, default: false },
   squeal: { type: ObjectId, ref: 'squeal' },
 });
-
+squealDestinationSchema.index({ destination_id: 1 });
+squealDestinationSchema.index({ destination: 1 });
 module.exports = model('squealDestination', squealDestinationSchema);

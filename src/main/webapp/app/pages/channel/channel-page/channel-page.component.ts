@@ -7,12 +7,9 @@ import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
 import { CreateSquealComponent } from 'app/pages/squeal/create-squeal/create-squeal.component';
-import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
-import { PrivilegeType } from 'app/entities/enumerations/privilege-type.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { ChannelUserService } from 'app/entities/channel-user/service/channel-user.service';
 import { Account } from 'app/core/auth/account.model';
-import { NewChannelUser } from 'app/entities/channel-user/channel-user.model';
 import { Subject, takeUntil } from 'rxjs';
 import SharedModule from 'app/shared/shared.module';
 import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
@@ -108,6 +105,8 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   }
 
   createdSqueal(): void {
+    this.page = 0;
+    this.squeals = [];
     this.loadSqueals();
   }
 

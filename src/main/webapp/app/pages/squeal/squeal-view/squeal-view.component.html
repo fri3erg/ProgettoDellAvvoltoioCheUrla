@@ -50,10 +50,10 @@
   </div>
   <div>
     <jhi-create-squeal
+      [isResponse]="true"
       (squealed)="onSquealed($event)"
       *ngIf="reply && !squealed"
       [response]="squeal.squeal?._id?.toString()"
     ></jhi-create-squeal>
   </div>
 </div>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>

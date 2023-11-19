@@ -19,5 +19,5 @@ const userSchema = new Schema(
   },
   { collection: 'jhi_user', _id: true }
 );
-
+userSchema.index({ login: 1 });
 module.exports = model('user', userSchema);

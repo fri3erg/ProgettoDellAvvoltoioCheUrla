@@ -7,4 +7,5 @@ const squealViewsSchema = new Schema(
   },
   { collection: 'squeal_views', _id: true }
 );
+squealViewsSchema.index({ squeal_id: 1 });
 module.exports = model('squealViews', squealViewsSchema);

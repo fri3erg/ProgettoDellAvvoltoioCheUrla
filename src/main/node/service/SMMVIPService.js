@@ -33,8 +33,8 @@ class SMMVIPService {
       throw new Error('Unauthorized');
     }
 
-    const user = await new accountService().searchUser(search);
-    for (const us of user) {
+    const users = await new accountService().searchUser(search);
+    for (const us of users) {
       const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
       console.log(SMMUser);
       if (SMMUser) {

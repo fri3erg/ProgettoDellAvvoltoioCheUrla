@@ -171,9 +171,9 @@ router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
   }
 });
 
-router.get('/search-smm/:search', auth, async (req, res) => {
+router.get('/smm/search', auth, async (req, res) => {
   try {
-    const ret = await new SMMVIPService().getSMM(req.user, req.params.name, req.query.search);
+    const ret = await new SMMVIPService().getSMM(req.user, req.user.username, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

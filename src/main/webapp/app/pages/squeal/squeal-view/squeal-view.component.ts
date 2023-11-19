@@ -87,16 +87,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
     if (!this.squeal.squeal.body) {
       this.squeal.squeal.body = 'squeal not found';
     }
-    if (!this.squeal.geoLoc?.refresh) {
-      this.accountService
-        .getAuthenticationState()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(a => {
-          this.account = a;
-          this.startRefresh();
-        });
-    }
-    console.log(this.squeal.squeal.body);
+
     this.innerBody = this.urlify(this.squeal.squeal.body);
 
     if (this.squeal.squeal.squeal_id_response) {
@@ -109,36 +100,49 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.addMap();
+    if (this.squeal?.geoLoc?.refresh) {
+      this.accountService
+        .getAuthenticationState()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(a => {
+          this.account = a;
+          this.startRefresh();
+        });
+    }
+  }
+  addMap(): void {
     if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
-      const loader = this.squealService.getLoader();
       const myMap = document.getElementById('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
       console.log('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
-      const svgMarker = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        fillColor: 'red',
-        fillOpacity: 0,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 7,
-        anchor: new google.maps.Point(0, 0),
-      };
+
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (myMap && loader) {
-        const lat = this.squeal.geoLoc.latitude;
-        const lng = this.squeal.geoLoc.longitude;
+      if (myMap) {
         const heading = this.squeal.geoLoc.heading;
-        const latlng = new google.maps.LatLng(this.squeal.geoLoc.latitude, this.squeal.geoLoc.longitude);
-        loader.load().then(function (google) {
+        this.squealService.getGoogle().subscribe(() => {
+          if (!(this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude)) {
+            return;
+          }
+          const latlng = new google.maps.LatLng(this.squeal.geoLoc.latitude, this.squeal.geoLoc.longitude);
           const map = new google.maps.Map(myMap, {
             center: latlng,
             heading: heading ?? 0,
             zoom: 13,
           });
+          const svgMarker = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            fillColor: 'red',
+            fillOpacity: 1,
+            strokeWeight: 0,
+            rotation: 0,
+            scale: 5,
+            anchor: new google.maps.Point(0, 0),
+          };
           const marker = new google.maps.Marker({
-            position: { lat, lng },
+            position: latlng,
             map,
-            icon: svgMarker,
             title: 'You!',
+            icon: svgMarker,
           });
         });
       }
@@ -155,34 +159,33 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
               this.squeal.geoLoc.accuracy = position.coords.accuracy;
               this.squeal.geoLoc.heading = position.coords.heading;
               this.squeal.geoLoc.speed = position.coords.speed;
-              this.squeal.geoLoc.timestamp = position.timestamp;
               this.squeal.geoLoc.refresh = true;
               this.squealService.updateGeoLoc(this.squeal.geoLoc).subscribe(r => {
                 if (r.body && this.squeal) {
-                  console.log(r.body);
                   this.squeal.geoLoc = r.body;
+                  console.log(this.squeal.geoLoc);
+                  this.addMap();
                 }
               });
             }
           },
           error => {
             console.log(error);
-          },
-          { enableHighAccuracy: true }
+          }
         );
-        setTimeout(this.startRefresh, 10000);
-        return;
       } else {
         this.squealService.getPosition(this.squeal.squeal?._id?.toString() ?? '').subscribe(r => {
           if (r.body && this.squeal) {
-            console.log(r.body);
             this.squeal.geoLoc = r.body;
           }
         });
-        setTimeout(this.startRefresh, 10000);
-        return;
       }
+      setTimeout(() => {
+        this.startRefresh();
+      }, 10000);
+      return;
     }
+    return;
   }
 
   onSquealed(event: any): void {
@@ -205,10 +208,8 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
       emoji,
       squeal_id: this.squeal?.squeal?._id?.toString(),
     };
-    console.log(r);
     this.squealReactionService.createorUpdate(r).subscribe(ret => {
       if (ret.body && this.squeal) {
-        console.log(ret.body);
         const reaction = ret.body;
         let cr = this.squeal.reactions?.find(i => i.reaction === this.squeal?.active_reaction);
 
@@ -236,7 +237,6 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
           this.squeal.reactions?.push(dto);
         }
         this.squeal.active_reaction = reaction.emoji;
-        console.log(this.squeal);
       }
     });
   }

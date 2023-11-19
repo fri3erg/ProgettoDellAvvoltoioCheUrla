@@ -10,4 +10,6 @@ const channelUserSchema = new Schema(
   },
   { collection: 'channel_user', _id: true }
 );
+channelUserSchema.index({ user_id: 1 });
+channelUserSchema.index({ channel_id: 1 });
 module.exports = model('channelUser', channelUserSchema);

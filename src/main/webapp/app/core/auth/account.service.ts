@@ -35,12 +35,14 @@ export class AccountService {
     const params = new HttpParams().append('name', name);
     return this.http.get<Account>(url, { params, observe: 'response' });
   }
+
   findSMM(search?: string): Observable<HttpResponse<Account[]>> {
     if (!search) {
       search = '';
     }
-    const url = this.applicationConfigService.getEndpointFor(`api/search-smm/${search}`);
-    return this.http.get<Account[]>(url, { observe: 'response' });
+    const url = this.applicationConfigService.getEndpointFor(`api/smm/search`);
+    const params = new HttpParams().append('search', search);
+    return this.http.get<Account[]>(url, { params, observe: 'response' });
   }
 
   search(search: string): Observable<HttpResponse<Account[]>> {
