@@ -100,7 +100,7 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
     if (!thisUser.authorities) {
       return res.status(401).send('Non hai i permessi');
     } else {
-      authArray = ['ROLE_ADMIN', 'ROLE_SMM'];
+      authArray = ['ROLE_ADMIN', 'ROLE_SMM', 'ROLE_VIP'];
       const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
 
       if (!result) {
@@ -174,6 +174,16 @@ router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
 router.get('/search-smm/:search', auth, async (req, res) => {
   try {
     const ret = await new SMMVIPService().getSMM(req.user, req.params.name, req.query.search);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
