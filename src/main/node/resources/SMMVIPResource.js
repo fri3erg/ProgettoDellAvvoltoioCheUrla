@@ -11,6 +11,7 @@ const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
 const squealService = require('../service/SquealService');
 const reactionService = require('../service/ReactionService');
+//const { Chat } = require('openai/resources');
 
 const router = express.Router();
 
@@ -89,7 +90,6 @@ router.post('/remove-smm/:_id', auth, async (req, res) => {
   }
 });
 
-//! non restituire password
 //dammi oggetto di tutti i clienti del smm ✅
 //chiamato dal smm quando vuole visualizzare tutti i suoi clienti
 router.get('/smmclients/:_id', auth, async (req, res) => {
@@ -155,7 +155,8 @@ router.get('/client-feed/:name', auth, async (req, res) => {
 router.post('/client-post/:name', auth, async (req, res) => {
   try {
     let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name);
-    res.status(201).json(squeal);
+    let squealDTO = await new squealService().getSquealDTO(squeal, req.params.name);
+    res.status(201).json(squealDTO);
   } catch (err) {
     return res.status(400).send(err.message);
   }

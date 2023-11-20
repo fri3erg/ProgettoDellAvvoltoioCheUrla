@@ -43,6 +43,52 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+router.post('/authenticate/smm', async (req, res) => {
+  try {
+    // Get user input
+    const { username, password } = req.body;
+
+    // Validate user input
+    if (!(username && password)) {
+      res.status(400).send('All input is required');
+    }
+
+    // Validate if user exist in our database
+    const user = await User.findOne({ login: username });
+    console.log(user);
+
+    if (!user.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      authArray = ['ROLE_ADMIN', 'ROLE_VIP', 'ROLE_SMM'];
+      const result = user.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
+      console.log(result);
+
+      if (!result) {
+        res.status(401).send('Non hai i permessi');
+      } else {
+        if (user && (await bcrypt.compare(password, user.password))) {
+          // Create token
+          const token = jwt.sign({ user_id: user._id, username }, process.env.TOKEN_KEY, {
+            expiresIn: '200h',
+          });
+
+          res.setHeader('Authorization', 'Bearer ' + token);
+
+          const t = {
+            id_token: token,
+          };
+          res.status(200).json(t);
+          return;
+        }
+      }
+    }
+    res.status(400).send('Invalid Credentials');
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.get('/user-by-name', auth, async (req, res) => {
   try {
     const ret = await new accountService().getUser(req.user, req.user.username, req.query.name);

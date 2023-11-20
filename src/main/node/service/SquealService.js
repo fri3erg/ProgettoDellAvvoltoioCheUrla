@@ -495,6 +495,12 @@ class SquealService {
     return ret;
   }
 
+  async getSquealDTO(squeal, username) {
+    const thisUser = await User.findOne({ login: username });
+    const dto = await this.loadSquealData(squeal, thisUser);
+    return dto;
+  }
+
   async getSquealDestination(myUser, username, search) {
     let validDest = [];
     const thisUser = await User.findOne({ login: username });
