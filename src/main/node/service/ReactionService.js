@@ -19,6 +19,14 @@ class ReactionDTO {
     number++;
   }
 }
+CATTHRESHOLD = 0.5;
+VIEWSTHRESHOLD = 0;
+POSITIVETHRESHOLD = 0.8;
+NEGATIVETHRESHOLD = 0.8;
+BASEMULTIPLIER = 10;
+POSITIVEMULTIPLIER = 3;
+NEGATIVEMULTIPLIER = 2;
+
 class ReactionService {
   async insertOrUpdateReaction(reaction, user, username) {
     const thisUser = await User.findOne({ login: username });
@@ -31,7 +39,9 @@ class ReactionService {
     const found = await SquealReaction.findOne({ user_id: thisUser._id.toString(), squeal_id: reaction.squeal_id });
     if (found) {
       await SquealReaction.deleteOne(found);
+
       if (found.emoji == reaction.emoji) {
+        await this.updateCat(reaction.squeal_id, thisUser._id.toString());
         return {
           emoji: 'deleted',
         };
@@ -47,7 +57,43 @@ class ReactionService {
     if (!ret) {
       throw new Error('could not create');
     }
+    await this.updateCat(reaction.squeal_id, thisUser._id.toString());
     return ret;
+  }
+
+  async updateCat(squeal_id, user_id) {
+    const views = await SquealViews.findOne({ squeal_id: squeal_id });
+    const positive = await this.getPositiveReactionNumber(squeal_id);
+    const negative = await this.getNegativeReactionNumber(squeal_id);
+    const total = negative + positive;
+    if (total / views.number > CATTHRESHOLD && views.number > VIEWSTHRESHOLD) {
+      const cat = await SquealCat.findOne({ squeal_id: squeal_id });
+      let catType = 'INVALID';
+      if (positive / total > POSITIVETHRESHOLD) {
+        catType = 'POPULAR';
+      }
+      if (negative / total > NEGATIVETHRESHOLD) {
+        if (catType == 'POPULAR') {
+          catType = 'CONTROVERSIAL';
+        } else {
+          catType = 'UNPOPULAR';
+        }
+      }
+      const base_characters = BASEMULTIPLIER * Math.sign(positive - negative);
+      const n_characters = positive * POSITIVEMULTIPLIER - negative * NEGATIVEMULTIPLIER + base_characters;
+      if (!cat) {
+        await SquealCat.create({
+          squeal_id: squeal_id,
+          user_id: user_id,
+          cat_type: catType,
+          n_characters: n_characters,
+          timestamp: Date.now(),
+        });
+      } else {
+        await SquealCat.findOneAndUpdate(cat.id.toString(), { cat_type: catType, n_characters: n_characters });
+      }
+      return;
+    }
   }
 
   async getReaction(id) {

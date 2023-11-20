@@ -13,15 +13,18 @@ const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
 const ChannelService = require('./ChannelService');
 const GeoLoc = require('../model/geoLoc');
-const squeal = require('../model/squeal');
+const Money = require('../model/money');
 const moment = require('moment');
 
-const chDay = 100;
-const chWeek = chDay * 4;
-const chMonth = chWeek * 3;
+const weekDayMultiplier = 4;
+const monthWeekMultiplier = 3;
+const chMonth = 1200;
+const msinYear = 31536000000;
 const msinMonth = 2629800000;
 const msinWeek = 604800000;
 const msinDay = 86400000;
+const IMGCHAR = 125;
+const GEOCHAR = 125;
 //params:
 //page and size for paging
 //user for auth and isUserAuthorized
@@ -35,11 +38,24 @@ class SquealService {
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
-
+    const purchased = await Money.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinYear } });
+    let ch_purchased = 0;
+    for (const p of purchased) {
+      ch_purchased = ch_purchased + p.n_characters;
+    }
     const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
-    let chRemMonth = chMonth;
-    let chRemWeek = chWeek;
-    let chRemDay = chDay;
+    let ids = [];
+    for (const s of squeals) {
+      ids.push(s._id.toString());
+    }
+    let ch_total = 0;
+    const cat = await SquealCat.find({ squeal_id: { $in: ids } });
+    for (const c of cat) {
+      ch_total = ch_total + c.n_characters;
+    }
+    let chRemMonth = parseInt(chMonth - ch_total + ch_purchased);
+    let chRemWeek = parseInt(chRemMonth / monthWeekMultiplier);
+    let chRemDay = parseInt(chRemWeek / weekDayMultiplier);
     for (const s of squeals) {
       const destId = [];
       for (const d of s.destination) {
@@ -453,7 +469,7 @@ class SquealService {
       img_name: squeal.img_name,
       video_content_type: squeal.video_content_type,
       video_name: squeal.video_name,
-      n_characters: this.getNCharacters(squeal) ?? 0,
+      n_characters: this.getNCharacters(squeal, geoLoc) ?? 0,
       destination: [],
       squeal_id_response: squeal.squeal_id_response,
     });
@@ -934,74 +950,75 @@ class SquealService {
         return false;
     }
   }
-
-  async calcCharsChangedWithPopularity(user, myUsername) {
-    const ret = [];
-    const thisUser = await User.findOne({ login: myUsername });
-    if (!thisUser) {
-      throw new Error('Username Invalid');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unathorized');
-    }
-
-    let squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
-    let squealsSent = await Squeal.find({
-      user_id: thisUser._id.toString(),
-      'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
-    });
-    squeals = squeals.concat(squealsSent);
-    const map = new Map();
-    for (const s of squeals) {
-      const user = s.user_id;
-      let n = s;
-      map.set(user, n);
-    }
-
-    squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
-
-    for (const s of squeals) {
-      const dto = await this.loadSquealData(s, thisUser);
-      if (dto) {
-        ret.push(dto);
+  /*
+    async calcCharsChangedWithPopularity(user, myUsername) {
+      const ret = [];
+      const thisUser = await User.findOne({ login: myUsername });
+      if (!thisUser) {
+        throw new Error('Username Invalid');
       }
-    }
-    return ret;
-  }
-  async calcCharsChangedbySqueal(squeal) {
-    const ret = [];
-
-    const thisUser = await User.findOne({ login: myUsername });
-    if (!thisUser) {
-      throw new Error('Username Invalid');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unathorized');
-    }
-
-    let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
-    let squealsSent = await Squeal.find({
-      user_id: thisUser._id.toString(),
-      'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
-    });
-    squeals = squeals.concat(squealsSent);
-    const map = new Map();
-    for (const s of squeals) {
-      const user = s.user_id;
-      let n = s;
-      map.set(user, n);
-    }
-
-    squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
-
-    for (const s of squeals) {
-      const dto = await this.loadSquealData(s, thisUser);
-      if (dto) {
-        ret.push(dto);
+      if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+        throw new Error('Unathorized');
       }
+  
+      let squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
+      let squealsSent = await Squeal.find({
+        user_id: thisUser._id.toString(),
+        'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
+      });
+      squeals = squeals.concat(squealsSent);
+      const map = new Map();
+      for (const s of squeals) {
+        const user = s.user_id;
+        let n = s;
+        map.set(user, n);
+      }
+  
+      squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+  
+      for (const s of squeals) {
+        const dto = await this.loadSquealData(s, thisUser);
+        if (dto) {
+          ret.push(dto);
+        }
+      }
+      return ret;
     }
-    return ret;
-  }
+    async calcCharsChangedbySqueal(squeal) {
+      const ret = [];
+  
+      const thisUser = await User.findOne({ login: myUsername });
+      if (!thisUser) {
+        throw new Error('Username Invalid');
+      }
+      if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+        throw new Error('Unathorized');
+      }
+  
+      let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
+      let squealsSent = await Squeal.find({
+        user_id: thisUser._id.toString(),
+        'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
+      });
+      squeals = squeals.concat(squealsSent);
+      const map = new Map();
+      for (const s of squeals) {
+        const user = s.user_id;
+        let n = s;
+        map.set(user, n);
+      }
+  
+      squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+  
+      for (const s of squeals) {
+        const dto = await this.loadSquealData(s, thisUser);
+        if (dto) {
+          ret.push(dto);
+        }
+      }
+      return ret;
+    }
+    */
 
   async getCommentsNumber(squeal_id) {
     const comments = await Squeal.find({
@@ -1059,14 +1076,18 @@ class SquealService {
     return img;
   }
 
-  getNCharacters(squeal) {
+  getNCharacters(squeal, geoLoc) {
     if (!squeal || !squeal.body) {
       throw new Error('squeal not found');
     }
     let n = squeal.body.length;
     if (squeal.img && squeal.img != '') {
-      n = n + 100;
+      n = n + IMGCHAR;
     }
+    if (geoLoc) {
+      n = n + GEOCHAR;
+    }
+
     return n;
   }
 }

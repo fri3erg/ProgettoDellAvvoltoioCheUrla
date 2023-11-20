@@ -17,8 +17,6 @@ const squealSchema = new Schema(
     img: { type: Array, default: null },
     img_content_type: { type: String, default: null },
     img_name: { type: String, default: null },
-    video_content_type: { type: String, default: null },
-    video_name: { type: String, default: null },
     n_characters: { type: Number, default: 0 },
     squeal_id_response: { type: String, default: null },
     refresh_time: { type: Number, default: null },
