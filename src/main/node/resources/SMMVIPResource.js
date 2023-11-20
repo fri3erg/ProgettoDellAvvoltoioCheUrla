@@ -111,6 +111,7 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
           const vip = await smmVIP.findOne({ _id: urlId });
           const result = vip.users;
           const clientsArray = await new SMMVIPService().idToObj(result);
+          console.log(clientsArray);
           res.status(200).json(clientsArray);
         }
       }

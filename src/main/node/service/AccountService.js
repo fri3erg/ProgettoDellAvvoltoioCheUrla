@@ -88,6 +88,7 @@ class AccountService {
       login: account.login,
       _id: account._id,
       img: account.img,
+      email: account.email,
       imgContentType: account.imgContentType,
       authorities: account.authorities,
       lang_key: account.lang_key,

@@ -47,8 +47,9 @@ class SMMVIPService {
   async idToObj(idArray) {
     const clientsArray = [];
     for (let i = 0; i < idArray.length; i++) {
-      const client = await user.findOne({ _id: idArray[i] });
-      clientsArray.push(client);
+      const client = await user.findById(idArray[i]);
+      const client_protected = new accountService().hideSensitive(client);
+      clientsArray.push(client_protected);
     }
     return clientsArray;
   }
