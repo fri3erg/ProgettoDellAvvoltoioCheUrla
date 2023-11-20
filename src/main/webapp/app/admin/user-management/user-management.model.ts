@@ -1,8 +1,8 @@
 export interface IUser {
   id: string | null;
   login?: string;
-  firstName?: string | null;
-  lastName?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
   email?: string;
   activated?: boolean;
   lang_key?: string;
@@ -17,8 +17,8 @@ export class User implements IUser {
   constructor(
     public id: string | null,
     public login?: string,
-    public firstName?: string | null,
-    public lastName?: string | null,
+    public first_name?: string | null,
+    public last_name?: string | null,
     public email?: string,
     public activated?: boolean,
     public lang_key?: string,

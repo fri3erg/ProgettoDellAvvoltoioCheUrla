@@ -284,6 +284,20 @@ router.post('/register/smm', async (req, res) => {
     console.log(err);
   }
 });
+router.post('/account/update', auth, async (req, res) => {
+  try {
+    const account = req.body;
+
+    if (!account) {
+      throw new Error('invalid account');
+    }
+
+    const ret = await new accountService().update(req.user, req.user.username, account);
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {}
+});
 
 router.post('/register/vip', async (req, res) => {
   try {

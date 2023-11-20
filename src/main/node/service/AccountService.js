@@ -32,6 +32,23 @@ class AccountService {
     return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
 
+  async update(user, myUsername, account) {
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    if (!(await this.isUserAuthorized(user, thisUser))) {
+      throw new Error('unauthorized');
+    }
+    if (account.first_name) {
+      thisUser.first_name = account.first_name;
+    }
+    if (account.last_name) {
+      thisUser.last_name = account.last_name;
+    }
+    return await User.findOneAndUpdate({ login: thisUser.login }, thisUser);
+  }
+
   async getUser(user, myUsername, name) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {

@@ -1,7 +1,6 @@
 <div *ngIf="account">
   <div class="p-fluid">
     <div class="p-field">
-      <label for="field_notificationImage">Immagine</label>
       <div>
         <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
 
@@ -49,15 +48,17 @@
 
   <div style="flex: 1">
     <span>
-      {{ this.account.firstName || 'maffeo' }}
-      {{ this.account.lastName || 'raggi' }}
+      {{ this.account.first_name || 'maffeo' }}
+      {{ this.account.last_name || 'raggi' }}
       {{ this.account.login || 'gaymaffeo42' }}
       <span style="background-color: red" [routerLink]="['/profile', profileName, 'mychannels']">
         {{ this.nChannels }} channels subscribed to
       </span>
       {{ squealslength }} squeals squealed
     </span>
-    <button *ngIf="isVip()" class="btn btn-success" (click)="openSearch()">add a SMM</button>
+    <button *ngIf="account?.login === myAccount?.login && !openEdit" class="btn btn-success" (click)="openEdit = true">edit profile</button>
+    <button *ngIf="!openmySearch" class="btn btn-success" (click)="openmySearch = true">add a SMM</button>
+    <button *ngIf="openmySearch" class="btn btn-danger" (click)="openmySearch = false">close</button>
     <span *ngIf="openmySearch" class="input-group-text" id="inputGroup-sizing-default">SMM</span>
     <div *ngIf="openmySearch" style="flex: 1">
       <p-autoComplete
@@ -72,6 +73,11 @@
       ></p-autoComplete>
       <button [disabled]="!smm" class="btn btn-primary mt-2" type="button" (click)="addSMM()">Invia</button>
     </div>
+    <form *ngIf="account?.login === myAccount?.login && openEdit">
+      <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
+      <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
+      <button class="btn btn-success" (click)="applyEdit()">Apply</button>
+    </form>
   </div>
   <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
   <p-dataView #dv [value]="squeals" *ngIf="squeals">

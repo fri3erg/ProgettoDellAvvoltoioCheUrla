@@ -3,9 +3,9 @@ export class Account {
     public activated: boolean,
     public authorities: string[],
     public email: string,
-    public firstName: string | null,
+    public first_name: string | null,
 
-    public lastName: string | null,
+    public last_name: string | null,
     public login: string,
     public img: string | null,
     public img_content_type: string | null,

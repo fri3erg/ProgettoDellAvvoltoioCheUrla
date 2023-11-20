@@ -29,6 +29,9 @@ export class AccountService {
   addSMM(id?: string): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/add-smm'), id, { observe: 'response' });
   }
+  update(user: Account): Observable<HttpResponse<Account>> {
+    return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/update'), user, { observe: 'response' });
+  }
 
   getUser(name: string): Observable<HttpResponse<Account>> {
     const url = this.applicationConfigService.getEndpointFor('api/user-by-name');

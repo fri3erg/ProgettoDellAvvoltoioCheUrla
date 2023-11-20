@@ -40,6 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   smm?: Account;
   results?: Account[];
   openmySearch = false;
+  openEdit = false;
 
   connectedDestination?: ISquealDestination;
   private readonly destroy$ = new Subject<void>();
@@ -110,9 +111,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     });
   }
-  openSearch(): void {
-    this.openmySearch = !this.openmySearch;
-  }
+
   isVip(): boolean {
     //TODO: remove
     return true;
@@ -130,6 +129,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+  applyEdit(): void {
+    if (this.account) {
+      console.log(this.account);
+      this.accountService.update(this.account).subscribe(r => {
+        if (r.body) {
+          this.account = r.body;
+          this.edit = false;
+          console.log(this.account);
+        }
+      });
+    }
   }
 
   addSMM(): void {

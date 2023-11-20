@@ -35,13 +35,13 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label" jhiTranslate="userManagement.firstName">First name</label>
-        <input type="text" class="form-control" name="firstName" formControlName="firstName" />
+        <label class="form-label" jhiTranslate="userManagement.first_name">First name</label>
+        <input type="text" class="form-control" name="first_name" formControlName="first_name" />
 
-        <div *ngIf="editForm.get('firstName')!.invalid && (editForm.get('firstName')!.dirty || editForm.get('firstName')!.touched)">
+        <div *ngIf="editForm.get('first_name')!.invalid && (editForm.get('first_name')!.dirty || editForm.get('first_name')!.touched)">
           <small
             class="form-text text-danger"
-            *ngIf="editForm.get('firstName')?.errors?.maxlength"
+            *ngIf="editForm.get('first_name')?.errors?.maxlength"
             jhiTranslate="entity.validation.maxlength"
             [translateValues]="{ max: 50 }"
           >
@@ -51,13 +51,13 @@
       </div>
 
       <div class="mb-3">
-        <label jhiTranslate="userManagement.lastName">Last name</label>
-        <input type="text" class="form-control" name="lastName" formControlName="lastName" />
+        <label jhiTranslate="userManagement.last_name">Last name</label>
+        <input type="text" class="form-control" name="last_name" formControlName="last_name" />
 
-        <div *ngIf="editForm.get('lastName')!.invalid && (editForm.get('lastName')!.dirty || editForm.get('lastName')!.touched)">
+        <div *ngIf="editForm.get('last_name')!.invalid && (editForm.get('last_name')!.dirty || editForm.get('last_name')!.touched)">
           <small
             class="form-text text-danger"
-            *ngIf="editForm.get('lastName')?.errors?.maxlength"
+            *ngIf="editForm.get('last_name')?.errors?.maxlength"
             jhiTranslate="entity.validation.maxlength"
             [translateValues]="{ max: 50 }"
           >

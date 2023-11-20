@@ -24,10 +24,10 @@ public class AdminUserDTO implements Serializable {
     private String login;
 
     @Size(max = 50)
-    private String firstName;
+    private String first_name;
 
     @Size(max = 50)
-    private String lastName;
+    private String last_name;
 
     @Email
     @Size(min = 5, max = 254)
@@ -62,8 +62,8 @@ public class AdminUserDTO implements Serializable {
     public AdminUserDTO(User user) {
         this.id = user.getId();
         this.login = user.getLogin();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
+        this.first_name = user.getFirstName();
+        this.last_name = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.isActivated();
         this.imageUrl = user.getImage_url();
@@ -94,19 +94,19 @@ public class AdminUserDTO implements Serializable {
     }
 
     public String getFirstName() {
-        return firstName;
+        return first_name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstName(String first_name) {
+        this.first_name = first_name;
     }
 
     public String getLastName() {
-        return lastName;
+        return last_name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastName(String last_name) {
+        this.last_name = last_name;
     }
 
     public String getEmail() {
@@ -202,8 +202,8 @@ public class AdminUserDTO implements Serializable {
     public String toString() {
         return "AdminUserDTO{" +
             "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
+            ", first_name='" + first_name + '\'' +
+            ", last_name='" + last_name + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +

@@ -20,11 +20,11 @@ export default class SettingsComponent implements OnInit {
   languages = LANGUAGES;
 
   settingsForm = new FormGroup({
-    firstName: new FormControl(initialAccount.firstName, {
+    first_name: new FormControl(initialAccount.first_name, {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(1), Validators.maxLength(50)],
     }),
-    lastName: new FormControl(initialAccount.lastName, {
+    last_name: new FormControl(initialAccount.last_name, {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(1), Validators.maxLength(50)],
     }),

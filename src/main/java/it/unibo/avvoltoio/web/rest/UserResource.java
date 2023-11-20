@@ -70,8 +70,8 @@ public class UserResource {
         Arrays.asList(
             "id",
             "login",
-            "firstName",
-            "lastName",
+            "first_name",
+            "last_name",
             "email",
             "activated",
             "langKey",
