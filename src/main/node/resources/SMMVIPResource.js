@@ -151,6 +151,21 @@ router.get('/client-feed/:name', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-by-user/smm/:name', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealMadeByUserCmt(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.user.username,
+      req.params.name
+    );
+    res.status(200).json(ret);
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+
 //postare per clienti ✅
 router.post('/client-post/:name', auth, async (req, res) => {
   try {
@@ -186,6 +201,22 @@ router.get('/smm/search', auth, async (req, res) => {
 router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/squeal-by-channel/smm/:id', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getSquealByChannelCmt(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.user.username,
+      req.params.id
+    );
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

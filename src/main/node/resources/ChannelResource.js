@@ -20,6 +20,8 @@ router.get('/channel-search', auth, async (req, res) => {
 router.get('/channels/:id', auth, async (req, res) => {
   try {
     const ret = await new channelService().getChannel(req.user, req.user.username, req.params.id);
+    console.log('CHANNEL: ', ret);
+
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

@@ -159,7 +159,6 @@ class SquealService {
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: -1 });
-    console.log(sq);
 
     for (const s of sq) {
       let validDest = [];
@@ -199,6 +198,7 @@ class SquealService {
     const ret = [];
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
+    console.log('cliente: ', theirUser, 'io: ', myUser);
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
     }
@@ -261,6 +261,43 @@ class SquealService {
     return ret;
   }
 
+  async getSquealMadeByUserCmt(page, size, user, myUsername, theirUsername) {
+    const ret = [];
+    const theirUser = await User.findOne({ login: theirUsername });
+    const myUser = await User.findOne({ login: myUsername });
+    if (!theirUser || !myUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, myUser))) {
+      throw new Error('Unathorized');
+    }
+    const chTypes = ['MOD', 'PUBLICGROUP'];
+    const squeals = await Squeal.find({
+      user_id: theirUser._id.toString(),
+      'destination.destination_type': { $in: chTypes },
+      squeal_id_response: null,
+    })
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: -1 });
+
+    for (const s of squeals) {
+      let validDest = [];
+      for (const d of s.destination) {
+        if (await this.checkSubscribed(d, myUser)) {
+          validDest.push(d);
+        }
+      }
+      s.destination = validDest;
+      const dto = await this.loadSquealData(s, myUser);
+
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
+  }
+
   async countSquealMadeByUser(user, myUsername, theirUsername) {
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
@@ -283,6 +320,36 @@ class SquealService {
       throw new Error('Unathorized');
     }
     const squeals = await Squeal.find({ 'destination.destination_id': id })
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: -1 });
+    for (const s of squeals) {
+      let validDest = [];
+      for (const d of s.destination) {
+        if (d.destination_id == id || (await new channelUserService().checkSubscribed(d, thisUser))) {
+          validDest.push(d);
+        }
+      }
+      s.destination = validDest;
+      const dto = await this.loadSquealData(s, thisUser);
+
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
+  }
+
+  async getSquealByChannelCmt(page, size, user, myUsername, id) {
+    const ret = [];
+    const thisUser = await User.findOne({ login: myUsername });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const squeals = await Squeal.find({ 'destination.destination_id': id, squeal_id_response: null })
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: -1 });
