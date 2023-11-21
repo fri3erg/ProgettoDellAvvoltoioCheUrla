@@ -6,8 +6,8 @@ const SquealCat = require('../model/squealCat');
 const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-const { isModuleNamespaceObject } = require('util/types');
 const accountService = require('./AccountService');
+const cronService = require('./CronService');
 class ReactionDTO {
   user;
   number = 0;
@@ -82,13 +82,14 @@ class ReactionService {
       const base_characters = BASEMULTIPLIER * Math.sign(positive - negative);
       const n_characters = positive * POSITIVEMULTIPLIER - negative * NEGATIVEMULTIPLIER + base_characters;
       if (!cat) {
-        await SquealCat.create({
+        const squealCat = await SquealCat.create({
           squeal_id: squeal_id,
           user_id: user_id,
           cat_type: catType,
           n_characters: n_characters,
           timestamp: Date.now(),
         });
+        await new cronService().addCatModChannel(squealCat);
       } else {
         await SquealCat.findOneAndUpdate(cat.id.toString(), { cat_type: catType, n_characters: n_characters });
       }
