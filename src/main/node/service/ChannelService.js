@@ -40,6 +40,33 @@ class ChannelService {
     return ret;
   }
 
+  async addPeopleToChannel(user, myUsername, channelId, hisUsername) {
+    const thisUser = await User.findOne({ login: myUsername });
+    theirUser = await User.findOne({ login: hisUsername });
+    if (!thisUser || !theirUser) {
+      throw new Error('invalid username');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const channel = await Channel.findById(channelId);
+    if (!channel) {
+      throw new Error('invalid channel');
+    }
+    if (channel.type != 'PRIVATEGROUP') {
+      throw new Error('invalid channel type');
+    }
+    if (!(await new channelUserService().checkSubscribed(channel, thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const chUser = await ChannelUser.create({
+      channel_id: channel._id.toString(),
+      user_id: theirUser._id.toString(),
+      privilege: 'WRITE',
+    });
+    return chUser;
+  }
+
   async searchChannel(user, myUsername, search) {
     const ret = [];
     const thisUser = await User.findOne({ login: myUsername });

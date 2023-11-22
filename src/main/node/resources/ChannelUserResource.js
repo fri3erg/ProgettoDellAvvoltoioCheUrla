@@ -39,4 +39,14 @@ router.get('/channels/get-subscribed/:id', auth, async (req, res) => {
   }
 });
 
+router.get('/channels/add-people', auth, async (req, res) => {
+  try {
+    const ret = await new channelUserService().addPeopleToChannel(req.user, req.user.username, req.query.channelId, req.query.username);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 module.exports = router; // export to use in server.js

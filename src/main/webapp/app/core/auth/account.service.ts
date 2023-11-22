@@ -26,6 +26,9 @@ export class AccountService {
   setPhoto(user: Account): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/img-update'), user, { observe: 'response' });
   }
+  addPeople(id?: string): Observable<HttpResponse<Account>> {
+    return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/add-people'), id, { observe: 'response' });
+  }
   addSMM(id?: string): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/add-smm'), id, { observe: 'response' });
   }

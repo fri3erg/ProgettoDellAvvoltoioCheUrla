@@ -89,12 +89,30 @@ class ReactionService {
           n_characters: n_characters,
           timestamp: Date.now(),
         });
-        await new cronService().addCatModChannel(squealCat);
+        this.addCatModChannel(squealCat);
       } else {
         await SquealCat.findOneAndUpdate(cat.id.toString(), { cat_type: catType, n_characters: n_characters });
       }
       return;
     }
+  }
+  async addCatModChannel(squealCat) {
+    const squeal = await Squeal.findById(squealCat.squeal_id);
+    let channel = await Channel.findOne({ name: '§'.concat(squealCat.cat_type), type: 'MOD' });
+    if (!channel) {
+      channel = await Channel.create({
+        name: '§'.concat(squealCat.cat_type),
+        type: 'MOD',
+      });
+    }
+    squeal.destination.push({
+      destination_id: channel._id.toString(),
+      destination: channel.name,
+      destination_type: 'MOD',
+      seen: 0,
+      admin_add: true,
+    });
+    await Squeal.findByIdAndUpdate(squeal._id, squeal);
   }
 
   async getReaction(id) {

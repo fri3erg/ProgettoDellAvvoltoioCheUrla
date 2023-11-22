@@ -15,11 +15,21 @@ import SharedModule from 'app/shared/shared.module';
 import { SquealViewComponent } from 'app/pages/squeal/squeal-view/squeal-view.component';
 import { ChannelSubscribeComponent } from '../channel-subscribe/channel-subscribe.component';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
+import { MessageService } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'jhi-channel-page',
   standalone: true,
-  imports: [CommonModule, ObserveElementDirective, CreateSquealComponent, SharedModule, SquealViewComponent, ChannelSubscribeComponent],
+  imports: [
+    CommonModule,
+    ObserveElementDirective,
+    FormsModule,
+    CreateSquealComponent,
+    SharedModule,
+    SquealViewComponent,
+    ChannelSubscribeComponent,
+  ],
   templateUrl: './channel-page.component.html',
   styleUrls: ['./channel-page.component.scss'],
 })
@@ -35,6 +45,10 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   usersFollowing = 0;
   squealsSquealed = 0;
   connectedDestination?: ISquealDestination;
+  openmySearch = false;
+  guy?: Account;
+  results: Account[] = [];
+
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -42,7 +56,8 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     protected squealService: SquealService,
     protected channelService: ChannelService,
     private accountService: AccountService,
-    protected channelUserService: ChannelUserService
+    protected channelUserService: ChannelUserService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -87,7 +102,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   loadOther(channel: IChannelDTO): void {
     this.usersFollowing = channel.users.length;
     this.connectedDestination = {
-      destination: channel.channel.name?.substring(1),
+      destination: channel.channel.name,
       destination_id: channel.channel._id,
       destination_type: channel.channel.type,
     };
@@ -103,11 +118,37 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+  isUserSubscribed(): boolean {
+    const u = this.channel?.users.find(ch => ch.user_id === this.account?._id);
+    return !!u;
+  }
 
   createdSqueal(): void {
     this.page = 0;
     this.squeals = [];
     this.loadSqueals();
+  }
+  addPeople(): void {
+    this.accountService.addPeople(this.guy?._id?.toString()).subscribe(r => {
+      if (r.body) {
+        console.log(this.account);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'guy added' });
+      }
+    });
+  }
+
+  search(event: any): void {
+    const q: string = event.query;
+    console.log(q);
+
+    this.accountService.search(q).subscribe(r => {
+      this.results = [];
+      if (r.body) {
+        for (const dest of r.body) {
+          this.results.push(dest);
+        }
+      }
+    });
   }
 
   isIntersecting(event: boolean): void {

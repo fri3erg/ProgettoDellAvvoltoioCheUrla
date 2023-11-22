@@ -8,6 +8,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { IChannel, NewChannel } from '../channel.model';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { Account } from 'app/core/auth/account.model';
+import { IChannelUser } from 'app/entities/channel-user/channel-user.model';
 
 export type PartialUpdateChannel = Partial<IChannel> & Pick<IChannel, '_id'>;
 
@@ -30,6 +31,11 @@ export class ChannelService {
 
   getChannelsUserIsSubbed(name: string): Observable<HttpResponse<IChannelDTO[]>> {
     return this.http.get<IChannelDTO[]>(`api/channels/sub/get/${name}`, { observe: 'response' });
+  }
+
+  addPeople(userId: string, channelId: string): Observable<HttpResponse<IChannelUser>> {
+    const params = new HttpParams().append('userId', userId).append('channelId', channelId);
+    return this.http.get<IChannelUser>(`api/channels/add-people`, { params, observe: 'response' });
   }
 
   countChannelsUserIsSubbed(name: string): Observable<HttpResponse<number>> {

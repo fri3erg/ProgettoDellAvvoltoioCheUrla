@@ -5,7 +5,22 @@
 <div class="rounded-4 mytitlecard p-2 m-1">{{ squeals.length }} squeals</div>
 
 <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>
-
+<button *ngIf="!openmySearch && isUserSubscribed()" class="btn btn-success" (click)="openmySearch = true">add someone</button>
+<button *ngIf="openmySearch && isUserSubscribed()" class="btn btn-danger" (click)="openmySearch = false">close</button>
+<span *ngIf="openmySearch && isUserSubscribed()" class="input-group-text" id="inputGroup-sizing-default">people</span>
+<div *ngIf="openmySearch && isUserSubscribed()" style="flex: 1">
+  <p-autoComplete
+    [style]="{ width: '100%' }"
+    name="destination"
+    [minLength]="2"
+    [(ngModel)]="guy"
+    [suggestions]="results"
+    (completeMethod)="search($event)"
+    [multiple]="true"
+    field="destination"
+  ></p-autoComplete>
+  <button [disabled]="!guy" class="btn btn-primary mt-2" type="button" (click)="addPeople()">Invia</button>
+</div>
 <jhi-create-squeal *ngIf="connectedDestination" [destination]="[connectedDestination]" (squealed)="createdSqueal()"></jhi-create-squeal>
 <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
   <jhi-squeal-view [squeal]="squeal"></jhi-squeal-view>

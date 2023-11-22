@@ -104,6 +104,8 @@ class SquealService {
     for (const us of chUs) {
       chId.push(us.channel_id);
     }
+    //TODO: change after testing
+    //const chMod= await Channel.find({ emergercy: true });
     const chMod = await Channel.find({ type: 'MOD' });
     for (const c of chMod) {
       chId.push(c._id.toString());

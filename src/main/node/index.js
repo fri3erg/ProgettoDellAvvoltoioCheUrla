@@ -15,6 +15,10 @@ try {
     console.log(mycron.tempSqueal());
   });
   task.start();
+  var meantask = cron.schedule(' * * * * * ', () => {
+    console.log(mycron.meanGptSqueal());
+  });
+  meantask.start();
 } catch (err) {
   console.log('err');
   console.log(err);
