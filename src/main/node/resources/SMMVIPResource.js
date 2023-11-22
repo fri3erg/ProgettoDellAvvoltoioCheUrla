@@ -11,6 +11,8 @@ const smmVIP = require('../model/smmVIP');
 const SMMVIPService = require('../service/SMMVIPService');
 const squealService = require('../service/SquealService');
 const reactionService = require('../service/ReactionService');
+const channelUserService = require('../service/ChannelUserService');
+
 //const { Chat } = require('openai/resources');
 
 const router = express.Router();
@@ -248,6 +250,26 @@ router.get('/squeal-rank-reaction-inverse/:name', auth, async (req, res) => {
       req.params.name
     );
     res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/channel-users/smm/:id/:name', auth, async (req, res) => {
+  try {
+    let sub = await new channelUserService().addSubscription(req.user, req.params.name, req.params.id);
+    res.status(201).json(sub);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.delete('/channel-users/smm/:id/:name', auth, async (req, res) => {
+  try {
+    let unsub = await new channelUserService().deleteSubscription(req.user, req.params.name, req.params.id);
+    res.status(201).json(unsub);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);

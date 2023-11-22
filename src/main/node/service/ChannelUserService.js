@@ -24,6 +24,7 @@ class ChannelUserService {
     }
     return deleted;
   }
+  
   async addSubscription(user, username, channel_id) {
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
