@@ -46,7 +46,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   squealsSquealed = 0;
   connectedDestination?: ISquealDestination;
   openmySearch = false;
-  guy?: Account;
+  guy?: Account[];
   results: Account[] = [];
 
   private readonly destroy$ = new Subject<void>();
@@ -129,10 +129,25 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     this.loadSqueals();
   }
   addPeople(): void {
-    this.accountService.addPeople(this.guy?._id?.toString()).subscribe(r => {
+    const ids = [];
+    if (!this.guy) {
+      return;
+    }
+    for (const guy of this.guy) {
+      if (guy._id) {
+        ids.push(guy._id.toString());
+      }
+    }
+    this.channelService.addPeople(ids, this.channel?.channel._id?.toString() ?? '').subscribe(r => {
       if (r.body) {
-        console.log(this.account);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'guy added' });
+        console.log(r.body);
+        if (r.body.length === ids.length) {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'guy added' });
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'not all guy added' });
+        }
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'guy not added' });
       }
     });
   }
@@ -146,6 +161,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       if (r.body) {
         for (const dest of r.body) {
           this.results.push(dest);
+          console.log(dest);
         }
       }
     });

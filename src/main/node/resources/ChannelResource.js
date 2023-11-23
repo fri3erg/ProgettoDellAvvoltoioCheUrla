@@ -17,6 +17,16 @@ router.get('/channel-search', auth, async (req, res) => {
   }
 });
 
+router.post('/channels/add-people', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().addPeopleToChannel(req.user, req.user.username, req.query.channelId, req.body);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/channels/:id', auth, async (req, res) => {
   try {
     const ret = await new channelService().getChannel(req.user, req.user.username, req.params.id);

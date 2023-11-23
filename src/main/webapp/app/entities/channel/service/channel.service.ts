@@ -33,9 +33,9 @@ export class ChannelService {
     return this.http.get<IChannelDTO[]>(`api/channels/sub/get/${name}`, { observe: 'response' });
   }
 
-  addPeople(userId: string, channelId: string): Observable<HttpResponse<IChannelUser>> {
-    const params = new HttpParams().append('userId', userId).append('channelId', channelId);
-    return this.http.get<IChannelUser>(`api/channels/add-people`, { params, observe: 'response' });
+  addPeople(ids: string[], channelId: string): Observable<HttpResponse<IChannelUser[]>> {
+    const params = new HttpParams().append('channelId', channelId);
+    return this.http.post<IChannelUser[]>(`api/channels/add-people`, ids, { params, observe: 'response' });
   }
 
   countChannelsUserIsSubbed(name: string): Observable<HttpResponse<number>> {

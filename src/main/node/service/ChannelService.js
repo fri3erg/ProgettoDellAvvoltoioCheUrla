@@ -40,10 +40,10 @@ class ChannelService {
     return ret;
   }
 
-  async addPeopleToChannel(user, myUsername, channelId, hisUsername) {
+  async addPeopleToChannel(user, myUsername, channelId, UserIds) {
     const thisUser = await User.findOne({ login: myUsername });
-    theirUser = await User.findOne({ login: hisUsername });
-    if (!thisUser || !theirUser) {
+    const chUsers = [];
+    if (!thisUser) {
       throw new Error('invalid username');
     }
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
@@ -59,12 +59,27 @@ class ChannelService {
     if (!(await new channelUserService().checkSubscribed(channel, thisUser))) {
       throw new Error('Unathorized');
     }
-    const chUser = await ChannelUser.create({
-      channel_id: channel._id.toString(),
-      user_id: theirUser._id.toString(),
-      privilege: 'WRITE',
-    });
-    return chUser;
+    for (const u of UserIds) {
+      const theirUser = await User.findById(u);
+      if (!theirUser) {
+        throw new Error('invalid username');
+      }
+      const alreadyExists = await ChannelUser.findOne({ channel_id: channel._id.toString(), user_id: theirUser._id.toString() });
+      if (alreadyExists) {
+        continue;
+      }
+      const chUser = await ChannelUser.create({
+        channel_id: channel._id.toString(),
+        user_id: theirUser._id.toString(),
+        privilege: 'WRITE',
+      });
+      if (!chUser) {
+        continue;
+      }
+      chUsers.push(chUser);
+    }
+
+    return chUsers;
   }
 
   async searchChannel(user, myUsername, search) {

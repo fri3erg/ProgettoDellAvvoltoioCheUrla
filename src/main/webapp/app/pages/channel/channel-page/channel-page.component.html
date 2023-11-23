@@ -11,13 +11,13 @@
 <div *ngIf="openmySearch && isUserSubscribed()" style="flex: 1">
   <p-autoComplete
     [style]="{ width: '100%' }"
-    name="destination"
+    name="login"
     [minLength]="2"
     [(ngModel)]="guy"
     [suggestions]="results"
     (completeMethod)="search($event)"
     [multiple]="true"
-    field="destination"
+    field="login"
   ></p-autoComplete>
   <button [disabled]="!guy" class="btn btn-primary mt-2" type="button" (click)="addPeople()">Invia</button>
 </div>
