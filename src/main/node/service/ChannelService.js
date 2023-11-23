@@ -205,8 +205,9 @@ class ChannelService {
   }
 
   isIncorrectName(q) {
+    console.log(q.name);
     let includes = q.name.includes('§') || q.name.includes('#') || q.name.includes('@');
-    let valid = false;
+    let valid = true;
     switch (q.type) {
       case 'MOD':
         valid = q.name.toUpperCase() === q.name;
