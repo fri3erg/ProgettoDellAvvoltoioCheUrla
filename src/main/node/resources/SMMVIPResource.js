@@ -12,6 +12,7 @@ const SMMVIPService = require('../service/SMMVIPService');
 const squealService = require('../service/SquealService');
 const reactionService = require('../service/ReactionService');
 const channelUserService = require('../service/ChannelUserService');
+const channelService = require('../service/ChannelService');
 
 //const { Chat } = require('openai/resources');
 
@@ -270,6 +271,17 @@ router.delete('/channel-users/smm/:id/:name', auth, async (req, res) => {
   try {
     let unsub = await new channelUserService().deleteSubscription(req.user, req.params.name, req.params.id);
     res.status(201).json(unsub);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/channels/smm/:name', auth, async (req, res) => {
+  try {
+    let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.params.name);
+    console.log(channel);
+    res.status(201).json(channel);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
