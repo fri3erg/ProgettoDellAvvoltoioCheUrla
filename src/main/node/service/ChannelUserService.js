@@ -24,7 +24,7 @@ class ChannelUserService {
     }
     return deleted;
   }
-  
+
   async addSubscription(user, username, channel_id) {
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
@@ -36,6 +36,10 @@ class ChannelUserService {
     const channel = Channel.findById(channel_id);
     if (channel.type == 'PRIVATEGROUP' || channel.type == 'MESSAGE') {
       throw new Error('Channel type invalid');
+    }
+    const alreadySubbed = await ChannelUser.findOne({ channel_id, user_id: thisUser._id.toString() });
+    if (alreadySubbed) {
+      throw new Error('already subscribed');
     }
     const created = await ChannelUser.create({ channel_id, user_id: thisUser._id.toString() });
     if (!created) {
