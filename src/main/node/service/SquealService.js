@@ -888,7 +888,7 @@ class SquealService {
     return squealRank.slice((page - 1) * size, page * size);
   }
 
-  async getSquealTimeChart(myUser, theirUsername) {
+  async getSquealTimeChart(myUser, theirUsername, days) {
     let userDataset = [];
     let num = 1;
     let prevTimestamp = new Date();
@@ -904,9 +904,8 @@ class SquealService {
     const squeals = await Squeal.find({ user_id: thisUser._id.toString() }).sort({ timestamp: 1 });
 
     const dates = [];
-    const NUM_OF_DAYS = 7; // get last 12 dates.
 
-    for (let i = 0; i < NUM_OF_DAYS; i++) {
+    for (let i = 0; i < days; i++) {
       let date = moment();
       date.subtract(i, 'day').format('DD-MM-YYYY');
       dates.push(date.toDate().toLocaleDateString('it-IT'));
@@ -958,7 +957,7 @@ class SquealService {
 
     userDataset.sort((a, b) => parseDMY(a.x) - parseDMY(b.x));
 
-    return userDataset.slice(-7);
+    return userDataset.slice(-days);
   }
 
   async searchChannel(ch, search, username) {

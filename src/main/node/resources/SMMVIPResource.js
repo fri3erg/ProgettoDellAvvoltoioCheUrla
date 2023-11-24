@@ -408,9 +408,9 @@ router.get('/squeal-rank-posneg-rateo-inverse/:name', auth, async (req, res) => 
   }
 });
 
-router.get('/squeal-time-chart/:name', auth, async (req, res) => {
+router.get('/squeal-time-chart/:name/:days', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getSquealTimeChart(req.user, req.params.name);
+    const ret = await new squealService().getSquealTimeChart(req.user, req.params.name, req.params.days);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
