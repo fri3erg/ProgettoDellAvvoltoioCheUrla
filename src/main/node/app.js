@@ -8,8 +8,6 @@ const corsOptions = require('./config/corsOptions');
 
 const User = require('./model/user');
 const auth = require('./middleware/auth');
-
-const tea = require('./resources/tea'); // import the routes
 const accountResource = require('./resources/AccountResource'); // import the routes
 const squealResource = require('./resources/SquealResource');
 const channelResource = require('./resources/ChannelResource');
@@ -22,7 +20,6 @@ app.use(express.json({ limit: '50mb' }));
 //cors
 app.use(cors(corsOptions));
 
-app.use('/api', tea);
 app.use('/api', accountResource);
 app.use('/api', squealResource);
 app.use('/api', channelResource);

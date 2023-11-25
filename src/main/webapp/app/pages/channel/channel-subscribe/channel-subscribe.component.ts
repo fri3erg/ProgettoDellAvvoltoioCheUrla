@@ -95,12 +95,22 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
   }
 
   isUserSubscribed(c?: IChannelDTO): boolean {
-    const u = c?.users.find(ch => ch.user_id === this.account?._id);
+    if (!c?.users) {
+      return false;
+    }
+    const u = c.users.find(ch => ch.user_id === this.account?._id);
     return !!u;
   }
 
   returnColor(c?: IChannelDTO): string {
-    switch (c?.channel.type) {
+    if (!c?.channel) {
+      return 'black';
+    }
+    if (!c.channel.type) {
+      return 'black';
+    }
+
+    switch (c.channel.type) {
       case 'PRIVATEGROUP':
         return 'text-bg-info';
         break;
@@ -110,8 +120,7 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
       case 'MOD':
         return 'text-bg-warning';
       default:
-        return '';
+        return 'black';
     }
-    return '';
   }
 }

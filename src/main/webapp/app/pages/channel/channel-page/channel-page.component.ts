@@ -79,12 +79,11 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   }
 
   loadChannel(): void {
-    console.log('load');
     this.channelService.findDTO(this.channel_id ?? '').subscribe(r => {
       if (r.body) {
         this.channel = r.body;
         console.log(r.body);
-        this.loadOther(this.channel);
+        this.loadOther();
       }
     });
   }
@@ -99,17 +98,17 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOther(channel: IChannelDTO): void {
-    this.usersFollowing = channel.users.length;
+  loadOther(): void {
+    console.log(this.channel);
+    this.usersFollowing = this.channel?.users.length ?? 0;
     this.connectedDestination = {
-      destination: channel.channel.name,
-      destination_id: channel.channel._id,
-      destination_type: channel.channel.type,
+      destination: this.channel?.channel.name,
+      destination_id: this.channel?.channel._id,
+      destination_type: this.channel?.channel.type,
     };
   }
 
   appendSqueals(): void {
-    console.log('load');
     this.squealService.getSquealByChannel(this.channel?.channel._id ?? '', this.page, 5).subscribe(r => {
       if (r.body) {
         this.hasMorePage = r.body.length >= this.size;
@@ -119,7 +118,11 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     });
   }
   isUserSubscribed(): boolean {
-    const u = this.channel?.users.find(ch => ch.user_id === this.account?._id);
+    console.log(this.channel?.users);
+    if (!this.channel?.users) {
+      return false;
+    }
+    const u = this.channel.users.find(ch => ch.user_id === this.account?._id);
     return !!u;
   }
 
@@ -140,7 +143,6 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     }
     this.channelService.addPeople(ids, this.channel?.channel._id?.toString() ?? '').subscribe(r => {
       if (r.body) {
-        console.log(r.body);
         if (r.body.length === ids.length) {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'guy added' });
         } else {
@@ -154,17 +156,18 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
 
   search(event: any): void {
     const q: string = event.query;
-    console.log(q);
 
     this.accountService.search(q).subscribe(r => {
       this.results = [];
       if (r.body) {
         for (const dest of r.body) {
           this.results.push(dest);
-          console.log(dest);
         }
       }
     });
+  }
+  isPrivate(): boolean {
+    return this.channel?.channel.type === 'PRIVATEGROUP';
   }
 
   isIntersecting(event: boolean): void {

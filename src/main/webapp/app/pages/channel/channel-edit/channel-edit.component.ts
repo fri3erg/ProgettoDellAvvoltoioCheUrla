@@ -49,6 +49,7 @@ export class ChannelEditComponent implements OnInit {
     this.channelService.insertOrUpdate(this.dto).subscribe(r => {
       if (r.body) {
         this.dto.channel.name = '';
+        this.messageService.add({ severity: 'success', summary: 'Channel Created', detail: '' });
       }
     });
   }

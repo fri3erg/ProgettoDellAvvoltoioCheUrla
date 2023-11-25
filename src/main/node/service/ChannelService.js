@@ -24,23 +24,13 @@ class ChannelService {
     if (!channel || !channel.type) {
       throw new Error('channel not found or without type');
     }
-    switch (channel.type) {
-      case 'PRIVATEGROUP':
-        if (await new channelUserService().checkSubscribed(channel, thisUser)) {
-          ret = await this.loadChannelData(channel);
-        }
-        break;
-      case 'PUBLICGROUP':
-      case 'MOD':
-        ret = await this.loadChannelData(channel);
-        break;
-      default:
-        break;
+    if (await new channelUserService().userHasReadPrivilege(channel, thisUser)) {
+      ret = await this.loadChannelData(channel);
     }
     return ret;
   }
 
-  async addPeopleToChannel(user, myUsername, channelId, UserIds) {
+  async addPeopleToChannel(user, myUsername, channelId, userIds) {
     const thisUser = await User.findOne({ login: myUsername });
     const chUsers = [];
     if (!thisUser) {
@@ -56,10 +46,10 @@ class ChannelService {
     if (channel.type != 'PRIVATEGROUP') {
       throw new Error('invalid channel type');
     }
-    if (!(await new channelUserService().checkSubscribed(channel, thisUser))) {
+    if (!(await new channelUserService().userHasWritePrivilege(channel, thisUser))) {
       throw new Error('Unathorized');
     }
-    for (const u of UserIds) {
+    for (const u of userIds) {
       const theirUser = await User.findById(u);
       if (!theirUser) {
         throw new Error('invalid username');
@@ -94,18 +84,8 @@ class ChannelService {
     let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
 
     for (const ch of channels) {
-      switch (ch.type) {
-        case 'PRIVATEGROUP':
-          if (await new channelUserService().checkSubscribed(ch, thisUser)) {
-            ret.push(await this.loadChannelData(ch));
-          }
-          break;
-        case 'PUBLICGROUP':
-        case 'MOD':
-          ret.push(await this.loadChannelData(ch));
-          break;
-        default:
-          break;
+      if (await new channelUserService().userHasReadPrivilege(ch, thisUser)) {
+        ret.push(await this.loadChannelData(ch));
       }
     }
     return ret;
@@ -134,7 +114,7 @@ class ChannelService {
     const oldChannel = await Channel.findOne({ name: channel.name });
     if (oldChannel) {
       const userSub = await ChannelUser.findOne({ channel_id: oldChannel._id.toString(), user_id: thisUser._id.toString() });
-      if (userSub) {
+      if (userSub || channel.type != 'PRIVATEGROUP') {
         throw new Error('You can only have one channel with this name');
       }
     }
@@ -187,18 +167,8 @@ class ChannelService {
       channels.push(await Channel.findById(id));
     }
     for (const ch of channels) {
-      switch (ch.type) {
-        case 'PRIVATEGROUP':
-          if (await new channelUserService().checkSubscribed(ch, myUser)) {
-            ret.push(await this.loadChannelData(ch));
-          }
-          break;
-        case 'PUBLICGROUP':
-        case 'MOD':
-          ret.push(await this.loadChannelData(ch));
-          break;
-        default:
-          break;
+      if (await new channelUserService().userHasReadPrivilege(ch, myUser)) {
+        ret.push(await this.loadChannelData(ch));
       }
     }
     return ret;
@@ -210,6 +180,12 @@ class ChannelService {
   }
 
   addPrefix(channel) {
+    if (!channel.name) {
+      return;
+    }
+    if (channel.name.includes('§') || channel.name.includes('#') || channel.name.includes('@')) {
+      return channel.name;
+    }
     switch (channel.type) {
       case 'MOD':
       case 'PRIVATEGROUP':

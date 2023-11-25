@@ -15,6 +15,7 @@ const ChannelService = require('./ChannelService');
 const GeoLoc = require('../model/geoLoc');
 const Money = require('../model/money');
 const moment = require('moment');
+const channelUser = require('../model/channelUser');
 
 const weekDayMultiplier = 4;
 const monthWeekMultiplier = 3;
@@ -31,6 +32,7 @@ const GEOCHAR = 125;
 //username,user to do action on, default: you, but smm
 class SquealService {
   async getUserChars(user, username) {
+    let skip = false;
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
@@ -46,6 +48,15 @@ class SquealService {
     const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
     let ids = [];
     for (const s of squeals) {
+      for (const d of s.destination) {
+        if (['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)) {
+          skip = true;
+        }
+      }
+      if (skip) {
+        skip = false;
+        continue;
+      }
       ids.push(s._id.toString());
     }
     let ch_total = 0;
@@ -62,9 +73,6 @@ class SquealService {
         if (d.destination_type) {
           destId.push(d.destination_type);
         }
-      }
-      if (!(destId.includes('MOD') || destId.includes('PUBLICGROUP') || destId.includes('PRIVATEGROUP'))) {
-        continue;
       }
       if (s.timestamp > Date.now() - msinWeek) {
         chRemWeek = chRemWeek - s.n_characters;
@@ -117,16 +125,10 @@ class SquealService {
       .sort({ timestamp: -1 });
 
     for (const s of sq) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (chId.includes(d.destination_id)) {
-          validDest.push(d);
-        }
-      }
-      if (validDest == []) {
+      s.destination = await this.filterDestinations(s, thisUser);
+      if (s.destionation == []) {
         continue;
       }
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
@@ -163,18 +165,10 @@ class SquealService {
       .sort({ timestamp: -1 });
 
     for (const s of sq) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (chId.includes(d.destination_id)) {
-          validDest.push(d);
-        }
+      s.destination = await this.filterDestinations(s, thisUser);
+      if (s.destination == []) {
+        return null;
       }
-
-      if (validDest == []) {
-        continue;
-      }
-
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
@@ -193,6 +187,10 @@ class SquealService {
       throw new Error('Unathorized');
     }
     const s = await Squeal.findById(id);
+    s.destination = await this.filterDestinations(s, thisUser);
+    if (s.destination == []) {
+      return null;
+    }
     return await this.loadSquealData(s, thisUser);
   }
 
@@ -219,8 +217,11 @@ class SquealService {
         .sort({ timestamp: 1 });
     }
     let squeals = squealsReceived.concat(squealsSent);
-
     for (const s of squeals) {
+      s.destination = await this.filterDestinations(s, myUser);
+      if (s.destination == []) {
+        continue;
+      }
       const dto = await this.loadSquealData(s, myUser);
 
       if (dto) {
@@ -228,6 +229,16 @@ class SquealService {
       }
     }
     return ret;
+  }
+
+  async filterDestinations(squeal, thisUser) {
+    let validDest = [];
+    for (const d of squeal.destination) {
+      if (await new channelUserService().userHasReadPrivilege(d, thisUser)) {
+        validDest.push(d);
+      }
+    }
+    return validDest;
   }
 
   async getSquealMadeByUser(page, size, user, myUsername, theirUsername) {
@@ -247,13 +258,10 @@ class SquealService {
       .sort({ timestamp: -1 });
 
     for (const s of squeals) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (await this.checkSubscribed(d, myUser)) {
-          validDest.push(d);
-        }
+      s.destination = await this.filterDestinations(s, myUser);
+      if (s.destination == []) {
+        continue;
       }
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, myUser);
 
       if (dto) {
@@ -284,13 +292,10 @@ class SquealService {
       .sort({ timestamp: -1 });
 
     for (const s of squeals) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (await this.checkSubscribed(d, myUser)) {
-          validDest.push(d);
-        }
+      s.destination = await this.filterDestinations(s, myUser);
+      if (s.destination == []) {
+        continue;
       }
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, myUser);
 
       if (dto) {
@@ -326,13 +331,10 @@ class SquealService {
       .skip(size * page)
       .sort({ timestamp: -1 });
     for (const s of squeals) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (d.destination_id == id || (await new channelUserService().checkSubscribed(d, thisUser))) {
-          validDest.push(d);
-        }
+      s.destination = await this.filterDestinations(s, thisUser);
+      if (s.destination == []) {
+        continue;
       }
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
@@ -356,13 +358,10 @@ class SquealService {
       .skip(size * page)
       .sort({ timestamp: -1 });
     for (const s of squeals) {
-      let validDest = [];
-      for (const d of s.destination) {
-        if (d.destination_id == id || (await new channelUserService().checkSubscribed(d, thisUser))) {
-          validDest.push(d);
-        }
+      s.destination = await this.filterDestinations(s, thisUser);
+      if (s.destination == []) {
+        continue;
       }
-      s.destination = validDest;
       const dto = await this.loadSquealData(s, thisUser);
 
       if (dto) {
@@ -394,7 +393,8 @@ class SquealService {
       throw new Error('Unathorized');
     }
     const geoLoc = await GeoLoc.findOne({ squeal_id: id });
-    if (!(await this.checkCanSeeGeoLoc(geoLoc, thisUser))) {
+    const squeal = await Squeal.findById(id);
+    if (!(await new channelUserService().userHasReadPrivilege(squeal, thisUser))) {
       throw new Error('Unauthorized');
     }
     return geoLoc;
@@ -438,34 +438,9 @@ class SquealService {
     }
     return false;
   }
+
   checkGeoMine(geoLoc, thisUser) {
     return geoLoc.user_id === thisUser._id.toString();
-  }
-  async checkCanSeeGeoLoc(geoLoc, thisUser) {
-    const squeal = await Squeal.findById(geoLoc.squeal_id);
-    for (let dest of squeal.destination) {
-      if (this.checkSubscribed(dest, thisUser)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  async checkSubscribed(d, thisUser) {
-    if (!d || !d.destination_type) {
-      throw new Error('destination not found');
-    }
-    switch (d.destination_type) {
-      case 'MOD':
-      case 'PUBLICGROUP':
-        return true;
-      case 'PRIVATEGROUP':
-        const userSub = await ChannelUser.findOne({ channel_id: d.destination_id, user_id: thisUser._id.toString() });
-        if (userSub) {
-          return true;
-        }
-      default:
-        return false;
-    }
   }
 
   async getDirectSquealPreview(user, myUsername) {
@@ -520,7 +495,7 @@ class SquealService {
         throw new Error('referencing squeal not found');
       }
       for (const dest of referencing_squeal.destination) {
-        if (this.userHasReadPrivilege(thisUser, dest)) {
+        if (await new channelUserService().userHasReadPrivilege(dest, thisUser)) {
           valid = true;
         }
       }
@@ -543,7 +518,7 @@ class SquealService {
       squeal_id_response: squeal.squeal_id_response,
     });
     for (const dest of squeal.destination) {
-      if (await this.userHasWritePrivilege(dest, thisUser)) {
+      if (await new channelUserService().userHasWritePrivilege(dest, thisUser)) {
         newSqueal.destination.seen = false;
         newSqueal.destination.push(dest);
       }
@@ -615,7 +590,7 @@ class SquealService {
           destination: ch.name ?? '',
           destination_type: ch.type,
         });
-        if (this.userHasWritePrivilege(dest, thisUser)) {
+        if (await new channelUserService().userHasWritePrivilege(dest, thisUser)) {
           validDest.push(dest);
         }
       }
@@ -960,64 +935,13 @@ class SquealService {
     return userDataset.slice(-days);
   }
 
-  async searchChannel(ch, search, username) {
+  async searchChannel(prefix, search, username) {
     if (search.startsWith('§') || search.startsWith('@')) {
       search = search.substring(1);
     }
-    return await Channel.find({ name: { $regex: ch + '(?i).*' + search + '.*' } });
+    return await Channel.find({ name: { $regex: prefix + '(?i).*' + search + '.*' } });
   }
 
-  async userHasWritePrivilege(destination, thisUser) {
-    if (!destination || !destination.destination_type) {
-      throw new Error('destination not found or incomplete');
-    }
-    switch (destination.destination_type) {
-      case 'MOD':
-        return new accountService().isMod(thisUser);
-      case 'PRIVATEGROUP':
-        const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
-        if (userSub) {
-          return true;
-        }
-        break;
-      case 'PUBLICGROUP':
-        if (!destination.destination_id && destination.destination) {
-          const newdest = await Channel.create({
-            name: destination.destination,
-            type: 'PUBLICGROUP',
-          });
-          if (!newdest) {
-            throw new Error('unable to create new channel');
-          }
-          destination.destination_id = newdest._id.toString();
-        }
-        return true;
-      case 'MESSAGE':
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  async userHasReadPrivilege(thisUser, destination) {
-    if (!destination || !destination.destination_type) {
-      throw new Error('destination not found or incomplete');
-    }
-    switch (destination.destination_type) {
-      case 'PRIVATEGROUP':
-        const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
-        if (userSub) {
-          return true;
-        }
-        break;
-      case 'MOD':
-      case 'PUBLICGROUP':
-      case 'MESSAGE':
-        return true;
-      default:
-        return false;
-    }
-  }
   /*
     async calcCharsChangedWithPopularity(user, myUsername) {
       const ret = [];

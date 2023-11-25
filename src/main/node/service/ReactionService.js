@@ -67,7 +67,7 @@ class ReactionService {
     const negative = await this.getNegativeReactionNumber(squeal_id);
     const total = negative + positive;
     if (total / views.number > CATTHRESHOLD && views.number > VIEWSTHRESHOLD) {
-      const cat = await SquealCat.findOne({ squeal_id: squeal_id });
+      let cat = await SquealCat.findOne({ squeal_id: squeal_id });
       let catType = 'INVALID';
       if (positive / total > POSITIVETHRESHOLD) {
         catType = 'POPULAR';
@@ -82,22 +82,49 @@ class ReactionService {
       const base_characters = BASEMULTIPLIER * Math.sign(positive - negative);
       const n_characters = positive * POSITIVEMULTIPLIER - negative * NEGATIVEMULTIPLIER + base_characters;
       if (!cat) {
-        const squealCat = await SquealCat.create({
+        cat = await SquealCat.create({
           squeal_id: squeal_id,
           user_id: user_id,
           cat_type: catType,
           n_characters: n_characters,
           timestamp: Date.now(),
         });
-        this.addCatModChannel(squealCat);
       } else {
         await SquealCat.findOneAndUpdate(cat.id.toString(), { cat_type: catType, n_characters: n_characters });
       }
+      this.addCatModChannel(cat);
       return;
     }
+    const cat = await SquealCat.findOne({ squeal_id: squeal_id });
+    if (cat) {
+      await SquealCat.deleteOne(cat);
+    }
+    return;
   }
   async addCatModChannel(squealCat) {
+    let found = false;
+    let update = false;
     const squeal = await Squeal.findById(squealCat.squeal_id);
+    if (!squeal) {
+      throw new Error('squeal not found');
+    }
+    const available_dest = ['POPULAR', 'UNPOPULAR', 'CONTROVERSIAL'];
+    for (const dest of squeal.destination) {
+      if (available_dest.includes(dest.destination.substring(1))) {
+        if (dest.destination == squealCat.cat_type) {
+          found = true;
+        } else {
+          update = true;
+          squeal.destination.splice(squeal.destination.indexOf(dest), 1);
+        }
+      }
+    }
+    if (update) {
+      await Squeal.findByIdAndUpdate(squeal._id, squeal);
+    }
+    if (found) {
+      return;
+    }
     let channel = await Channel.findOne({ name: '§'.concat(squealCat.cat_type), type: 'MOD' });
     if (!channel) {
       channel = await Channel.create({
@@ -137,7 +164,6 @@ class ReactionService {
     if (reaction) {
       return reaction.emoji;
     }
-
     return null;
   }
 

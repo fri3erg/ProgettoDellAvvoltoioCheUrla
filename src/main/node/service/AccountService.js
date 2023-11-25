@@ -21,16 +21,16 @@ class AccountService {
     if (search.startsWith('@')) {
       search = search.substring(1);
     }
-    const users = await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+    const users = await this.searchUser(search);
     let ret = [];
     for (const us of users) {
       ret.push(this.hideSensitive(us));
     }
     return ret;
   }
-  
+
   async searchUser(search) {
-    return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
+    return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
 
   async update(user, myUsername, account) {
@@ -47,7 +47,7 @@ class AccountService {
     if (account.last_name) {
       thisUser.last_name = account.last_name;
     }
-    return await User.findOneAndUpdate({ login: thisUser.login }, thisUser);
+    return this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, thisUser));
   }
 
   async getUser(user, myUsername, name) {
@@ -74,7 +74,7 @@ class AccountService {
     if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
-    if (thisUser.authorities.includes('ROLE_VIP')) {
+    if (this.isUserVip(thisUser)) {
       throw new Error('you already have that role');
     }
     const auth = thisUser.authorities.push('ROLE_VIP');
@@ -114,28 +114,27 @@ class AccountService {
   }
 
   async isMod(user) {
+    if (!user) {
+      throw new Error('invalid user');
+    }
     if (!user.authorities) {
       user = await User.findById(user.user_id);
-      if (!user) {
-        throw new Error('invalid user');
-      }
     }
-    for (const a of user.authorities) {
-      if (a === 'ROLE_ADMIN') {
-        return true;
-      }
+    if (user.authorities.includes('ROLE_MOD')) {
+      return true;
     }
     return false;
   }
 
   async isUserVip(user) {
+    if (!user) {
+      throw new Error('invalid user');
+    }
     if (!user.authorities) {
       user = await User.findOne({ login: user.user_id });
     }
-    for (const a of user.authorities) {
-      if (a === 'ROLE_VIP') {
-        return true;
-      }
+    if (user.authorities.includes('ROLE_VIP')) {
+      return true;
     }
     return false;
   }

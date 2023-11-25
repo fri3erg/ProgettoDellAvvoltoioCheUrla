@@ -41,7 +41,7 @@ class ChannelUserService {
     if (alreadySubbed) {
       throw new Error('already subscribed');
     }
-    const created = await ChannelUser.create({ channel_id, user_id: thisUser._id.toString() });
+    const created = await ChannelUser.create({ channel_id, user_id: thisUser._id.toString(), privilege: 'WRITE' });
     if (!created) {
       throw new Error('error in creation');
     }
@@ -68,7 +68,7 @@ class ChannelUserService {
     if (!(await this.canAdd(myUser, theirUser, channel))) {
       throw new Error('request invalid');
     }
-    const created = await ChannelUser.create({ user_id: theirUser._id.toString(), channel_id });
+    const created = await ChannelUser.create({ user_id: theirUser._id.toString(), channel_id, privilege: 'WRITE' });
     if (!created) {
       throw new Error('error in creation');
     }
@@ -114,8 +114,8 @@ class ChannelUserService {
       throw new Error('channel not found or without type');
     }
     if (ch.type == 'PRIVATEGROUP') {
-      if (!(await ChannelUser.find({ user_id: thisUser._id.toString(), channel_id: id }))) {
-        throw new Error('Unauthorized');
+      if (!(await this.userHasReadPrivilege(ch, thisUser))) {
+        throw new Error('Unathorized');
       }
     }
 
@@ -143,7 +143,7 @@ class ChannelUserService {
       return true;
     }
     const subbed = await ChannelUser.find({ channel_id: channel._id.toString(), user_id: thisUser._id.toString() });
-    if (channel.type == 'PRIVATEGROUP' && channel.type && subbed) {
+    if (channel.type == 'PRIVATEGROUP' && subbed) {
       return true;
     }
     return false;
@@ -152,6 +152,83 @@ class ChannelUserService {
   async checkSubscribed(ch, myUser) {
     const check = await ChannelUser.find({ channel_id: ch._id.toString(), user_id: myUser._id.toString() });
     return check != null;
+  }
+
+  async userhasAdminPrivilege(destination, thisUser) {
+    if (!destination) {
+      throw new Error('destination not found or incomplete');
+    }
+    //if is channel transform into destination
+    if (!destination.destination_type && destination.type) {
+      destination.destination_type = destination.type;
+      destination.destination_id = destination._id.toString();
+      destination.destination = destination.name;
+    }
+    const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+    if (userSub.privilege.includes('ADMIN')) {
+      return true;
+    }
+    return false;
+  }
+
+  async userHasWritePrivilege(destination, thisUser) {
+    if (!destination) {
+      throw new Error('destination not found or incomplete');
+    }
+    //if is channel transform into destination
+    if (!destination.destination_type && destination.type) {
+      destination.destination_type = destination.type;
+      destination.destination_id = destination._id.toString();
+      destination.destination = destination.name;
+    }
+    switch (destination.destination_type) {
+      case 'MOD':
+      case 'PRIVATEGROUP':
+        const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+        if (userSub.privilege.includes('WRITE', 'MOD')) {
+          return true;
+        }
+        break;
+      case 'PUBLICGROUP':
+        if (!destination.destination_id && destination.destination) {
+          const newdest = await Channel.create({
+            name: destination.destination,
+            type: 'PUBLICGROUP',
+          });
+          if (!newdest) {
+            throw new Error('unable to create new channel');
+          }
+          destination.destination_id = newdest._id.toString();
+          destination.destination = newdest.destination;
+        }
+        return true;
+      case 'MESSAGE':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  async userHasReadPrivilege(destination, thisUser) {
+    if (!destination) {
+      throw new Error('destination not found or incomplete');
+    }
+    if (destination.emergency == true) {
+      return true;
+    }
+    //if is channel transform into destination
+    if (!destination.destination_type && destination.type) {
+      destination.destination_type = destination.type;
+      destination.destination_id = destination._id.toString();
+      destination.destination = destination.name;
+    }
+    if (destination.destination_type == 'PRIVATEGROUP') {
+      const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+      if (!userSub) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

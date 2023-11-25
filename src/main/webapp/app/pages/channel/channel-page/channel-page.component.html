@@ -5,9 +5,11 @@
 <div class="rounded-4 mytitlecard p-2 m-1">{{ squeals.length }} squeals</div>
 
 <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>
-<button *ngIf="!openmySearch && isUserSubscribed()" class="btn btn-success" (click)="openmySearch = true">add someone</button>
-<button *ngIf="openmySearch && isUserSubscribed()" class="btn btn-danger" (click)="openmySearch = false">close</button>
-<span *ngIf="openmySearch && isUserSubscribed()" class="input-group-text" id="inputGroup-sizing-default">people</span>
+<button *ngIf="!openmySearch && isUserSubscribed() && isPrivate()" class="btn btn-success" (click)="openmySearch = true">
+  add someone
+</button>
+<button *ngIf="openmySearch && isUserSubscribed() && isPrivate()" class="btn btn-danger" (click)="openmySearch = false">close</button>
+<span *ngIf="openmySearch && isUserSubscribed() && isPrivate()" class="input-group-text" id="inputGroup-sizing-default">people</span>
 <div *ngIf="openmySearch && isUserSubscribed()" style="flex: 1">
   <p-autoComplete
     [style]="{ width: '100%' }"
