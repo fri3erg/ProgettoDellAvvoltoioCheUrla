@@ -3,14 +3,20 @@ const user = require('../model/user');
 const accountService = require('./AccountService');
 
 class SMMVIPService {
+  //da testare
   async addSMM(smmId, currentId) {
+    const isClient = smmVIP.findOne({ users: currentId });
+
+    if (!isClient) {
+      throw new Error('You already have a SMM');
+    }
     const opt = { new: true };
     smmVIP.findOneAndUpdate({ _id: smmId }, { $push: { users: currentId } }, opt, (error, data) => {
       if (error) {
         throw new Error(error);
       }
     });
-    return;
+    return 'added';
   }
 
   async removeSMM(smmId, currentId) {

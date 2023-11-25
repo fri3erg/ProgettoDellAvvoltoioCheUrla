@@ -18,8 +18,6 @@ const channelService = require('../service/ChannelService');
 
 const router = express.Router();
 
-//!non puoi essere cliente di più smm
-
 //ritorna tutti i smmvip ✅
 //chiamata dall'utente quando vuole visualizzare tutti i smm
 router.get('/smmvips', auth, async (req, res) => {
@@ -54,7 +52,6 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 
 //aggiungimi come cliente del smm ✅
 //chiamata dall'utente quando vuole diventare cliente di un smm
-//!togliere la possibilità di duplicati
 router.post('/add-smm', auth, async (req, res) => {
   try {
     const smmId = req.body.id;
