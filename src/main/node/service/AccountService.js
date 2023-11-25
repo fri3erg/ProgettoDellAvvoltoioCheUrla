@@ -28,6 +28,7 @@ class AccountService {
     }
     return ret;
   }
+  
   async searchUser(search) {
     return User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }

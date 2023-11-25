@@ -13,6 +13,8 @@ const squealService = require('../service/SquealService');
 const reactionService = require('../service/ReactionService');
 const channelUserService = require('../service/ChannelUserService');
 const channelService = require('../service/ChannelService');
+const accountService = require('../service/AccountService');
+const { request } = require('http');
 
 //const { Chat } = require('openai/resources');
 
@@ -217,6 +219,26 @@ router.get('/squeal-by-channel/smm/:id', auth, async (req, res) => {
       req.user.username,
       req.params.id
     );
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/channels/smm/add-people/:name', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().addPeopleToChannel(req.user, req.params.name, req.query.channelId, req.body.users);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/users/search/smm/:name', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUsersByName(req.user, req.params.name, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
