@@ -171,7 +171,7 @@ router.get('/squeal-by-user/smm/:name', auth, async (req, res) => {
 //postare per clienti ✅
 router.post('/client-post/:name', auth, async (req, res) => {
   try {
-    let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name, req.body.geoLoc);
+    let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name, req.body.geoloc);
     let squealDTO = await new squealService().getSquealDTO(squeal, req.params.name);
     res.status(201).json(squealDTO);
   } catch (err) {
