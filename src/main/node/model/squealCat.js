@@ -1,5 +1,5 @@
 const { Schema, model, ObjectId } = require('mongoose');
-const catType = ['POPULAR', 'CONTROVERSIAL', 'POPULAR'];
+const catType = ['POPULAR', 'CONTROVERSIAL', 'UNPOPULAR'];
 const squealCatSchema = new Schema(
   {
     squeal_id: { type: String },

@@ -171,7 +171,7 @@ router.get('/squeal-by-user/smm/:name', auth, async (req, res) => {
 //postare per clienti ✅
 router.post('/client-post/:name', auth, async (req, res) => {
   try {
-    let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name);
+    let squeal = await new squealService().insertOrUpdate(req.body, req.user, req.params.name, req.body.geoLoc);
     let squealDTO = await new squealService().getSquealDTO(squeal, req.params.name);
     res.status(201).json(squealDTO);
   } catch (err) {
@@ -301,6 +301,28 @@ router.post('/channels/smm/:name', auth, async (req, res) => {
     let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.params.name);
     console.log(channel);
     res.status(201).json(channel);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/geoloc/update/smm/:name', auth, async (req, res) => {
+  try {
+    const geo_loc = await new squealService().updateGeoLoc(req.body, req.user, req.params.name);
+    console.log(geo_loc);
+    res.status(200).json(geo_loc);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/geoloc/get/smm/:name/:id', auth, async (req, res) => {
+  try {
+    const geo_loc = await new squealService().getGeoLoc(req.params.id, req.user, req.params.name);
+    console.log(geo_loc);
+    res.status(200).json(geo_loc);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);
