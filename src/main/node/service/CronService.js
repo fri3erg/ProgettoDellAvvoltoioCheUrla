@@ -146,7 +146,9 @@ class CronService {
   async randomSqueal() {
     const max = await Squeal.countDocuments();
     const rand = Math.floor(Math.random() * max);
-    let squeal = await Squeal.find().skip(rand).limit(1);
+    let squeal = await Squeal.find({ 'destination.destination': { $not: { $in: ['§RANDOM_SQUEAL'] } } })
+      .skip(rand)
+      .limit(1);
     squeal = squeal[0];
     let channel = await Channel.findOne({ name: '§RANDOM_SQUEAL', type: 'MOD' });
     if (!channel) {
