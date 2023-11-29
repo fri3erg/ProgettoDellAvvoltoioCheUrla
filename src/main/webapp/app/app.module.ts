@@ -23,6 +23,7 @@ import { AppPageTitleStrategy } from './app-page-title-strategy';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CronJobsModule } from 'ngx-cron-jobs';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     MainModule,
     TranslationModule,
     ConfirmDialogModule,
+    CronJobsModule,
   ],
   providers: [
     Title,

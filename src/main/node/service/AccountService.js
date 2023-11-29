@@ -105,6 +105,8 @@ class AccountService {
     return {
       login: account.login,
       _id: account._id,
+      first_name: account.first_name,
+      last_name: account.last_name,
       img: account.img,
       email: account.email,
       imgContentType: account.imgContentType,

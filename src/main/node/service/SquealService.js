@@ -16,6 +16,7 @@ const GeoLoc = require('../model/geoLoc');
 const Money = require('../model/money');
 const moment = require('moment');
 const channelUser = require('../model/channelUser');
+const Notify = require('../model/notification');
 
 const weekDayMultiplier = 4;
 const monthWeekMultiplier = 3;
@@ -570,6 +571,7 @@ class SquealService {
     if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       throw new Error('Unauthorized');
     }
+    //reduce search based on type info if present
     if (!search.startsWith('§') && !search.startsWith('#')) {
       const userDest = await new accountService().searchUser(search);
       for (const us of userDest) {
@@ -582,7 +584,7 @@ class SquealService {
       }
     }
     if (!search.startsWith('#') && !search.startsWith('@')) {
-      const ChannelDest = await this.searchChannel('§', search, username);
+      const ChannelDest = await this.searchChannel('§', search);
 
       for (const ch of ChannelDest) {
         const dest = new SquealDestination({
@@ -596,7 +598,7 @@ class SquealService {
       }
     }
     if (!search.startsWith('§') && !search.startsWith('@')) {
-      const publicFind = await this.searchChannel('#', search, username);
+      const publicFind = await this.searchChannel('#', search);
       for (const ch of publicFind) {
         const dest = new SquealDestination({
           destination_id: ch._id.toString(),
@@ -935,7 +937,7 @@ class SquealService {
     return userDataset.slice(-days);
   }
 
-  async searchChannel(prefix, search, username) {
+  async searchChannel(prefix, search) {
     if (search.startsWith('§') || search.startsWith('@')) {
       search = search.substring(1);
     }
@@ -1069,10 +1071,13 @@ class SquealService {
   }
 
   getNCharacters(squeal, geoLoc) {
-    if (!squeal || !squeal.body) {
+    if (!squeal) {
       throw new Error('squeal not found');
     }
-    let n = squeal.body.length;
+    let n = 0;
+    if (squeal.body) {
+      n = squeal.body.length;
+    }
     if (squeal.img && squeal.img != '') {
       n = n + IMGCHAR;
     }
@@ -1081,6 +1086,28 @@ class SquealService {
     }
 
     return n;
+  }
+  async getNotifyMessage(user, username) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+
+    return await Notify.find({ user_id: thisUser._id.toString(), type: 'MESSAGE' }).sort({ timestamp: -1 });
+  }
+  async getNotifySMM(user, username) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Username Invalid');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unathorized');
+    }
+
+    return await Notify.find({ user_id: thisUser._id.toString(), type: 'SMM' }).sort({ timestamp: -1 });
   }
 }
 
