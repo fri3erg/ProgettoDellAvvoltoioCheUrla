@@ -6,6 +6,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { AppPageTitleStrategy } from 'app/app-page-title-strategy';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { SquealService } from 'app/entities/squeal/service/squeal.service';
 
 @Component({
   selector: 'jhi-main',
@@ -20,7 +21,9 @@ export default class MainComponent implements OnInit {
     private appPageTitleStrategy: AppPageTitleStrategy,
     private accountService: AccountService,
     private translateService: TranslateService,
-    rootRenderer: RendererFactory2
+    rootRenderer: RendererFactory2,
+    private messageService: MessageService,
+    private squealService: SquealService
   ) {
     this.renderer = rootRenderer.createRenderer(document.querySelector('html'), null);
   }
@@ -34,5 +37,14 @@ export default class MainComponent implements OnInit {
       dayjs.locale(langChangeEvent.lang);
       this.renderer.setAttribute(document.querySelector('html'), 'lang', langChangeEvent.lang);
     });
+  }
+  cron(): void {
+    // Do some task
+    this.squealService.cronValidate().subscribe(r => {
+      if (r.body) {
+        console.log(r.body);
+      }
+    });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Success' });
   }
 }
