@@ -37,7 +37,9 @@ io.on('connection', socket => {
   });
   socket.on('sendNotification', message => {
     const user = getUser(message.dest_id);
-    io.to(user.socketId).emit('getNotification', { message });
+    if (user) {
+      io.to(user.socketId).emit('getNotification', { message });
+    }
   });
 });
 

@@ -496,7 +496,8 @@ class SquealService {
         throw new Error('referencing squeal not found');
       }
       for (const dest of referencing_squeal.destination) {
-        if (await new channelUserService().userHasReadPrivilege(dest, thisUser)) {
+        if ((await new channelUserService().userHasReadPrivilege(dest, thisUser)) || squeal.squeal_id_response) {
+          //!
           valid = true;
         }
       }
@@ -519,7 +520,8 @@ class SquealService {
       squeal_id_response: squeal.squeal_id_response,
     });
     for (const dest of squeal.destination) {
-      if (await new channelUserService().userHasWritePrivilege(dest, thisUser)) {
+      if (squeal.squeal_id_response || (await new channelUserService().userHasWritePrivilege(dest, thisUser))) {
+        //!
         newSqueal.destination.seen = false;
         newSqueal.destination.push(dest);
       }
