@@ -61,7 +61,8 @@ class NotificationService {
     return;
   }
 
-  async sendNotification(user, username, type) {}
+  //user: smm, username: client
+  async createNotification(username, message) {}
 }
 
 module.exports = NotificationService;

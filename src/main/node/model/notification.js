@@ -1,11 +1,12 @@
 const { Schema, model, ObjectId } = require('mongoose');
 
 const NotificationType = ['MESSAGE', 'SQUEAL', 'SQUEAL_COMMENT', 'REACTION'];
+const ReactionType = ['heart', 'exploding', 'cold', 'nerd', 'clown', 'bored'];
 const notificationSchema = new Schema(
   {
-    senderId: { type: String, default: null },
+    senderLogin: { type: String, default: null },
+    reaction: { type: String, enum: ReactionType, default: null },
     destId: { type: String, default: null },
-    squealId: { type: String, default: null },
     timestamp: { type: Number, default: null },
     type: { type: String, enum: NotificationType, default: 'MESSAGE' },
     isRead: { type: Boolean, default: false },

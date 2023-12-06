@@ -2,16 +2,42 @@ const http = require('http');
 const cronService = require('./service/CronService');
 const app = require('./app');
 const allowedOrigins = require('./config/allowedOrigins');
+const Squeal = require('./model/squeal');
+const User = require('./model/user');
+
 const server = http.createServer(app);
 const io = require('socket.io')(server, { cors: { origin: allowedOrigins } });
 var cron = require('node-cron');
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
 
+let onlineUsers = [];
+
+const addNewUser = (userId, socketId) => {
+  !onlineUsers.some(user => user.userId === userId) && onlineUsers.push({ userId, socketId });
+};
+
+const removeUser = socketId => {
+  onlineUsers = onlineUsers.filter(user => user.socketId !== socketId);
+};
+
+const getUser = userId => {
+  return onlineUsers.find(user => user.userId === userId);
+};
+
 io.on('connection', socket => {
-  console.log('user connected');
+  socket.on('addUser', user => {
+    addNewUser(user.clients._id, socket.id);
+    console.log('user connected');
+  });
+
   socket.on('disconnect', function () {
     console.log('user disconnected');
+    removeUser(socket.id);
+  });
+  socket.on('sendNotification', message => {
+    const user = getUser(message.dest_id);
+    io.to(user.socketId).emit('getNotification', { message });
   });
 });
 

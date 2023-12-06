@@ -36,7 +36,7 @@ router.get('/notification/smm/:name', auth, async (req, res) => {
 
 router.delete('/notification/:id', auth, async (req, res) => {
   try {
-    let n = await new notificationService().sendNotification(req.user, req.user.username, req.params.id);
+    let n = await new notificationService().createNotification(req.user, req.user.username, req.params.id);
     console.log(n);
     res.status(201).json(n);
   } catch (err) {
