@@ -4,7 +4,7 @@ const NotificationType = ['MESSAGE', 'COMMENT', 'REACTION'];
 const ReactionType = ['heart', 'exploding', 'cold', 'nerd', 'clown', 'bored'];
 const notificationSchema = new Schema(
   {
-    senderLogin: { type: String, default: null },
+    username: { type: String, default: null },
     reaction: { type: String, enum: ReactionType, default: null },
     body: { type: String, default: null },
     destId: { type: String, default: null },

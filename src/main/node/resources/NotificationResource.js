@@ -34,43 +34,9 @@ router.get('/notification/smm/:name', auth, async (req, res) => {
   }
 });
 
-router.delete('/notification/:id', auth, async (req, res) => {
+router.get('/notification/notread/:name', auth, async (req, res) => {
   try {
-    let n = await new notificationService().createNotification(req.user, req.user.username, req.params.id);
-    console.log(n);
-    res.status(201).json(n);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
-router.delete('/notification/smm/:id/:name', auth, async (req, res) => {
-  try {
-    let n = await new notificationService().sendNotification(req.user, req.params.name, req.params.id);
-    console.log(n);
-    res.status(201).json(n);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
-router.post('/notification/:destId', auth, async (req, res) => {
-  try {
-    let n = await new notificationService().sendNotification(req.user, req.user.username, req.params.destId, req.body.type);
-    console.log(n);
-    res.status(201).json(n);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
-router.post('/notification/smm/:destId/:name', auth, async (req, res) => {
-  try {
-    let n = await new notificationService().sendNotification(req.user, req.params.name, req.params.destId, req.body.type);
-    console.log(n);
+    let n = await new notificationService().getNotReadNotification(req.params.name);
     res.status(201).json(n);
   } catch (err) {
     console.log(err);

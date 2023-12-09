@@ -1,5 +1,6 @@
 const http = require('http');
 const cronService = require('./service/CronService');
+const notificationService = require('./service/NotificationService');
 const app = require('./app');
 const allowedOrigins = require('./config/allowedOrigins');
 const Squeal = require('./model/squeal');
@@ -36,10 +37,12 @@ io.on('connection', socket => {
     removeUser(socket.id);
   });
   socket.on('sendNotification', message => {
-    const user = getUser(message.dest_id);
+    const user = getUser(message.destId);
     if (user) {
+      console.log('sending notification');
       io.to(user.socketId).emit('getNotification', { message });
     }
+    new notificationService().createNotification(message);
   });
 });
 
