@@ -185,6 +185,9 @@ class ChannelUserService {
       case 'MOD':
       case 'PRIVATEGROUP':
         const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+        if (!userSub) {
+          return false;
+        }
         if (userSub.privilege.includes('WRITE', 'MOD')) {
           return true;
         }

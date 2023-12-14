@@ -200,6 +200,18 @@ router.get('/smm/search', auth, async (req, res) => {
   }
 });
 
+router.get('/channels/smm/:id/:name', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().getChannel(req.user, req.params.name, req.params.id);
+    console.log('CHANNEL: ', ret);
+
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);

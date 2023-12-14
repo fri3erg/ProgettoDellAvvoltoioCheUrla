@@ -13,6 +13,7 @@ const notification = require('../model/notification');
 
 class NotificationService {
   async getNotification(page, size, user, username) {
+    const ret = [];
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
@@ -20,18 +21,26 @@ class NotificationService {
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unauthorized');
     }
-    const filtredNotifications = notification.find({ user: thisUser._id.toString() });
-    const total = await filtredNotifications.countDocuments();
-    const notifications = await notification
-      .find({ user: id })
+
+    var notifications = await notification
+      .find({ destId: thisUser._id.toString() })
       .limit(size)
       .skip(size * page)
-      .lean();
+      .lean()
+      .sort({ timestamp: -1 });
+
+    await notification.updateMany({ destId: thisUser._id.toString() }, { isRead: true });
+
+    console.log(notifications);
+
     if (!notifications) {
       return res.status(400).json({ message: 'No notifications found' });
     }
-    console.log('total: ', total);
-    return;
+
+    for (const n of notifications) {
+      ret.push(n);
+    }
+    return ret;
   }
 
   async deleteNotification(user, username, id) {
@@ -61,8 +70,30 @@ class NotificationService {
     return;
   }
 
-  //user: smm, username: client
-  async createNotification(username, message) {}
+  async createNotification(message) {
+    let newNotification = new notification({
+      username: message.username,
+      reaction: message.reaction,
+      body: message.body,
+      destId: message.destId,
+      timestamp: message.timestamp,
+      type: message.type,
+      isRead: message.isRead,
+    });
+
+    newNotification = await newNotification.save();
+
+    if (!newNotification) {
+      throw new Error('could not create');
+    }
+    return newNotification;
+  }
+
+  async getNotReadNotification(username) {
+    const thisUser = await User.findOne({ login: username });
+    const notRead = await notification.find({ destId: thisUser._id.toString(), isRead: false });
+    return notRead.length;
+  }
 }
 
 module.exports = NotificationService;
