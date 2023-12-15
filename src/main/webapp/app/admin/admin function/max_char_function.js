@@ -16,7 +16,7 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, as
   const usersCollection = db.collection('users');
 
   // Example usage
-  const filteredUsers = await filterUsers({ name: 'John' }); // Pass your filter criteria here
+  //const filteredUsers = await filterUsers({ name: 'John' }); // Da cambiare la funzione
 
   console.log('Filtered Users:', filteredUsers);
 
@@ -34,7 +34,7 @@ async function setCharacterLimit(userId, newCharacterLimit) {
       throw error;
     }
   }
-  
+/*  
   // Function to send a message with a character limit
   async function sendMessage(senderId, receiverId, message) {
     try {
@@ -58,4 +58,4 @@ async function setCharacterLimit(userId, newCharacterLimit) {
       throw error;
     }
   }
-  
+*/

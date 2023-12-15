@@ -16,7 +16,7 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, as
   const usersCollection = db.collection('users');
 
   // Example usage
-  const filteredUsers = await filterUsers({ name: 'John' }); // Pass your filter criteria here
+  //const filteredUsers = await filterUsers({ name: 'John' }); // Pass your filter criteria here
 
   console.log('Filtered Users:', filteredUsers);
 
@@ -24,7 +24,7 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, as
   client.close();
 });
 
-
+/*
 //Ipotetico html ancora da fare
 document.addEventListener('DOMContentLoaded', () => {
     const filterForm = document.getElementById('filterForm');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filterUsers();
     });
   });
-  
+*/
   async function filterUsers() {
     const name = document.getElementById('name').value;
     const popularity = parseInt(document.getElementById('popularity').value, 10);

@@ -16,9 +16,9 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, as
   const usersCollection = db.collection('users');
 
   // Example usage
-  const filteredUsers = await filterUsers({ name: 'John' }); // Pass your filter criteria here
+  //const filteredUsers = await filterUsers({ name: 'John' }); // Pass your filter criteria here
 
-  console.log('Filtered Users:', filteredUsers);
+  console.log('Filtered Users:', filteredUsers);// da modificare la funzione
 
   // Close the connection
   client.close();
@@ -48,7 +48,7 @@ async function unlockUser(userId) {
     throw error;
   }
 }
-
+/*
 // Function to send a message
 async function sendMessage(senderId, receiverId, message) {
   try {
@@ -84,4 +84,4 @@ sendMessage(userIdToBlock, receiverId, message);
 unlockUser(userIdToUnlock);
 
 // Send a message from an unlocked user
-sendMessage(senderId, receiverId, message);
+sendMessage(senderId, receiverId, message);*/
