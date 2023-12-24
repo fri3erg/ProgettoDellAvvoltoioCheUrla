@@ -144,7 +144,7 @@ class CronService {
     this.randomSqueal();
   }
   async randomSqueal() {
-    const max = await Squeal.countDocuments();
+    const max = await Squeal.countDocuments({ 'destination.destination': { $not: { $in: ['§RANDOM_SQUEAL'] } } });
     const rand = Math.floor(Math.random() * max);
     let squeal = await Squeal.find({ 'destination.destination': { $not: { $in: ['§RANDOM_SQUEAL'] } } })
       .skip(rand)
