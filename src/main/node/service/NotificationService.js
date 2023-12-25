@@ -81,7 +81,7 @@ class NotificationService {
       isRead: message.isRead,
     });
 
-    newNotification = await newNotification.save();
+    newNotification = await message.save();
 
     if (!newNotification) {
       throw new Error('could not create');

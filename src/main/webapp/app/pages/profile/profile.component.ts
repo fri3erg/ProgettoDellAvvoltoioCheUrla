@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   page = 0;
   sizeofpage = 5;
   hasMorePage = false;
+  isApiCallInProgress = false;
   isLoad = false;
   response?: string;
   smm?: Account;
@@ -133,13 +134,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   applyEdit(): void {
     if (this.account) {
       console.log(this.account);
-      this.accountService.update(this.account).subscribe(r => {
-        if (r.body) {
-          this.account = r.body;
-          this.edit = false;
-          console.log(this.account);
-        }
-      });
+
+      if (!this.isApiCallInProgress) {
+        this.isApiCallInProgress = true;
+        this.accountService.update(this.account).subscribe(r => {
+          if (r.body) {
+            this.account = r.body;
+            this.edit = false;
+            console.log(this.account);
+          }
+
+          this.isApiCallInProgress = false;
+        });
+      }
     }
   }
 

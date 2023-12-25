@@ -30,6 +30,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
   reply = false;
   innerBody = '';
   squealed = false;
+  isApiCallInProgress = false;
   reactions: MenuItem[] = [
     {
       icon: 'heart',
@@ -113,6 +114,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
   }
   addMap(): void {
     if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
+      console.log('add map');
       const myMap = document.getElementById('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
       console.log('map_' + (this.squeal.squeal?._id?.toString() ?? ''));
 
@@ -208,37 +210,41 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
       emoji,
       squeal_id: this.squeal?.squeal?._id?.toString(),
     };
-    this.squealReactionService.createorUpdate(r).subscribe(ret => {
-      if (ret.body && this.squeal) {
-        const reaction = ret.body;
-        let cr = this.squeal.reactions?.find(i => i.reaction === this.squeal?.active_reaction);
+    if (!this.isApiCallInProgress) {
+      this.isApiCallInProgress = true;
+      this.squealReactionService.createorUpdate(r).subscribe(ret => {
+        if (ret.body && this.squeal) {
+          const reaction = ret.body;
+          let cr = this.squeal.reactions?.find(i => i.reaction === this.squeal?.active_reaction);
 
-        if (this.squeal.active_reaction) {
-          if (cr?.number) {
-            cr.number--;
-            if (cr.number <= 0) {
-              this.squeal.reactions?.splice(this.squeal.reactions.indexOf(cr), 1);
+          if (this.squeal.active_reaction) {
+            if (cr?.number) {
+              cr.number--;
+              if (cr.number <= 0) {
+                this.squeal.reactions?.splice(this.squeal.reactions.indexOf(cr), 1);
+              }
+            }
+            if (reaction.emoji === 'deleted') {
+              this.squeal.active_reaction = null;
+              return;
             }
           }
-          if (reaction.emoji === 'deleted') {
-            this.squeal.active_reaction = null;
-            return;
+          cr = this.squeal.reactions?.find(i => i.reaction === reaction.emoji);
+          if (cr?.number) {
+            cr.number++;
+          } else {
+            const dto: IReactionDTO = {
+              number: 1,
+              reaction: reaction.emoji ?? 'deleted',
+              user: false,
+            };
+            this.squeal.reactions?.push(dto);
           }
+          this.squeal.active_reaction = reaction.emoji;
         }
-        cr = this.squeal.reactions?.find(i => i.reaction === reaction.emoji);
-        if (cr?.number) {
-          cr.number++;
-        } else {
-          const dto: IReactionDTO = {
-            number: 1,
-            reaction: reaction.emoji ?? 'deleted',
-            user: false,
-          };
-          this.squeal.reactions?.push(dto);
-        }
-        this.squeal.active_reaction = reaction.emoji;
-      }
-    });
+        this.isApiCallInProgress = false;
+      });
+    }
   }
   redirect(dest: ISquealDestination): void {
     let type = '/channels/view/';

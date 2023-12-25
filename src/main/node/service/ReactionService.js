@@ -8,6 +8,9 @@ const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const accountService = require('./AccountService');
 const cronService = require('./CronService');
+const Notify = require('../model/notification');
+const socket = require('../socket');
+
 class ReactionDTO {
   user;
   number = 0;
@@ -56,6 +59,18 @@ class ReactionService {
     });
     if (!ret) {
       throw new Error('could not create');
+    }
+    if (found) {
+      const squeal = await Squeal.findById(reaction.squeal_id);
+      const message = new Notify({
+        username: thisUser._id.toString(),
+        reaction: reaction.emoji,
+        destId: squeal.user_id,
+        timestamp: Date.now(),
+        type: 'REACTION',
+        isRead: false,
+      });
+      socket.sendNotification(message);
     }
     await this.updateCat(reaction.squeal_id, thisUser._id.toString());
     return ret;

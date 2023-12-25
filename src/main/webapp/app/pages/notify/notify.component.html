@@ -1,1 +1,32 @@
-<p>notify works!</p>
+<!-- notify.component.html -->
+<p-table [value]="notifications" [style]="{ width: '100%' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Username</th>
+      <th>Timestamp</th>
+      <th>Message</th>
+    </tr>
+  </ng-template>
+  <ng-template let-notification pTemplate="body">
+    <tr [class.read]="notification.isRead">
+      <td>
+        <div class="user-info">
+          <img src="assets/user-avatar.png" alt="User Avatar" class="avatar" />
+          <span class="username">{{ notification.username }}</span>
+        </div>
+      </td>
+      <td>{{ notification.timestamp | date : 'medium' }}</td>
+      <td>{{ notification.body }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+<div
+  jhiObserveElement
+  #intersection="intersection"
+  [class.example-card--is-intersecting]="intersection._isIntersecting"
+  (isIntersecting)="isIntersecting($event)"
+  [isContinuous]="true"
+  *ngIf="hasMorePage"
+>
+  <span> Loading more...</span>
+</div>

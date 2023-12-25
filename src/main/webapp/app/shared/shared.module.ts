@@ -18,6 +18,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TableModule } from 'primeng/table';
 
 /**
  * Application wide Module
@@ -39,6 +40,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     SelectButtonModule,
     ToggleButtonModule,
     ProgressSpinnerModule,
+    TableModule,
   ],
   exports: [
     CommonModule,
@@ -61,6 +63,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     SelectButtonModule,
     ToggleButtonModule,
     ProgressSpinnerModule,
+    TableModule,
   ],
 })
 export default class SharedModule {}

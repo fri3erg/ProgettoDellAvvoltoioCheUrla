@@ -9,13 +9,13 @@ services:
       - MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED=true
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/avvoltoioCheUrla
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:8000:8000
     healthcheck:
       test:
         - CMD
         - curl
         - -f
-        - http://localhost:8080/management/health
+        - http://localhost:8000/management/health
       interval: 5s
       timeout: 5s
       retries: 40

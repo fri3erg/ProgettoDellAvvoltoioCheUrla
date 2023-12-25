@@ -14,6 +14,8 @@ import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { EntityNavbarItems } from 'app/entities/entity-navbar-items';
 import NavbarItem from './navbar-item.model';
+import { Observable } from 'rxjs';
+import { NotificationService } from 'app/pages/notify/notification.service';
 
 @Component({
   standalone: true,

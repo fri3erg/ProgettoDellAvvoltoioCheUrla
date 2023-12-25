@@ -14,10 +14,11 @@
         </a>
       </div>
       <div class="col-4 text-center">
-        <a [routerLink]="'/notification'">
+        <div class="notification-icon" [routerLink]="'/notification'">
+          <i class="fa fa-bell"></i>
           <fa-icon icon="inbox" [fixedWidth]="true"></fa-icon>
-          Notification
-        </a>
+          <span *ngIf="unreadNotificationCount" class="notification-count">{{ unreadNotificationCount }}</span>
+        </div>
       </div>
     </div>
   </nav>

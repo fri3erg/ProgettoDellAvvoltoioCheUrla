@@ -35,10 +35,6 @@ export class SquealService {
       return this.subject.asObservable();
     }
   }
-  cronValidate(): Observable<HttpResponse<{}>> {
-    const url = this.applicationConfigService.getEndpointFor('api/notify/message');
-    return this.http.get<{}>(url, { observe: 'response' });
-  }
   initMaps(): void {
     const options: LoaderOptions = {
       language: 'en',

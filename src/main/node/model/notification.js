@@ -1,7 +1,7 @@
 const { Schema, model, ObjectId } = require('mongoose');
 
 const NotificationType = ['MESSAGE', 'COMMENT', 'REACTION'];
-const ReactionType = ['heart', 'exploding', 'cold', 'nerd', 'clown', 'bored'];
+const ReactionType = ['heart', 'exploding', 'cold', 'nerd', 'clown', 'bored', null];
 const notificationSchema = new Schema(
   {
     username: { type: String, default: null },

@@ -17,6 +17,7 @@ const Money = require('../model/money');
 const moment = require('moment');
 const channelUser = require('../model/channelUser');
 const Notify = require('../model/notification');
+const socket = require('../socket');
 
 const weekDayMultiplier = 4;
 const monthWeekMultiplier = 3;
@@ -554,6 +555,20 @@ class SquealService {
 
     if (dto) {
       ret = newSqueal;
+    }
+    for (const dest of newSqueal.destination) {
+      const user = socket.getUser(dest.destination_id);
+      if (user) {
+        const message = new Notify({
+          username: newSqueal.user_id,
+          body: newSqueal.body,
+          destId: dest.destination_id,
+          timestamp: Date.now(),
+          type: 'MESSAGE',
+          isRead: false,
+        });
+        socket.sendNotification(message);
+      }
     }
     return ret;
   }

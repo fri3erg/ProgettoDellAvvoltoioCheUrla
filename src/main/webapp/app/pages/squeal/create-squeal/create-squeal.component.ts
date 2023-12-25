@@ -107,7 +107,8 @@ export class CreateSquealComponent implements OnInit {
     this.dto.squeal.squeal_id_response = this.response;
     this.dto.squeal.body = this.message;
     this.dto.squeal.destination = this.destination;
-    if (this.dto.geoLoc?.accuracy) {
+    console.log(this.geoLoc);
+    if (this.geoLoc.timestamp) {
       this.dto.geoLoc = this.geoLoc;
     }
     console.log('insert');

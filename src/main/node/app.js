@@ -16,10 +16,25 @@ const ReactionResource = require('./resources/ReactionResource');
 const ChannelUserResource = require('./resources/ChannelUserResource');
 const NotificationResource = require('./resources/NotificationResource');
 const app = express();
-
+app.use(express.urlencoded({ extended: true }));
+app.enable('trust proxy');
 app.use(express.json({ limit: '50mb' }));
 //cors
 app.use(cors(corsOptions));
+/*
+
+const mongoCredentials = {
+	user: "site222347",
+	pwd: "cao4aePh",
+	site: "mongo_site222347"
+}  
+app.get('/db/create', async function (req, res) {
+	res.send(await mymongo.create(mongoCredentials))
+});
+app.get('/db/search', async function (req, res) {
+	res.send(await mymongo.search(req.query, mongoCredentials))
+});
+*/
 
 app.use('/api', accountResource);
 app.use('/api', squealResource);
