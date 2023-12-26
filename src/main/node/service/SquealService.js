@@ -1,21 +1,16 @@
 const Squeal = require('../model/squeal');
-const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 const SquealDestination = require('../model/squealDestination');
 const ChannelUser = require('../model/channelUser');
 const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
-const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-const smmVIP = require('../model/smmVIP');
 const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
-const ChannelService = require('./ChannelService');
 const GeoLoc = require('../model/geoLoc');
 const Money = require('../model/money');
 const moment = require('moment');
-const channelUser = require('../model/channelUser');
 const Notify = require('../model/notification');
 const socket = require('../socket');
 
@@ -562,7 +557,7 @@ class SquealService {
       const referencing_squeal = await Squeal.findById(squeal.squeal_id_response);
 
       const m1 = new Notify({
-        username: username,
+        username: thisUser.login,
         body: squeal.body,
         destId: referencing_squeal.user_id,
         timestamp: Date.now(),
@@ -576,7 +571,7 @@ class SquealService {
       const user = socket.getUser(dest.destination_id);
       if (user) {
         const m2 = new Notify({
-          username: user.login.toString(),
+          username: thisUser.login,
           body: newSqueal.body,
           destId: dest.destination_id,
           timestamp: Date.now(),
@@ -1120,28 +1115,6 @@ class SquealService {
     }
 
     return n;
-  }
-  async getNotifyMessage(user, username) {
-    const thisUser = await User.findOne({ login: username });
-    if (!thisUser) {
-      throw new Error('Username Invalid');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unathorized');
-    }
-
-    return await Notify.find({ user_id: thisUser._id.toString(), type: 'MESSAGE' }).sort({ timestamp: -1 });
-  }
-  async getNotifySMM(user, username) {
-    const thisUser = await User.findOne({ login: username });
-    if (!thisUser) {
-      throw new Error('Username Invalid');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unathorized');
-    }
-
-    return await Notify.find({ user_id: thisUser._id.toString(), type: 'SMM' }).sort({ timestamp: -1 });
   }
 }
 

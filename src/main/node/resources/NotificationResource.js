@@ -1,12 +1,10 @@
 const express = require('express'); //import express
 
 const notificationService = require('../service/NotificationService');
-const User = require('../model/user');
 const auth = require('../middleware/auth');
 
 // 1.
 const router = express.Router();
-
 router.get('/notification/', auth, async (req, res) => {
   try {
     let n = await new notificationService().getNotification(
@@ -33,10 +31,30 @@ router.get('/notification/smm/:name', auth, async (req, res) => {
     return res.status(400).send(err.message);
   }
 });
-
+//TODO: make it smm accessible
 router.get('/notification/notread/:name', auth, async (req, res) => {
   try {
     let n = await new notificationService().getNotReadNotification(req.params.name);
+    res.status(201).json(n);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/notification/direct/:direct', auth, async (req, res) => {
+  try {
+    let n = await new notificationService().getDirectNotification(req.user, req.user.username, req.params.direct);
+    res.status(201).json(n);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/notification/directsetread/:direct', auth, async (req, res) => {
+  try {
+    let n = await new notificationService().setReadDirect(req.user, req.user.username, req.params.direct);
     res.status(201).json(n);
   } catch (err) {
     console.log(err);

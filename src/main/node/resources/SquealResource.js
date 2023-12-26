@@ -2,9 +2,6 @@ const express = require('express'); //import express
 require('dotenv').config();
 require('../config/database');
 const squealService = require('../service/SquealService');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../model/user');
 const auth = require('../middleware/auth');
 
 // 1.
@@ -135,15 +132,6 @@ router.get('/squeal-by-user/:username', auth, async (req, res) => {
 router.get('/direct-squeal-preview', auth, async (req, res) => {
   try {
     const ret = await new squealService().getDirectSquealPreview(req.user, req.user.username);
-    res.status(200).json(ret);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-router.get('/notify/message', auth, async (req, res) => {
-  try {
-    const ret = await new squealService().getNotifyMessage(req.user, req.user.username);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

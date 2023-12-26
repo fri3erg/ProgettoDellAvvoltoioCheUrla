@@ -1,4 +1,4 @@
-<ng-container *ngFor="let squeal of squeals">
+<ng-container *ngFor="let squeal of getSqueals()">
   <div class="col-12" [routerLink]="['user', squeal.userName]">
     <div class="message-layout rounded-4 m-3 p-2">
       <div class="myname rounded-4 p-2">
@@ -10,7 +10,7 @@
       <div class="mytimestamp me-3">
         {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
       </div>
-      <div class="mynotify rounded-4 p-1 m-2">5<fa-icon icon="heart" [fixedWidth]="true"></fa-icon></div>
+      <div class="mynotify rounded-4 p-1 m-2">{{ notifyMap.get(squeal) }}<fa-icon icon="heart" [fixedWidth]="true"></fa-icon></div>
     </div>
   </div>
 </ng-container>

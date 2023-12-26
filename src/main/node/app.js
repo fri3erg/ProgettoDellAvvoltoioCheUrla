@@ -1,12 +1,9 @@
 require('dotenv').config();
 require('./config/database').connect();
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 
-const User = require('./model/user');
 const auth = require('./middleware/auth');
 const accountResource = require('./resources/AccountResource'); // import the routes
 const squealResource = require('./resources/SquealResource');

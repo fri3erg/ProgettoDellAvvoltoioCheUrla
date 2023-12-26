@@ -15,6 +15,7 @@ import SharedModule from 'app/shared/shared.module';
 import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
 import { FormsModule } from '@angular/forms';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
+import { NotificationService } from 'app/pages/notify/notification.service';
 
 @Component({
   selector: 'jhi-personal-messages',
@@ -42,7 +43,8 @@ export class PersonalMessagesComponent implements OnInit {
     protected userCharsService: UserCharsService,
     protected squealService: SquealService,
     protected channelService: ChannelService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,9 @@ export class PersonalMessagesComponent implements OnInit {
           this.page++;
           this.squeals = r.body;
           console.log(this.squeals);
+          this.notificationService.setReadDirect(this.username ?? '').subscribe(a => {
+            console.log(a);
+          });
         }
       });
     }

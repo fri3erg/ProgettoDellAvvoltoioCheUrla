@@ -1,13 +1,10 @@
 const Squeal = require('../model/squeal');
-const SquealDestination = require('../model/squealDestination');
-const ChannelUser = require('../model/channelUser');
 const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
 const SquealReaction = require('../model/squealReaction');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const accountService = require('./AccountService');
-const cronService = require('./CronService');
 const Notify = require('../model/notification');
 const socket = require('../socket');
 

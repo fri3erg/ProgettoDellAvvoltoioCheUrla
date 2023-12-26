@@ -1,13 +1,4 @@
-const Squeal = require('../model/squeal');
-const SquealDestination = require('../model/squealDestination');
-const ChannelUser = require('../model/channelUser');
-const Channel = require('../model/channel');
-const SquealCat = require('../model/squealCat');
-const SquealReaction = require('../model/squealReaction');
-const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-const { isModuleNamespaceObject } = require('util/types');
-const channelUserService = require('../service/ChannelUserService');
 const accountService = require('../service/AccountService');
 const notification = require('../model/notification');
 
@@ -68,6 +59,26 @@ class NotificationService {
       return res.status(400).json({ message: `Can't delete the notification with id: ${id}` });
     }
     return;
+  }
+  async setReadDirect(user, username, direct_name) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+    return await notification.updateMany({ username: direct_name, destId: thisUser._id.toString(), isRead: false }, { isRead: true });
+  }
+  async getDirectNotification(user, username, direct_name) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+    return await notification.countDocuments({ username: direct_name, destId: thisUser._id.toString(), isRead: false });
   }
 
   async createNotification(message) {

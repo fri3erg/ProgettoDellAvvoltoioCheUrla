@@ -11,7 +11,6 @@ import { ISquealDestination } from 'app/entities/squeal-destination/squeal-desti
 import { Router } from '@angular/router';
 import SharedModule from 'app/shared/shared.module';
 import { CreateSquealComponent } from '../create-squeal/create-squeal.component';
-import { Loader, LoaderOptions } from 'google-maps';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { Subject, takeUntil } from 'rxjs';

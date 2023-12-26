@@ -10,6 +10,7 @@ import { ChannelUserService } from 'app/entities/channel-user/service/channel-us
 import { CommonModule } from '@angular/common';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
+import { NotificationService } from 'app/pages/notify/notification.service';
 
 @Component({
   selector: 'jhi-direct-message',
@@ -19,8 +20,8 @@ import { ISquealDTO } from 'app/shared/model/squealDTO-model';
   styleUrls: ['./direct-message.component.scss'],
 })
 export class DirectMessageComponent implements OnInit, OnDestroy {
-  squeals: ISquealDTO[] = [];
   account: Account | null = null;
+  notifyMap = new Map<ISquealDTO, number>();
 
   private readonly destroy$ = new Subject<void>();
 
@@ -28,7 +29,8 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     private squealService: SquealService,
     private accountService: AccountService,
     protected channelService: ChannelService,
-    protected channelUserService: ChannelUserService
+    protected channelUserService: ChannelUserService,
+    protected notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -39,13 +41,26 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         this.account = account;
         console.log(account);
       });
-
+    this.getPreview();
+  }
+  getPreview(): void {
     this.squealService.getDirectSquealPreview().subscribe(r => {
       if (r.body) {
-        this.squeals = r.body;
-        console.log(this.squeals);
+        const squeals = r.body;
+        console.log(squeals);
+        for (const squeal of squeals) {
+          this.notifyMap.set(squeal, 0);
+          this.notificationService.getNotifCount(squeal.userName ?? '').subscribe(a => {
+            if (a.body) {
+              this.notifyMap.set(squeal, a.body);
+            }
+          });
+        }
       }
     });
+  }
+  getSqueals(): ISquealDTO[] {
+    return Array.from(this.notifyMap.keys());
   }
   ngOnDestroy(): void {
     this.destroy$.next();

@@ -30,6 +30,14 @@ export class NotificationService {
     });
   }
 
+  setReadDirect(username: string): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/directsetread/${username}`);
+    return this.http.get<number>(url, { observe: 'response' });
+  }
+  getNotifCount(username: string): Observable<HttpResponse<number>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/direct/${username}`);
+    return this.http.get<number>(url, { observe: 'response' });
+  }
   getNotificationsUnRead(name: string): Observable<HttpResponse<Notification[]>> {
     const url = this.applicationConfigService.getEndpointFor(`api/notification/notread/${name}`);
     return this.http.get<Notification[]>(url, { observe: 'response' });
