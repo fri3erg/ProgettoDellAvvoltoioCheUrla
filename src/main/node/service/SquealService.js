@@ -493,12 +493,12 @@ class SquealService {
     if (squeal.squeal_id_response) {
       let valid = false;
       const referencing_squeal = await Squeal.findById(squeal.squeal_id_response);
+
       if (!referencing_squeal) {
         throw new Error('referencing squeal not found');
       }
       for (const dest of referencing_squeal.destination) {
         if ((await new channelUserService().userHasReadPrivilege(dest, thisUser)) || squeal.squeal_id_response) {
-          //!
           valid = true;
         }
       }
@@ -556,18 +556,35 @@ class SquealService {
     if (dto) {
       ret = newSqueal;
     }
+    console.log('ci sono1');
+
+    if (squeal.squeal_id_response) {
+      const referencing_squeal = await Squeal.findById(squeal.squeal_id_response);
+
+      const m1 = new Notify({
+        username: username,
+        body: squeal.body,
+        destId: referencing_squeal.user_id,
+        timestamp: Date.now(),
+        type: 'COMMENT',
+        isRead: false,
+      });
+      socket.sendNotification(m1);
+    }
+
     for (const dest of newSqueal.destination) {
       const user = socket.getUser(dest.destination_id);
       if (user) {
-        const message = new Notify({
-          username: newSqueal.user_id,
+        const m2 = new Notify({
+          username: user.login.toString(),
           body: newSqueal.body,
           destId: dest.destination_id,
           timestamp: Date.now(),
           type: 'MESSAGE',
           isRead: false,
         });
-        socket.sendNotification(message);
+
+        socket.sendNotification(m2);
       }
     }
     return ret;

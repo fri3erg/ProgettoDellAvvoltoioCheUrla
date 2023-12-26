@@ -63,7 +63,7 @@ class ReactionService {
     if (found) {
       const squeal = await Squeal.findById(reaction.squeal_id);
       const message = new Notify({
-        username: thisUser._id.toString(),
+        username: thisUser.login.toString(),
         reaction: reaction.emoji,
         destId: squeal.user_id,
         timestamp: Date.now(),

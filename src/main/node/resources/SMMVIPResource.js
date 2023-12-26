@@ -123,6 +123,40 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
   }
 });
 
+router.get('/smmclients-number', auth, async (req, res) => {
+  try {
+    const userName = req.user.username;
+    const thisUser = await user.findOne({ login: userName });
+
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      authArray = ['ROLE_ADMIN', 'ROLE_SMM', 'ROLE_VIP'];
+      const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
+
+      if (!result) {
+        res.status(401).send('Non hai i permessi');
+      } else {
+        const vip = await smmVIP.findOne({ user_id: thisUser._id.toString() });
+        const result = vip.users;
+        const clientsArray = await new SMMVIPService().idToObj(result);
+        res.status(200).json(clientsArray.length);
+      }
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get('/smm-total-post-reactions', auth, async (req, res) => {
+  try {
+    const ret = await new SMMVIPService().getTotalPosReaction(req.user);
+    res.status(200).json(ret);
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeal-response/smm/:id/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealById(req.user, req.params.name, req.params.id);

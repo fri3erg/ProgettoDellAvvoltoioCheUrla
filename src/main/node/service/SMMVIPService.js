@@ -29,6 +29,24 @@ class SMMVIPService {
     return;
   }
 
+  async getTotalPosReaction(myUser) {
+    const userName = myUser.username;
+    const thisUser = await user.findOne({ login: userName });
+
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      authArray = ['ROLE_ADMIN', 'ROLE_SMM', 'ROLE_VIP'];
+      const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
+
+      if (!result) {
+        res.status(401).send('Non hai i permessi');
+      } else {
+        //!
+      }
+    }
+  }
+
   async getSMM(myUser, username, search) {
     let smmArray = [];
     const thisUser = await user.findOne({ login: username });
