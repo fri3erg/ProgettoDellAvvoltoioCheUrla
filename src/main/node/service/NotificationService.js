@@ -34,32 +34,6 @@ class NotificationService {
     return ret;
   }
 
-  async deleteNotification(user, username, id) {
-    const thisUser = await User.findOne({ login: username });
-    if (!thisUser) {
-      throw new Error('Invalid username');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unauthorized');
-    }
-
-    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: `You must give a valid id: ${id}` });
-    }
-
-    const deleteNotification = await notification.findById(id).exec();
-
-    if (!deleteNotification) {
-      return res.status(400).json({ message: `Can't find a notification with id: ${id}` });
-    }
-
-    const result = await deleteNotification.deleteOne();
-
-    if (!result) {
-      return res.status(400).json({ message: `Can't delete the notification with id: ${id}` });
-    }
-    return;
-  }
   async setReadDirect(user, username, direct_name) {
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
