@@ -50,11 +50,14 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         console.log(squeals);
         for (const squeal of squeals) {
           this.notifyMap.set(squeal, 0);
-          this.notificationService.getNotifCount(squeal.userName ?? '').subscribe(a => {
-            if (a.body) {
-              this.notifyMap.set(squeal, a.body);
-            }
-          });
+          console.log(squeal.userName);
+          if (squeal.userName) {
+            this.notificationService.getNotifCount(squeal.userName).subscribe(a => {
+              if (a.body) {
+                this.notifyMap.set(squeal, a.body);
+              }
+            });
+          }
         }
       }
     });

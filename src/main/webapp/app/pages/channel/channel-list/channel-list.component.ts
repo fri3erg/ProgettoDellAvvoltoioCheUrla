@@ -24,10 +24,7 @@ export class ChannelListComponent implements OnInit, OnDestroy {
   searchKey = '';
   createName = ' ';
   toggle = true;
-
-  channels: IChannelDTO[] = [];
-  users: Account[] = [];
-
+  resultMap: Map<string, any[]> = new Map<string, any[]>();
   private readonly destroy$ = new Subject<void>();
 
   constructor(private accountService: AccountService, private channelService: ChannelService) {}
@@ -43,20 +40,35 @@ export class ChannelListComponent implements OnInit, OnDestroy {
   }
 
   search(): void {
+    this.resultMap.set('user', []);
+    this.resultMap.set('channel', []);
     if (this.searchKey.length >= 2) {
       this.channelService.search(this.searchKey).subscribe(r => {
         if (r.body) {
-          this.channels = r.body;
-          console.log(this.channels);
+          const channels: IChannelDTO[] = r.body;
+          this.resultMap.set('channel', channels);
+
+          console.log(channels);
         }
       });
       this.accountService.search(this.searchKey).subscribe(r => {
         if (r.body) {
-          this.users = r.body;
-          console.log(this.users);
+          const users: Account[] = r.body;
+          this.resultMap.set('user', users);
+
+          console.log(users);
         }
       });
     }
+  }
+
+  hasResults(): boolean {
+    for (const entry of this.resultMap.entries()) {
+      if (entry[1].length > 0) {
+        return true; // If any entry has results, return true
+      }
+    }
+    return false; // No entry has results
   }
 
   ngOnDestroy(): void {

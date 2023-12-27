@@ -1,10 +1,3 @@
-const Squeal = require('../model/squeal');
-const SquealDestination = require('../model/squealDestination');
-const ChannelUser = require('../model/channelUser');
-const Channel = require('../model/channel');
-const SquealCat = require('../model/squealCat');
-const SquealReaction = require('../model/squealReaction');
-const SquealViews = require('../model/squealViews');
 const SMMVIP = require('../model/smmVIP');
 const User = require('../model/user');
 

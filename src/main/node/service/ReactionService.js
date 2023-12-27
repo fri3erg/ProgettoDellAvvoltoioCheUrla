@@ -57,10 +57,10 @@ class ReactionService {
     if (!ret) {
       throw new Error('could not create');
     }
-    if (found) {
+    if (!found) {
       const squeal = await Squeal.findById(reaction.squeal_id);
       const message = new Notify({
-        username: thisUser.login.toString(),
+        username: thisUser.login,
         reaction: reaction.emoji,
         destId: squeal.user_id,
         timestamp: Date.now(),
