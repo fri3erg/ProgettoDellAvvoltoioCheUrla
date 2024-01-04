@@ -1,59 +1,57 @@
-<div class="message bg-gradient rounded-4 m-3" *ngIf="squeal">
-  <div class="squeal-layout pb-2 head-message">
-    <div class="username fw-semibold fs-5" [routerLink]="['/profile', squeal.userName]">@{{ squeal.userName }}</div>
-    <div>{{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}</div>
-  </div>
-  <div class="squeal-layout pt-0 pb-3 head-message">
-    <div style="flex: 1">
-      <ng-container style="size-adjust: 50%" *ngFor="let d of squeal.squeal?.destination">
-        <p-chip [label]="d.destination ?? 'aaa'" (click)="redirect(d)"></p-chip>
-      </ng-container>
+<div *ngIf="squeal" style="padding-top: 0px" class="rounded-bottom-5 rounded-top-4 mt-3 mb-2">
+  <div class="message bg-gradient rounded-4">
+    <div class="squeal-layout pb-2 head-message">
+      <img
+        [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
+        class="profilepic"
+        *ngIf="squeal.userImg"
+        alt="Immagine"
+      />
+      <div class="username fw-semibold fs-5" [routerLink]="['/profile', squeal.userName]">@{{ squeal.userName }}</div>
+      <div>{{ timeDifference(squeal.squeal?.timestamp) }}</div>
     </div>
-    <div>{{ squeal.squeal?.n_characters }} characters</div>
-  </div>
-  <hr class="m-0" />
-  <div [innerHTML]="innerBody" class="ps-4 pt-3 fs-4 fw-light"></div>
-  <div>
-    {{ squeal.squeal?.video_content_type }}
-    {{ squeal.squeal?.video_name }}
-    <img
-      [src]="'data:' + squeal.squeal?.img_content_type + ';base64,' + squeal.squeal?.img"
-      style="width: 100%"
-      *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
-      alt="Immagine"
-    />
-    <div *ngIf="squeal.geoLoc" style="height: 30rem; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
-  </div>
-  <hr />
-  <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
-  <div class="squeal-layout pt-0">
-    <div style="flex: 1">
-      <div class="pb-1">
-        <p-speedDial [model]="reactions" [radius]="60" direction="right" type="semi-circle" buttonClassName="p-button-success">
-        </p-speedDial>
-      </div>
-      <div style="padding-left: 6rem">
-        <ng-container *ngFor="let r of squeal.reactions">
-          <span [class]="isActive(r.reaction)" [class]="r.reaction">{{ r.number }}</span>
+    <div class="squeal-layout pt-0 pb-1 head-message">
+      <div style="flex: 1">
+        <ng-container style="size-adjust: 40%" *ngFor="let d of squeal.squeal?.destination">
+          <p-chip [label]="d.destination ?? 'aaa'" (click)="redirect(d)"></p-chip>
         </ng-container>
       </div>
     </div>
-    <button title="reply" type="button" class="btn btn-secondary" (click)="reply = true">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
-        <path
-          fill-rule="evenodd"
-          d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4z"
-        />
-      </svg>
-    </button>
-    <div>{{ squeal.views?.number }} views</div>
+    <div [innerHTML]="innerBody" class="ps-4 fs-4 fw-light"></div>
+    <div>
+      {{ squeal.squeal?.video_content_type }}
+      {{ squeal.squeal?.video_name }}
+      <img
+        [src]="'data:' + squeal.squeal?.img_content_type + ';base64,' + squeal.squeal?.img"
+        style="width: 100%"
+        *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
+        alt="Immagine"
+      />
+      <div *ngIf="squeal.geoLoc" style="height: 30rem; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
+    </div>
+    <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
+    <div class="stats">
+      <div (click)="reply = !reply" class="rispondi_squeal">Rispondi allo Squeal</div>
+
+      <div style="margin-right: 1rem">{{ squeal.squeal?.n_characters }} characters</div>
+
+      <div>{{ squeal.views?.number }} views</div>
+    </div>
+    <div class="emoji-layout">
+      <div style="flex: 1">
+        <div style="padding-left: 1.3rem">
+          <p-speedDial [model]="reactions" direction="right" type="linear" class="speeddial"> </p-speedDial>
+        </div>
+      </div>
+      <div style="padding-top: 0.5rem; padding-right: 0.5rem">
+        <ng-container *ngFor="let r of squeal.reactions">
+          <span [class]="isActive(r.reaction)" [class]="r.reaction"></span>
+          <span class="emoji-number">{{ r.number }}</span>
+        </ng-container>
+      </div>
+    </div>
   </div>
-  <div>
-    <jhi-create-squeal
-      [isResponse]="true"
-      (squealed)="onSquealed($event)"
-      *ngIf="reply && !squealed"
-      [response]="squeal.squeal?._id?.toString()"
-    ></jhi-create-squeal>
+  <div class="reply rounded-4" *ngIf="reply && !squealed">
+    <jhi-create-squeal [isResponse]="true" (squealed)="onSquealed($event)" [response]="squeal.squeal?._id?.toString()"></jhi-create-squeal>
   </div>
 </div>

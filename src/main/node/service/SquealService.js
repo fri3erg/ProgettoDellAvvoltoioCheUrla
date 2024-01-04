@@ -28,14 +28,11 @@ const GEOCHAR = 125;
 //user for auth and isUserAuthorized
 //username,user to do action on, default: you, but smm
 class SquealService {
-  async getUserChars(user, username) {
+  async getUserChars(username) {
     let skip = false;
     const thisUser = await User.findOne({ login: username });
     if (!thisUser) {
       throw new Error('Invalid username');
-    }
-    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unauthorized');
     }
     const purchased = await Money.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinYear } });
     let ch_purchased = 0;
@@ -1063,6 +1060,10 @@ class SquealService {
 
     const category = await SquealCat.findOne({ squeal_id });
 
+    const userImg = await new accountService().getUserImg(squeal_user._id.toString());
+
+    const userContentType = await new accountService().getUserImgContentType(squeal_user._id.toString());
+
     const reactions = await new reactionService().getReaction(squeal_id);
 
     const reaction_number = await new reactionService().getReactionNumber(squeal_id);
@@ -1091,6 +1092,8 @@ class SquealService {
       comments_number,
       views,
       geoLoc,
+      userImg,
+      userContentType,
     };
     return ret;
   }

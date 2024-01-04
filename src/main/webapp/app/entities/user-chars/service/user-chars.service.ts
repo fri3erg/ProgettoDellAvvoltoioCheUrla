@@ -21,6 +21,10 @@ export class UserCharsService {
   getChars(): Observable<HttpResponse<IUserCharsDTO>> {
     return this.http.get<IUserCharsDTO>(this.resourceUrl, { observe: 'response' });
   }
+  getCharsUser(login: string): Observable<HttpResponse<IUserCharsDTO>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/chars-by-login/${login}`);
+    return this.http.get<IUserCharsDTO>(url, { observe: 'response' });
+  }
 
   create(userChars: NewUserChars): Observable<EntityResponseType> {
     return this.http.post<IUserChars>(this.resourceUrl, userChars, { observe: 'response' });

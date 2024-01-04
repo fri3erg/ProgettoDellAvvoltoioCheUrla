@@ -22,6 +22,15 @@ class AccountService {
     return ret;
   }
 
+  async getUserImg(id) {
+    const user = await User.findById(id);
+    return user.img;
+  }
+  async getUserImgContentType(id) {
+    const user = await User.findById(id);
+    return user.img_content_type;
+  }
+
   async searchUser(search) {
     return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }

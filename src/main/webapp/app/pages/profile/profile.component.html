@@ -1,69 +1,117 @@
 <div *ngIf="account">
-  <div class="p-fluid">
-    <div class="p-field">
+  <div class="p-fluid p-1">
+    <div class="p-field top_profile">
       <div>
         <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
-
-        <div *ngIf="newphoto" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
-          <button title="clear" type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
-            <fa-icon icon="times"></fa-icon>
-          </button>
-        </div>
-        <button
-          *ngIf="!edit && account.login == myAccount?.login"
-          class="btn btn-block btn-primary"
-          type="button"
-          (click)="edit = true"
-          title="edit"
-        >
-          Edit photo
-        </button>
-
-        <div class="p-grid" *ngIf="edit">
-          <div class="p-col-12">
-            <button class="btn btn-block btn-secondary" type="button" (click)="rotateImage()">Ruotare</button>
-          </div>
-          <div class="p-col-6">
-            <button class="btn btn-block btn-primary" type="button" onclick="document.getElementById('file_select').click()">
-              Seleziona
-            </button>
-          </div>
-          <div class="p-col-6">
-            <button class="btn btn-block btn-success" type="button" onclick="document.getElementById('file_camera').click()">
-              Scatta foto
-            </button>
-          </div>
-          <div class="p-col-6" *ngIf="newphoto">
-            <button class="btn btn-block btn-success" type="button" (click)="setImage()">OK</button>
-          </div>
-        </div>
-
-        <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
-        <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
       </div>
-
-                
+      <div class="user-info">
+        <div style="font-size: large; font-weight: bold">@{{ this.account.login || 'gaymaffeo42' }}</div>
+        <div style="font-weight: 500">
+          {{ this.account.first_name || 'maffeo' }}
+          {{ this.account.last_name || 'raggi' }}
+        </div>
+        <div style="font-size: small; padding-top: 0.3rem">{{ remaining }} characters remaining</div>
+      </div>
     </div>
   </div>
 
-  <div style="flex: 1">
-    <span>
-      {{ this.account.first_name || 'maffeo' }}
-      {{ this.account.last_name || 'raggi' }}
-      {{ this.account.login || 'gaymaffeo42' }}
-      <span style="background-color: red" [routerLink]="['/profile', profileName, 'mychannels']">
-        {{ this.nChannels }} channels subscribed to
-      </span>
-      {{ squealslength }} squeals squealed
-    </span>
-    <button *ngIf="account?.login === myAccount?.login && !openEdit" class="btn btn-success" (click)="openEdit = true">edit profile</button>
-    <button *ngIf="!openmySearch" class="btn btn-success" (click)="openmySearch = true">add a SMM</button>
-    <button *ngIf="openmySearch" class="btn btn-danger" (click)="openmySearch = false">close</button>
-    <span *ngIf="openmySearch" class="input-group-text" id="inputGroup-sizing-default">SMM</span>
-    <div *ngIf="openmySearch" style="flex: 1">
+  <div class="buttons">
+    <div *ngIf="account?.login === myAccount?.login && !openEdit" class="options rounded-4" (click)="openEdit = true">edit profile</div>
+    <div *ngIf="account?.login === myAccount?.login && openEdit" class="options rounded-4" (click)="openEdit = false">cancel</div>
+    <div *ngIf="!openmySearch" class="options rounded-4" (click)="openmySearch = true">add a SMM</div>
+    <div *ngIf="openmySearch" class="options rounded-4" (click)="openmySearch = false">close</div>
+
+    <div class="dropdown-user rounded-4">
+      <ul class="navbar-nav">
+        <li ngbDropdown class="nav-item pointer" display="dynamic" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
+            <span>
+              <fa-icon icon="user"></fa-icon>
+              <span jhiTranslate="global.menu.account.main">Account</span>
+            </span>
+            <span *ngIf="account?.image_url">
+              <img [src]="account!.image_url" class="profile-image rounded-circle" alt="Avatar" />
+            </span>
+          </a>
+          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="/account/settings"
+                routerLinkActive="active"
+                (click)="collapseNavbar()"
+                data-cy="settings"
+              >
+                <fa-icon icon="wrench" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.account.settings">Settings</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="/account/password"
+                routerLinkActive="active"
+                (click)="collapseNavbar()"
+                data-cy="passwordItem"
+              >
+                <fa-icon icon="lock" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.account.password">Password</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
+                <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.account.logout">Sign out</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
+      <div>
+        <form>
+          <div class="row">
+            <div class="col">
+              <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
+            </div>
+
+            <div class="col">
+              <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
+            </div>
+            <div class="col">
+              <button type="submit" class="btn rounded-pill" (click)="applyEdit()">Apply</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="button-group">
+        <button title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
+          <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
+        </button>
+
+        <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
+          <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
+        </button>
+
+        <button class="btn btn-block" title="seleziona immagine" type="button" onclick="document.getElementById('file_select').click()">
+          <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
+  <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+
+  <div style="display: flex" *ngIf="openmySearch" class="addsmm rounded-4">
+    <div style="flex: 1">
       <p-autoComplete
         [style]="{ width: '100%' }"
         name="destination"
+        class="autocomplete"
         [minLength]="2"
         [(ngModel)]="smm"
         [suggestions]="results ?? []"
@@ -71,29 +119,48 @@
         [multiple]="true"
         field="destination"
       ></p-autoComplete>
-      <button [disabled]="!smm" class="btn btn-primary mt-2" type="button" (click)="addSMM()">Invia</button>
     </div>
-    <form *ngIf="account?.login === myAccount?.login && openEdit">
-      <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
-      <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
-      <button class="btn btn-success" (click)="applyEdit()">Apply</button>
-    </form>
+    <button [disabled]="!smm" class="btn rounded-pill mt-2" type="button" (click)="addSMM()">Invia Richiesta</button>
   </div>
+
+  <div class="stats-bar">
+    <div [routerLink]="['/profile', profileName, 'mychannels']" class="stats rounded-4">{{ this.nChannels }} channels subscribed to</div>
+    <div class="stats rounded-4">{{ squealslength }} squeals squealed</div>
+  </div>
+
   <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
   <p-dataView #dv [value]="squeals" *ngIf="squeals">
     <ng-template let-s pTemplate="listItem">
       <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
     </ng-template>
   </p-dataView>
-</div>
-<div *ngIf="!account">you are not logged in</div>
-<div
-  jhiObserveElement
-  #intersection="intersection"
-  [class.example-card--is-intersecting]="intersection._isIntersecting"
-  (isIntersecting)="isIntersecting($event)"
-  [isContinuous]="true"
-  *ngIf="hasMorePage"
->
-  <span> Loading more...</span>
+
+  <div *ngIf="!account">
+    you are not logged in
+
+    <ul>
+      <li>
+        <a class="dropdown-item" (click)="login()" id="login" data-cy="login">
+          <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+          <span jhiTranslate="global.menu.account.login">Sign in</span>
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" (click)="collapseNavbar()" data-cy="register">
+          <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+          <span jhiTranslate="global.menu.account.register">Register</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div
+    jhiObserveElement
+    #intersection="intersection"
+    [class.example-card--is-intersecting]="intersection._isIntersecting"
+    (isIntersecting)="isIntersecting($event)"
+    [isContinuous]="true"
+    *ngIf="hasMorePage"
+  >
+    <span> Loading more...</span>
+  </div>
 </div>

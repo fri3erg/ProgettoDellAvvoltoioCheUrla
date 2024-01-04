@@ -2,6 +2,16 @@
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 
+.rounded-pill {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.rounded-pill:disabled {
+  background-color: $custom-grey;
+  color: black;
+}
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/

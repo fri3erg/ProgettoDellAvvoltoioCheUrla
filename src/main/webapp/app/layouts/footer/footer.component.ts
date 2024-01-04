@@ -3,7 +3,7 @@ import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { NotificationService } from 'app/pages/notify/notification.service';
 import { SocketService } from 'app/socket.service';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'jhi-footer',
@@ -32,9 +32,9 @@ export default class FooterComponent implements OnInit, OnDestroy {
 
             this.socketService.getNotificationObservable().subscribe((notification: Notification) => {
               console.log('Received notification from the socket:', notification);
-              this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(a => {
-                if (a.body) {
-                  this.unreadNotificationCount = a.body;
+              this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
+                if (p.body) {
+                  this.unreadNotificationCount = p.body;
                 }
               });
             });

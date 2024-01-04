@@ -1,25 +1,20 @@
-<div class="footer fixed-bottom">
-  <nav class="navbar navbar-dark navbar-expand-md" style="background-color: red">
-    <div class="container-fluid row">
-      <div class="col-4 text-center">
-        <a [routerLink]="''">
-          <fa-icon icon="home" [fixedWidth]="true"></fa-icon>
-          Home</a
-        >
-      </div>
-      <div class="col-4 text-center">
-        <a [routerLink]="'/channels'">
-          <fa-icon icon="magnifying-glass" [fixedWidth]="true"></fa-icon>
-          Channels
-        </a>
-      </div>
-      <div class="col-4 text-center">
-        <div class="notification-icon" [routerLink]="'/notification'">
-          <i class="fa fa-bell"></i>
-          <fa-icon icon="inbox" [fixedWidth]="true"></fa-icon>
-          <span *ngIf="unreadNotificationCount" class="notification-count">{{ unreadNotificationCount }}</span>
-        </div>
+<div class="footer fixed-bottom bg-dark">
+  <div class="container-fluid row">
+    <div class="col-4 text-center">
+      <a [routerLink]="''" class="link-light"> <fa-icon icon="home" [fixedWidth]="true"></fa-icon></a>
+    </div>
+    <div class="col-4 text-center">
+      <a [routerLink]="'/channels'" class="link-light">
+        <fa-icon icon="magnifying-glass" [fixedWidth]="true"></fa-icon>
+      </a>
+    </div>
+    <div class="col-4 text-center">
+      <div class="notification-icon" [routerLink]="'/notification'" class="link-light">
+        <i class="fa fa-bell"></i>
+        <fa-icon icon="inbox" [fixedWidth]="true"></fa-icon>
+        <span *ngIf="unreadNotificationCount" class="notification-count"></span>
+        <span style="font-weight: bold"> {{ unreadNotificationCount }}</span>
       </div>
     </div>
-  </nav>
+  </div>
 </div>

@@ -10,11 +10,14 @@ import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { CreateSquealComponent } from '../squeal/create-squeal/create-squeal.component';
 import { SquealViewComponent } from '../squeal/squeal-view/squeal-view.component';
 import SharedModule from 'app/shared/shared.module';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
+import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
+import { MenuItem } from 'primeng/api';
+import { LoginService } from 'app/login/login.service';
 
 @Component({
   selector: 'jhi-profile',
@@ -24,6 +27,7 @@ import { ObserveElementDirective } from 'app/shared/directive/observe-element-di
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  isNavbarCollapsed = false;
   account: Account | null = null;
   myAccount: Account | null = null;
   nChannels = 0;
@@ -42,8 +46,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   results?: Account[];
   openmySearch = false;
   openEdit = false;
+  remaining?: number;
 
   connectedDestination?: ISquealDestination;
+
+  accountItems: MenuItem[];
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -52,8 +59,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     protected channelUserService: ChannelUserService,
     protected squealService: SquealService,
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private userCharsService: UserCharsService,
+    private router: Router,
+    private loginService: LoginService
+  ) {
+    this.accountItems = [
+      { label: 'Settings', icon: 'pi pi-cog', routerLink: ['/account/settings'] },
+      { label: 'Password', icon: 'pi pi-lock', routerLink: ['/account/password'] },
+      { label: 'Sign-in', icon: 'pi pi-sign-in', routerLink: ['/login'] },
+      { label: 'Sign-out', icon: 'pi pi-sign-out' },
+      { label: 'Register', icon: 'pi pi-user-plus', routerLink: ['/account/register'] },
+    ];
+  }
 
   ngOnInit(): void {
     this.profileName = this.activatedRoute.snapshot.paramMap.get('name')?.toString() ?? '';
@@ -98,6 +116,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+
+  getRemainingChar(): void {
+    this.userCharsService.getCharsUser(this.account?.login ?? '').subscribe(r => {
+      if (r.body) {
+        this.remaining = r.body.remainingChars ?? 0;
+      }
+    });
   }
   createdSqueal(): void {
     this.page = 0;
@@ -165,6 +191,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       destination_id: this.account?._id,
       destination_type: 'MESSAGE',
     };
+    this.getRemainingChar();
   }
 
   setImage(): void {
@@ -290,6 +317,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  collapseNavbar(): void {
+    this.isNavbarCollapsed = true;
+  }
+
+  login(): void {
+    this.router.navigate(['/login']);
+  }
+
+  logout(): void {
+    this.collapseNavbar();
+    this.loginService.logout();
+    this.router.navigate(['']);
+  }
+
+  toggleNavbar(): void {
+    this.isNavbarCollapsed = !this.isNavbarCollapsed;
   }
 
   /**

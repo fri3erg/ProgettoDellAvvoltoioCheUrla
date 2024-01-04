@@ -73,12 +73,12 @@ export class CreateSquealComponent implements OnInit {
 
   getType(): string {
     if (this.charsDTO?.type === 'DAY') {
-      return 'giorno';
+      return 'giornaliero';
     }
     if (this.charsDTO?.type === 'WEEK') {
-      return 'settimana';
+      return 'settimanale';
     } else {
-      return 'mese';
+      return 'mensile';
     }
   }
 
@@ -202,8 +202,10 @@ export class CreateSquealComponent implements OnInit {
     }
   }
   addGeo(): void {
-    this.geo = true;
-    this.findCurrentLoc();
+    this.geo = !this.geo;
+    if (this.geo) {
+      this.findCurrentLoc();
+    }
   }
 
   setFileData(event: any): void {

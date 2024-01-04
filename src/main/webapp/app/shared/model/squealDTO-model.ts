@@ -9,6 +9,8 @@ export interface ISquealDTO {
   reactions?: IReactionDTO[];
   views?: ISquealViews;
   userName?: string;
+  userImg?: string;
+  userContentType?: string;
   active_reaction?: string | null | undefined;
   geoLoc?: IGeolocationCoordinates;
 }

@@ -116,6 +116,7 @@ class ReactionService {
   async addCatModChannel(squealCat) {
     let found = false;
     let update = false;
+    let ispublic = false;
     const squeal = await Squeal.findById(squealCat.squeal_id);
     if (!squeal) {
       throw new Error('squeal not found');
@@ -129,12 +130,16 @@ class ReactionService {
           update = true;
           squeal.destination.splice(squeal.destination.indexOf(dest), 1);
         }
+      } else {
+        if (dest.destination_type != 'PRIVATEGROUP' && dest.destination_type != 'MESSAGE') {
+          ispublic = true;
+        }
       }
     }
     if (update) {
       await Squeal.findByIdAndUpdate(squeal._id, squeal);
     }
-    if (found) {
+    if (found || !ispublic) {
       return;
     }
     let channel = await Channel.findOne({ name: '§'.concat(squealCat.cat_type), type: 'MOD' });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IReactionDTO, ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -22,7 +22,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './squeal-view.component.html',
   styleUrls: ['./squeal-view.component.scss'],
 })
-export class SquealViewComponent implements OnInit, AfterViewInit {
+export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() squeal?: ISquealDTO;
   reactionAdded?: string;
   response_squeal?: ISquealDTO;
@@ -255,6 +255,32 @@ export class SquealViewComponent implements OnInit, AfterViewInit {
 
     this.router.navigate([type, id]);
   }
+
+  timeDifference(previous: any): string {
+    const current = Date.now();
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000).toString() + ' seconds ago';
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute).toString() + ' minutes ago';
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour).toString() + ' hours ago';
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay).toString() + ' days ago';
+    } else if (elapsed < msPerYear) {
+      return 'about ' + Math.round(elapsed / msPerMonth).toString() + ' months ago';
+    } else {
+      return 'about ' + Math.round(elapsed / msPerYear).toString() + ' years ago';
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

@@ -1,7 +1,7 @@
 /* ==========================================================================
 Main page styles
 ========================================================================== */
-
+@import 'content/scss/_bootstrap-variables.scss';
 .hipster {
   display: inline-block;
   width: 347px;
@@ -19,5 +19,14 @@ Main page styles
   .hipster {
     background: url('/content/images/jhipster_family_member_2.svg') no-repeat center top;
     background-size: contain;
+  }
+}
+
+:host ::ng-deep {
+  .p-dataview .p-dataview-content {
+    background: $custom-bg;
+    color: #495057;
+    border: 0 none;
+    padding: 0;
   }
 }

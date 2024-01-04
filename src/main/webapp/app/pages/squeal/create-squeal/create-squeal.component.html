@@ -1,6 +1,5 @@
-<form *ngIf="dto?.squeal" class="message bg-gradient rounded-4 m-3 p-3">
+<form *ngIf="dto?.squeal" class="message bg-gradient rounded-4 p-3">
   <div class="input-group mb-3">
-    <span class="input-group-text" id="inputGroup-sizing-default">Destinations</span>
     <div style="flex: 1">
       <p-autoComplete
         [style]="{ width: '100%' }"
@@ -11,92 +10,84 @@
         (completeMethod)="search($event)"
         [multiple]="true"
         field="destination"
+        placeholder="Destinations"
       ></p-autoComplete>
     </div>
   </div>
+
   <div class="form-floating">
     <textarea
       [maxlength]="charsDTO?.remainingChars ?? 100"
-      class="form-control"
-      name="body"
+      class="form-control bg-light rounded-top-4"
+      name=" body"
       [(ngModel)]="message"
-      placeholder="Leave your squeal here"
       id="floatingTextarea2"
-      style="height: 100px"
+      style="height: 130px"
     ></textarea>
-    <label for="floatingTextarea2">body</label>
-  </div>
-  <div style="display: flex">
-    <div style="flex: 1">
-      <button class="btn btn-primary mt-2" type="button" (click)="createSqueal()">Invia</button>
-      <p *ngIf="getRemainingChars() <= 0">hai finito i characters del {{ getType() }}</p>
-      <button class="btn btn-warning mt-2" type="button" *ngIf="getRemainingChars() <= 0">Compra</button>
-    </div>
-    <p>{{ getRemainingChars() }} chars left</p>
-  </div>
+    <label for="floatingTextarea2">body : {{ getRemainingChars() }} left</label>
 
-  <div class="p-fluid">
-    <div class="p-field">
-      <label for="field_notificationImage">Immagine</label>
+    <div class="p-fluid">
+      <div class="p-field">
+        <div>
+          <img
+            [src]="'data:' + dto?.squeal?.img_content_type + ';base64,' + dto?.squeal?.img"
+            style="width: 100%"
+            *ngIf="dto?.squeal?.img"
+            alt="Immagine"
+          />
+
+          <div [hidden]="!geo" class="geo" [id]="'map_create'">
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+          <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
+          <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-danger error-char" role="alert" *ngIf="getRemainingChars() <= 0">
+      <div style="flex: 1">
+        <button class="btn rounded-pill btn-warning" type="button">Compra</button>
+      </div>
       <div>
-        <img
-          [src]="'data:' + dto?.squeal?.img_content_type + ';base64,' + dto?.squeal?.img"
-          style="width: 100%"
-          *ngIf="dto?.squeal?.img"
-          alt="Immagine"
-        />
-        <div *ngIf="dto?.squeal?.img" class="form-text text-danger clearfix" style="margin-bottom: 1rem; text-align: right">
-          <span class="pull-right" style="color: white">{{ dto?.squeal?.img_content_type }}, {{ byteSize(dto?.squeal?.img) }}</span>
-          <button title="clear" type="button" (click)="clearInputImage()" class="btn btn-danger btn-xs pull-right">
-            <fa-icon icon="times"></fa-icon>
+        <span style="font-size: 70%; margin-left: 0.5rem; font-weight: bold">limite {{ getType() }} raggiunto</span>
+      </div>
+    </div>
+    <div class="bottom-div rounded-bottom-4">
+      <div style="flex: 1">
+        <div>
+          <button type="button" class="btn rounded-pill btn-primary" (click)="createSqueal()" [disabled]="destination.length == 0">
+            Post
           </button>
         </div>
+      </div>
+      <div class="button-group">
+        <button *ngIf="dto?.squeal?.img" title="Rotate" class="btn btn-block" type="button" (click)="clearInputImage()">
+          <fa-icon icon="xmark" [fixedWidth]="true"></fa-icon>
+        </button>
+        <button *ngIf="dto?.squeal?.img" title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
+          <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
+        </button>
 
-        <div class="p-grid">
-          <div class="p-col-12" *ngIf="dto?.squeal?.img">
-            <button class="btn btn-block btn-secondary" type="button" (click)="rotateImage()">Ruotare</button>
-          </div>
-          <div class="p-col-6">
-            <button class="btn btn-block btn-primary" type="button" onclick="document.getElementById('file_select').click()">
-              Seleziona
-            </button>
-          </div>
-          <div class="p-col-6">
-            <button class="btn btn-block btn-success" type="button" onclick="document.getElementById('file_camera').click()">
-              Scatta foto
-            </button>
-          </div>
-          <div class="p-col-6">
-            <button *ngIf="!geo && !isResponse" class="btn btn-block btn-success" type="button" (click)="addGeo()">
-              Aggiungi geolocalizazione
-            </button>
-            <button *ngIf="geo && !isResponse" class="btn btn-block btn-danger" type="button" (click)="geo = false">
-              Togli geolocalizazione
-            </button>
-            <button
-              *ngIf="!this.geoLoc.refresh && geo && !isResponse"
-              class="btn btn-block btn-warning"
-              type="button"
-              (click)="this.geoLoc.refresh = true"
-            >
-              add refresh
-            </button>
-            <button
-              *ngIf="this.geoLoc.refresh && geo && !isResponse"
-              class="btn btn-block btn-warning"
-              type="button"
-              (click)="this.geoLoc.refresh = false"
-            >
-              togli refresh
-            </button>
-          </div>
-        </div>
+        <button
+          *ngIf="geo && !isResponse"
+          title="Toggle Refresh"
+          class="btn btn-block"
+          type="button"
+          (click)="this.geoLoc.refresh = !this.geoLoc.refresh"
+        >
+          <fa-icon icon="arrows-rotate" [fixedWidth]="true" *ngIf="!this.geoLoc.refresh"></fa-icon>
+          <fa-icon icon="xmark" [fixedWidth]="true" *ngIf="this.geoLoc.refresh"></fa-icon>
+        </button>
+        <button *ngIf="!isResponse" title="toggle geolocalizazione" class="btn btn-block" type="button" (click)="addGeo()">
+          <fa-icon icon="map-location-dot" [fixedWidth]="true"></fa-icon>
+        </button>
+        <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
+          <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
+        </button>
 
-        <div [hidden]="!geo" class="geo" [id]="'map_create'">
-          <p-progressSpinner></p-progressSpinner>
-        </div>
-        <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
-        <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+        <button class="btn btn-block" title="seleziona immagine" type="button" onclick="document.getElementById('file_select').click()">
+          <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
+        </button>
       </div>
     </div>
   </div>

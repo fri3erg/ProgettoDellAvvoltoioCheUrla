@@ -22,7 +22,17 @@ router.get('/squeal-list', auth, async (req, res) => {
 
 router.get('/user-chars', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getUserChars(req.user, req.user.username);
+    const ret = await new squealService().getUserChars(req.user.username);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/chars-by-login/:login', auth, async (req, res) => {
+  try {
+    const ret = await new squealService().getUserChars(req.params.login);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

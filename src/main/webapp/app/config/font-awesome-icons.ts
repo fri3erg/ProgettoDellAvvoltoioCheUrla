@@ -41,6 +41,14 @@ import {
   faInbox,
   faSquarePlus,
   faSquareMinus,
+  faCamera,
+  faFolderOpen,
+  faMapLocationDot,
+  faXmark,
+  faArrowsRotate,
+  faRotateRight,
+  faRightFromBracket,
+  faRightToBracket,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -88,5 +96,17 @@ export const fontAwesomeIcons = [
   faHome,
   faSquarePlus,
   faSquareMinus,
+  faCamera,
+  faFolderOpen,
+  faMapLocationDot,
+  faXmark,
+  faArrowsRotate,
+  faRotateRight,
+  faWrench,
+  faLock,
+  faRightFromBracket,
+  faRightToBracket,
+  faUserPlus,
+
   // jhipster-needle-add-icon-import
 ];

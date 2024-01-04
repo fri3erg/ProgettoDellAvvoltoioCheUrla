@@ -19,6 +19,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
+import { MenubarModule } from 'primeng/menubar';
 
 /**
  * Application wide Module
@@ -41,6 +42,7 @@ import { TableModule } from 'primeng/table';
     ToggleButtonModule,
     ProgressSpinnerModule,
     TableModule,
+    MenubarModule,
   ],
   exports: [
     CommonModule,
@@ -64,6 +66,7 @@ import { TableModule } from 'primeng/table';
     ToggleButtonModule,
     ProgressSpinnerModule,
     TableModule,
+    MenubarModule,
   ],
 })
 export default class SharedModule {}
