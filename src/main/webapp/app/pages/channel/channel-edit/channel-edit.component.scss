@@ -1,0 +1,44 @@
+@import 'content/scss/bootstrap-variables';
+
+.combo {
+  width: 80%;
+  height: 5rem;
+  border: 2px solid $custom-purple;
+}
+
+:host ::ng-deep {
+  form {
+    display: block;
+    margin-top: 0em;
+    width: 100%;
+  }
+
+  .p-togglebutton.p-button.p-highlight {
+    background: $custom-purple;
+    border-color: $custom-purple;
+    color: #ffffff;
+  }
+  .alert {
+    width: 80%;
+    height: 3.5rem;
+    margin-bottom: 0rem;
+  }
+}
+
+.everything {
+  padding-left: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.rounded-pill {
+  margin-top: 1rem;
+  background-color: $success;
+  height: 2.5rem;
+  border: solid 2px black;
+}
+.rounded-pill:disabled {
+  margin-top: 1rem;
+  background-color: $custom-grey;
+  height: 2.5rem;
+  border: solid 2px black;
+}

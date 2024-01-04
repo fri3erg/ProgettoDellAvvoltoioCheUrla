@@ -33,7 +33,7 @@
               <img [src]="account!.image_url" class="profile-image rounded-circle" alt="Avatar" />
             </span>
           </a>
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
+          <ul class="dropdown-menu rounded-4" ngbDropdownMenu aria-labelledby="account-menu">
             <li>
               <a
                 class="dropdown-item"
@@ -46,6 +46,7 @@
                 <span jhiTranslate="global.menu.account.settings">Settings</span>
               </a>
             </li>
+            <hr />
             <li>
               <a
                 class="dropdown-item"
@@ -58,6 +59,7 @@
                 <span jhiTranslate="global.menu.account.password">Password</span>
               </a>
             </li>
+            <hr />
             <li>
               <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
                 <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>

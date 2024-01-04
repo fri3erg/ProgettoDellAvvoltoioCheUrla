@@ -1,0 +1,25 @@
+@import 'content/scss/bootstrap-variables';
+
+.channel-layout {
+  border: 2px solid $custom-purple;
+  background-color: $custom-grey;
+  padding: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+  height: 5rem;
+  display: flex;
+}
+
+.profilepic {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid $custom-purple;
+}
+
+.channelname {
+  padding-left: 1rem;
+  flex: 1;
+  font-size: x-large;
+  font-weight: 500;
+}

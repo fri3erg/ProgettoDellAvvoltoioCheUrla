@@ -1,3 +1,5 @@
+@import 'content/scss/bootstrap-variables';
+
 .badge {
   color: white !important ;
 }
@@ -17,14 +19,40 @@
 }
 
 .search {
-  background-color: #ff473d;
-  padding: 2px;
+  border: 4px solid $custom-purple;
+  height: 4rem;
+  padding: 0px;
+  margin-bottom: 1.5rem;
 }
 
-:host ::ng-deep .p-button {
-  position: fixed;
-  right: 10px;
-  bottom: 50px;
-  font-size: 18px;
-  font-weight: bolder;
+:host ::ng-deep {
+  .p-dataview .p-dataview-content {
+    background-color: transparent;
+    border: 0 none;
+    padding: 0;
+  }
+
+  .p-button {
+    background-color: $custom-purple;
+    position: fixed;
+    right: 3%;
+    bottom: 6%;
+    height: 6rem;
+    width: 6rem;
+    font-size: 70px;
+    font-weight: bold;
+    justify-content: center;
+    border-radius: 50%;
+    padding-bottom: 1.9rem;
+  }
+
+  .p-dataview .p-dataview-header {
+    display: none;
+    background: #f8f9fa;
+    color: #343a40;
+    border: 1px solid #dee2e6;
+    border-width: 1px 0 1px 0;
+    padding: 1rem 1rem;
+    font-weight: 700;
+  }
 }

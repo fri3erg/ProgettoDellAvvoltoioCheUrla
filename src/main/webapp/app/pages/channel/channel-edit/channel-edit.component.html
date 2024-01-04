@@ -1,6 +1,6 @@
-<div class="input-group mb-3">
+<div class="input-group everything">
   <form (ngSubmit)="createChannel()" *ngIf="dto">
-    <div class="input-group">
+    <div class="input-group combo rounded-3">
       <span class="input-group-text" id="basic-addon1">
         <p-toggleButton name="prefix" [(ngModel)]="private" onLabel="§" offLabel="#"></p-toggleButton
       ></span>
@@ -14,7 +14,7 @@
         aria-describedby="basic-addon1"
       />
     </div>
-    <div style="color: red" *ngIf="isIncorrect()"><small>Channel name is invalid</small></div>
-    <button type="submit" class="btn btn-success" [disabled]="isIncorrect()" *ngIf="!dto.channel._id">Create</button>
+    <div class="alert alert-danger rounded-3" *ngIf="!isIncorrect()" role="alert">Channel name is invalid</div>
+    <button type="submit" class="btn rounded-pill" [disabled]="isIncorrect()" *ngIf="!dto.channel._id">Create</button>
   </form>
 </div>
