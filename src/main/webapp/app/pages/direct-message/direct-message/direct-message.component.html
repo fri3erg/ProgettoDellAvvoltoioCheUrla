@@ -1,16 +1,25 @@
 <ng-container *ngFor="let squeal of getSqueals()">
-  <div class="col-12" [routerLink]="['user', squeal.userName]">
-    <div class="message-layout rounded-4 m-3 p-2">
-      <div class="myname rounded-4 p-2">
-        <h2>{{ squeal.userName }}</h2>
-      </div>
-      <div style="flex: 1" class="m-2 mymessage ps-3">
-        <p>{{ squeal.squeal?.body }}</p>
-      </div>
-      <div class="mytimestamp me-3">
-        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
-      </div>
-      <div class="mynotify rounded-4 p-1 m-2">{{ notifyMap.get(squeal) }}<fa-icon icon="heart" [fixedWidth]="true"></fa-icon></div>
+  <div class="whole rounded-4" [routerLink]="['user', squeal.userName]">
+    <div>
+      <img
+        [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
+        class="profilepic"
+        *ngIf="squeal.userImg"
+        alt="Immagine"
+      />
     </div>
+    <div class="message-layout rounded-4">
+      <div class="myname rounded-4">@{{ squeal.userName }}</div>
+      <div class="mymessage">
+        <span class="squealbody">
+          <p>{{ squeal.squeal?.body?.split('\n')?.shift() ?? ' ' }}</p>
+        </span>
+      </div>
+    </div>
+
+    <span class="mytimestamp">
+      {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
+    </span>
+    <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
   </div>
 </ng-container>

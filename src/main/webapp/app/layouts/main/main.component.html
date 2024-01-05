@@ -1,13 +1,12 @@
-<jhi-page-ribbon></jhi-page-ribbon>
 <p-toast position="top-right"></p-toast>
 <p-confirmDialog [style]="{ width: '50vw' }"></p-confirmDialog>
 <div>
   <router-outlet name="navbar"></router-outlet>
 </div>
 
-<div class="container-fluid p-2">
-  <div class="card jh-card m-0 p-0 mb-1">
+<div class="container-fluid p-2" style="bottom: 3rem; overflow: scroll; position: fixed; top: 3rem; overflow-x: hidden">
+  <div class="card jh-card m-0 p-0">
     <router-outlet></router-outlet>
   </div>
-  <jhi-footer></jhi-footer>
 </div>
+<jhi-footer></jhi-footer>

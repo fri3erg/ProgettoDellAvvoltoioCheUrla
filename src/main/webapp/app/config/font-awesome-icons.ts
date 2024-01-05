@@ -49,6 +49,7 @@ import {
   faRotateRight,
   faRightFromBracket,
   faRightToBracket,
+  faCircle,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -107,6 +108,6 @@ export const fontAwesomeIcons = [
   faRightFromBracket,
   faRightToBracket,
   faUserPlus,
-
+  faCircle,
   // jhipster-needle-add-icon-import
 ];

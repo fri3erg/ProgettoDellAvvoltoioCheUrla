@@ -29,7 +29,7 @@ export class PersonalMessagesComponent implements OnInit {
   squeals?: ISquealDTO[];
   account: Account | null = null;
   page = 0;
-  size = 5;
+  size = 15;
   isLoad = false;
   hasMorePage = false;
   message = '';
@@ -60,6 +60,7 @@ export class PersonalMessagesComponent implements OnInit {
           this.hasMorePage = r.body.length >= this.size;
           this.page++;
           this.squeals = r.body;
+          this.squeals.sort((a, b) => (a.squeal?.timestamp ?? 0) - (b.squeal?.timestamp ?? 0));
           console.log(this.squeals);
           this.notificationService.setReadDirect(this.username ?? '').subscribe(a => {
             console.log(a);
@@ -74,6 +75,31 @@ export class PersonalMessagesComponent implements OnInit {
     });
   }
 
+  timeDifference(previous: any): string {
+    const current = Date.now();
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000).toString() + ' seconds ago';
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute).toString() + ' minutes ago';
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour).toString() + ' hours ago';
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay).toString() + ' days ago';
+    } else if (elapsed < msPerYear) {
+      return 'about ' + Math.round(elapsed / msPerMonth).toString() + ' months ago';
+    } else {
+      return 'about ' + Math.round(elapsed / msPerYear).toString() + ' years ago';
+    }
+  }
+
   appendSqueals(): void {
     if (this.username) {
       console.log('load');
@@ -83,6 +109,8 @@ export class PersonalMessagesComponent implements OnInit {
           this.page++;
           if (this.squeals) {
             this.squeals = [...this.squeals.concat(r.body)];
+
+            this.squeals.sort((a, b) => (a.squeal?.timestamp ?? 0) - (b.squeal?.timestamp ?? 0));
           }
         }
       });

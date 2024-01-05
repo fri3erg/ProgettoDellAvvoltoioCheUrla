@@ -1,26 +1,59 @@
+@import 'content/scss/bootstrap-variables';
+
 .message-layout {
-  background-color: whitesmoke;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 1rem;
+  flex: 1;
+  padding-left: 1rem;
 }
 
 .myname {
-  background-color: lightgray;
-  width: 23rem;
+  padding: 0px;
+  font-size: large;
+  font-weight: 600;
+  padding-bottom: 0.3rem;
 }
 .mymessage {
-  font-size: large;
+  font-size: larger;
   position: relative;
-  top: 7px;
+  display: flex;
 }
 .mytimestamp {
-  font-size: small;
+  line-height: 3.1rem;
+  font-size: smaller;
+  padding-right: 1.5rem;
 }
 .mynotify {
-  background-color: lightgray;
-  height: 2rem;
-  width: 3rem;
+  line-height: 3.1rem;
   text-align: center;
+  padding-right: 1rem;
+  font-weight: bold;
+  font-size: large;
+}
+
+.profilepic {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid $custom-purple;
+}
+
+.whole {
+  display: flex;
+  background-color: white;
+  margin-top: 1rem;
+  padding: 0.3rem;
+  padding-top: 1rem;
+}
+
+.squealbody {
+  flex: 1;
+  font-size: small;
+}
+
+.dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  background-color: $custom-purple;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 0.1rem;
 }

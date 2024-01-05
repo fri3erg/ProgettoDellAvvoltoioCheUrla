@@ -1,7 +1,5 @@
-<div class="rounded-4 mytitlecard p-2 m-1" [routerLink]="['/profile', username]">
-  {{ username }}
-</div>
-<div style="overflow: hidden; height: xyz" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+<div class="rounded-4 mytitlecard" [routerLink]="['/profile', username]">@{{ username }}</div>
+<div class="central" #scrollMe [scrollTop]="scrollMe.scrollHeight">
   <div
     jhiObserveElement
     #intersection="intersection"
@@ -12,49 +10,32 @@
   >
     <span> Loading more...</span>
   </div>
-  <ng-container *ngFor="let squeal of squeals" class="m-3 p-2 pt-3">
-    <div class="col-8" style="float: left" *ngIf="username == squeal.userName">
-      <div class="message-layout rounded-4 m-3 p-2">
-        <div style="flex: 1" class="m-2 mymessage ps-3">
-          <p>{{ squeal.squeal?.body }}</p>
-        </div>
-        <div class="mytimestamp me-3">
-          {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
-        </div>
-      </div>
-    </div>
-  </ng-container>
-  <ng-container *ngFor="let squeal of squeals" class="m-3 p-2">
-    <div class="col-8" style="float: right" *ngIf="username != squeal.userName">
-      <div class="message-layout rounded-4 m-3 p-2">
-        <div style="flex: 1" class="m-2 mymessage ps-3">
-          <p>{{ squeal.squeal?.body }}</p>
-        </div>
-        <div class="mytimestamp me-3">
-          {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
-        </div>
+  <ng-container *ngFor="let squeal of squeals" class="container">
+    <div class="col-10 containing" [class.float-left]="username === squeal?.userName" [class.float-right]="username !== squeal?.userName">
+      <div class="message-layout rounded-4">
+        <span class="mymessage">
+          {{ squeal.squeal?.body }}
+        </span>
+        <span class="mytimestamp">
+          {{ timeDifference(squeal.squeal?.timestamp) }}
+        </span>
       </div>
     </div>
   </ng-container>
 </div>
-<form class="message bg-gradient rounded-4 m-3 p-3">
-  <div class="input-group mb-3">
-    <div class="form-floating">
-      <textarea
-        [maxlength]="charsDTO?.remainingChars ?? 0"
-        class="form-control"
-        name="body"
-        [(ngModel)]="message"
-        placeholder="Leave your squeal here"
-        id="floatingTextarea2"
-        style="height: 100px"
-      ></textarea>
-      <label for="floatingTextarea2">body</label>
-    </div>
-    <div style="display: flex">
-      <div style="flex: 1">
-        <button class="btn btn-primary mt-2" type="button" (click)="createSqueal()">Invia</button>
-      </div>
-    </div>
+
+<form class="message rounded-4">
+  <div class="form-floating addtext">
+    <textarea
+      [maxlength]="charsDTO?.remainingChars ?? 0"
+      class="form-control rounded-4"
+      name="body"
+      [(ngModel)]="message"
+      placeholder="Leave your squeal here"
+      id="floatingTextarea2"
+      style="height: 100px"
+    ></textarea>
+    <label for="floatingTextarea2">write a message</label>
   </div>
+  <div class="invia rounded-4" (click)="createSqueal()">Invia</div>
 </form>

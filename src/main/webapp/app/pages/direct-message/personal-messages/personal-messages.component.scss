@@ -1,18 +1,74 @@
+@import 'content/scss/bootstrap-variables';
+
 .mytimestamp {
   font-size: small;
+  line-height: 2rem;
+}
+.containing {
+  background-color: transparent;
+  display: flex;
 }
 .message-layout {
-  background-color: whitesmoke;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  background-color: white;
   padding: 1rem;
+  margin-top: 1rem;
+  display: inline-block;
 }
 .mytitlecard {
-  background-color: red;
+  position: fixed;
+  width: 100%;
+  width: 98%;
+  background-color: $custom-purple;
+  padding: 1rem;
+  color: white;
+  font-size: x-large;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .message {
-  background-color: #ff473d;
-  opacity: 100%;
+  position: fixed;
+  width: 100%;
+  bottom: 3rem;
+  margin-top: 1rem;
+  display: flex;
+  height: 6.3rem;
+  margin-bottom: 0px;
+}
+
+.mymessage {
+  font-size: larger;
+  padding-left: 1rem;
+  padding-right: 2rem;
+}
+
+.float-right {
+  float: right;
+  justify-content: end;
+}
+.float-left {
+  justify-content: start;
+  float: left;
+}
+
+.addtext {
+  flex: 1;
+}
+
+.central {
+  overflow: scroll;
+  bottom: 6rem;
+  top: 7.8rem;
+  position: fixed;
+  overflow-x: hidden;
+}
+
+.invia {
+  background-color: $custom-purple;
+  width: 5rem;
+  color: white;
+  line-height: 6rem;
+  font-size: larger;
+  font-weight: bold;
+  padding-left: 1rem;
 }

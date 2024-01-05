@@ -203,12 +203,12 @@ class SquealService {
     let squealsReceived = await Squeal.find({ 'destination.destination_id': myUser._id.toString(), user_id: theirUser._id.toString() })
       .limit(size)
       .skip(size * page)
-      .sort({ timestamp: 1 });
+      .sort({ timestamp: -1 });
     if (theirUser.login !== myUsername) {
       squealsSent = await Squeal.find({ 'destination.destination_id': theirUser._id.toString(), user_id: myUser._id.toString() })
         .limit(size)
         .skip(size * page)
-        .sort({ timestamp: 1 });
+        .sort({ timestamp: -1 });
     }
     let squeals = squealsReceived.concat(squealsSent);
     for (const s of squeals) {
