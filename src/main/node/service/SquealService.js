@@ -21,8 +21,8 @@ const msinYear = 31536000000;
 const msinMonth = 2629800000;
 const msinWeek = 604800000;
 const msinDay = 86400000;
-const IMGCHAR = 125;
-const GEOCHAR = 125;
+const IMGCHAR = 20;
+const GEOCHAR = 40;
 //params:
 //page and size for paging
 //user for auth and isUserAuthorized
