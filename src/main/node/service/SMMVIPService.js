@@ -1,3 +1,4 @@
+const channelUser = require('../model/channelUser');
 const smmVIP = require('../model/smmVIP');
 const user = require('../model/user');
 const accountService = require('./AccountService');
@@ -44,6 +45,23 @@ class SMMVIPService {
       } else {
         //!
       }
+    }
+  }
+
+  async iAmSubbed(myUser, username, channelId) {
+    const thisUser = await user.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+
+    const subbed = await channelUser.findOne({ channel_id: channelId, user_id: thisUser._id });
+    if (subbed) {
+      return true;
+    } else {
+      return false;
     }
   }
 

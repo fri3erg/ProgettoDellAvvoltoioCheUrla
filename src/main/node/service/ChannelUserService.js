@@ -100,6 +100,7 @@ class ChannelUserService {
     if (!thisUser) {
       throw new Error('invalid username');
     }
+
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
@@ -112,7 +113,6 @@ class ChannelUserService {
         throw new Error('Unathorized');
       }
     }
-
     const chUs = await ChannelUser.find({ channel_id: id });
     if (!chUs) {
       throw new Error('subscription not found');
@@ -126,6 +126,11 @@ class ChannelUserService {
       ret.push(new accountService().hideSensitive(await User.findById(user_id)));
     }
     return ret;
+  }
+
+  async countPeopleFollowing(user, myUsername, id) {
+    const subs = await this.getPeopleFollowing(user, myUsername, id);
+    return subs.length;
   }
 
   async canAdd(thisUser, theirUser, channel) {

@@ -246,6 +246,37 @@ router.get('/channels/smm/:id/:name', auth, async (req, res) => {
   }
 });
 
+router.get('/channel/subbed/:id/:name', auth, async (req, res) => {
+  try {
+    const ret = await new SMMVIPService().iAmSubbed(req.user, req.params.name, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/channels/get-subscribed/smm/:name/:id', auth, async (req, res) => {
+  try {
+    const ret = await new channelUserService().getPeopleFollowing(req.user, req.params.name, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/channels/count-subscribers/smm/:name/:id', auth, async (req, res) => {
+  try {
+    console.log('COUNT SUBS');
+    const ret = await new channelUserService().countPeopleFollowing(req.user, req.params.name, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/squeals-destination/smm/:name', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealDestination(req.user, req.params.name, req.query.search);
@@ -507,7 +538,17 @@ router.get('/squeal-time-chart/:name/:days', auth, async (req, res) => {
 
 router.get('/client-chars/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getUserChars(req.user, req.params.name);
+    const ret = await new squealService().getUserChars(req.params.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/channels/sub/get/smm/:client/:name', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().getChannelSubscribedTo(req.user, req.params.client, req.params.name);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

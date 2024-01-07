@@ -156,8 +156,8 @@ class ChannelService {
     if (!theirUser) {
       throw new Error('invalid username');
     }
-
     const chUs = await ChannelUser.find({ user_id: theirUser._id.toString() });
+
     const chId = [];
     for (const c of chUs) {
       chId.push(c.channel_id);
@@ -167,9 +167,9 @@ class ChannelService {
       channels.push(await Channel.findById(id));
     }
     for (const ch of channels) {
-      if (await new channelUserService().userHasReadPrivilege(ch, myUser)) {
-        ret.push(await this.loadChannelData(ch));
-      }
+      //if (await new channelUserService().userHasReadPrivilege(ch, myUser)) {
+      ret.push(await this.loadChannelData(ch));
+      //}
     }
     return ret;
   }

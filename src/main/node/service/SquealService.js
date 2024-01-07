@@ -549,7 +549,6 @@ class SquealService {
     if (dto) {
       ret = newSqueal;
     }
-    console.log('ci sono1');
 
     if (squeal.squeal_id_response) {
       const referencing_squeal = await Squeal.findById(squeal.squeal_id_response);
