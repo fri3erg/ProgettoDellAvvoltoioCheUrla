@@ -11,6 +11,8 @@
         [multiple]="true"
         field="destination"
         placeholder="Destinations"
+        [multiple]="true"
+        (onSelect)="onSelect($event)"
       ></p-autoComplete>
     </div>
   </div>

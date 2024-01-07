@@ -22,7 +22,7 @@
   padding-right: 1.5rem;
 }
 .mynotify {
-  line-height: 3.1rem;
+  line-height: 3rem;
   text-align: center;
   padding-right: 1rem;
   font-weight: bold;
@@ -34,6 +34,8 @@
   height: 3rem;
   border-radius: 50%;
   border: 2px solid $custom-purple;
+  display: block;
+  overflow: hidden;
 }
 
 .whole {
@@ -42,11 +44,13 @@
   margin-top: 1rem;
   padding: 0.3rem;
   padding-top: 1rem;
+  padding-left: 1rem;
 }
 
 .squealbody {
   flex: 1;
   font-size: small;
+  padding-left: 1.2rem;
 }
 
 .dot {

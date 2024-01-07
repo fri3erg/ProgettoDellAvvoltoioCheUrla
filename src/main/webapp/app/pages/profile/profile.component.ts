@@ -125,6 +125,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  scrollToSqueals(): void {
+    const squealsSection = document.getElementById('squeals');
+    if (squealsSection) {
+      squealsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   createdSqueal(): void {
     this.page = 0;
     this.squeals = [];

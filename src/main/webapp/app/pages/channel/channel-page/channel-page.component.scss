@@ -1,24 +1,100 @@
-.mytitlecard {
-  background-color: red;
-}
-.message-layout {
-  background-color: whitesmoke;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 1rem;
+@import 'content/scss/bootstrap-variables';
+
+.profilepic {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 2px solid $custom-purple;
 }
 
-.mytimestamp {
-  font-size: small;
+.top_profile {
+  display: flex;
+  margin-bottom: 1rem;
 }
-.mynotify {
-  background-color: lightgray;
-  height: 2rem;
-  width: 3rem;
+
+.editProfile {
+  background-color: white;
+}
+
+.stats {
+  background-color: $custom-purple;
   text-align: center;
+  padding: 0.5rem;
+  color: white;
+  flex: 1;
+  margin: 0.5rem;
+  cursor: pointer;
 }
-.myname {
-  background-color: lightgray;
-  width: 23rem;
+
+.addsmm {
+  background-color: white;
+}
+
+.autocomplete {
+  background-color: $custom-field;
+}
+
+.stats-bar {
+  display: flex;
+  width: 100%;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.channel-info {
+  flex: 1;
+  padding-left: 1rem;
+  font-size: xx-large;
+  font-weight: 600;
+  line-height: 3.5rem;
+}
+
+.dropdown-user {
+  cursor: pointer;
+  padding-top: 0rem;
+  padding-bottom: 2.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  height: 2rem;
+  flex: 1;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  text-align: center;
+  background-color: $custom-grey;
+  color: black;
+}
+.options {
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  flex: 1;
+  height: 2rem;
+  text-align: center;
+  background-color: $custom-grey;
+  color: black;
+  border: 2px solid rgb(104, 103, 103);
+}
+:host ::ng-deep {
+  .p-dataview .p-dataview-content {
+    background: $custom-bg;
+    color: #495057;
+    border: 0 none;
+    padding: 0;
+  }
+}
+
+.subscribe {
+  line-height: 3rem;
+}
+
+.dropdown-menu {
+  padding-left: 2rem;
+  padding-right: 2rem;
 }

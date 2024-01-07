@@ -135,6 +135,17 @@ export class CreateSquealComponent implements OnInit {
       }
     });
   }
+
+  onSelect(event: any): void {
+    console.log(event);
+    const q: any = event.destination;
+    console.log(q);
+    if (this.destination.length > 3 || this.destination.some(obj => obj.destination === q.destination)) {
+      // Prevent adding more than 3 items
+      this.destination.pop(); // Remove the last item
+    }
+  }
+
   findCurrentLoc(alertError = false): void {
     const options = {
       enableHighAccuracy: true,

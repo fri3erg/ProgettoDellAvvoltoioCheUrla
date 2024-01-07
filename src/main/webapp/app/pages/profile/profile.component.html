@@ -5,7 +5,7 @@
         <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
       </div>
       <div class="user-info">
-        <div style="font-size: large; font-weight: bold">@{{ this.account.login || 'gaymaffeo42' }}</div>
+        <div style="font-size: larger; font-weight: bold">@{{ this.account.login || 'gaymaffeo42' }}</div>
         <div style="font-weight: 500">
           {{ this.account.first_name || 'maffeo' }}
           {{ this.account.last_name || 'raggi' }}
@@ -21,7 +21,7 @@
     <div *ngIf="!openmySearch" class="options rounded-4" (click)="openmySearch = true">add a SMM</div>
     <div *ngIf="openmySearch" class="options rounded-4" (click)="openmySearch = false">close</div>
 
-    <div class="dropdown-user rounded-4">
+    <div class="dropdown-user rounded-4 account-squeal">
       <ul class="navbar-nav">
         <li ngbDropdown class="nav-item pointer" display="dynamic" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
@@ -127,11 +127,11 @@
 
   <div class="stats-bar">
     <div [routerLink]="['/profile', profileName, 'mychannels']" class="stats rounded-4">{{ this.nChannels }} channels subscribed to</div>
-    <div class="stats rounded-4">{{ squealslength }} squeals squealed</div>
+    <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squealslength }} squeals squealed</div>
   </div>
 
   <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
-  <p-dataView #dv [value]="squeals" *ngIf="squeals">
+  <p-dataView #dv [value]="squeals" *ngIf="squeals" id="squeals">
     <ng-template let-s pTemplate="listItem">
       <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
     </ng-template>

@@ -61,6 +61,8 @@ class NotificationService {
       reaction: message.reaction,
       body: message.body,
       destId: message.destId,
+      profile_img: message.profile_img,
+      profile_img_content_type: message.profile_img_content_type,
       timestamp: message.timestamp,
       type: message.type,
       isRead: message.isRead,
@@ -79,6 +81,16 @@ class NotificationService {
     const notRead = await notification.find({ destId: thisUser._id.toString(), isRead: false });
     return notRead.length;
   }
-}
 
+  async setAllRead(body, user, username) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!(await new accountService().isUserAuthorized(user, thisUser))) {
+      throw new Error('Unauthorized');
+    }
+    return await notification.updateMany({ _id: { $in: body }, isRead: false }, { isRead: true });
+  }
+}
 module.exports = NotificationService;

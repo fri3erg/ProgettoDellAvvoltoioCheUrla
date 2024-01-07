@@ -44,7 +44,8 @@ export class PersonalMessagesComponent implements OnInit {
     protected squealService: SquealService,
     protected channelService: ChannelService,
     private activatedRoute: ActivatedRoute,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -67,12 +68,18 @@ export class PersonalMessagesComponent implements OnInit {
           });
         }
       });
+
+      this.accountService.getUser(this.username).subscribe(r => {
+        if (r.body) {
+          this.account = r.body;
+        }
+      });
+      this.userCharsService.getChars().subscribe(r => {
+        if (r.body) {
+          this.charsDTO = r.body;
+        }
+      });
     }
-    this.userCharsService.getChars().subscribe(r => {
-      if (r.body) {
-        this.charsDTO = r.body;
-      }
-    });
   }
 
   timeDifference(previous: any): string {

@@ -13,6 +13,7 @@ const Money = require('../model/money');
 const moment = require('moment');
 const Notify = require('../model/notification');
 const socket = require('../socket');
+const sharp = require('sharp');
 
 const weekDayMultiplier = 4;
 const monthWeekMultiplier = 3;
@@ -503,7 +504,7 @@ class SquealService {
       user_id: thisUser._id.toString(),
       timestamp: Date.now(),
       body: squeal.body,
-      img: this.resizeSquealImg(squeal.img),
+      img: await this.resizeSquealImg(squeal.img),
       img_content_type: squeal.img_content_type,
       img_name: squeal.img_name,
       video_content_type: squeal.video_content_type,
@@ -556,6 +557,8 @@ class SquealService {
       const m1 = new Notify({
         username: thisUser.login,
         body: squeal.body,
+        profile_img: dto.userImg,
+        profile_img_content_type: dto.userContentType,
         destId: referencing_squeal.user_id,
         timestamp: Date.now(),
         type: 'COMMENT',
@@ -570,6 +573,8 @@ class SquealService {
         const m2 = new Notify({
           username: thisUser.login,
           body: newSqueal.body,
+          profile_img: dto.userImg,
+          profile_img_content_type: dto.userContentType,
           destId: dest.destination_id,
           timestamp: Date.now(),
           type: 'MESSAGE',
@@ -1097,9 +1102,15 @@ class SquealService {
     };
     return ret;
   }
-  resizeSquealImg(img) {
-    //TODO:implement
-    return img;
+  async resizeSquealImg(img) {
+    if (!img) {
+      return;
+    }
+
+    const compressedImageBuffer = await sharp(Buffer.from(img, 'base64')).resize(1280, 720).jpeg({ quality: 80 }).toBuffer();
+
+    const compressedBase64 = compressedImageBuffer.toString('base64');
+    return compressedBase64;
   }
 
   getNCharacters(squeal, geoLoc) {

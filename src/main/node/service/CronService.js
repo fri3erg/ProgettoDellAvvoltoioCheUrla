@@ -154,6 +154,9 @@ class CronService {
       .skip(rand)
       .limit(1);
     squeal = squeal[0];
+    if (!squeal) {
+      return;
+    }
     let channel = await Channel.findOne({ name: '§RANDOM_SQUEAL', type: 'MOD' });
     if (!channel) {
       channel = await Channel.create({

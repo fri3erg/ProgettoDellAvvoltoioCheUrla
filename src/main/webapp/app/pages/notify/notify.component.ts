@@ -1,10 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from './notification.service';
 import { Notification } from './notification.model';
-import { Subject, takeUntil } from 'rxjs';
-import { Account } from 'app/core/auth/account.model';
-import { AccountService } from 'app/core/auth/account.service';
 import SharedModule from 'app/shared/shared.module';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
 
@@ -15,53 +12,61 @@ import { ObserveElementDirective } from 'app/shared/directive/observe-element-di
   templateUrl: './notify.component.html',
   styleUrls: ['./notify.component.scss'],
 })
-export class NotifyComponent implements OnInit, OnDestroy {
-  account: Account | null = null;
+export class NotifyComponent implements OnInit {
   notifications: Notification[] = [];
   page = 0;
   size = 15;
   isLoad = false;
   hasMorePage = true;
-  private readonly destroy$ = new Subject<void>();
-  constructor(private notificationService: NotificationService, private accountService: AccountService) {}
+  constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
-    this.accountService
-      .getAuthenticationState()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(a => {
-        this.account = a;
-      });
     this.loadNotifications();
+    this.setRead();
   }
 
   loadNotifications(): void {
-    this.notificationService.getNotifications(this.account?.login ?? '', this.page, this.size).subscribe(r => {
+    this.notificationService.getNotifications(this.page, this.size).subscribe(r => {
       if (r.body) {
         console.log(r.body);
-        this.notifications = r.body;
+        this.notifications = this.notifications.concat(r.body);
         this.hasMorePage = r.body.length >= this.size;
         this.page++;
       }
     });
   }
+  timeDifference(previous: any): string {
+    const current = Date.now();
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000).toString() + ' seconds ago';
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute).toString() + ' minutes ago';
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour).toString() + ' hours ago';
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay).toString() + ' days ago';
+    } else if (elapsed < msPerYear) {
+      return 'about ' + Math.round(elapsed / msPerMonth).toString() + ' months ago';
+    } else {
+      return 'about ' + Math.round(elapsed / msPerYear).toString() + ' years ago';
+    }
+  }
+
   setRead(): void {
     const ids = [];
     for (const notification of this.notifications) {
       ids.push(notification._id);
     }
-    this.notificationService.setRead(ids).subscribe(r => {
-      if (r.body) {
-        console.log(r.body);
-      }
-    });
-  }
-  loadUnreadNotifications(): void {
-    this.notificationService.getNotificationsUnRead(this.account?.login ?? '').subscribe(r => {
-      if (r.body) {
-        console.log(r.body);
-        this.notifications = r.body;
-      }
+    this.notificationService.setAllRead(ids).subscribe(r => {
+      console.log(r.body);
     });
   }
 
@@ -73,12 +78,8 @@ export class NotifyComponent implements OnInit, OnDestroy {
     } else if (this.isLoad && this.hasMorePage) {
       console.log('load more');
       this.loadNotifications();
+      this.setRead();
       this.isLoad = false;
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

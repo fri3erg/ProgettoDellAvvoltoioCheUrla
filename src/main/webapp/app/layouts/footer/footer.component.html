@@ -1,17 +1,17 @@
 <div class="footer fixed-bottom bg-dark">
   <div class="container-fluid row">
     <div class="col-4 text-center">
-      <a [routerLink]="''" class="link-light"> <fa-icon icon="home" [fixedWidth]="true"></fa-icon></a>
+      <a [routerLink]="''" class="link-light"> <fa-icon icon="home" [fixedWidth]="true" [size]="'xl'"></fa-icon></a>
     </div>
     <div class="col-4 text-center">
       <a [routerLink]="'/channels'" class="link-light">
-        <fa-icon icon="magnifying-glass" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="magnifying-glass" [fixedWidth]="true" [size]="'xl'"></fa-icon>
       </a>
     </div>
     <div class="col-4 text-center">
       <div class="notification-icon" [routerLink]="'/notification'" class="link-light">
         <i class="fa fa-bell"></i>
-        <fa-icon icon="inbox" [fixedWidth]="true"></fa-icon>
+        <fa-icon icon="inbox" [fixedWidth]="true" [size]="'xl'"></fa-icon>
         <span *ngIf="unreadNotificationCount" class="notification-count"></span>
         <span style="font-weight: bold"> {{ unreadNotificationCount }}</span>
       </div>

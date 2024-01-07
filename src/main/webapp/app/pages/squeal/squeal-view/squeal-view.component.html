@@ -2,6 +2,7 @@
   <div class="message bg-gradient rounded-4">
     <div class="squeal-layout pb-2 head-message">
       <img
+        [routerLink]="['/profile', squeal.userName]"
         [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
         class="profilepic"
         *ngIf="squeal.userImg"
@@ -19,15 +20,13 @@
     </div>
     <div [innerHTML]="innerBody" class="ps-4 fs-4 fw-light"></div>
     <div>
-      {{ squeal.squeal?.video_content_type }}
-      {{ squeal.squeal?.video_name }}
       <img
         [src]="'data:' + squeal.squeal?.img_content_type + ';base64,' + squeal.squeal?.img"
-        style="width: 100%"
+        class="img-squeal rounded-4"
         *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
         alt="Immagine"
       />
-      <div *ngIf="squeal.geoLoc" style="height: 30rem; border: 3px solid black" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
+      <div *ngIf="squeal.geoLoc" class="map-squeal rounded-4" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
     </div>
     <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
     <div class="stats">
@@ -43,7 +42,7 @@
           <p-speedDial [model]="reactions" direction="right" type="linear" class="speeddial"> </p-speedDial>
         </div>
       </div>
-      <div style="padding-top: 0.5rem; padding-right: 0.5rem">
+      <div style="padding-right: 0.5rem">
         <ng-container *ngFor="let r of squeal.reactions">
           <span [class]="isActive(r.reaction)" [class]="r.reaction"></span>
           <span class="emoji-number">{{ r.number }}</span>

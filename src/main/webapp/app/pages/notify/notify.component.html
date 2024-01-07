@@ -1,25 +1,19 @@
-<!-- notify.component.html -->
-<p-table [value]="notifications" [style]="{ width: '100%' }">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Username</th>
-      <th>Timestamp</th>
-      <th>Message</th>
-    </tr>
-  </ng-template>
-  <ng-template let-notification pTemplate="body">
-    <tr [class.read]="notification.isRead">
-      <td>
-        <div class="user-info">
-          <img src="assets/user-avatar.png" alt="User Avatar" class="avatar" />
-          <span class="username">{{ notification.username }}</span>
-        </div>
-      </td>
-      <td>{{ notification.timestamp | date : 'medium' }}</td>
-      <td>{{ notification.body }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+<div *ngFor="let notification of this.notifications">
+  <div class="notif rounded-4" [class.notseen]="notification.isRead">
+    <img
+      [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
+      class="profilepic"
+      *ngIf="notification?.profile_img"
+      alt="Immagine"
+    />
+    <div class="info">
+      <div class="username">@{{ notification.username }}</div>
+      <div class="body">{{ notification.body }}</div>
+    </div>
+    <div class="timestamp">{{ timeDifference(notification.timestamp) }}</div>
+  </div>
+</div>
+
 <div
   jhiObserveElement
   #intersection="intersection"

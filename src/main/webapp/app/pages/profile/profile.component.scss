@@ -22,6 +22,11 @@
   color: white;
   flex: 1;
   margin: 0.5rem;
+  cursor: pointer;
+}
+
+.account-squeal {
+  border: 2px solid grey;
 }
 
 .addsmm {
@@ -68,10 +73,13 @@
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   flex: 1;
+  cursor: pointer;
   height: 2rem;
   text-align: center;
   background-color: $custom-grey;
   color: black;
+
+  border: 2px solid rgb(104, 103, 103);
 }
 :host ::ng-deep {
   .p-dataview .p-dataview-content {

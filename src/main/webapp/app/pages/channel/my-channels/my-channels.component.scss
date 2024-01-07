@@ -1,0 +1,19 @@
+@import 'content/scss/bootstrap-variables';
+
+:host ::ng-deep {
+  .p-dataview .p-dataview-header {
+    display: none;
+    background: #f8f9fa;
+    color: #343a40;
+    border: 1px solid #dee2e6;
+    border-width: 1px 0 1px 0;
+    padding: 1rem 1rem;
+    font-weight: 700;
+  }
+
+  .p-component,
+  .p-component * {
+    background-color: transparent;
+    box-sizing: border-box;
+  }
+}

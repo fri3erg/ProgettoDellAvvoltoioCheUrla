@@ -1,25 +1,51 @@
+@import 'content/scss/bootstrap-variables';
+
 /* notify.component.scss */
 :host ::ng-deep .p-datatable {
-  border: none;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.read {
-  background-color: #f0f0f0;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-}
-
-.avatar {
-  width: 30px;
-  height: 30px;
+.profilepic {
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
-  margin-right: 10px;
+  display: block;
+  overflow: hidden;
+  border: 2px solid $custom-purple;
+}
+
+.notif {
+  border: 2px solid $custom-purple;
+  display: flex;
+  padding: 1.5rem;
+  margin-bottom: 0.7rem;
+  background-color: white;
+  padding-bottom: 0rem;
+  padding-left: 1rem;
+}
+.body {
+  padding-left: 0.3rem;
+  overflow: hidden;
+  height: 3rem;
+  font-size: small;
+}
+
+.timestamp {
+  font-size: smaller;
+  font-weight: 300;
+  line-height: 2.6rem;
 }
 
 .username {
-  font-weight: bold;
+  font-size: x-large;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.info {
+  padding-left: 1rem;
+  flex: 1;
+}
+
+.notseen {
+  opacity: 0.8;
 }

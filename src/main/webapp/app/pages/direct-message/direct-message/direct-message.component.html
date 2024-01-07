@@ -1,6 +1,6 @@
 <ng-container *ngFor="let squeal of getSqueals()">
   <div class="whole rounded-4" [routerLink]="['user', squeal.userName]">
-    <div>
+    <div style="padding-top: 0.3rem">
       <img
         [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
         class="profilepic"

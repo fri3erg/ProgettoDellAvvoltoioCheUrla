@@ -7,6 +7,8 @@ const notificationSchema = new Schema(
     username: { type: String, default: null },
     reaction: { type: String, enum: ReactionType, default: null },
     body: { type: String, default: null },
+    profile_img: { type: Array, default: null },
+    profile_img_content_type: { type: String, default: null },
     destId: { type: String, default: null },
     timestamp: { type: Number, default: null },
     type: { type: String, enum: NotificationType, default: 'MESSAGE' },

@@ -31,7 +31,7 @@ console.log('running');
 
 try {
   mycron = new cronService();
-  var task = cron.schedule(' */30 * * * * ', () => {
+  var task = cron.schedule(' 0 */4 * * * ', () => {
     console.log(mycron.tempSqueal());
   });
   task.start();

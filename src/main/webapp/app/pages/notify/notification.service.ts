@@ -34,6 +34,11 @@ export class NotificationService {
     const url = this.applicationConfigService.getEndpointFor(`api/notification/directsetread/${username}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
+  setAllRead(ids: string[]): Observable<HttpResponse<void>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/allsetread`);
+    return this.http.post<void>(url, ids, { observe: 'response' });
+  }
+
   getNotifCount(username: string): Observable<HttpResponse<number>> {
     const url = this.applicationConfigService.getEndpointFor(`api/notification/direct/${username}`);
     return this.http.get<number>(url, { observe: 'response' });
@@ -43,8 +48,8 @@ export class NotificationService {
     return this.http.get<Notification[]>(url, { observe: 'response' });
   }
 
-  getNotifications(name: string, page: number, size: number): Observable<HttpResponse<Notification[]>> {
-    const url = this.applicationConfigService.getEndpointFor(`/api/notification/${name}`);
+  getNotifications(page: number, size: number): Observable<HttpResponse<Notification[]>> {
+    const url = this.applicationConfigService.getEndpointFor(`/api/notification/`);
     const params = new HttpParams().append('page', page).append('size', size);
     return this.http.get<Notification[]>(url, { params, observe: 'response' });
   }

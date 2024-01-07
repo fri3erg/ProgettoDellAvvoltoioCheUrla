@@ -3,6 +3,7 @@
 .combo {
   width: 80%;
   height: 5rem;
+  border-radius: 5px;
   border: 2px solid $custom-purple;
 }
 
@@ -23,6 +24,15 @@
     height: 3.5rem;
     margin-bottom: 0rem;
   }
+}
+
+.description {
+  padding: 1rem;
+  width: 100%;
+  background-color: $custom-purple;
+  color: white;
+  font-size: large;
+  font-weight: 600;
 }
 
 .everything {

@@ -1,4 +1,7 @@
-<div class="rounded-4 mytitlecard" [routerLink]="['/profile', username]">@{{ username }}</div>
+<div class="rounded-4 mytitlecard" [routerLink]="['/profile', username]">
+  <img [src]="'data:' + account?.img_content_type + ';base64,' + account?.img" class="profilepic" *ngIf="account?.img" alt="Immagine" />
+  <span class="user-name">@{{ username }}</span>
+</div>
 <div class="central" #scrollMe [scrollTop]="scrollMe.scrollHeight">
   <div
     jhiObserveElement
@@ -12,7 +15,11 @@
   </div>
   <ng-container *ngFor="let squeal of squeals" class="container">
     <div class="col-10 containing" [class.float-left]="username === squeal?.userName" [class.float-right]="username !== squeal?.userName">
-      <div class="message-layout rounded-4">
+      <div
+        class="message-layout rounded-4"
+        [class.mybubble]="username !== squeal?.userName"
+        [class.hisbubble]="username === squeal?.userName"
+      >
         <span class="mymessage">
           {{ squeal.squeal?.body }}
         </span>

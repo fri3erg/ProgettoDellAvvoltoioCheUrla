@@ -117,6 +117,14 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  scrollToSqueals(): void {
+    const squealsSection = document.getElementById('squeals');
+    if (squealsSection) {
+      squealsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   isUserSubscribed(): boolean {
     console.log(this.channel?.users);
     if (!this.channel?.users) {
