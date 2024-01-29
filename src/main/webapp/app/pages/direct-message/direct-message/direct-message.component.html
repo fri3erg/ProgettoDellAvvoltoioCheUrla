@@ -1,25 +1,45 @@
-<ng-container *ngFor="let squeal of getSqueals()">
-  <div class="whole rounded-4" [routerLink]="['user', squeal.userName]">
-    <div style="padding-top: 0.3rem">
-      <img
-        [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
-        class="profilepic"
-        *ngIf="squeal.userImg"
-        alt="Immagine"
-      />
-    </div>
-    <div class="message-layout rounded-4">
-      <div class="myname rounded-4">@{{ squeal.userName }}</div>
-      <div class="mymessage">
-        <span class="squealbody">
-          <p>{{ squeal.squeal?.body?.split('\n')?.shift() ?? ' ' }}</p>
-        </span>
+<div *ngIf="account">
+  <ng-container *ngFor="let squeal of getSqueals()">
+    <div class="whole rounded-4" [routerLink]="['user', squeal.userName]">
+      <div style="padding-top: 0.3rem">
+        <img
+          [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
+          class="profilepic"
+          *ngIf="squeal.userImg"
+          alt="Immagine"
+        />
       </div>
-    </div>
+      <div class="message-layout rounded-4">
+        <div class="myname rounded-4">@{{ squeal.userName }}</div>
+        <div class="mymessage">
+          <span class="squealbody">
+            <p>{{ squeal.squeal?.body?.split('\n')?.shift() ?? ' ' }}</p>
+          </span>
+        </div>
+      </div>
 
-    <span class="mytimestamp">
-      {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
-    </span>
-    <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
-  </div>
-</ng-container>
+      <span class="mytimestamp">
+        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
+      </span>
+      <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
+    </div>
+  </ng-container>
+</div>
+<div *ngIf="!account">
+  you are not logged in
+
+  <ul>
+    <li>
+      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.login">Sign in</span>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
+        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.register">Register</span>
+      </a>
+    </li>
+  </ul>
+</div>

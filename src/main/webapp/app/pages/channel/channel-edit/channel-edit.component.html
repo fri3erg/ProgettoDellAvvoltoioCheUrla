@@ -1,5 +1,5 @@
 <div class="description rounded-4">create a new channel</div>
-<div class="input-group everything">
+<div class="input-group everything" *ngIf="account">
   <form (ngSubmit)="createChannel()" *ngIf="dto">
     <div class="input-group combo">
       <span class="input-group-text" id="basic-addon1">
@@ -15,7 +15,14 @@
         aria-describedby="basic-addon1"
       />
     </div>
-    <div class="alert alert-danger rounded-3" *ngIf="isIncorrect()" role="alert">Channel name is invalid</div>
+    <div class="alert alert-danger rounded-3" *ngIf="isIncorrect() && !(dto.channel.name?.length == 0 || !dto.channel.name)" role="alert">
+      Channel name is invalid
+    </div>
     <button type="submit" class="btn rounded-pill" [disabled]="isIncorrect()" *ngIf="!dto.channel._id">Create</button>
   </form>
+</div>
+<div *ngIf="!account">
+  you are not logged in
+  <a routerLink="login">log in</a>
+  to see your messages
 </div>

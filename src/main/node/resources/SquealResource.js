@@ -20,6 +20,24 @@ router.get('/squeal-list', auth, async (req, res) => {
   }
 });
 
+router.get('/squeal-list/filtered', auth, async (req, res) => {
+  try {
+    if (!auth) {
+      //TODO: AnonymousSqueals()
+    }
+    const ret = await new squealService().getSquealListFiltered(
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      req.user,
+      req.query.byTimestamp
+    );
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/user-chars', auth, async (req, res) => {
   try {
     const ret = await new squealService().getUserChars(req.user.username);
@@ -89,7 +107,6 @@ router.get('/squeal-made-by-user-count/:name', auth, async (req, res) => {
 router.post('/geoloc/update', auth, async (req, res) => {
   try {
     const geo_loc = await new squealService().updateGeoLoc(req.body, req.user, req.user.username);
-    console.log(geo_loc);
     res.status(200).json(geo_loc);
   } catch (err) {
     console.log(err);
@@ -99,7 +116,6 @@ router.post('/geoloc/update', auth, async (req, res) => {
 router.get('/geoloc/get/:id', auth, async (req, res) => {
   try {
     const geo_loc = await new squealService().getGeoLoc(req.params.id, req.user, req.user.username);
-    console.log(geo_loc);
     res.status(200).json(geo_loc);
   } catch (err) {
     console.log(err);
@@ -162,7 +178,16 @@ router.get('/squeals-destination', auth, async (req, res) => {
 router.post('/squeals', auth, async (req, res) => {
   try {
     let squeal = await new squealService().insertOrUpdate(req.body.squeal, req.user, req.user.username, req.body.geoLoc);
-    console.log(squeal);
+    res.status(201).json(squeal);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/squeals/edit', auth, async (req, res) => {
+  try {
+    let squeal = await new squealService().editSqueal(req.body.squeal, req.user, req.body.geoLoc);
     res.status(201).json(squeal);
   } catch (err) {
     console.log(err);

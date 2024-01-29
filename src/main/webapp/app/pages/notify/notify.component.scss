@@ -26,7 +26,11 @@
   padding-left: 0.3rem;
   overflow: hidden;
   height: 3rem;
-  font-size: small;
+  font-size: medium;
+}
+
+.reaction {
+  font-size: larger;
 }
 
 .timestamp {
@@ -48,4 +52,25 @@
 
 .notseen {
   opacity: 0.8;
+}
+
+:host ::ng-deep {
+  span.clown::before {
+    content: '\1F921' !important;
+  }
+  span.nerd::before {
+    content: '\1F913' !important;
+  }
+  span.bored::before {
+    content: '\1F971' !important;
+  }
+  span.heart::before {
+    content: '\2764' !important;
+  }
+  span.exploding::before {
+    content: '\1F92F' !important;
+  }
+  span.cold::before {
+    content: '\1F976' !important;
+  }
 }

@@ -13,7 +13,6 @@ router.get('/notification/', auth, async (req, res) => {
       req.user,
       req.user.username
     );
-    console.log(n);
     res.status(201).json(n);
   } catch (err) {
     console.log(err);
@@ -24,7 +23,6 @@ router.get('/notification/', auth, async (req, res) => {
 router.get('/notification/smm/:name', auth, async (req, res) => {
   try {
     let n = await new notificationService().getNotification(parseInt(req.query.page), parseInt(req.query.size), req.user, req.params.name);
-    console.log(n);
     res.status(201).json(n);
   } catch (err) {
     console.log(err);

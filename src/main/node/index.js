@@ -7,7 +7,7 @@ const { initializeSocket, io } = require('./socket');
 const server = http.createServer(app);
 var cron = require('node-cron');
 const { API_PORT } = process.env;
-const port = process.env.PORT || API_PORT || 8000;
+const port = API_PORT || 8000;
 global.rootDir = __dirname;
 global.startDate = null;
 
@@ -31,13 +31,9 @@ console.log('running');
 
 try {
   mycron = new cronService();
-  var task = cron.schedule(' 0 */4 * * * ', () => {
-    console.log(mycron.tempSqueal());
-  });
+  var task = cron.schedule(' 0 */4 * * * ', () => {});
   task.start();
-  var meantask = cron.schedule(' * * * * * ', () => {
-    console.log(mycron.meanGptSqueal());
-  });
+  var meantask = cron.schedule(' * * * * * ', () => {});
   meantask.start();
 } catch (err) {
   console.log('err');

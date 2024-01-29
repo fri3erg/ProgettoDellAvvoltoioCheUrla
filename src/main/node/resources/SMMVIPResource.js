@@ -237,8 +237,6 @@ router.get('/smm/search', auth, async (req, res) => {
 router.get('/channels/smm/:id/:name', auth, async (req, res) => {
   try {
     const ret = await new channelService().getChannel(req.user, req.params.name, req.params.id);
-    console.log('CHANNEL: ', ret);
-
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -268,7 +266,6 @@ router.get('/channels/get-subscribed/smm/:name/:id', auth, async (req, res) => {
 
 router.get('/channels/count-subscribers/smm/:name/:id', auth, async (req, res) => {
   try {
-    console.log('COUNT SUBS');
     const ret = await new channelUserService().countPeopleFollowing(req.user, req.params.name, req.params.id);
     res.status(200).json(ret);
   } catch (err) {
@@ -376,7 +373,6 @@ router.delete('/channel-users/smm/:id/:name', auth, async (req, res) => {
 router.post('/channels/smm/:name', auth, async (req, res) => {
   try {
     let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.params.name);
-    console.log(channel);
     res.status(201).json(channel);
   } catch (err) {
     console.log(err);
@@ -387,7 +383,6 @@ router.post('/channels/smm/:name', auth, async (req, res) => {
 router.post('/geoloc/update/smm/:name', auth, async (req, res) => {
   try {
     const geo_loc = await new squealService().updateGeoLoc(req.body, req.user, req.params.name);
-    console.log(geo_loc);
     res.status(200).json(geo_loc);
   } catch (err) {
     console.log(err);
@@ -398,7 +393,6 @@ router.post('/geoloc/update/smm/:name', auth, async (req, res) => {
 router.get('/geoloc/get/smm/:name/:id', auth, async (req, res) => {
   try {
     const geo_loc = await new squealService().getGeoLoc(req.params.id, req.user, req.params.name);
-    console.log(geo_loc);
     res.status(200).json(geo_loc);
   } catch (err) {
     console.log(err);

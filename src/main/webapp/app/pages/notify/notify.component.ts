@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from './notification.service';
 import { Notification } from './notification.model';
 import SharedModule from 'app/shared/shared.module';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/auth/account.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'jhi-notify',
@@ -12,15 +15,26 @@ import { ObserveElementDirective } from 'app/shared/directive/observe-element-di
   templateUrl: './notify.component.html',
   styleUrls: ['./notify.component.scss'],
 })
-export class NotifyComponent implements OnInit {
+export class NotifyComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
+
+  account: Account | null = null;
   page = 0;
   size = 15;
   isLoad = false;
   hasMorePage = true;
-  constructor(private notificationService: NotificationService) {}
+
+  private readonly destroy$ = new Subject<void>();
+  constructor(private notificationService: NotificationService, private accountService: AccountService) {}
 
   ngOnInit(): void {
+    this.accountService
+      .getAuthenticationState()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(account => {
+        this.account = account;
+        console.log(account);
+      });
     this.loadNotifications();
     this.setRead();
   }
@@ -81,5 +95,10 @@ export class NotifyComponent implements OnInit {
       this.setRead();
       this.isLoad = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

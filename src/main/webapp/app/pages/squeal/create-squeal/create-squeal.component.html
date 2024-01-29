@@ -57,8 +57,14 @@
     <div class="bottom-div rounded-bottom-4">
       <div style="flex: 1">
         <div>
-          <button type="button" class="btn rounded-pill btn-primary" (click)="createSqueal()" [disabled]="destination.length == 0">
-            Post
+          <button
+            type="button"
+            class="btn rounded-pill btn-primary"
+            (click)="createSqueal()"
+            [disabled]="destination.length == 0 || disablePost"
+          >
+            <span *ngIf="!disablePost">Post</span>
+            <span *ngIf="disablePost" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           </button>
         </div>
       </div>

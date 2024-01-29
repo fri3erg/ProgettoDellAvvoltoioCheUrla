@@ -107,6 +107,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe(a => {
           this.account = a;
+          console.log(a);
           this.startRefresh();
         });
     }
@@ -225,6 +226,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             if (reaction.emoji === 'deleted') {
               this.squeal.active_reaction = null;
+              this.isApiCallInProgress = false;
               return;
             }
           }

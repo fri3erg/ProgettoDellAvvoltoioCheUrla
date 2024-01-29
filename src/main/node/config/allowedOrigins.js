@@ -7,6 +7,8 @@ const allowedOrigins = [
   'https://localhost:4200',
   'http://localhost:9001',
   'https://localhost:9001',
+  'http://localhost:8000',
+  'https://site222347.tw.cs.unibo.it',
 ];
 
 module.exports = allowedOrigins;

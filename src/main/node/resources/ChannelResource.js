@@ -16,7 +16,17 @@ router.get('/channel-search', auth, async (req, res) => {
     return res.status(400).send(err.message);
   }
 });
-
+/*
+router.get('/channel-search/filtered', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().searchChannel(req.user, req.user.username, req.query.name);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+*/
 router.post('/channels/add-people', auth, async (req, res) => {
   try {
     const ret = await new channelService().addPeopleToChannel(req.user, req.user.username, req.query.channelId, req.body);
@@ -30,7 +40,6 @@ router.post('/channels/add-people', auth, async (req, res) => {
 router.get('/channels/:id', auth, async (req, res) => {
   try {
     const ret = await new channelService().getChannel(req.user, req.user.username, req.params.id);
-    console.log('CHANNEL: ', ret);
 
     res.status(200).json(ret);
   } catch (err) {
@@ -62,7 +71,16 @@ router.get('/channels/sub/count/:name', auth, async (req, res) => {
 router.post('/channels', auth, async (req, res) => {
   try {
     let channel = await new channelService().insertOrUpdateChannel(req.body.channel, req.user, req.user.username);
-    console.log(channel);
+    res.status(201).json(channel);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.post('/channels/edit', auth, async (req, res) => {
+  try {
+    let channel = await new channelService().editChannel(req.body.channel, req.user);
     res.status(201).json(channel);
   } catch (err) {
     console.log(err);

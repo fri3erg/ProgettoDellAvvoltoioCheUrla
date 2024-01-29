@@ -1,7 +1,19 @@
 <span class="badge" [class]="returnColor(channel)">{{ channel?.channel?.type }}</span>
-<button class="btn btn-outline-primary btn-subscribe" title="Subscription" *ngIf="!isUserSubscribed(channel)" (click)="sub(channel)">
+<button
+  class="btn btn-outline-primary btn-subscribe"
+  title="Subscription"
+  *ngIf="!isUserSubscribed(channel)"
+  (click)="sub(channel)"
+  [disabled]="!account"
+>
   <fa-icon icon="square-plus" [fixedWidth]="true"></fa-icon>
 </button>
-<button class="btn btn-outline-danger btn-subscribe" title="Subscription" *ngIf="isUserSubscribed(channel)" (click)="confirm(channel)">
+<button
+  class="btn btn-outline-danger btn-subscribe"
+  title="Subscription"
+  *ngIf="isUserSubscribed(channel)"
+  (click)="confirm(channel)"
+  [disabled]="!account"
+>
   <fa-icon icon="square-minus" [fixedWidth]="true"></fa-icon>
 </button>

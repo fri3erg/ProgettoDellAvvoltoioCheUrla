@@ -1,8 +1,10 @@
 const SMMVIP = require('../model/smmVIP');
 const User = require('../model/user');
+const AdminExtra = require('../model/adminExtras');
+const SquealCat = require('../model/squealCat');
 
 class AccountService {
-  async getUsersByName(user, myUsername, search) {
+  async getUsersByName(user, myUsername, search, byRole, byPopolarity) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
       throw new Error('bad username');
@@ -14,12 +16,46 @@ class AccountService {
     if (search.startsWith('@')) {
       search = search.substring(1);
     }
-    const users = await this.searchUser(search);
+    let users = [];
+    if (byRole) {
+      users = await User.find({ authorities: byRole });
+    }
+    if (byPopolarity) {
+      const result = await SquealCat.aggregate([
+        {
+          $group: {
+            _id: '$user_id',
+            totalCharacters: { $sum: '$n_characters' },
+          },
+        },
+        { $sort: { totalCharacters: -1 } },
+        { $limit: 5 },
+      ]);
+      for (const res of result) {
+        users.push(await User.findById(res._id));
+      }
+    }
+    if (!byRole && !byPopolarity) {
+      users = await this.searchUser(search);
+    }
     let ret = [];
     for (const us of users) {
       ret.push(this.hideSensitive(us));
     }
     return ret;
+  }
+
+  async block(user, hisUsername, block) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+
+    if (!(await this.isMod(thisUser))) {
+      throw new Error('unauthorized');
+    }
+    const ret = await User.findOneAndUpdate({ login: hisUsername }, { activated: block });
+    return this.hideSensitive(ret);
   }
 
   async getUserImg(id) {
@@ -83,6 +119,24 @@ class AccountService {
     return this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, { authorities: auth }));
   }
 
+  //not tested
+  async addAdminExtra(user, adminExtra) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    if (!(await this.isMod(thisUser))) {
+      throw new Error('unauthorized');
+    }
+    const admin_extra = await adminExtra.create({
+      n_characters: adminExtra.n_characters,
+      user_id: adminExtra.user_id,
+      timestamp: adminExtra.timestamp,
+      admin_created: thisUser.login,
+    });
+    return admin_extra;
+  }
+
   async imgUpdate(user, myUsername, account) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
@@ -96,7 +150,6 @@ class AccountService {
       { img: this.resizeUserImg(account.img), img_content_type: account.img_content_type }
     );
     const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
-    console.log(updated.img);
     return updated;
   }
 

@@ -5,6 +5,7 @@ const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
+const AdminExtra = require('../model/adminExtras');
 const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
@@ -13,8 +14,8 @@ const Money = require('../model/money');
 const moment = require('moment');
 const Notify = require('../model/notification');
 const socket = require('../socket');
-const sharp = require('sharp');
 
+const Jimp = require('jimp');
 const weekDayMultiplier = 4;
 const monthWeekMultiplier = 3;
 const chMonth = 1200;
@@ -77,6 +78,14 @@ class SquealService {
       }
       chRemMonth = chRemMonth - s.n_characters;
     }
+    const extra_admin = await AdminExtra.find({ user_id: thisUser._id.toString() });
+    let extra_admin_ch = 0;
+    for (const e of extra_admin) {
+      extra_admin_ch = extra_admin_ch + e.n_characters;
+    }
+    chRemMonth = chRemMonth + extra_admin_ch;
+    chRemWeek = chRemWeek + extra_admin_ch;
+    chRemDay = chRemDay + extra_admin_ch;
     let type = 'DAY';
     const remainingChars = Math.min(chRemDay, chRemWeek, chRemMonth);
     if (chRemWeek == remainingChars) {
@@ -107,9 +116,7 @@ class SquealService {
     for (const us of chUs) {
       chId.push(us.channel_id);
     }
-    //TODO: change after testing
-    //const chMod= await Channel.find({ emergercy: true });
-    const chMod = await Channel.find({ type: 'MOD' });
+    const chMod = await Channel.find({ emergercy: true });
     for (const c of chMod) {
       chId.push(c._id.toString());
     }
@@ -129,6 +136,29 @@ class SquealService {
       if (dto) {
         ret.push(dto);
       }
+    }
+    return ret;
+  }
+
+  async getSquealListFiltered(page, size, user, byTimestamp) {
+    const ret = [];
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unauthorized');
+    }
+
+    const sq = await Squeal.find({})
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: byTimestamp });
+
+    const dto = await this.loadSquealData(s, thisUser);
+
+    if (dto) {
+      ret.push(dto);
     }
     return ret;
   }
@@ -193,7 +223,6 @@ class SquealService {
     const ret = [];
     const theirUser = await User.findOne({ login: theirUsername });
     const myUser = await User.findOne({ login: myUsername });
-    console.log('cliente: ', theirUser, 'io: ', myUser);
     if (!theirUser || !myUser) {
       throw new Error('Username Invalid');
     }
@@ -584,6 +613,50 @@ class SquealService {
       }
     }
     return ret;
+  }
+
+  async editSqueal(squeal, user, geoLoc) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    if (!squeal || !squeal._id) {
+      throw new Error('invalid squeal');
+    }
+    const squeal_updated = await Squeal.updateOne(
+      { _id: squeal._id },
+      {
+        body: squeal.body,
+        img: squeal.img,
+        img_content_type: squeal.img_content_type,
+        img_name: squeal.img_name,
+        video_content_type: squeal.video_content_type,
+        video_name: squeal.video_name,
+        n_characters: this.getNCharacters(squeal, geoLoc) ?? 0,
+        destination: squeal.destination,
+        squeal_id_response: squeal.squeal_id_response,
+      }
+    );
+
+    if (geoLoc) {
+      const geoloc_updated = await GeoLoc.updateOne(
+        { squeal_id: squeal._id.toString() },
+        {
+          latitude: geoLoc.latitude,
+          longitude: geoLoc.longitude,
+          accuracy: geoLoc.accuracy,
+          speed: geoLoc.speed,
+          heading: geoLoc.heading,
+          timestamp: Date.now(),
+          refresh: geoLoc.refresh,
+        }
+      );
+    }
+
+    return squeal_updated;
   }
 
   async getSquealDTO(squeal, username) {
@@ -1059,6 +1132,9 @@ class SquealService {
     if (!squeal_user) {
       throw new Error('User not found');
     }
+    if (squeal.user_id != thisUser._id.toString()) {
+      await SquealViews.updateOne({ squeal_id: squeal._id.toString() }, { $inc: { number: 1 } });
+    }
 
     const squeal_id = squeal._id.toString();
 
@@ -1101,12 +1177,24 @@ class SquealService {
     };
     return ret;
   }
+
   async resizeSquealImg(img) {
     if (!img) {
       return;
     }
 
-    const compressedImageBuffer = await sharp(Buffer.from(img, 'base64')).resize(1280, 720).jpeg({ quality: 80 }).toBuffer();
+    // Load the image from a base64 string
+    const image = await Jimp.read(Buffer.from(img, 'base64'));
+
+    // Resize the image
+    image.resize(1280, Jimp.AUTO);
+
+    // Lower the quality for compression
+    // Note: Jimp's quality function works a bit differently, it's a scale from 0 to 100
+    image.quality(80);
+
+    // Get the buffer of the processed image in JPEG format
+    const compressedImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
 
     const compressedBase64 = compressedImageBuffer.toString('base64');
     return compressedBase64;

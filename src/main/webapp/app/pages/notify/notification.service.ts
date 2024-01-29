@@ -49,7 +49,7 @@ export class NotificationService {
   }
 
   getNotifications(page: number, size: number): Observable<HttpResponse<Notification[]>> {
-    const url = this.applicationConfigService.getEndpointFor(`/api/notification/`);
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/`);
     const params = new HttpParams().append('page', page).append('size', size);
     return this.http.get<Notification[]>(url, { params, observe: 'response' });
   }
@@ -62,12 +62,12 @@ export class NotificationService {
   }
 
   setRead(ids: string[]): Observable<HttpResponse<Notification[]>> {
-    const url = this.applicationConfigService.getEndpointFor(`/api/notification/setread`);
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/setread`);
     return this.http.post<Notification[]>(url, ids, { observe: 'response' });
   }
 
   getNotReadCount(name: string): Observable<HttpResponse<number>> {
-    const url = this.applicationConfigService.getEndpointFor(`/api/notification/notread/${name}`);
+    const url = this.applicationConfigService.getEndpointFor(`api/notification/notread/${name}`);
     return this.http.get<number>(url, { observe: 'response' });
   }
   // Function to handle incoming notifications

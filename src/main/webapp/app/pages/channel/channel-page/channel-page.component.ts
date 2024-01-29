@@ -130,6 +130,9 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
     if (!this.channel?.users) {
       return false;
     }
+    if (!this.account) {
+      return false;
+    }
     const u = this.channel.users.find(ch => ch.user_id === this.account?._id);
     return !!u;
   }

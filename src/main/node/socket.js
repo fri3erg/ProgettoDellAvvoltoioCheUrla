@@ -20,7 +20,6 @@ function getUser(userId) {
 function sendNotification(message) {
   console.log(message);
   const user = getUser(message.destId);
-  console.log(user);
   if (user) {
     console.log('sending notification');
     io.to(user.socketId).emit('getNotification', { message });
@@ -32,7 +31,6 @@ function initializeSocket(server) {
 
   io.on('connection', socket => {
     socket.on('addUser', user => {
-      console.log(user);
       if (user) {
         addNewUser(user._id.toString(), socket.id);
         console.log('user connected');

@@ -26,7 +26,7 @@ export class CreateSquealComponent implements OnInit {
   geoLoc: IGeolocationCoordinates;
   map?: google.maps.Map;
   geo = false;
-
+  disablePost = false;
   //infoWindow?: google.maps.InfoWindow;
   display: any;
   zoom = 10;
@@ -104,6 +104,7 @@ export class CreateSquealComponent implements OnInit {
     if (!this.dto?.squeal) {
       return;
     }
+    this.disablePost = true;
     this.dto.squeal.squeal_id_response = this.response;
     this.dto.squeal.body = this.message;
     this.dto.squeal.destination = this.destination;
@@ -133,6 +134,7 @@ export class CreateSquealComponent implements OnInit {
         this.geo = false;
         this.squealed.emit(true);
       }
+      this.disablePost = false;
     });
   }
 

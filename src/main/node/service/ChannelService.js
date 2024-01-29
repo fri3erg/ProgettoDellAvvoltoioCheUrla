@@ -72,6 +72,21 @@ class ChannelService {
     return chUsers;
   }
 
+  async editChannel(channel, user) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    if (!channel || !channel._id) {
+      throw new Error('invalid channel');
+    }
+    const channel_updated = await Channel.updateOne({ _id: channel._id }, channel);
+    return channel_updated;
+  }
+
   async searchChannel(user, myUsername, search) {
     const ret = [];
     const thisUser = await User.findOne({ login: myUsername });
@@ -196,7 +211,6 @@ class ChannelService {
   }
 
   isIncorrectName(q) {
-    console.log(q.name);
     let includes = q.name.includes('§') || q.name.includes('#') || q.name.includes('@');
     let valid = true;
     switch (q.type) {

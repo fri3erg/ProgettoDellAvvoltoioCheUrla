@@ -54,6 +54,12 @@
               "buildOptimizer": true,
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json",
+              "fileReplacements": [
+                {
+                  "replace": "src/main/webapp/enviroments/environment.ts",
+                  "with": "src/main/webapp/enviroments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -62,7 +68,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
+                  "maximumWarning": "3kb", // Increased from 2kb to 3kb
                   "maximumError": "4kb"
                 }
               ]

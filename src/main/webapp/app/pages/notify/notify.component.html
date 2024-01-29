@@ -1,26 +1,51 @@
-<div *ngFor="let notification of this.notifications">
-  <div class="notif rounded-4" [class.notseen]="notification.isRead">
-    <img
-      [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
-      class="profilepic"
-      *ngIf="notification?.profile_img"
-      alt="Immagine"
-    />
-    <div class="info">
-      <div class="username">@{{ notification.username }}</div>
-      <div class="body">{{ notification.body }}</div>
+<div *ngIf="account">
+  <div *ngFor="let notification of this.notifications">
+    <div class="notif rounded-4" [class.notseen]="notification.isRead">
+      <img
+        [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
+        class="profilepic"
+        *ngIf="notification?.profile_img"
+        alt="Immagine"
+      />
+      <div class="info">
+        <div class="username">@{{ notification.username }}</div>
+        <div class="body" *ngIf="notification.type == 'MESSAGE'">{{ notification.body }}</div>
+        <div class="body" *ngIf="notification.type == 'REACTION'">
+          reacted to your post:
+          <span [class]="notification.reaction" class="reaction"></span>
+        </div>
+        <div class="body" *ngIf="notification.type == 'COMMENT'">commented on your post: {{ notification.body }}</div>
+      </div>
+      <div class="timestamp">{{ timeDifference(notification.timestamp) }}</div>
     </div>
-    <div class="timestamp">{{ timeDifference(notification.timestamp) }}</div>
+  </div>
+
+  <div
+    jhiObserveElement
+    #intersection="intersection"
+    [class.example-card--is-intersecting]="intersection._isIntersecting"
+    (isIntersecting)="isIntersecting($event)"
+    [isContinuous]="true"
+    *ngIf="hasMorePage"
+  >
+    <span> Loading more...</span>
   </div>
 </div>
+<div *ngIf="!account">
+  you are not logged in
 
-<div
-  jhiObserveElement
-  #intersection="intersection"
-  [class.example-card--is-intersecting]="intersection._isIntersecting"
-  (isIntersecting)="isIntersecting($event)"
-  [isContinuous]="true"
-  *ngIf="hasMorePage"
->
-  <span> Loading more...</span>
+  <ul>
+    <li>
+      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.login">Sign in</span>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
+        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.register">Register</span>
+      </a>
+    </li>
+  </ul>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IChannelDTO } from 'app/shared/model/channelDTO-model';
 import { ChannelService } from 'app/entities/channel/service/channel.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -7,6 +7,9 @@ import SharedModule from 'app/shared/shared.module';
 import { MessageService, SelectItem } from 'primeng/api';
 import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 import { IChannel } from 'app/entities/channel/channel.model';
+import { Account } from 'app/core/auth/account.model';
+import { Subject, takeUntil } from 'rxjs';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-channel-edit',
@@ -15,18 +18,34 @@ import { IChannel } from 'app/entities/channel/channel.model';
   templateUrl: './channel-edit.component.html',
   styleUrls: ['./channel-edit.component.scss'],
 })
-export class ChannelEditComponent implements OnInit {
+export class ChannelEditComponent implements OnInit, OnDestroy {
   dto: IChannelDTO = {
     channel: { name: '' },
     users: [],
   };
+
+  account: Account | null = null;
   messages = {};
   private = 'true';
 
-  constructor(protected activatedRoute: ActivatedRoute, protected channelService: ChannelService, private messageService: MessageService) {}
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(
+    protected activatedRoute: ActivatedRoute,
+    protected channelService: ChannelService,
+    private messageService: MessageService,
+    private accountService: AccountService
+  ) {}
 
   ngOnInit(): void {
     // TODO: To edit arrive with id
+    this.accountService
+      .getAuthenticationState()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(account => {
+        this.account = account;
+        console.log(account);
+      });
     this.activatedRoute.data.subscribe(({ channel }) => {
       this.dto = channel;
     });
@@ -58,5 +77,10 @@ export class ChannelEditComponent implements OnInit {
       return ChannelTypes.PRIVATEGROUP;
     }
     return ChannelTypes.PUBLICGROUP;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -70,38 +70,30 @@
         </li>
       </ul>
     </div>
+  </div>
 
-    <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
-      <div>
-        <form>
-          <div class="row">
-            <div class="col">
-              <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
-            </div>
+  <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
+    <div>
+      <form class="form_edit">
+        <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
+        <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
+        <div class="bottom_edit">
+          <button type="submit" class="btn rounded-pill submitedit" (click)="applyEdit()">Apply</button>
+          <span class="button-group">
+            <button title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
+              <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
+            </button>
 
-            <div class="col">
-              <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
-            </div>
-            <div class="col">
-              <button type="submit" class="btn rounded-pill" (click)="applyEdit()">Apply</button>
-            </div>
-          </div>
-        </form>
-      </div>
+            <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
+              <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
+            </button>
 
-      <div class="button-group">
-        <button title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
-          <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
-        </button>
-
-        <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
-          <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
-        </button>
-
-        <button class="btn btn-block" title="seleziona immagine" type="button" onclick="document.getElementById('file_select').click()">
-          <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
-        </button>
-      </div>
+            <button class="btn btn-block" title="seleziona immagine" type="button" onclick="document.getElementById('file_select').click()">
+              <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
+            </button>
+          </span>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -137,24 +129,6 @@
     </ng-template>
   </p-dataView>
 
-  <div *ngIf="!account">
-    you are not logged in
-
-    <ul>
-      <li>
-        <a class="dropdown-item" (click)="login()" id="login" data-cy="login">
-          <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-          <span jhiTranslate="global.menu.account.login">Sign in</span>
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" (click)="collapseNavbar()" data-cy="register">
-          <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
-          <span jhiTranslate="global.menu.account.register">Register</span>
-        </a>
-      </li>
-    </ul>
-  </div>
   <div
     jhiObserveElement
     #intersection="intersection"
@@ -165,4 +139,22 @@
   >
     <span> Loading more...</span>
   </div>
+</div>
+<div *ngIf="!account">
+  you are not logged in
+
+  <ul>
+    <li>
+      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.login">Sign in</span>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" (click)="collapseNavbar()" data-cy="register">
+        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+        <span jhiTranslate="global.menu.account.register">Register</span>
+      </a>
+    </li>
+  </ul>
 </div>

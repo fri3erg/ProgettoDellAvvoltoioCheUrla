@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const SmmVIP = require('../model/smmVIP');
 const auth = require('../middleware/auth');
+const config = require('../config/env.js');
 
 // 1.
 const router = express.Router();
@@ -25,7 +26,7 @@ router.post('/authenticate', async (req, res) => {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
-      const token = jwt.sign({ user_id: user._id, username }, process.env.TOKEN_KEY, {
+      const token = jwt.sign({ user_id: user._id, username }, config.TOKEN_KEY, {
         expiresIn: '200h',
       });
 
@@ -62,14 +63,13 @@ router.post('/authenticate/smm', async (req, res) => {
     } else {
       authArray = ['ROLE_ADMIN', 'ROLE_VIP', 'ROLE_SMM'];
       const result = user.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
-      console.log(result);
 
       if (!result) {
         res.status(401).send('Non hai i permessi');
       } else {
         if (user && (await bcrypt.compare(password, user.password))) {
           // Create token
-          const token = jwt.sign({ user_id: user._id, username }, process.env.TOKEN_KEY, {
+          const token = jwt.sign({ user_id: user._id, username }, config.TOKEN_KEY, {
             expiresIn: '200h',
           });
 
@@ -154,6 +154,36 @@ router.get('/users/search', auth, async (req, res) => {
   }
 });
 
+router.get('/users/search-filtered', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUsersByName(
+      req.user,
+      req.user.username,
+      req.query.search,
+      req.query.byRole,
+      req.query.byPopolarity
+    );
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
+router.get('/users/block', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().block(req.user, req.query.username, block);
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.post('/account/img-update', auth, async (req, res) => {
   try {
     const account = req.body;
@@ -161,12 +191,23 @@ router.post('/account/img-update', auth, async (req, res) => {
     if (!account || !account.img) {
       throw new Error('invalid account');
     }
-    console.log(account.img);
 
     const ret = await new accountService().imgUpdate(req.user, req.user.username, account);
     if (account.img != ret.img) {
       console.log('test');
     }
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
+router.post('/account/admin-extra', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().addAdminExtra(req.user, req.body.admin_extra);
 
     res.status(200).json(ret);
     return;
@@ -205,10 +246,11 @@ router.post('/register', async (req, res) => {
       password: encryptedPassword,
       activation_key: uuidv4(),
       authorities: ['ROLE_USER'],
+      activated: true,
     });
 
     // Create token
-    const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, {
+    const token = jwt.sign({ user_id: user._id, email }, config.TOKEN_KEY, {
       expiresIn: '2h',
     });
 
@@ -259,7 +301,7 @@ router.post('/register/smm', async (req, res) => {
     });
 
     // Create token
-    const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, {
+    const token = jwt.sign({ user_id: user._id, email }, config.TOKEN_KEY, {
       expiresIn: '2h',
     });
 
@@ -332,7 +374,7 @@ router.post('/register/vip', async (req, res) => {
     });
 
     // Create token
-    const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, {
+    const token = jwt.sign({ user_id: user._id, email }, config.TOKEN_KEY, {
       expiresIn: '2h',
     });
 

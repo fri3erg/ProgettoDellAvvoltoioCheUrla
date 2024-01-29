@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const { MONGO_URI } = process.env;
 const winston = require('winston');
+const config = require('../config/env.js');
 
-const muri = MONGO_URI || 'mongodb://site222347:cao4aePh@mongo_site222347/avvoltoioCheUrla?authSource=admin&writeConcern=majority';
+const muri = MONGO_URI || config.MONGO_URI;
 
 // Create a Winston logger
 const logger = winston.createLogger({

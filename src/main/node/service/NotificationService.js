@@ -22,8 +22,6 @@ class NotificationService {
 
     await notification.updateMany({ destId: thisUser._id.toString() }, { isRead: true });
 
-    console.log(notifications);
-
     if (!notifications) {
       return res.status(400).json({ message: 'No notifications found' });
     }

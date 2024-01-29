@@ -8,7 +8,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import dayjs from 'dayjs/esm';
 import { NgbDateAdapter, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
-
+import { environment } from '../enviroments/environment';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import './config/dayjs';
 import { TranslationModule } from 'app/shared/language/translation.module';
@@ -52,7 +52,7 @@ import { CronJobsModule } from 'ngx-cron-jobs';
 })
 export class AppModule {
   constructor(applicationConfigService: ApplicationConfigService, iconLibrary: FaIconLibrary, dpConfig: NgbDatepickerConfig) {
-    applicationConfigService.setEndpointPrefix(SERVER_API_URL);
+    applicationConfigService.setEndpointPrefix(environment.SERVER_API_URL);
     registerLocaleData(locale);
     iconLibrary.addIcons(...fontAwesomeIcons);
     dpConfig.minDate = { year: dayjs().subtract(100, 'year').year(), month: 1, day: 1 };

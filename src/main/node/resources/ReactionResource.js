@@ -10,7 +10,6 @@ const router = express.Router();
 router.post('/squeal-reaction/create', auth, async (req, res) => {
   try {
     let reaction = await new reactionService().insertOrUpdateReaction(req.body, req.user, req.user.username);
-    console.log(reaction);
     res.status(201).json(reaction);
   } catch (err) {
     console.log(err);

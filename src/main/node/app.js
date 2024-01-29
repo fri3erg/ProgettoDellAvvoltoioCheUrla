@@ -18,6 +18,11 @@ app.enable('trust proxy');
 app.use(express.json({ limit: '50mb' }));
 //cors
 app.use(cors(corsOptions));
+
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'app')));
+
 /*
 
 const mongoCredentials = {
@@ -43,6 +48,13 @@ app.use('/api', NotificationResource);
 
 app.get('/welcome', auth, (req, res) => {
   res.status(200).send('Welcome 🙌 ');
+});
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'app/index.html'));
 });
 
 // This should be the last route else any after it won't work

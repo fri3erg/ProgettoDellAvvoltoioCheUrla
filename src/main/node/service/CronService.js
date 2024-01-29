@@ -4,10 +4,14 @@ const Squeal = require('../model/squeal');
 const Channel = require('../model/channel');
 const User = require('../model/user');
 const squealService = require('./SquealService');
+const config = require('../config/env.js');
+
+// Accessing the OpenAI API Key
+const openAIKey = config.OPENAI_API_KEY;
 class CronService {
   async GptSqueal() {
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: openAIKey,
       temperature: 1,
     });
     let user = await User.findOne({ login: 'squealbot' });
@@ -70,7 +74,7 @@ class CronService {
   }
   async meanGptSqueal() {
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: openAIKey,
       temperature: 0.5,
     });
     let user = await User.findOne({ login: 'squealbot' });
