@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CronJobsModule } from 'ngx-cron-jobs';
+import { MoneyComponent } from './pages/money/money.component';
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { CronJobsModule } from 'ngx-cron-jobs';
     ConfirmationService,
   ],
   bootstrap: [MainComponent],
+  declarations: [MoneyComponent],
 })
 export class AppModule {
   constructor(applicationConfigService: ApplicationConfigService, iconLibrary: FaIconLibrary, dpConfig: NgbDatepickerConfig) {

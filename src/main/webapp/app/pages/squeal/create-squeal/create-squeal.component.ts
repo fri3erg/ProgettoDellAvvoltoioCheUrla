@@ -1,3 +1,4 @@
+import { HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -7,9 +8,12 @@ import { ISquealDestination } from 'app/entities/squeal-destination/squeal-desti
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { UserCharsService } from 'app/entities/user-chars/service/user-chars.service';
 import { IUserCharsDTO } from 'app/entities/user-chars/user-chars.model';
+import { MoneyService } from 'app/pages/money/money.service';
+import { PaymentUrlResponse } from 'app/shared/model/deserialize-model';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import SharedModule from 'app/shared/shared.module';
 import { MessageService } from 'primeng/api';
+import { finalize } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -27,6 +31,10 @@ export class CreateSquealComponent implements OnInit {
   map?: google.maps.Map;
   geo = false;
   disablePost = false;
+  loading = false;
+  paymentUrlResponse?: PaymentUrlResponse;
+  error: any;
+  @ViewChild('pf') paymentFormElement?: ElementRef;
   //infoWindow?: google.maps.InfoWindow;
   display: any;
   zoom = 10;
@@ -45,7 +53,8 @@ export class CreateSquealComponent implements OnInit {
   constructor(
     protected squealService: SquealService,
     private messageService: MessageService,
-    protected userCharsService: UserCharsService
+    protected userCharsService: UserCharsService,
+    private moneyService: MoneyService
   ) {
     this.geoLoc = {
       latitude: 0,
@@ -219,6 +228,39 @@ export class CreateSquealComponent implements OnInit {
     if (this.geo) {
       this.findCurrentLoc();
     }
+  }
+
+  makePayment(pr: any): void {
+    this.loading = true;
+    this.moneyService
+      .getPaymentUrl(pr)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(
+        result => {
+          if (result instanceof HttpResponse) {
+            this.paymentUrlResponse = result.body;
+            console.log('PUR:' + this.paymentUrlResponse);
+            //TODO: Wait some then submit
+            setTimeout(() => {
+              this.submitPaymentForm();
+            }, 500);
+          } else {
+            this.error = result;
+          }
+        },
+        error => {
+          console.error('Should never happen: ' + error);
+        }
+      );
+  }
+
+  submitPaymentForm(): void {
+    console.log('submit');
+    this.paymentFormElement?.nativeElement.submit();
   }
 
   setFileData(event: any): void {

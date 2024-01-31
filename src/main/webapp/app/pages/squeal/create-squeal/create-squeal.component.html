@@ -48,7 +48,10 @@
     </div>
     <div class="alert alert-danger error-char" role="alert" *ngIf="getRemainingChars() <= 0">
       <div style="flex: 1">
-        <button class="btn rounded-pill btn-warning" type="button">Compra</button>
+        <button class="btn rounded-pill btn-warning" type="button" (click)="makePayment()">
+          <span *ngIf="!loading">Compra</span>
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
       </div>
       <div>
         <span style="font-size: 70%; margin-left: 0.5rem; font-weight: bold">limite {{ getType() }} raggiunto</span>
@@ -99,4 +102,12 @@
       </div>
     </div>
   </div>
+</form>
+<p *ngIf="paymentUrlResponse != null">Attendere redirect a {{ paymentUrlResponse.url }} per il pagamento</p>
+
+<form name="pf" #pf ngNoForm style="display: none" method="post" [action]="paymentUrlResponse.url" *ngIf="paymentUrlResponse != null">
+  <ng-template ngFor let-param [ngForOf]="paymentUrlResponse.parameters">
+    <input type="hidden" [name]="param.name" [value]="param.value" />
+  </ng-template>
+  <button type="submit" [hidden]="'true'"></button>
 </form>

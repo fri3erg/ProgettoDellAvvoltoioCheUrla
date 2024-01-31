@@ -1,0 +1,45 @@
+.payment-status,
+.facility-status {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+
+  .payment-icon,
+  .facility-icon {
+    margin-right: 10px;
+  }
+}
+
+.fa-check-square {
+  color: green;
+}
+
+.fa-times-circle {
+  color: red;
+}
+
+.green,
+.fa-check-square {
+  background-color: #eaffea; // Light green background
+}
+
+.red,
+.fa-times-circle {
+  background-color: #ffecec; // Light red background
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
