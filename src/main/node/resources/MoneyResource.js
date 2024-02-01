@@ -8,18 +8,18 @@ const moneyService = new MoneyService();
 
 router.post('/nexi-return', auth, async (req, res) => {
   try {
-    if (!moneyService.isNexiMacValid(req, process.env.PAYMENT_KEY)) {
+    const params = req.body.params;
+    if (!moneyService.isNexiMacValid(params, process.env.PAYMENT_KEY)) {
       console.error('MAC non corretto');
       return res.status(400).send('MAC non corretto, chiamata non accettata dal sistema');
     }
 
-    const transaction = await Money.findOne({ codTrans: req.body.codTrans });
-    if (transaction && transaction.status === 'OK') {
-      return res.status(400).send('Transaction already processed');
+    const transaction = await Money.findById(params.codTrans);
+    if (transaction && transaction.status !== 'START') {
+      //return res.status(400).send('Transaction already processed');
     }
-
-    const updatedTransaction = await moneyService.processTransaction(req.body);
-    res.send({ message: 'Transaction updated successfully', data: updatedTransaction });
+    const updatedTransaction = await moneyService.updateTransaction(params);
+    res.status(200).send({ message: 'Transaction updated successfully', data: updatedTransaction });
   } catch (error) {
     console.error('Error processing Nexi return:', error.message);
     res.status(500).send(error.message);

@@ -230,8 +230,9 @@ export class CreateSquealComponent implements OnInit {
     }
   }
 
-  makePayment(pr: any): void {
+  makePayment(): void {
     this.loading = true;
+    const pr = {};
     this.moneyService
       .getPaymentUrl(pr)
       .pipe(
@@ -243,7 +244,7 @@ export class CreateSquealComponent implements OnInit {
         result => {
           if (result instanceof HttpResponse) {
             this.paymentUrlResponse = result.body;
-            console.log('PUR:' + this.paymentUrlResponse);
+            console.log(this.paymentUrlResponse);
             //TODO: Wait some then submit
             setTimeout(() => {
               this.submitPaymentForm();
@@ -253,7 +254,7 @@ export class CreateSquealComponent implements OnInit {
           }
         },
         error => {
-          console.error('Should never happen: ' + error);
+          console.error(error);
         }
       );
   }

@@ -5,7 +5,7 @@ const Channel = require('../model/channel');
 const SquealCat = require('../model/squealCat');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
-const AdminExtra = require('../model/adminExtras');
+const AdminExtras = require('../model/adminExtras');
 const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
@@ -14,90 +14,53 @@ const Money = require('../model/money');
 const moment = require('moment');
 const Notify = require('../model/notification');
 const socket = require('../socket');
+const config = require('../config/env');
 
 const Jimp = require('jimp');
-const weekDayMultiplier = 4;
-const monthWeekMultiplier = 3;
-const chMonth = 1200;
-const msinYear = 31536000000;
-const msinMonth = 2629800000;
-const msinWeek = 604800000;
-const msinDay = 86400000;
-const IMGCHAR = 20;
-const GEOCHAR = 40;
 //params:
 //page and size for paging
 //user for auth and isUserAuthorized
 //username,user to do action on, default: you, but smm
 class SquealService {
   async getUserChars(username) {
-    let skip = false;
     const thisUser = await User.findOne({ login: username });
-    if (!thisUser) {
-      throw new Error('Invalid username');
-    }
-    const purchased = await Money.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinYear } });
-    let ch_purchased = 0;
-    for (const p of purchased) {
-      ch_purchased = ch_purchased + p.n_characters;
-    }
-    const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
-    let ids = [];
-    for (const s of squeals) {
-      for (const d of s.destination) {
-        if (['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)) {
-          skip = true;
+    if (!thisUser) throw new Error('Invalid username');
+
+    const purchased = await AdminExtras.find({ user_id: thisUser._id.toString(), valid_until: { $gte: Date.now() } });
+    const ch_purchased = purchased.reduce((acc, p) => acc + p.n_characters, 0);
+
+    const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - config.msinMonth } });
+    const ids = squeals
+      .filter(s => !s.destination.some(d => ['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)))
+      .map(s => s._id.toString());
+
+    const cats = await SquealCat.find({ squeal_id: { $in: ids } });
+    const ch_total = cats.reduce((acc, c) => acc + c.n_characters, 0);
+
+    let chRemMonth = parseInt(config.chMonth + ch_total + ch_purchased);
+    let [chRemWeek, chRemDay] = [chRemMonth, chRemMonth].map(ch =>
+      parseInt(ch / (ch === chRemMonth ? config.monthWeekMultiplier : config.weekDayMultiplier))
+    );
+
+    squeals.forEach(s => {
+      const nChars = s.n_characters;
+      chRemMonth -= nChars;
+      if (s.timestamp > Date.now() - config.msinWeek) {
+        chRemWeek -= nChars;
+        if (s.timestamp > Date.now() - config.msinDay) {
+          chRemDay -= nChars;
         }
       }
-      if (skip) {
-        skip = false;
-        continue;
-      }
-      ids.push(s._id.toString());
-    }
-    let ch_total = 0;
-    const cat = await SquealCat.find({ squeal_id: { $in: ids } });
-    for (const c of cat) {
-      ch_total = ch_total + c.n_characters;
-    }
-    let chRemMonth = parseInt(chMonth - ch_total + ch_purchased);
-    let chRemWeek = parseInt(chRemMonth / monthWeekMultiplier);
-    let chRemDay = parseInt(chRemWeek / weekDayMultiplier);
-    for (const s of squeals) {
-      const destId = [];
-      for (const d of s.destination) {
-        if (d.destination_type) {
-          destId.push(d.destination_type);
-        }
-      }
-      if (s.timestamp > Date.now() - msinWeek) {
-        chRemWeek = chRemWeek - s.n_characters;
-        if (s.timestamp > Date.now() - msinDay) {
-          chRemDay = chRemDay - s.n_characters;
-        }
-      }
-      chRemMonth = chRemMonth - s.n_characters;
-    }
-    const extra_admin = await AdminExtra.find({ user_id: thisUser._id.toString() });
-    let extra_admin_ch = 0;
-    for (const e of extra_admin) {
-      extra_admin_ch = extra_admin_ch + e.n_characters;
-    }
-    chRemMonth = chRemMonth + extra_admin_ch;
-    chRemWeek = chRemWeek + extra_admin_ch;
-    chRemDay = chRemDay + extra_admin_ch;
-    let type = 'DAY';
+    });
+
+    const extra_admin = await AdminExtras.find({ user_id: thisUser._id.toString() });
+    const extra_admin_ch = extra_admin.reduce((acc, e) => acc + e.n_characters, 0);
+    [chRemMonth, chRemWeek, chRemDay] = [chRemMonth, chRemWeek, chRemDay].map(ch => ch + extra_admin_ch);
+
     const remainingChars = Math.min(chRemDay, chRemWeek, chRemMonth);
-    if (chRemWeek == remainingChars) {
-      type = 'WEEK';
-    }
-    if (chRemMonth == remainingChars) {
-      type = 'MONTH';
-    }
-    return {
-      remainingChars,
-      type,
-    };
+    const type = remainingChars === chRemDay ? 'DAY' : remainingChars === chRemWeek ? 'WEEK' : 'MONTH';
+
+    return { remainingChars, type };
   }
 
   async getSquealList(page, size, user, username) {
@@ -1058,7 +1021,7 @@ class SquealService {
         throw new Error('Unathorized');
       }
   
-      let squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - msinMonth } });
+      let squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - config.msinMonth } });
       let squealsSent = await Squeal.find({
         user_id: thisUser._id.toString(),
         'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
@@ -1209,10 +1172,10 @@ class SquealService {
       n = squeal.body.length;
     }
     if (squeal.img && squeal.img != '') {
-      n = n + IMGCHAR;
+      n = n + config.IMGCHAR;
     }
     if (geoLoc) {
-      n = n + GEOCHAR;
+      n = n + config.GEOCHAR;
     }
 
     return n;

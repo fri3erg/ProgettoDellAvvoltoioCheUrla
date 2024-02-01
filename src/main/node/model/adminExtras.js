@@ -5,6 +5,7 @@ const adminExtraSchema = new Schema(
     n_characters: { type: Number, default: 0 },
     timestamp: { type: Number, default: null },
     admin_created: { type: String },
+    valid_until: { type: Number, default: null },
   },
   { collection: 'admin_extra', _id: true }
 );

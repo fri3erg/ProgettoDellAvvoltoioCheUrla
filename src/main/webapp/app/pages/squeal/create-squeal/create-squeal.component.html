@@ -105,7 +105,7 @@
 </form>
 <p *ngIf="paymentUrlResponse != null">Attendere redirect a {{ paymentUrlResponse.url }} per il pagamento</p>
 
-<form name="pf" #pf ngNoForm style="display: none" method="post" [action]="paymentUrlResponse.url" *ngIf="paymentUrlResponse != null">
+<form name="pf" #pf ngNoForm style="display: none" method="post" [action]="paymentUrlResponse.url" *ngIf="paymentUrlResponse">
   <ng-template ngFor let-param [ngForOf]="paymentUrlResponse.parameters">
     <input type="hidden" [name]="param.name" [value]="param.value" />
   </ng-template>

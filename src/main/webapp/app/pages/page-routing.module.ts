@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PersonalMessagesComponent } from './direct-message/personal-messages/personal-messages.component';
 import { MyChannelsComponent } from './channel/my-channels/my-channels.component';
+import { MoneyComponent } from './money/money.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,10 @@ import { MyChannelsComponent } from './channel/my-channels/my-channels.component
         path: 'channels',
         data: { pageTitle: 'Channels' },
         loadChildren: () => import('./channel/channel-dto.routes'),
+      },
+      {
+        path: 'transactions',
+        component: MoneyComponent,
       },
     ]),
   ],

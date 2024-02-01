@@ -1,9 +1,12 @@
 <div class="payment-status">
   <h2>Stato del Pagamento</h2>
-  <div [ngClass]="classEsitoPagamento" aria-live="polite">
+  <div [ngClass]="classEsitoPagamento" class="esito" aria-live="polite">
     <i class="payment-icon" aria-hidden="true"></i>
     <span>{{ esitoPagamento }}</span>
   </div>
-  <p *ngIf="message">{{ message }}</p>
-  <button *ngIf="loading" disabled>Caricamento...</button>
+  <button *ngIf="loading" disabled id="load">
+    Caricamento...
+    <p *ngIf="message">{{ message }}</p>
+  </button>
+  <button href="/" class="btn rounded-pill btn-primary">get Squealing</button>
 </div>

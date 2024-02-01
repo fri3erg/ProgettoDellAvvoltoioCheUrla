@@ -1,3 +1,19 @@
+@import 'content/scss/bootstrap-variables';
+
+:host ::ng-deep {
+  .rounded-pill {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    margin-top: 1rem;
+  }
+}
+.esito {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .payment-status,
 .facility-status {
   margin: 20px 0;
@@ -29,7 +45,7 @@
   background-color: #ffecec; // Light red background
 }
 
-button {
+#load {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

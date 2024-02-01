@@ -2,11 +2,17 @@ const User = require('../model/user');
 const Money = require('../model/money');
 const crypto = require('crypto');
 const config = require('../config/env');
+const AdminExtras = require('../model/adminExtras');
+
+class Parameters {
+  name;
+  value;
+}
 
 class PaymentUrlResponse {
   constructor() {
     this.url = '';
-    this.parameters = {};
+    this.parameters = [];
   }
 
   setUrl(url) {
@@ -14,7 +20,7 @@ class PaymentUrlResponse {
   }
 
   addParameter(key, value) {
-    this.parameters[key] = value;
+    this.parameters.push({ name: key, value: value });
   }
 
   getResponse() {
@@ -28,13 +34,14 @@ class PaymentUrlResponse {
 class MoneyService {
   constructor() {
     this.PAYMENT_URL = 'https://int-ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet';
-    this.PAYMENT_SET_URL = 'https://www.yourdomain.com/payment/set';
-    this.PAYMENT_BACK_URL = 'https://www.yourdomain.com/payment/back';
+    this.PAYMENT_SET_URL = 'http://localhost:9000/transactions';
+    this.PAYMENT_BACK_URL = 'http://localhost:9000';
     this.PAYMENT_KEY = process.env.PAYMENT_KEY || config.PAYMENT_KEY;
+    this.PAYMENT_ALIAS = process.env.PAYMENT_ALIAS || config.PAYMENT_ALIAS;
   }
 
   async createMac(user, urlRequest) {
-    const thisUser = await User.findOne({ _id: user._id });
+    const thisUser = await User.findOne({ _id: user.user_id });
     if (!thisUser) {
       throw new Error('Invalid user');
     }
@@ -43,9 +50,9 @@ class MoneyService {
       timestamp: new Date(),
       user_id: thisUser._id,
       n_characters: 500,
-      amount: 0.99,
+      amount: 99,
       currency: 'EUR',
-      status: 'KO',
+      status: 'START',
     });
 
     const codTrans = pay._id.toString().padStart(5, '0');
@@ -58,42 +65,37 @@ class MoneyService {
     resp.addParameter('url_back', this.PAYMENT_BACK_URL);
 
     const mac = `codTrans=${codTrans}divisa=${pay.currency}importo=${pay.amount}${this.PAYMENT_KEY}`;
+    console.log(mac);
     resp.addParameter('mac', this.getSha1(mac));
-    resp.addParameter('descrizione', `Pagamento abbonamento: ${urlRequest.cardNumber}`);
-    resp.addParameter('cardNumber', urlRequest.cardNumber);
+    resp.addParameter('alias', this.PAYMENT_ALIAS);
+    resp.addParameter('descrizione', `Pagamento 500 caratteri per Squealer, buon squealing ${thisUser.username}!`);
 
     return resp.getResponse();
   }
 
   getSha1(input) {
-    return crypto.createHash('sha1').update(input, 'utf-8').digest('hex');
+    const sha = crypto.createHash('sha1').update(input, 'utf-8').digest('hex');
+    console.log(sha);
+    return sha;
   }
 
-  isNexiMacValid(request, key) {
-    const rmac = request.body.mac;
-    const cmac = `codTrans=${request.body.codTrans}esito=${request.body.esito}importo=${request.body.importo}divisa=${request.body.divisa}data=${request.body.data}orario=${request.body.orario}codAut=${request.body.codAut}${key}`;
+  isNexiMacValid(params, key) {
+    const rmac = params.mac;
+    const cmac = `codTrans=${params.codTrans}esito=${params.esito}importo=${params.importo}divisa=${params.divisa}data=${params.data}orario=${params.orario}codAut=${params.codAut}${key}`;
     return this.getSha1(cmac) === rmac;
   }
 
-  async processTransaction(data) {
-    const status = this.getStatus(data.esito);
-    const updatedTransaction = await Money.updateOne({ codTrans: data.codTrans }, { status: status }, { new: true });
-    return updatedTransaction;
-  }
-
-  getStatus(esito) {
-    switch (esito.toUpperCase()) {
-      case 'ANNULLO':
-        return 'PAGAMENTO_ANNULLO';
-      case 'KO':
-        return 'PAGAMENTO_KO';
-      case 'ERRORE':
-        return 'PAGAMENTO_ERRORE';
-      case 'OK':
-        return 'PAGAMENTO_OK';
-      default:
-        throw new Error(`Esito: ${esito} non è un esito valido`);
-    }
+  async updateTransaction(params) {
+    const updatedTransaction = await Money.findById(params.codTrans);
+    await Money.updateOne(updatedTransaction, { status: params.esito });
+    const createdCharacters = await AdminExtras.create({
+      user_id: updatedTransaction.user_id,
+      n_characters: updatedTransaction.n_characters,
+      timestamp: updatedTransaction.timestamp,
+      admin_created: 'SQUEALER_NEXI',
+      valid_until: updatedTransaction.timestamp + config.msinYear,
+    });
+    return params;
   }
 }
 

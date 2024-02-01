@@ -12,6 +12,9 @@ const SMMVIPResource = require('./resources/SMMVIPResource');
 const ReactionResource = require('./resources/ReactionResource');
 const ChannelUserResource = require('./resources/ChannelUserResource');
 const NotificationResource = require('./resources/NotificationResource');
+
+const MoneyResource = require('./resources/MoneyResource');
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.enable('trust proxy');
@@ -45,6 +48,7 @@ app.use('/api', SMMVIPResource);
 app.use('/api', ReactionResource);
 app.use('/api', ChannelUserResource);
 app.use('/api', NotificationResource);
+app.use('/api', MoneyResource);
 
 app.get('/welcome', auth, (req, res) => {
   res.status(200).send('Welcome 🙌 ');
