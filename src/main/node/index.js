@@ -30,10 +30,14 @@ logger.log('info', 'running');
 console.log('running');
 
 try {
-  mycron = new cronService();
-  var task = cron.schedule(' 0 */4 * * * ', () => {});
+  const my_cron = new cronService();
+  const task = cron.schedule('0 8 * * *', () => {
+    my_cron.GptSqueal();
+  });
   task.start();
-  var meantask = cron.schedule(' * * * * * ', () => {});
+  const meantask = cron.schedule(' * * * * * ', () => {
+    my_cron.meanGptSqueal();
+  });
   meantask.start();
 } catch (err) {
   console.log('err');

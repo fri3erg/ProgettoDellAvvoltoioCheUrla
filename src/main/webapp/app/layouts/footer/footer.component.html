@@ -9,7 +9,7 @@
       </a>
     </div>
     <div class="col-4 text-center">
-      <div class="notification-icon" [routerLink]="'/notification'" class="link-light">
+      <div class="notification-icon" [routerLink]="'/notification'" (click)="recalc()" class="link-light">
         <i class="fa fa-bell"></i>
         <fa-icon icon="inbox" [fixedWidth]="true" [size]="'xl'"></fa-icon>
         <span *ngIf="unreadNotificationCount" class="notification-count"></span>

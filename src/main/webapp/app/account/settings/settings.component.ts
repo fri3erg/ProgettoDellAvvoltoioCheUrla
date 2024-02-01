@@ -6,6 +6,7 @@ import SharedModule from 'app/shared/shared.module';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { LANGUAGES } from 'app/config/language.constants';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 const initialAccount: Account = {} as Account;
 
@@ -42,7 +43,12 @@ export default class SettingsComponent implements OnInit {
     img_content_type: new FormControl(initialAccount.img_content_type, { nonNullable: true }),
   });
 
-  constructor(private accountService: AccountService, private translateService: TranslateService) {}
+  constructor(
+    private accountService: AccountService,
+    private translateService: TranslateService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => {
@@ -64,6 +70,21 @@ export default class SettingsComponent implements OnInit {
       if (account.lang_key !== this.translateService.currentLang) {
         this.translateService.use(account.lang_key ?? 'en');
       }
+    });
+  }
+
+  confirm(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure?,if you delete tour profile you will lose all data, also i will be sad :( ',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.accountService.delete().subscribe(() => this.accountService.authenticate(null));
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'deleted account' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: '' });
+      },
     });
   }
 }

@@ -137,6 +137,15 @@ class AccountService {
     return admin_extra;
   }
 
+  async delete(user) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    const deleted = await User.findOneAndDelete({ login: thisUser.login });
+    return deleted;
+  }
+
   async imgUpdate(user, myUsername, account) {
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {

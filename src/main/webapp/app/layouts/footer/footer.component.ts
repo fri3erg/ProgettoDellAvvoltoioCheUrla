@@ -32,6 +32,7 @@ export default class FooterComponent implements OnInit, OnDestroy {
 
             this.socketService.getNotificationObservable().subscribe((notification: Notification) => {
               console.log('Received notification from the socket:', notification);
+              this.generateBeep();
               this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
                 if (p.body) {
                   this.unreadNotificationCount = p.body;
@@ -41,6 +42,32 @@ export default class FooterComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+
+  recalc(): void {
+    setTimeout(() => {
+      this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
+        if (p.body) {
+          this.unreadNotificationCount = p.body;
+        }
+      });
+    }, 1000);
+  }
+
+  generateBeep(duration = 200, frequency = 520): void {
+    const audioContext = new window.AudioContext();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    gainNode.gain.value = 0.1; // Reduce the volume
+    oscillator.frequency.value = frequency; // Frequency in hertz (520Hz is a typical beep sound)
+    oscillator.type = 'square'; // Square wave for a classic beep sound
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration / 1000); // Stop after the specified duration
   }
 
   ngOnDestroy(): void {

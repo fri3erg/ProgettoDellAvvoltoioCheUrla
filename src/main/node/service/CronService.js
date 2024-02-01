@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 require('dotenv').config();
 const Squeal = require('../model/squeal');
 const Channel = require('../model/channel');
+const ChannelUser = require('../model/channelUser');
 const User = require('../model/user');
 const squealService = require('./SquealService');
 const config = require('../config/env.js');
@@ -29,25 +30,34 @@ class CronService {
         authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_ADMIN', 'ROLE_VIP'],
       });
     }
-    let channel = await Channel.findOne({ name: '§GPT_JOKES', type: 'MOD' });
+    let channel = await Channel.findOne({ name: '§GPT_FACTS', type: 'MOD' });
     if (!channel) {
       channel = await Channel.create({
-        name: '§GPT_JOKES',
+        name: '§GPT_FACTS',
         type: 'MOD',
       });
     }
+    let channelUser = await ChannelUser.findOne({ user_id: user._id.toString(), channel_id: channel._id.toString() });
+    if (!channelUser) {
+      channelUser = await ChannelUser.create({
+        user_id: user._id.toString(),
+        channel_id: channel._id.toString(),
+        privilege: 'ADMIN',
+      });
+    }
+
     const chatCompletion = await openai.chat.completions.create({
       messages: [
         {
           role: 'user',
-          content: 'tell me a joke',
+          content: 'tell me a SHORT fun historic or scientific fact, that happened in this day',
         },
       ],
       model: 'gpt-3.5-turbo',
     });
 
     const message = chatCompletion.choices[0].message.content;
-
+    console.log(message);
     if (!message) {
       throw new Error('referencing squeal not found');
     }
@@ -69,8 +79,7 @@ class CronService {
         },
       ],
     };
-    await new squealService().insertOrUpdate(squeal, user, username);
-    return;
+    await new squealService().insertOrUpdate(squeal, { user_id: user._id.toString() }, username);
   }
   async meanGptSqueal() {
     const openai = new OpenAI({
@@ -118,6 +127,7 @@ class CronService {
     });
 
     const message = chatCompletion.choices[0].message.content;
+    console.log(message);
 
     if (!message) {
       throw new Error('referencing squeal not found');
@@ -141,12 +151,8 @@ class CronService {
       ],
     };
     await new squealService().insertOrUpdate(squeal, user, username);
-    return;
   }
-  async tempSqueal() {
-    //this.GptSqueal();
-    this.randomSqueal();
-  }
+
   async randomSqueal() {
     const max = await Squeal.countDocuments({
       'destination.destination': { $nin: ['§RANDOM_SQUEAL'] },

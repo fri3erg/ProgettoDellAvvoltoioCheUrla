@@ -16,7 +16,7 @@ router.post('/nexi-return', auth, async (req, res) => {
 
     const transaction = await Money.findById(params.codTrans);
     if (transaction && transaction.status !== 'START') {
-      //return res.status(400).send('Transaction already processed');
+      return res.status(400).send('Transaction already processed');
     }
     const updatedTransaction = await moneyService.updateTransaction(params);
     res.status(200).send({ message: 'Transaction updated successfully', data: updatedTransaction });

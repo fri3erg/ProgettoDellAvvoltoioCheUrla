@@ -23,6 +23,9 @@ export class AccountService {
     private applicationConfigService: ApplicationConfigService
   ) {}
 
+  delete(): Observable<{}> {
+    return this.http.delete(this.applicationConfigService.getEndpointFor('api/account'));
+  }
   setPhoto(user: Account): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/img-update'), user, { observe: 'response' });
   }

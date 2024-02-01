@@ -88,7 +88,7 @@ class MoneyService {
   async updateTransaction(params) {
     const updatedTransaction = await Money.findById(params.codTrans);
     await Money.updateOne(updatedTransaction, { status: params.esito });
-    const createdCharacters = await AdminExtras.create({
+    await AdminExtras.create({
       user_id: updatedTransaction.user_id,
       n_characters: updatedTransaction.n_characters,
       timestamp: updatedTransaction.timestamp,

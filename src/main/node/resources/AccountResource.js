@@ -217,6 +217,18 @@ router.post('/account/admin-extra', auth, async (req, res) => {
   }
 });
 
+router.delete('/account', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().delete(req.user);
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.post('/register', async (req, res) => {
   try {
     // Get user input

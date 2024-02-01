@@ -10,7 +10,9 @@
     aria-describedby="button-addon2"
   />
 </div>
-<p-button label="+" styleClass="p-button-lg p-button-rounded p-button-raised " [routerLink]="['/channels/new']"></p-button>
+<button title="make new channel button" class="big-button" [routerLink]="['/channels/new']">
+  <fa-icon icon="plus" [fixedWidth]="true" [size]="'xl'"></fa-icon>
+</button>
 
 <div *ngIf="hasResults(); else noResults">
   <div *ngFor="let entry of resultMap.entries()">

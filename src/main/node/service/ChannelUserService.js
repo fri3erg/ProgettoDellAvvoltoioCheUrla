@@ -182,12 +182,20 @@ class ChannelUserService {
     }
     switch (destination.destination_type) {
       case 'MOD':
+        const userSubMod = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
+        if (!userSubMod) {
+          return false;
+        }
+        if (userSubMod.privilege == 'ADMIN') {
+          return true;
+        }
+        break;
       case 'PRIVATEGROUP':
         const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
         if (!userSub) {
           return false;
         }
-        if (userSub.privilege.includes('WRITE', 'MOD')) {
+        if (userSub.privilege == 'WRITE' || userSub.privilege == 'ADMIN') {
           return true;
         }
         break;
