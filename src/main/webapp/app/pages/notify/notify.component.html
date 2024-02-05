@@ -8,7 +8,10 @@
         alt="Immagine"
       />
       <div class="info">
-        <div class="username">@{{ notification.username }}</div>
+        <div class="username">
+          @{{ notification.username }}
+          <span class="timestamp">{{ timeDifference(notification.timestamp) }}</span>
+        </div>
         <div class="body" *ngIf="notification.type == 'MESSAGE'">{{ notification.body }}</div>
         <div class="body" *ngIf="notification.type == 'REACTION'">
           reacted to your post:
@@ -16,7 +19,6 @@
         </div>
         <div class="body" *ngIf="notification.type == 'COMMENT'">commented on your post: {{ notification.body }}</div>
       </div>
-      <div class="timestamp">{{ timeDifference(notification.timestamp) }}</div>
     </div>
   </div>
 

@@ -62,6 +62,8 @@ class ReactionService {
       const message = new Notify({
         username: thisUser.login,
         reaction: reaction.emoji,
+        profile_img_content_type: thisUser.img_content_type,
+        profile_img: thisUser.img,
         destId: squeal.user_id,
         timestamp: Date.now(),
         type: 'REACTION',

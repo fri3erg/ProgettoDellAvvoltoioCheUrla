@@ -172,6 +172,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
       this.results = [];
       if (r.body) {
         for (const dest of r.body) {
+          console.log(dest);
           this.results.push(dest);
         }
       }

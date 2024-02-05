@@ -74,15 +74,19 @@ class SMMVIPService {
     if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       throw new Error('Unauthorized');
     }
+    const accountService = new accountService();
+    const smm = await smmVIP.find({ name: { $regex: search, $options: 'i' } });
 
-    const users = await new accountService().searchUser(search);
-    for (const us of users) {
-      const SMMUser = await smmVIP.findOne({ user_id: us._id.toString() });
-      console.log(SMMUser);
-      if (SMMUser) {
-        smmArray.push(us);
-      }
-    }
+    smm.forEach(sm => {
+      idArray.push(sm.user_id);
+    });
+
+    const users_associated = await user.find({ login: { $in: idArray } });
+
+    users_associated.forEach(user => {
+      smmArray.push(accountService.hideSensitive(user));
+    });
+
     return smmArray;
   }
 

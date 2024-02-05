@@ -79,7 +79,7 @@ class SquealService {
     for (const us of chUs) {
       chId.push(us.channel_id);
     }
-    const chMod = await Channel.find({ emergercy: true });
+    const chMod = await Channel.find({ emergency: true });
     for (const c of chMod) {
       chId.push(c._id.toString());
     }
@@ -539,7 +539,7 @@ class SquealService {
     const dto = await this.loadSquealData(newSqueal, thisUser);
 
     if (dto) {
-      ret = newSqueal;
+      ret = dto;
     }
 
     if (squeal.squeal_id_response) {

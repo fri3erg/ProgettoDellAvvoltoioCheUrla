@@ -32,9 +32,10 @@
 }
 
 .timestamp {
-  font-size: smaller;
+  font-size: 1rem;
   font-weight: 300;
-  line-height: 2.6rem;
+  float: right;
+  line-height: 2.5rem;
 }
 
 .username {
@@ -49,7 +50,7 @@
 }
 
 .notseen {
-  opacity: 0.8;
+  background-color: rgb(183, 183, 183);
 }
 
 :host ::ng-deep {

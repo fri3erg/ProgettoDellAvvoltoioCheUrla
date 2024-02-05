@@ -11,14 +11,26 @@
 
   <div class="stats-bar">
     <div [routerLink]="['/channels/subscribed', channel_id]" class="stats rounded-4">{{ this.usersFollowing }} following</div>
-    <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squeals.length }} squeals squealed</div>
-  </div>
-
-  <div class="buttons">
+    <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squeals.length }} squeals</div>
     <div *ngIf="!openmySearch && isUserSubscribed() && isPrivate()" class="options rounded-4" (click)="openmySearch = true">
       add someone
     </div>
     <div *ngIf="openmySearch && isUserSubscribed() && isPrivate()" class="options rounded-4" (click)="openmySearch = false">close</div>
+  </div>
+
+  <div style="display: flex" *ngIf="openmySearch" class="addperson rounded-4">
+    <p-autoComplete
+      [style]="{ width: '100%' }"
+      name="people to add"
+      [minLength]="2"
+      [(ngModel)]="guy"
+      [suggestions]="results"
+      (completeMethod)="search($event)"
+      [multiple]="true"
+      field="login"
+      placeholder="user you want to add"
+    ></p-autoComplete>
+    <button [disabled]="!guy" class="btn rounded-pill invia" type="button" (click)="addPeople()">Invia Richiesta</button>
   </div>
 
   <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>

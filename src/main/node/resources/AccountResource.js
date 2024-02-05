@@ -146,8 +146,7 @@ router.get('/users/search', auth, async (req, res) => {
   try {
     const ret = await new accountService().getUsersByName(req.user, req.user.username, req.query.search);
 
-    res.status(200).json(ret);
-    return;
+    return res.status(200).json(ret);
   } catch (err) {
     console.log(err);
     return res.status(500).send(err);
@@ -164,8 +163,7 @@ router.get('/users/search-filtered', auth, async (req, res) => {
       req.query.byPopolarity
     );
 
-    res.status(200).json(ret);
-    return;
+    return res.status(200).json(ret);
   } catch (err) {
     console.log(err);
     return res.status(500).send(err);

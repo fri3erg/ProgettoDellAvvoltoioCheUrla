@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -18,13 +18,13 @@ import { UserPreviewComponent } from '../user-preview/user-preview.component';
   templateUrl: './channel-list.component.html',
   styleUrls: ['./channel-list.component.scss'],
 })
-export class ChannelListComponent implements OnInit, OnDestroy {
+export class ChannelListComponent implements OnInit, OnDestroy, AfterViewInit {
   account: Account | null = null;
-
   searchKey = '';
   createName = ' ';
   toggle = true;
   resultMap: Map<string, any[]> = new Map<string, any[]>();
+  @ViewChild('searchtext') searchInputElement?: ElementRef;
   private readonly destroy$ = new Subject<void>();
 
   constructor(private accountService: AccountService, private channelService: ChannelService) {}
@@ -37,6 +37,10 @@ export class ChannelListComponent implements OnInit, OnDestroy {
         this.account = account;
         console.log(account);
       });
+  }
+
+  ngAfterViewInit(): void {
+    this.searchInputElement?.nativeElement.focus();
   }
 
   search(): void {

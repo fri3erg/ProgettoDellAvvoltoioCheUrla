@@ -186,7 +186,7 @@ class AccountService {
     if (!user.authorities) {
       user = await User.findById(user.user_id);
     }
-    if (user.authorities.includes('ROLE_MOD')) {
+    if (user.authorities.includes('ROLE_ADMIN')) {
       return true;
     }
     return false;

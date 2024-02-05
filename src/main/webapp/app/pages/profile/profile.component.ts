@@ -189,6 +189,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (r.body) {
         console.log(this.account);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'SMM added' });
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'SMM not added' });
       }
     });
   }

@@ -19,7 +19,7 @@
       </div>
 
       <span class="mytimestamp">
-        {{ squeal.squeal?.timestamp | date : 'HH:mm dd/MM/yy ' }}
+        {{ timeDifference(squeal.squeal?.timestamp) }}
       </span>
       <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
     </div>

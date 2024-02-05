@@ -28,6 +28,9 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
   response_squeal?: ISquealDTO;
   reply = false;
   innerBody = '';
+  map?: google.maps.Map; // Hold the map instance
+  markers: google.maps.Marker[] = []; // Hold all markers
+  polyline?: google.maps.Polyline; // Hold the polyline
   squealed = false;
   isApiCallInProgress = false;
   reactions: MenuItem[] = [
@@ -84,11 +87,9 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.messageService.add({ severity: 'error', summary: 'Squeal not found', detail: 'squeal does not exist' });
       return;
     }
-    if (!this.squeal.squeal.body) {
-      this.squeal.squeal.body = 'squeal not found';
+    if (this.squeal.squeal.body) {
+      this.innerBody = this.urlify(this.squeal.squeal.body);
     }
-
-    this.innerBody = this.urlify(this.squeal.squeal.body);
 
     if (this.squeal.squeal.squeal_id_response) {
       this.squealService.getSquealById(this.squeal.squeal.squeal_id_response).subscribe(r => {
@@ -126,10 +127,18 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
           }
           const latlng = new google.maps.LatLng(this.squeal.geoLoc.latitude, this.squeal.geoLoc.longitude);
-          const map = new google.maps.Map(myMap, {
+          this.map = new google.maps.Map(myMap, {
             center: latlng,
             heading: heading ?? 0,
             zoom: 13,
+          });
+          this.polyline = new google.maps.Polyline({
+            map: this.map,
+            path: [],
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
           });
           const svgMarker = {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
@@ -140,12 +149,14 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
             scale: 5,
             anchor: new google.maps.Point(0, 0),
           };
+
           const marker = new google.maps.Marker({
             position: latlng,
-            map,
+            map: this.map,
             title: 'You!',
             icon: svgMarker,
           });
+          this.markers.push(marker); // Add marker to array
         });
       }
     }
@@ -166,7 +177,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (r.body && this.squeal) {
                   this.squeal.geoLoc = r.body;
                   console.log(this.squeal.geoLoc);
-                  this.addMap();
+                  this.updatePosition();
                 }
               });
             }
@@ -188,6 +199,27 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     return;
+  }
+
+  updatePosition(): void {
+    if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude && this.map) {
+      const newLatLng = new google.maps.LatLng(this.squeal.geoLoc.latitude, this.squeal.geoLoc.longitude);
+      this.map.panTo(newLatLng); // Pan map to new position
+
+      const marker = new google.maps.Marker({
+        position: newLatLng,
+        map: this.map,
+        title: 'New Position',
+      });
+
+      this.markers.push(marker); // Add marker to array
+
+      const path = this.polyline?.getPath();
+      if (path) {
+        path.push(newLatLng); // Add new position to the polyline path
+        this.polyline?.setPath(path); // Update the polyline with the new path
+      }
+    }
   }
 
   onSquealed(event: any): void {

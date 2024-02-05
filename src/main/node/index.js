@@ -31,7 +31,7 @@ console.log('running');
 
 try {
   const my_cron = new cronService();
-  const task = cron.schedule('0 8 * * *', () => {
+  const task = cron.schedule(' 0 8 * * *', () => {
     my_cron.GptSqueal();
   });
   task.start();
@@ -39,6 +39,16 @@ try {
     my_cron.meanGptSqueal();
   });
   meantask.start();
+  const randomSqueal = cron.schedule(' 0 */3 * * * ', () => {
+    my_cron.meanGptSqueal();
+  });
+  randomSqueal.start();
+  const random_img = cron.schedule(' 0 */4 * * * ', () => {
+    my_cron.randomImgSqueal();
+  });
+  random_img.start();
+
+  my_cron.initMainChannels();
 } catch (err) {
   console.log('err');
   console.log(err);

@@ -33,9 +33,8 @@ class PaymentUrlResponse {
 
 class MoneyService {
   constructor() {
-    this.PAYMENT_URL = 'https://int-ecommerce.nexi.it/ecomm/ecomm/DispatcherServlet';
-    this.PAYMENT_SET_URL = 'http://localhost:9000/transactions';
-    this.PAYMENT_BACK_URL = 'http://localhost:9000';
+    this.PAYMENT_URL = config.DISPATCH_NEXI;
+    this.PAYMENT_SET_URL = process.env.PAYMENT_SET_URL || config.PAYMENT_SET_URL;
     this.PAYMENT_KEY = process.env.PAYMENT_KEY || config.PAYMENT_KEY;
     this.PAYMENT_ALIAS = process.env.PAYMENT_ALIAS || config.PAYMENT_ALIAS;
   }

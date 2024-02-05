@@ -65,6 +65,32 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   getSqueals(): ISquealDTO[] {
     return Array.from(this.notifyMap.keys());
   }
+
+  timeDifference(previous: any): string {
+    const current = Date.now();
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000).toString() + ' seconds ago';
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute).toString() + ' minutes ago';
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour).toString() + ' hours ago';
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay).toString() + ' days ago';
+    } else if (elapsed < msPerYear) {
+      return 'about ' + Math.round(elapsed / msPerMonth).toString() + ' months ago';
+    } else {
+      return 'about ' + Math.round(elapsed / msPerYear).toString() + ' years ago';
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
