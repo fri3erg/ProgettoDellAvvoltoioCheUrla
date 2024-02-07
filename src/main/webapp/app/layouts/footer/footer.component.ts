@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { NotificationService } from 'app/pages/notify/notification.service';
@@ -17,7 +17,8 @@ export default class FooterComponent implements OnInit, OnDestroy {
   constructor(
     private notificationService: NotificationService,
     private accountService: AccountService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +33,7 @@ export default class FooterComponent implements OnInit, OnDestroy {
 
             this.socketService.getNotificationObservable().subscribe((notification: Notification) => {
               console.log('Received notification from the socket:', notification);
+              this.ref.detectChanges();
               this.generateBeep();
               this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
                 if (p.body) {

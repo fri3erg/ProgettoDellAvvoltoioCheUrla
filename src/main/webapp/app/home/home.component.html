@@ -13,7 +13,8 @@
   [isContinuous]="true"
   *ngIf="hasMorePage"
 >
-  <span> Loading more...</span>
+  <span *ngIf="!first_load"> Loading more...</span>
+  <span *ngIf="first_load"> Loading...</span>
 </div>
 
 <div [ngSwitch]="account !== null" class="">

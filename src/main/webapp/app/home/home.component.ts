@@ -23,6 +23,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
 
   squeals: ISquealDTO[] = [];
+  first_load = true;
   page = 0;
   size = 5;
   hasMorePage = false;
@@ -38,6 +39,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       .subscribe(account => {
         this.account = account;
         this.loadSqueals();
+        this.first_load = false;
       });
   }
 

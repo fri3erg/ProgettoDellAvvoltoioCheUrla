@@ -492,6 +492,9 @@ class SquealService {
       }
     }
 
+    let destUser;
+    let loginDest;
+
     let newSqueal = new Squeal({
       user_id: thisUser._id.toString(),
       timestamp: Date.now(),
@@ -506,6 +509,16 @@ class SquealService {
       squeal_id_response: squeal.squeal_id_response,
     });
     for (const dest of squeal.destination) {
+      if (!dest.destination_id && dest.destination) {
+        loginDest = dest.destination;
+        if (loginDest.startsWith('@')) {
+          loginDest = loginDest.slice(1);
+        }
+        destUser = await User.find({ login: loginDest });
+        if (destUser.length > 0) {
+          dest.destination_id = destUser[0]._id.toString();
+        }
+      }
       if (squeal.squeal_id_response || (await new channelUserService().userHasWritePrivilege(dest, thisUser))) {
         //!
         newSqueal.destination.seen = false;
@@ -557,7 +570,6 @@ class SquealService {
       });
       socket.sendNotification(m1);
     }
-
     for (const dest of newSqueal.destination) {
       const user = socket.getUser(dest.destination_id);
       if (user) {

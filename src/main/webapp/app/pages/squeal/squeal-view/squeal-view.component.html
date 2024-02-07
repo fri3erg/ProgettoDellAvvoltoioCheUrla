@@ -28,7 +28,7 @@
       />
       <div *ngIf="squeal.geoLoc" class="map-squeal rounded-4" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
     </div>
-    <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal"></jhi-squeal-view>
+    <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal" class="response"></jhi-squeal-view>
     <div class="stats">
       <div (click)="reply = !reply" class="rispondi_squeal">Rispondi allo Squeal</div>
 
@@ -39,7 +39,16 @@
     <div class="emoji-layout">
       <div style="flex: 1">
         <div style="padding-left: 1.3rem">
-          <p-speedDial [model]="reactions" direction="right" type="linear" class="speeddial"> </p-speedDial>
+          <p-speedDial
+            [model]="reactions"
+            direction="right"
+            type="linear"
+            class="speeddial"
+            aria-label="open reaction panel"
+            role="button"
+            aria-haspopup="true"
+          >
+          </p-speedDial>
         </div>
       </div>
       <div style="padding-right: 0.5rem">

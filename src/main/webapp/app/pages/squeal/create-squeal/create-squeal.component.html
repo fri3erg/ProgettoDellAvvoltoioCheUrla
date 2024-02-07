@@ -13,6 +13,10 @@
         placeholder="Destination"
         [multiple]="true"
         (onSelect)="onSelect($event)"
+        aria-autocomplete="list"
+        role="searchbox"
+        title="search for destination"
+        aria-haspopup="true"
       ></p-autoComplete>
     </div>
   </div>

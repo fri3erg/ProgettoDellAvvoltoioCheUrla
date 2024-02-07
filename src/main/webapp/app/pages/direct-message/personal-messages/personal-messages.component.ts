@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
@@ -7,7 +7,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { ChannelService } from 'app/entities/channel/service/channel.service';
 import { ChannelUserService } from 'app/entities/channel-user/service/channel-user.service';
 import { Account } from 'app/core/auth/account.model';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { IUserCharsDTO } from 'app/entities/user-chars/user-chars.model';
 import { ISquealDestination } from 'app/entities/squeal-destination/squeal-destination.model';
 import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
@@ -16,6 +16,9 @@ import { UserCharsService } from 'app/entities/user-chars/service/user-chars.ser
 import { FormsModule } from '@angular/forms';
 import { ObserveElementDirective } from 'app/shared/directive/observe-element-directive';
 import { NotificationService } from 'app/pages/notify/notification.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SocketService } from 'app/socket.service';
+import { Notification } from 'app/pages/notify/notification.model';
 
 @Component({
   selector: 'jhi-personal-messages',
@@ -45,7 +48,10 @@ export class PersonalMessagesComponent implements OnInit {
     protected channelService: ChannelService,
     private activatedRoute: ActivatedRoute,
     private notificationService: NotificationService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private sanitizer: DomSanitizer,
+    private ref: ChangeDetectorRef,
+    private socketService: SocketService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +62,32 @@ export class PersonalMessagesComponent implements OnInit {
     if (this.username) {
       this.destinationMessage.destination = '@' + this.username;
       console.log(this.destinationMessage);
+      this.loadSqueals();
+      this.accountService.getUser(this.username).subscribe(r => {
+        if (r.body) {
+          this.account = r.body;
+        }
+      });
+      this.userCharsService.getChars().subscribe(r => {
+        if (r.body) {
+          this.charsDTO = r.body;
+        }
+      });
+    }
+    this.socketService.getNotificationObservable().subscribe((data: any) => {
+      const notification: Notification = data.message; // Qui assumiamo che i dati siano annidati dentro 'message'
+      console.log('Received notification from the socket:', notification);
+      this.ref.detectChanges();
+      if (notification.type === 'MESSAGE') {
+        console.log('Received notification from the socket: 3', notification);
+        this.page = 0;
+        this.loadSqueals();
+      }
+    });
+  }
+
+  loadSqueals(): void {
+    if (this.username) {
       this.squealService.getSquealByUser(this.username, this.page, this.size).subscribe(r => {
         if (r.body) {
           this.hasMorePage = r.body.length >= this.size;
@@ -68,18 +100,16 @@ export class PersonalMessagesComponent implements OnInit {
           });
         }
       });
-
-      this.accountService.getUser(this.username).subscribe(r => {
-        if (r.body) {
-          this.account = r.body;
-        }
-      });
-      this.userCharsService.getChars().subscribe(r => {
-        if (r.body) {
-          this.charsDTO = r.body;
-        }
-      });
     }
+  }
+
+  sanitize(text: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.urlify(text));
+  }
+
+  urlify(text: string): string {
+    const urlRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\\/~+#-]*[\w@?^=%&\\/~+#-])/g;
+    return text.replace(urlRegex, url => '<a href="' + url + '">' + url + '</a>');
   }
 
   timeDifference(previous: any): string {

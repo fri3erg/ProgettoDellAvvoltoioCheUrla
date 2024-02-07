@@ -1,18 +1,18 @@
 <nav class="navbar navbar-dark navbar-expand-md bg-dark top-navbar my-nav">
   <div class="container-fluid row">
     <div class="col-4">
-      <a [routerLink]="'/profile'">
+      <a aria-label="profile" [routerLink]="'/profile'">
         <fa-icon icon="user" [fixedWidth]="true" [size]="'xl'"></fa-icon>
       </a>
     </div>
 
     <div class="col-4 text-center">
-      <a [routerLink]="''">
+      <a aria-label="home" [routerLink]="''">
         <fa-icon icon="feather-pointed" [fixedWidth]="true" [size]="'xl'"></fa-icon>
       </a>
     </div>
     <div class="col-4" style="text-align: right">
-      <a [routerLink]="'/direct-message'">
+      <a aria-label="direct messages" [routerLink]="'/direct-message'">
         <fa-icon icon="inbox" [fixedWidth]="true" [size]="'xl'"></fa-icon>
       </a>
     </div>

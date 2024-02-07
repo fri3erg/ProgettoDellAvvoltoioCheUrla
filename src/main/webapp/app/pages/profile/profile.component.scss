@@ -35,6 +35,12 @@
 }
 
 .stats {
+  text-align: center;
+  width: 5rem;
+  margin: 0 auto;
+  line-height: 1.5;
+  height: 4em;
+  overflow: hidden;
   background-color: $custom-purple;
   text-align: center;
   padding: 0.5rem;

@@ -7,6 +7,11 @@ const User = require('../model/user');
 const squealService = require('./SquealService');
 const config = require('../config/env.js');
 const axios = require('axios');
+const squealViews = require('../model/squealViews.js');
+const squealReaction = require('../model/squealReaction.js');
+const squealDestination = require('../model/squealDestination.js');
+const squealCat = require('../model/squealCat.js');
+const geoLoc = require('../model/geoLoc.js');
 
 // Accessing the OpenAI API Key
 const openAIKey = config.OPENAI_API_KEY;
@@ -226,6 +231,16 @@ class CronService {
   }
 
   async initMainChannels() {
+    /*await Squeal.deleteMany({});
+    await squealViews.deleteMany({});
+    await squealReaction.deleteMany({});
+    await squealDestination.deleteMany({});
+    await squealCat.deleteMany({});
+    
+    await geoLoc.deleteMany({});
+    await Channel.deleteMany({})
+    await ChannelUser.deleteMany({});*/
+
     let user = await User.findOne({ login: 'squealbot' });
     if (!user) {
       user = await User.create({

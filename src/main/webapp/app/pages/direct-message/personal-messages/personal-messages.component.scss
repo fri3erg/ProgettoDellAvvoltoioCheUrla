@@ -10,9 +10,17 @@
 }
 .message-layout {
   color: white;
-  padding: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 1rem;
   margin-top: 1rem;
   display: inline-block;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.img-squeal {
+  width: 18rem;
+  height: 13rem;
 }
 .mytitlecard {
   display: flex;
@@ -83,6 +91,8 @@
   top: 8.5rem;
   position: fixed;
   overflow-x: hidden;
+  right: 0rem;
+  left: 0rem;
 }
 
 .invia {

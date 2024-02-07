@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { SquealService } from 'app/entities/squeal/service/squeal.service';
 import { ISquealDTO } from 'app/shared/model/squealDTO-model';
 import { NotificationService } from 'app/pages/notify/notification.service';
+import { SocketService } from 'app/socket.service';
+import { Notification } from 'app/pages/notify/notification.model';
 
 @Component({
   selector: 'jhi-direct-message',
@@ -30,7 +32,9 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     protected channelService: ChannelService,
     protected channelUserService: ChannelUserService,
-    protected notificationService: NotificationService
+    protected notificationService: NotificationService,
+    private socketService: SocketService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +46,14 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         console.log(account);
       });
     this.getPreview();
+
+    this.socketService.getNotificationObservable().subscribe((notification: Notification) => {
+      console.log('Received notification from the socket:', notification);
+      this.ref.detectChanges();
+      if (notification.type === 'MESSAGE') {
+        this.getPreview();
+      }
+    });
   }
   getPreview(): void {
     this.squealService.getDirectSquealPreview().subscribe(r => {

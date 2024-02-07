@@ -11,7 +11,7 @@
     [isContinuous]="true"
     *ngIf="hasMorePage"
   >
-    <span> Loading more...</span>
+    <span> Loading...</span>
   </div>
   <ng-container *ngFor="let squeal of squeals" class="container">
     <div class="col-10 containing" [class.float-left]="username === squeal?.userName" [class.float-right]="username !== squeal?.userName">
@@ -21,7 +21,14 @@
         [class.hisbubble]="username === squeal?.userName"
       >
         <span class="mymessage">
-          {{ squeal.squeal?.body }}
+          <div [innerHTML]="sanitize(squeal.squeal?.body ?? '')" class="ps-4 fs-4 fw-light"></div>
+          <img
+            [src]="'data:' + squeal.squeal?.img_content_type + ';base64,' + squeal.squeal?.img"
+            class="img-squeal rounded-4"
+            *ngIf="squeal?.squeal?.img && squeal?.squeal?.img != ''"
+            alt="Immagine"
+          />
+          <div *ngIf="squeal.geoLoc" class="map-squeal rounded-4" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
         </span>
         <span class="mytimestamp">
           {{ timeDifference(squeal.squeal?.timestamp) }}
