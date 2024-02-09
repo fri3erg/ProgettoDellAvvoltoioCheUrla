@@ -3,7 +3,7 @@ import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { NotificationService } from 'app/pages/notify/notification.service';
 import { SocketService } from 'app/socket.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'jhi-footer',
@@ -24,23 +24,27 @@ export default class FooterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.accountService
       .getAuthenticationState()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(a => {
-        this.account = a;
-        this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(r => {
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap(a => {
+          this.account = a;
+          return this.notificationService.getNotReadCount(this.account?.login ?? '');
+        }),
+        switchMap(r => {
           if (r.body) {
             this.unreadNotificationCount = r.body;
-
-            this.socketService.getNotificationObservable().subscribe((notification: Notification) => {
-              console.log('Received notification from the socket:', notification);
-              this.ref.detectChanges();
-              this.generateBeep();
-              this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
-                if (p.body) {
-                  this.unreadNotificationCount = p.body;
-                }
-              });
-            });
+          }
+          return this.socketService.getNotificationObservable();
+        })
+      )
+      .subscribe((notification: any) => {
+        console.log('Received notification from the socket:', notification);
+        this.ref.detectChanges();
+        this.generateBeep();
+        this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
+          if (p.body) {
+            this.unreadNotificationCount = p.body;
+            console.log('Unread notification count:', this.unreadNotificationCount);
           }
         });
       });
@@ -56,20 +60,9 @@ export default class FooterComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  generateBeep(duration = 200, frequency = 520): void {
-    const audioContext = new window.AudioContext();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    gainNode.gain.value = 0.1; // Reduce the volume
-    oscillator.frequency.value = frequency; // Frequency in hertz (520Hz is a typical beep sound)
-    oscillator.type = 'square'; // Square wave for a classic beep sound
-
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration / 1000); // Stop after the specified duration
+  generateBeep(): void {
+    const audio = new Audio('/home/assets/sounds/ding.mp3');
+    audio.play();
   }
 
   ngOnDestroy(): void {

@@ -12,6 +12,7 @@ const squealReaction = require('../model/squealReaction.js');
 const squealDestination = require('../model/squealDestination.js');
 const squealCat = require('../model/squealCat.js');
 const geoLoc = require('../model/geoLoc.js');
+const notification = require('../model/notification.js');
 
 // Accessing the OpenAI API Key
 const openAIKey = config.OPENAI_API_KEY;
@@ -231,15 +232,16 @@ class CronService {
   }
 
   async initMainChannels() {
-    /*await Squeal.deleteMany({});
+    /*
+    await Squeal.deleteMany({});
     await squealViews.deleteMany({});
     await squealReaction.deleteMany({});
     await squealDestination.deleteMany({});
     await squealCat.deleteMany({});
-    
     await geoLoc.deleteMany({});
     await Channel.deleteMany({})
-    await ChannelUser.deleteMany({});*/
+    await ChannelUser.deleteMany({});
+    await notification.deleteMany({});*/
 
     let user = await User.findOne({ login: 'squealbot' });
     if (!user) {
@@ -278,9 +280,29 @@ class CronService {
     if (found_squeal) {
       return;
     }
+
     let message =
-      'ti servono altri messaggi? comprali con la carta di credito: , codice otp 123456, e già che ci sei prenditi qualcosa al bar';
+      "l'intero progetto è creazione di Elia Friberg(main app frontend & backend, architecture and docker, mod app backend, e di Matteo Raggi (smm fontend & backend, mod app frontend), contact me at -frigo here, or elia.fri3erg@gmail.com , instagram: eliafriberg";
     let squeal = {
+      user_id: user._id.toString(),
+      body: message,
+      timestamp: Date.now(),
+      n_characters: message.length,
+      destination: [
+        {
+          admin_add: true,
+          destination: channel.name,
+          destination_id: channel._id.toString(),
+          destination_type: 'MOD',
+          seen: 0,
+        },
+      ],
+    };
+    await new squealService().insertOrUpdate(squeal, user, username);
+
+    message =
+      'ti servono altri messaggi? comprali con la carta di credito Visa: 4349 9401 9900 4549 scadenza: 05/26 cvv: 396 , codice otp 123456, e già che ci sei prenditi qualcosa al bar';
+    squeal = {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
