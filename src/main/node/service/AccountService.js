@@ -262,5 +262,18 @@ class AccountService {
     }
     return false;
   }
+
+  async listUsers(user, page, size) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    if (!(await this.isMod(thisUser))) {
+      throw new Error('unauthorized');
+    }
+    return await User.find()
+      .limit(size)
+      .skip(size * page);
+  }
 }
 module.exports = AccountService;

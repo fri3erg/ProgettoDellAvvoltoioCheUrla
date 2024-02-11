@@ -215,6 +215,18 @@ router.post('/account/admin-extra', auth, async (req, res) => {
   }
 });
 
+router.get('/account/list-users', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().listUsers(req.user, parseInt(req.query.page), parseInt(req.query.size));
+
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.delete('/account/:id', auth, async (req, res) => {
   try {
     const ret = await new accountService().delete(req.user, req.params.id);
