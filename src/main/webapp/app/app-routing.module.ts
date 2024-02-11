@@ -49,7 +49,7 @@ import { DirectMessageComponent } from './pages/direct-message/direct-message/di
         {
           path: 'login',
           component: LoginComponent,
-          title: 'login.title',
+          title: 'Login',
         },
         {
           path: '',

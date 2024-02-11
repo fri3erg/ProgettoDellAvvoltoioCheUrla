@@ -42,7 +42,11 @@ app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
 
 if (!dev) {
-  const nextApp = next({ dev });
+  const config = {
+    dev: dev,
+    conf: { distDir: 'build' }, // Replace "build" with your actual build directory name
+  };
+  const nextApp = next(config);
   const handle = nextApp.getRequestHandler();
   // Next.js handling
   nextApp.prepare().then(() => {
