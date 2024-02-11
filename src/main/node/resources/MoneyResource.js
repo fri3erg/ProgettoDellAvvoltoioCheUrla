@@ -37,4 +37,23 @@ router.post('/nexi-start', auth, async (req, res) => {
   }
 });
 
+router.delete('/delete-transaction/:id', auth, async (req, res) => {
+  try {
+    await MoneyService.deleteTransaction(req.params.id, req.user);
+
+    const transaction = await Money.findById(req.params.id);
+    if (!transaction) {
+      return res.status(404).send('Transaction not found');
+    }
+    if (transaction.user_id !== req.user.user_id) {
+      return res.status(403).send('Unauthorized');
+    }
+    await Money.deleteOne({ _id: req.params.id });
+    res.status(200).send('Transaction deleted successfully');
+  } catch (error) {
+    console.error('Error deleting transaction:', error.message);
+    res.status(500).send(error.message);
+  }
+});
+
 module.exports = router;

@@ -17,6 +17,16 @@ router.delete('/channel-users/:id', auth, async (req, res) => {
   }
 });
 
+router.delete('/channel-users/remove-people', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().removePeopleFromChannel(req.user, req.query.user_id, req.query.channelId);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/channel-users/:id', auth, async (req, res) => {
   try {
     let sub = await new channelUserService().addSubscription(req.user, req.user.username, req.params.id);

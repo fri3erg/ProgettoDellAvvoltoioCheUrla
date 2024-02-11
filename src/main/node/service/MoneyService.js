@@ -3,6 +3,7 @@ const Money = require('../model/money');
 const crypto = require('crypto');
 const config = require('../config/env');
 const AdminExtras = require('../model/adminExtras');
+const AccountService = require('./AccountService');
 
 class Parameters {
   name;
@@ -82,6 +83,18 @@ class MoneyService {
     const rmac = params.mac;
     const cmac = `codTrans=${params.codTrans}esito=${params.esito}importo=${params.importo}divisa=${params.divisa}data=${params.data}orario=${params.orario}codAut=${params.codAut}${key}`;
     return this.getSha1(cmac) === rmac;
+  }
+
+  async deleteTransaction(id, user) {
+    const thisUser = await User.findOne({ _id: user.user_id });
+    if (!thisUser) {
+      throw new Error('Invalid user');
+    }
+    if (!new AccountService.isAdmin(thisUser)) {
+      throw new Error('Unauthorized');
+    }
+    const deletedTransaction = await Money.deleteOne({ _id: id });
+    return deletedTransaction;
   }
 
   async updateTransaction(params) {

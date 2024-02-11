@@ -2,6 +2,8 @@ const SMMVIP = require('../model/smmVIP');
 const User = require('../model/user');
 const AdminExtra = require('../model/adminExtras');
 const SquealCat = require('../model/squealCat');
+const squeal = require('../model/squeal');
+const SquealService = require('./SquealService');
 
 class AccountService {
   async getUsersByName(user, myUsername, search, byRole, byPopolarity) {
@@ -137,12 +139,31 @@ class AccountService {
     return admin_extra;
   }
 
-  async delete(user) {
+  async delete(user, user_id) {
     const thisUser = await User.findOne({ login: user.username });
-    if (!thisUser) {
+    const userToDelete = await User.findById(user_id);
+    if (!thisUser || !userToDelete) {
       throw new Error('bad username');
     }
-    const deleted = await User.findOneAndDelete({ login: thisUser.login });
+    if (!(await this.isUserAuthorized(userToDelete, thisUser))) {
+      throw new Error('unauthorized');
+    }
+
+    const deleted = await User.findOneAndDelete({ login: userToDelete.login });
+    const squeals = await squeal.find({ user_id: userToDelete._id });
+    for (const squeal of squeals) {
+      await new SquealService.delete();
+    }
+    const smmVIP = await SMMVIP.deleteMany({ user_id: userToDelete._id });
+    const adminExtra = await AdminExtra.deleteMany({ user_id: userToDelete._id });
+    const notifications = await Notification.deleteMany({ user_id: userToDelete._id });
+    const channelUser = await ChannelUser.deleteMany({ user_id: userToDelete._id });
+    const smmUser = await SMMVIP.find({ users: userToDelete._id });
+    for (const user of smmUser) {
+      user.users = user.users.filter(e => e !== userToDelete._id);
+      await SMMVIP.findOneAndUpdate({ user_id: user.user_id }, user);
+    }
+
     return deleted;
   }
 
@@ -217,7 +238,16 @@ class AccountService {
     if (await this.isMod(myUser)) {
       return true;
     }
-    return myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(theirUser, myUser);
+    if (myUser.user_id.toString() == theirUser._id.toString() || this.isUserClient(theirUser, myUser)) {
+      return true;
+    }
+    if (myUser._id.toString() == theirUser.user_id.toString() || this.isUserClient(myUser, theirUser)) {
+      return true;
+    }
+    if (myUser._id.toString() == theirUser._id.toString()) {
+      return true;
+    }
+    return false;
   }
 
   async isUserClient(client, user) {

@@ -195,4 +195,14 @@ router.post('/squeals/edit', auth, async (req, res) => {
   }
 });
 
+router.delete('/squeals/:id', auth, async (req, res) => {
+  try {
+    await new squealService().deleteSqueal(req.params.id, req.user);
+    res.status(204).json();
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 module.exports = router; // export to use in server.js

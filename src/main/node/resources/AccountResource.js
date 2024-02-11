@@ -215,9 +215,9 @@ router.post('/account/admin-extra', auth, async (req, res) => {
   }
 });
 
-router.delete('/account', auth, async (req, res) => {
+router.delete('/account/:id', auth, async (req, res) => {
   try {
-    const ret = await new accountService().delete(req.user);
+    const ret = await new accountService().delete(req.user, req.params.id);
 
     res.status(200).json(ret);
     return;

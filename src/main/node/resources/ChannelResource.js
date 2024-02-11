@@ -48,6 +48,16 @@ router.get('/channels/:id', auth, async (req, res) => {
   }
 });
 
+router.delete('/channels/:id', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().deleteChannel(req.user, req.params.id);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/channels/sub/get/:name', auth, async (req, res) => {
   try {
     const ret = await new channelService().getChannelSubscribedTo(req.user, req.user.username, req.params.name);

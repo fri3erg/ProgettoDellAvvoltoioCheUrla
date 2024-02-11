@@ -2,7 +2,9 @@ require('dotenv').config();
 require('./config/database').connect();
 const express = require('express');
 const cors = require('cors');
+const next = require('next');
 const corsOptions = require('./config/corsOptions');
+const path = require('path');
 
 const auth = require('./middleware/auth');
 const accountResource = require('./resources/AccountResource'); // import the routes
@@ -15,31 +17,20 @@ const NotificationResource = require('./resources/NotificationResource');
 
 const MoneyResource = require('./resources/MoneyResource');
 
+const nodeenv = process.env.NODE_ENV || 'production';
+const dev = nodeenv !== 'production';
+
 const app = express();
+
 app.use(express.urlencoded({ extended: true }));
 app.enable('trust proxy');
 app.use(express.json({ limit: '50mb' }));
-//cors
+// Assuming corsOptions is defined somewhere
 app.use(cors(corsOptions));
 
-const path = require('path');
-
+//app.use(express.static(path.join(__dirname, 'app')));
+// Serve Angular App from a specific base, e.g., '/angular'
 app.use(express.static(path.join(__dirname, 'app')));
-
-/*
-
-const mongoCredentials = {
-	user: "site222347",
-	pwd: "cao4aePh",
-	site: "mongo_site222347"
-}  
-app.get('/db/create', async function (req, res) {
-	res.send(await mymongo.create(mongoCredentials))
-});
-app.get('/db/search', async function (req, res) {
-	res.send(await mymongo.search(req.query, mongoCredentials))
-});
-*/
 
 app.use('/api', accountResource);
 app.use('/api', squealResource);
@@ -49,6 +40,35 @@ app.use('/api', ReactionResource);
 app.use('/api', ChannelUserResource);
 app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
+
+if (!dev) {
+  const nextApp = next({ dev });
+  const handle = nextApp.getRequestHandler();
+  // Next.js handling
+  nextApp.prepare().then(() => {
+    // Serve any static files for Next.js under '/smm'
+    //app.use('/smm', express.static(path.join(__dirname, 'app/smm')));
+
+    // Next.js server-side handling for all other routes not caught by the above
+    app.get(path.join(__dirname, 'app/smm'), (req, res) => {
+      return handle(req, res);
+    });
+  });
+}
+/*
+
+const mongoCredentials = {
+  user: "site222347",
+  pwd: "cao4aePh",
+  site: "mongo_site222347"
+}  
+app.get('/db/create', async function (req, res) {
+  res.send(await mymongo.create(mongoCredentials))
+});
+app.get('/db/search', async function (req, res) {
+  res.send(await mymongo.search(req.query, mongoCredentials))
+});
+*/
 
 app.get('/welcome', auth, (req, res) => {
   res.status(200).send('Welcome 🙌 ');

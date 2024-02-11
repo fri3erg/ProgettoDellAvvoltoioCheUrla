@@ -72,6 +72,43 @@ class ChannelService {
     return chUsers;
   }
 
+  async deleteChannel(user, channelId) {
+    if (!channelId) {
+      throw new Error('invalid channel');
+    }
+    if (!user?.username) {
+      throw new Error('invalid user');
+    }
+
+    const thisUser = await User.findOne({ login: user?.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const deleted = await Channel.deleteOne({ _id: channelId });
+    return deleted;
+  }
+
+  async removeChannel(channel, user) {
+    if (!channel || !channel._id) {
+      throw new Error('invalid channel');
+    }
+    if (!user || !user.username) {
+      throw new Error('invalid user');
+    }
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const deleted = await Channel.deleteOne({ _id: channel._id });
+    return deleted;
+  }
+
   async editChannel(channel, user) {
     const thisUser = await User.findOne({ login: user.username });
     if (!thisUser) {

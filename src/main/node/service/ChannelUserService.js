@@ -170,6 +170,30 @@ class ChannelUserService {
     return false;
   }
 
+  async removePeopleFromChannel(user, userId, channelId) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid username');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const channel = await Channel.findById(channelId);
+    if (!channel) {
+      throw new Error('invalid channel');
+    }
+    const theirUser = await User.findById(userId);
+    if (!theirUser) {
+      throw new Error('invalid username');
+    }
+    const chUser = await ChannelUser.findOne({ channel_id: channel._id.toString(), user_id: theirUser._id.toString() });
+    if (!chUser) {
+      throw new Error('user not found in channel');
+    }
+    const deleted = await ChannelUser.deleteOne({ _id: chUser._id });
+    return deleted;
+  }
+
   async userHasWritePrivilege(destination, thisUser) {
     if (!destination) {
       throw new Error('destination not found or incomplete');

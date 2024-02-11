@@ -79,7 +79,7 @@ export default class SettingsComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.accountService.delete().subscribe(() => this.accountService.authenticate(null));
+        this.accountService.delete(initialAccount._id?.toString() ?? '').subscribe(() => this.accountService.authenticate(null));
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'deleted account' });
       },
       reject: () => {

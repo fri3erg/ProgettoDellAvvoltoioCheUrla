@@ -6,6 +6,7 @@ const SquealCat = require('../model/squealCat');
 const SquealViews = require('../model/squealViews');
 const User = require('../model/user');
 const AdminExtras = require('../model/adminExtras');
+const SquealReaction = require('../model/squealReaction');
 const reactionService = require('../service/ReactionService');
 const accountService = require('./AccountService');
 const channelUserService = require('./ChannelUserService');
@@ -588,6 +589,27 @@ class SquealService {
       }
     }
     return ret;
+  }
+
+  async deleteSqueal(squeal, user) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    if (!squeal || !squeal._id) {
+      throw new Error('invalid squeal');
+    }
+    const squeal_deleted = await Squeal.deleteOne({ _id: squeal._id });
+    const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squeal._id });
+    const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squeal._id });
+    const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squeal._id });
+    const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squeal._id });
+    const comments_deleted = await Squeal.deleteMany({ squeal_id_response: squeal._id });
+
+    return squeal_deleted;
   }
 
   async editSqueal(squeal, user, geoLoc) {
