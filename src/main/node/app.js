@@ -42,18 +42,21 @@ app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
 
 if (!dev) {
-  const nextApp = next({ dev, dir: './app/smm' }); // Aggiorna il percorso della directory
-  const handle = nextApp.getRequestHandler();
+  const appNextOptions = {
+    dev: dev,
+    customServer: true,
+    conf: require('./app/avvoltoio-smm/next.config.js'),
+    dir: path.resolve(__dirname, 'app', 'avvoltoio-smm'),
+    port: PORT,
+  };
 
-  // Next.js handling
-  nextApp.prepare().then(() => {
-    // Serve any static files for Next.js under '/smm'
-    app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'smm', '.next')));
+  const appNext = next(appNextOptions);
+  const handle = appNext.getRequestHandler();
 
-    // Handle all other Next.js requests
+  appNext.prepare().then(() => {
+    app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'avvoltoio-smm', 'nextbuild')));
     app.all('/smm/*', (req, res) => {
-      let nextRequestHandler = handle(req, res);
-      return nextRequestHandler;
+      return handle(req, res);
     });
   });
 }

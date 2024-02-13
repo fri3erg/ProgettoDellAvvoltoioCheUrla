@@ -130,8 +130,8 @@ class ChannelService {
     if (!thisUser) {
       throw new Error('invalid user');
     }
-    channelUser = await channelUser.findOne({ user_id: thisUser._id, channel_id: channel._id });
-    if (!channelUser || !['ADMIN', 'WRITE'].includes(channelUser.privilege)) {
+    let mychannelUser = await channelUser.findOne({ user_id: thisUser._id.toString(), channel_id: channel._id.toString() });
+    if (!mychannelUser || !['ADMIN', 'WRITE'].includes(mychannelUser.privilege)) {
       throw new Error('Unathorized');
     }
 

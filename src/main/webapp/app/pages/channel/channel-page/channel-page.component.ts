@@ -112,6 +112,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   }
 
   applyEdit(): void {
+    this.openEdit = false;
     this.channelService.update(this.channel?.channel).subscribe(r => {
       if (r.body) {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Channel Updated' });

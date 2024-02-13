@@ -100,7 +100,8 @@ router.post('/channels/edit', auth, async (req, res) => {
 
 router.post('/channels/edit-description', auth, async (req, res) => {
   try {
-    let channel = await new channelService().editChannelDescription(req.body.channel, req.user);
+    let body = req.body;
+    let channel = await new channelService().editChannelDescription(body, req.user);
     res.status(201).json(channel);
   } catch (err) {
     console.log(err);

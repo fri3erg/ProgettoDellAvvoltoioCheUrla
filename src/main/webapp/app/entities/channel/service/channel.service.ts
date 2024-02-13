@@ -62,7 +62,7 @@ export class ChannelService {
   }
 
   update(channel?: IChannel): Observable<EntityResponseType> {
-    const url = this.applicationConfigService.getEndpointFor('api/channel/edit');
+    const url = this.applicationConfigService.getEndpointFor('api/channels/edit-description');
     return this.http.post<IChannel>(url, channel, { observe: 'response' });
   }
 
