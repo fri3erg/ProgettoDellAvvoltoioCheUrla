@@ -10,7 +10,8 @@ const router = express.Router();
 router.get('/squeal-list', auth, async (req, res) => {
   try {
     if (!auth) {
-      //TODO: AnonymousSqueals()
+      const ret = await new squealService().anonymousSqueals(parseInt(req.query.page), parseInt(req.query.size));
+      res.status(200).json(ret);
     }
     const ret = await new squealService().getSquealList(parseInt(req.query.page), parseInt(req.query.size), req.user, req.user.username);
     res.status(200).json(ret);
@@ -23,7 +24,8 @@ router.get('/squeal-list', auth, async (req, res) => {
 router.get('/squeal-list/filtered', auth, async (req, res) => {
   try {
     if (!auth) {
-      //TODO: AnonymousSqueals()
+      const ret = await new squealService().anonymousSqueals(parseInt(req.query.page), parseInt(req.query.size));
+      res.status(200).json(ret);
     }
     const ret = await new squealService().getSquealListFiltered(
       parseInt(req.query.page),

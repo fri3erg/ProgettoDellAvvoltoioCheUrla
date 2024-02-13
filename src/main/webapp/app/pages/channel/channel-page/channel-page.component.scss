@@ -36,6 +36,49 @@
   justify-content: center;
 }
 
+.editProfile {
+  background-color: white;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 2px solid $custom-purple;
+}
+
+.submitedit {
+  background-color: $custom-purple;
+  color: white;
+}
+.bottom_edit {
+  margin-top: 0.2rem;
+  margin-bottom: 0.3rem;
+}
+
+.options-grey {
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  flex: 1;
+  cursor: pointer;
+  height: 2rem;
+  text-align: center;
+  background-color: $custom-grey;
+  color: black;
+  white-space: nowrap; /* Prevents text wrapping */
+  overflow: hidden; /* Hides overflow */
+  text-overflow: ellipsis; /* Adds ellipsis to overflowed text */
+  border: 2px solid rgb(104, 103, 103);
+}
+
+.description {
+  font-size: large;
+  font-weight: 600;
+  padding-left: 1rem;
+}
+
 .autocomplete {
   background-color: $custom-field;
 }

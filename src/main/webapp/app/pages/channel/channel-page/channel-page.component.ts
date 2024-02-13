@@ -38,6 +38,7 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
   channel?: IChannelDTO;
   channel_id?: string;
   squeals: ISquealDTO[] = [];
+  openEdit = false;
   page = 0;
   size = 5;
   hasMorePage = false;
@@ -94,6 +95,29 @@ export class ChannelPageComponent implements OnInit, OnDestroy {
         this.hasMorePage = r.body.length >= this.size;
         this.page++;
         this.squeals = r.body;
+      }
+    });
+  }
+
+  canEdit(): boolean {
+    if (!this.account || !this.channel || this.channel.channel.type === 'MOD') {
+      return false;
+    }
+    for (const user of this.channel.users) {
+      if (user.user_id === this.account._id?.toString()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  applyEdit(): void {
+    this.channelService.update(this.channel?.channel).subscribe(r => {
+      if (r.body) {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Channel Updated' });
+        this.openEdit = false;
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Channel not updated' });
       }
     });
   }

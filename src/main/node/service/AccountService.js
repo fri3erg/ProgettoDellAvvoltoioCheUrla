@@ -177,7 +177,7 @@ class AccountService {
     }
     await User.findOneAndUpdate(
       { login: thisUser.login },
-      { img: this.resizeUserImg(account.img), img_content_type: account.img_content_type }
+      { img: await this.resizeUserImg(account.img), img_content_type: account.img_content_type }
     );
     const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
     return updated;
@@ -226,9 +226,26 @@ class AccountService {
     return false;
   }
 
-  resizeUserImg(img) {
-    //TODO:implement
-    return img;
+  async resizeUserImg(img) {
+    if (!img) {
+      return;
+    }
+
+    // Load the image from a base64 string
+    const image = await Jimp.read(Buffer.from(img, 'base64'));
+
+    // Resize the image
+    image.resize(1280, Jimp.AUTO);
+
+    // Lower the quality for compression
+    // Note: Jimp's quality function works a bit differently, it's a scale from 0 to 100
+    image.quality(60);
+
+    // Get the buffer of the processed image in JPEG format
+    const compressedImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+
+    const compressedBase64 = compressedImageBuffer.toString('base64');
+    return compressedBase64;
   }
 
   async isUserAuthorized(myUser, theirUser) {

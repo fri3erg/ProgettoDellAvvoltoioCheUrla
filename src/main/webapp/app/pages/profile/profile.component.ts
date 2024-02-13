@@ -148,8 +148,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   isVip(): boolean {
-    //TODO: remove
-    return true;
     return this.account?.authorities.includes('ROLE_VIP') ?? false;
   }
   search(event: any): void {

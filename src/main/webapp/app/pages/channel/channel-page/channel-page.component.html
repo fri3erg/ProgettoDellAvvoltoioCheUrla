@@ -7,15 +7,21 @@
 
       <jhi-channel-subscribe class="subscribe" [channel]="channel"></jhi-channel-subscribe>
     </div>
+    <div class="description">{{ channel.channel.description }}</div>
   </div>
 
   <div class="stats-bar">
     <div [routerLink]="['/channels/subscribed', channel_id]" class="stats rounded-4">{{ this.usersFollowing }} following</div>
     <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squeals.length }} squeals</div>
-    <div *ngIf="!openmySearch && isUserSubscribed() && isPrivate()" class="options rounded-4" (click)="openmySearch = true">
+  </div>
+
+  <div class="buttons">
+    <div *ngIf="canEdit() && !openEdit" class="options-grey rounded-4" (click)="openEdit = true">edit channel</div>
+    <div *ngIf="canEdit() && openEdit" class="options-grey rounded-4" (click)="openEdit = false">cancel</div>
+    <div *ngIf="!openmySearch && isUserSubscribed() && isPrivate()" class="options-grey rounded-4" (click)="openmySearch = true">
       add someone
     </div>
-    <div *ngIf="openmySearch && isUserSubscribed() && isPrivate()" class="options rounded-4" (click)="openmySearch = false">close</div>
+    <div *ngIf="openmySearch && isUserSubscribed() && isPrivate()" class="options-grey rounded-4" (click)="openmySearch = false">close</div>
   </div>
 
   <div style="display: flex" *ngIf="openmySearch" class="addperson rounded-4">
@@ -35,6 +41,17 @@
       aria-haspopup="true"
     ></p-autoComplete>
     <button [disabled]="!guy" class="btn rounded-pill invia" type="button" (click)="addPeople()">Invia Richiesta</button>
+  </div>
+
+  <div class="rounded-4 editProfile" *ngIf="canEdit() && openEdit">
+    <div>
+      <form class="form_edit">
+        <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="channel.channel.description" />
+        <div class="bottom_edit">
+          <button type="submit" class="btn rounded-pill submitedit" (click)="applyEdit()">Apply</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>

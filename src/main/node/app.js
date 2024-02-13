@@ -42,20 +42,18 @@ app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
 
 if (!dev) {
-  const config = {
-    dev: dev,
-    conf: { distDir: 'build' }, // Replace "build" with your actual build directory name
-  };
-  const nextApp = next(config);
+  const nextApp = next({ dev, dir: './app/smm' }); // Aggiorna il percorso della directory
   const handle = nextApp.getRequestHandler();
+
   // Next.js handling
   nextApp.prepare().then(() => {
     // Serve any static files for Next.js under '/smm'
-    //app.use('/smm', express.static(path.join(__dirname, 'app/smm')));
+    app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'smm', '.next')));
 
-    // Next.js server-side handling for all other routes not caught by the above
-    app.get(path.join(__dirname, 'app/smm'), (req, res) => {
-      return handle(req, res);
+    // Handle all other Next.js requests
+    app.all('/smm/*', (req, res) => {
+      let nextRequestHandler = handle(req, res);
+      return nextRequestHandler;
     });
   });
 }

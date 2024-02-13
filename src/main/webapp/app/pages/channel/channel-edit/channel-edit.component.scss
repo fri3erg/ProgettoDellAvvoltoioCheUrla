@@ -7,6 +7,14 @@
   border: 2px solid $custom-purple;
 }
 
+.channel-description {
+  padding: 1rem;
+  width: 80%;
+  border: 2px solid $custom-purple;
+  font-size: large;
+  margin-top: 0.5rem;
+}
+
 :host ::ng-deep {
   form {
     display: block;

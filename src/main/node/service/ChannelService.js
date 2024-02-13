@@ -9,6 +9,7 @@ const User = require('../model/user');
 const { isModuleNamespaceObject } = require('util/types');
 const channelUserService = require('../service/ChannelUserService');
 const accountService = require('../service/AccountService');
+const channelUser = require('../model/channelUser');
 
 class ChannelService {
   async getChannel(user, myUsername, id) {
@@ -124,6 +125,23 @@ class ChannelService {
     return channel_updated;
   }
 
+  async editChannelDescription(channel, user) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    channelUser = await channelUser.findOne({ user_id: thisUser._id, channel_id: channel._id });
+    if (!channelUser || !['ADMIN', 'WRITE'].includes(channelUser.privilege)) {
+      throw new Error('Unathorized');
+    }
+
+    if (!channel || !channel._id) {
+      throw new Error('invalid channel');
+    }
+    const channel_updated = await Channel.updateOne({ _id: channel._id }, { description: channel.description });
+    return channel_updated;
+  }
+
   async searchChannel(user, myUsername, search) {
     const ret = [];
     const thisUser = await User.findOne({ login: myUsername });
@@ -172,6 +190,7 @@ class ChannelService {
     }
     let newChannel = new Channel({
       name: channel.name,
+      description: channel.description,
       type: channel.type,
     });
 

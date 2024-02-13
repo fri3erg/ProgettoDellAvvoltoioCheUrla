@@ -20,7 +20,7 @@ import { AccountService } from 'app/core/auth/account.service';
 })
 export class ChannelEditComponent implements OnInit, OnDestroy {
   dto: IChannelDTO = {
-    channel: { name: '' },
+    channel: { name: '', description: '' },
     users: [],
   };
 
@@ -38,7 +38,6 @@ export class ChannelEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // TODO: To edit arrive with id
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))

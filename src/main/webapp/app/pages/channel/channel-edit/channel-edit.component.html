@@ -18,6 +18,13 @@
     <div class="alert alert-danger rounded-3" *ngIf="isIncorrect() && !(dto.channel.name?.length == 0 || !dto.channel.name)" role="alert">
       Channel name is invalid
     </div>
+    <textarea
+      class="rounded-3 channel-description"
+      name="description"
+      [(ngModel)]="dto.channel.description"
+      placeholder="channel description"
+    ></textarea>
+    <br />
     <button type="submit" class="btn rounded-pill" [disabled]="isIncorrect()" *ngIf="!dto.channel._id">Create</button>
   </form>
 </div>

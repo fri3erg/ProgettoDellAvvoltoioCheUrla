@@ -10,6 +10,7 @@ const userSchema = new Schema(
     password: { type: String },
     email: { type: String },
     token: { type: String },
+    timestamp: { type: Number, default: null },
     activation_key: { type: String, default: null },
     activated: { type: Boolean, default: false },
     img: {

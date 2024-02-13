@@ -28,6 +28,7 @@ class CronService {
     if (!channel) {
       channel = await Channel.create({
         name: '§GPT_FACTS',
+        description: 'a channel where you can find a fun fact from history or science, every day',
         type: 'MOD',
       });
     }
@@ -85,6 +86,7 @@ class CronService {
     if (!channel) {
       channel = await Channel.create({
         name: '#mean_gpt',
+        description: 'a channel where you WILL be made fun of',
         type: 'PUBLICGROUP',
       });
     }
@@ -162,6 +164,7 @@ class CronService {
     if (!channel) {
       channel = await Channel.create({
         name: '§RANDOM_IMG',
+        description: 'a channel where you can find a random image from the internet, every day',
         type: 'MOD',
       });
     }
@@ -218,6 +221,7 @@ class CronService {
     if (!channel) {
       channel = await Channel.create({
         name: '§RANDOM_SQUEAL',
+        description: "a random squeal from the platform, it's a good way to discover new people and new content",
         type: 'MOD',
       });
     }
@@ -262,6 +266,7 @@ class CronService {
     if (!channel) {
       channel = await Channel.create({
         name: '§SQUEALER_BASICS',
+        description: 'the main channel of the platform, here you can find the basic rules and the main features',
         type: 'MOD',
         emergency: true,
       });

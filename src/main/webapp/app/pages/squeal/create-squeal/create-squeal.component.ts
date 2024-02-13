@@ -68,8 +68,6 @@ export class CreateSquealComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: To edit arrive with id
-
     this.dto = {
       squeal: {},
     };
@@ -92,8 +90,7 @@ export class CreateSquealComponent implements OnInit {
   }
 
   getRemainingChars(): number {
-    // TODO:change back to 0 in each
-    return (this.charsDTO?.remainingChars ?? 100) - this.message.length;
+    return (this.charsDTO?.remainingChars ?? 0) - this.message.length;
   }
 
   search(event: any): void {
@@ -109,6 +106,7 @@ export class CreateSquealComponent implements OnInit {
       }
     });
   }
+
   createSqueal(): void {
     if (!this.dto?.squeal) {
       return;
@@ -123,28 +121,43 @@ export class CreateSquealComponent implements OnInit {
     }
     console.log('insert');
     console.log(this.dto);
-    this.squealService.insertOrUpdate(this.dto).subscribe(r => {
-      if (r.body) {
-        this.dto = r.body;
-        this.message = this.dto.squeal?.body ?? '';
-        this.destination = [];
-        if (this.dto.squeal?.destination) {
-          for (const d of this.dto.squeal.destination) {
-            if (d.destination) {
-              this.destination.push(d);
+
+    this.squealService
+      .insertOrUpdate(this.dto)
+      .pipe(
+        finalize(() => {
+          // Code in finalize will always execute after the Observable completes or errors out
+          this.destination = [];
+          this.message = '';
+          this.dto = { squeal: {} };
+          this.geo = false;
+          this.disablePost = false;
+          console.log('Operation finalized');
+        })
+      )
+      .subscribe(
+        r => {
+          // Success handler
+          if (r.body) {
+            this.dto = r.body;
+            this.message = this.dto.squeal?.body ?? '';
+            this.destination = [];
+            if (this.dto.squeal?.destination) {
+              for (const d of this.dto.squeal.destination) {
+                if (d.destination) {
+                  this.destination.push(d);
+                }
+              }
             }
+            console.log(this.dto);
+            this.messageService.add({ severity: 'success', summary: 'Squeal Squealed', detail: 'You squealed' });
+            this.squealed.emit(true);
           }
+        },
+        error => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to squeal ' + String(error.message) });
         }
-        console.log(this.dto);
-        this.messageService.add({ severity: 'success', summary: 'Squeal Squealed', detail: 'you squealed' });
-        this.destination = [];
-        this.message = '';
-        this.dto = { squeal: {} };
-        this.geo = false;
-        this.squealed.emit(true);
-      }
-      this.disablePost = false;
-    });
+      );
   }
 
   onSelect(event: any): void {
@@ -245,7 +258,6 @@ export class CreateSquealComponent implements OnInit {
           if (result instanceof HttpResponse) {
             this.paymentUrlResponse = result.body;
             console.log(this.paymentUrlResponse);
-            //TODO: Wait some then submit
             setTimeout(() => {
               this.submitPaymentForm();
             }, 500);

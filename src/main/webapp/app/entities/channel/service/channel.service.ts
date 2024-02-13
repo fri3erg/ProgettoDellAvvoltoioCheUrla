@@ -61,8 +61,9 @@ export class ChannelService {
     return this.http.post<IChannel>(this.resourceUrl, channel, { observe: 'response' });
   }
 
-  update(channel: IChannel): Observable<EntityResponseType> {
-    return this.http.put<IChannel>(`${this.resourceUrl}/${this.getChannelIdentifier(channel)}`, channel, { observe: 'response' });
+  update(channel?: IChannel): Observable<EntityResponseType> {
+    const url = this.applicationConfigService.getEndpointFor('api/channel/edit');
+    return this.http.post<IChannel>(url, channel, { observe: 'response' });
   }
 
   partialUpdate(channel: PartialUpdateChannel): Observable<EntityResponseType> {

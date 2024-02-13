@@ -127,6 +127,31 @@ class SquealService {
     return ret;
   }
 
+  async anonymousSqueals(page, size) {
+    const ret = [];
+    const sq = await Squeal.find({ emergency: true })
+      .limit(size)
+      .skip(size * page)
+      .sort({ timestamp: -1 });
+
+    if (sq.length < size) {
+      sq.push(
+        await Squeal.find({ 'destination.destination_type': 'MOD' })
+          .limit(size - sq.length)
+          .skip(size * page)
+          .sort({ timestamp: -1 })
+      );
+    }
+
+    for (const s of sq) {
+      const dto = await this.loadSquealData(s, null);
+      if (dto) {
+        ret.push(dto);
+      }
+    }
+    return ret;
+  }
+
   async getSquealListCmt(page, size, user, username) {
     const ret = [];
     const thisUser = await User.findOne({ login: username });

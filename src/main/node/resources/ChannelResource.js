@@ -98,4 +98,14 @@ router.post('/channels/edit', auth, async (req, res) => {
   }
 });
 
+router.post('/channels/edit-description', auth, async (req, res) => {
+  try {
+    let channel = await new channelService().editChannelDescription(req.body.channel, req.user);
+    res.status(201).json(channel);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 module.exports = router; // export to use in server.js
