@@ -15,6 +15,8 @@ const ReactionResource = require('./resources/ReactionResource');
 const ChannelUserResource = require('./resources/ChannelUserResource');
 const NotificationResource = require('./resources/NotificationResource');
 
+const { API_PORT } = process.env;
+const PORT = API_PORT || 8000;
 const MoneyResource = require('./resources/MoneyResource');
 
 const nodeenv = process.env.NODE_ENV || 'production';

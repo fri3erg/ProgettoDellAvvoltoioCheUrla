@@ -13,7 +13,7 @@ const squealDestination = require('../model/squealDestination.js');
 const squealCat = require('../model/squealCat.js');
 const geoLoc = require('../model/geoLoc.js');
 const notification = require('../model/notification.js');
-
+const BASE_IMG = config.BASE_IMG;
 // Accessing the OpenAI API Key
 const openAIKey = config.OPENAI_API_KEY;
 const NINJA_API_KEY = config.NINJA_API_KEY;
@@ -256,8 +256,8 @@ class CronService {
         password: 'canny',
         email: 'squealerfrigo@gmail.com',
         activated: true,
-        img: '',
-        img_content_type: '',
+        img: BASE_IMG,
+        img_content_type: 'image/jpeg',
         lang_key: 'en',
         authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_MOD', 'ROLE_VIP'],
       });
