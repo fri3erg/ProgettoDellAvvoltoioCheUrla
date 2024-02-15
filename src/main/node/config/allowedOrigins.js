@@ -8,6 +8,8 @@ const allowedOrigins = [
   'http://localhost:9001',
   'https://localhost:9001',
   'http://localhost:8000',
+  'https://localhost:5173',
+  'http://localhost:5173',
   'https://site222347.tw.cs.unibo.it',
 ];
 

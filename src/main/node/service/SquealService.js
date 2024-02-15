@@ -114,15 +114,17 @@ class SquealService {
       throw new Error('Unauthorized');
     }
 
-    const sq = await Squeal.find({})
+    const sq = await Squeal.find({ squeal_id_response: null })
       .limit(size)
       .skip(size * page)
       .sort({ timestamp: byTimestamp });
 
-    const dto = await this.loadSquealData(s, thisUser);
-
-    if (dto) {
-      ret.push(dto);
+    console.log(sq);
+    for (const s of sq) {
+      const dto = await this.loadSquealData(s, thisUser);
+      if (dto) {
+        ret.push(dto);
+      }
     }
     return ret;
   }

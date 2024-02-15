@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./config/database').connect();
 const express = require('express');
 const cors = require('cors');
-const next = require('next');
+//const next = require('next');
 const corsOptions = require('./config/corsOptions');
 const path = require('path');
 
@@ -43,6 +43,27 @@ app.use('/api', ChannelUserResource);
 app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
 
+/* NEXT CONFIG */
+const next = require('next');
+const appNextOptions = {
+  dev: process.env.NODE_ENV !== 'production',
+  customServer: true,
+  conf: require('./app/avvoltoio-smm/next.config.js'),
+  dir: path.resolve(__dirname, 'app', 'avvoltoio-smm'),
+  port: PORT,
+};
+
+const appNext = next(appNextOptions);
+const handle = appNext.getRequestHandler();
+
+appNext.prepare().then(() => {
+  app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'avvoltoio-smm', 'nextbuild')));
+  app.all('/smm/*', (req, res) => {
+    return handle(req, res);
+  });
+});
+
+/*
 if (!dev) {
   const appNextOptions = {
     dev: dev,
@@ -62,6 +83,33 @@ if (!dev) {
     });
   });
 }
+*/
+/*
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dev })
+const handle = app.getRequestHandler()
+
+app.prepare().then(() => {
+  createServer((req, res) => {
+    // Be sure to pass `true` as the second argument to `url.parse`.
+    // This tells it to parse the query portion of the URL.
+    const parsedUrl = parse(req.url, true)
+    const { pathname, query } = parsedUrl
+
+    if (pathname === '/a') {
+      app.render(req, res, '/b', query)
+    } else if (pathname === '/b') {
+      app.render(req, res, '/a', query)
+    } else {
+      handle(req, res, parsedUrl)
+    }
+  }).listen(3000, err => {
+    if (err) throw err
+    console.log('> Ready on http://localhost:3000')
+  })
+})
+*/
+
 /*
 
 const mongoCredentials = {

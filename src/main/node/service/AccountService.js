@@ -56,6 +56,7 @@ class AccountService {
     if (!(await this.isMod(thisUser))) {
       throw new Error('unauthorized');
     }
+    console.log(hisUsername, block);
     const ret = await User.findOneAndUpdate({ login: hisUsername }, { activated: block });
     return this.hideSensitive(ret);
   }
@@ -130,7 +131,7 @@ class AccountService {
     if (!(await this.isMod(thisUser))) {
       throw new Error('unauthorized');
     }
-    const admin_extra = await adminExtra.create({
+    const admin_extra = await AdminExtra.create({
       n_characters: adminExtra.n_characters,
       user_id: adminExtra.user_id,
       timestamp: adminExtra.timestamp,

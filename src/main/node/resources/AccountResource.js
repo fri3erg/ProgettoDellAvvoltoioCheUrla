@@ -170,9 +170,9 @@ router.get('/users/search-filtered', auth, async (req, res) => {
   }
 });
 
-router.get('/users/block', auth, async (req, res) => {
+router.post('/users/block/', auth, async (req, res) => {
   try {
-    const ret = await new accountService().block(req.user, req.query.username, block);
+    const ret = await new accountService().block(req.user, req.query.username, req.query.block);
 
     res.status(200).json(ret);
     return;

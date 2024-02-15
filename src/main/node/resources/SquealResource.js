@@ -21,7 +21,7 @@ router.get('/squeal-list', auth, async (req, res) => {
   }
 });
 
-router.get('/squeal-list/filtered', auth, async (req, res) => {
+router.get('/squeal-list/filtered/', auth, async (req, res) => {
   try {
     if (!auth) {
       const ret = await new squealService().anonymousSqueals(parseInt(req.query.page), parseInt(req.query.size));
