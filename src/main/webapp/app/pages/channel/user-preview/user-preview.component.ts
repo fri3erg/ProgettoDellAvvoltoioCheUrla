@@ -12,4 +12,8 @@ import SharedModule from 'app/shared/shared.module';
 })
 export class UserPreviewComponent {
   @Input({ required: true }) user?: Account;
+
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
+  }
 }

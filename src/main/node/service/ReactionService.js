@@ -19,13 +19,13 @@ class ReactionDTO {
     number++;
   }
 }
-CATTHRESHOLD = 0.5;
-VIEWSTHRESHOLD = 0;
-POSITIVETHRESHOLD = 0.8;
-NEGATIVETHRESHOLD = 0.8;
-BASEMULTIPLIER = 10;
+CATTHRESHOLD = 0.25;
+VIEWSTHRESHOLD = 50;
+POSITIVETHRESHOLD = 0.25;
+NEGATIVETHRESHOLD = 0.25;
+BASEMULTIPLIER = 2;
 POSITIVEMULTIPLIER = 3;
-NEGATIVEMULTIPLIER = 2;
+NEGATIVEMULTIPLIER = 8;
 
 class ReactionService {
   async insertOrUpdateReaction(reaction, user, username) {
@@ -83,10 +83,10 @@ class ReactionService {
     if (total / views.number > CATTHRESHOLD && views.number > VIEWSTHRESHOLD) {
       let cat = await SquealCat.findOne({ squeal_id: squeal_id });
       let catType = 'INVALID';
-      if (positive / total > POSITIVETHRESHOLD) {
+      if (positive / views.number > POSITIVETHRESHOLD) {
         catType = 'POPULAR';
       }
-      if (negative / total > NEGATIVETHRESHOLD) {
+      if (negative / views.number > NEGATIVETHRESHOLD) {
         if (catType == 'POPULAR') {
           catType = 'CONTROVERSIAL';
         } else {

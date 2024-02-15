@@ -32,6 +32,29 @@ app.use(cors(corsOptions));
 
 //app.use(express.static(path.join(__dirname, 'app')));
 // Serve Angular App from a specific base, e.g., '/angular'
+if (!dev) {
+  const appNextOptions = {
+    dev: dev,
+    customServer: true,
+    conf: require('./avvoltoio-smm/next.config.js'),
+    dir: path.resolve(__dirname, 'avvoltoio-smm'),
+    port: PORT,
+  };
+
+  const appNext = next(appNextOptions);
+  const handle = appNext.getRequestHandler();
+  console.log(__dirname);
+  appNext.prepare().then(() => {
+    console.log('smm setup');
+
+    app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', 'nextbuild')));
+    app.all('/smm/*', (req, res) => {
+      console.log('appNext', req);
+      return handle(req, res);
+    });
+  });
+}
+
 app.use(express.static(path.join(__dirname, 'app')));
 
 app.use('/api', accountResource);
@@ -42,73 +65,6 @@ app.use('/api', ReactionResource);
 app.use('/api', ChannelUserResource);
 app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
-
-/* NEXT CONFIG */
-const next = require('next');
-const appNextOptions = {
-  dev: process.env.NODE_ENV !== 'production',
-  customServer: true,
-  conf: require('./app/avvoltoio-smm/next.config.js'),
-  dir: path.resolve(__dirname, 'app', 'avvoltoio-smm'),
-  port: PORT,
-};
-
-const appNext = next(appNextOptions);
-const handle = appNext.getRequestHandler();
-
-appNext.prepare().then(() => {
-  app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'avvoltoio-smm', 'nextbuild')));
-  app.all('/smm/*', (req, res) => {
-    return handle(req, res);
-  });
-});
-
-/*
-if (!dev) {
-  const appNextOptions = {
-    dev: dev,
-    customServer: true,
-    conf: require('./app/avvoltoio-smm/next.config.js'),
-    dir: path.resolve(__dirname, 'app', 'avvoltoio-smm'),
-    port: PORT,
-  };
-
-  const appNext = next(appNextOptions);
-  const handle = appNext.getRequestHandler();
-
-  appNext.prepare().then(() => {
-    app.use('/smm/_next', express.static(path.join(__dirname, 'app', 'avvoltoio-smm', 'nextbuild')));
-    app.all('/smm/*', (req, res) => {
-      return handle(req, res);
-    });
-  });
-}
-*/
-/*
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
-
-app.prepare().then(() => {
-  createServer((req, res) => {
-    // Be sure to pass `true` as the second argument to `url.parse`.
-    // This tells it to parse the query portion of the URL.
-    const parsedUrl = parse(req.url, true)
-    const { pathname, query } = parsedUrl
-
-    if (pathname === '/a') {
-      app.render(req, res, '/b', query)
-    } else if (pathname === '/b') {
-      app.render(req, res, '/a', query)
-    } else {
-      handle(req, res, parsedUrl)
-    }
-  }).listen(3000, err => {
-    if (err) throw err
-    console.log('> Ready on http://localhost:3000')
-  })
-})
-*/
 
 /*
 
@@ -129,7 +85,7 @@ app.get('/welcome', auth, (req, res) => {
   res.status(200).send('Welcome 🙌 ');
 });
 
-app.get('*', (req, res, next) => {
+app.get(/^\/(?!smm).*$/, (req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return next();
   }
@@ -137,6 +93,7 @@ app.get('*', (req, res, next) => {
 });
 
 // This should be the last route else any after it won't work
+/*
 app.use('*', (req, res) => {
   res.status(404).json({
     success: 'false',
@@ -147,5 +104,5 @@ app.use('*', (req, res) => {
     },
   });
 });
-
+*/
 module.exports = app;

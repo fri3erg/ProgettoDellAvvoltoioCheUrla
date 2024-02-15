@@ -1,6 +1,12 @@
 <div class="channel-layout rounded-4">
   <div style="flex: 1" [routerLink]="['/profile/', user?.login]">
-    <img [src]="'data:' + user?.img_content_type + ';base64,' + user?.img" class="profilepic" *ngIf="user?.img" alt="Immagine" />
+    <img
+      (error)="setDefaultImage($event)"
+      [src]="'data:' + user?.img_content_type + ';base64,' + user?.img"
+      class="profilepic"
+      *ngIf="user?.img"
+      alt="Immagine"
+    />
     <span class="channelname"> @{{ user?.login }} </span>
   </div>
 </div>

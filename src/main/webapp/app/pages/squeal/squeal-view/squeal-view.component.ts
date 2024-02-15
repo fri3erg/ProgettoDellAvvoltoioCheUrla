@@ -120,6 +120,11 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
   }
+
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
+  }
+
   addMap(): void {
     if (this.squeal?.geoLoc?.latitude && this.squeal.geoLoc.longitude) {
       const mapId = 'map_' + (this.squeal.squeal?._id?.toString() ?? '');

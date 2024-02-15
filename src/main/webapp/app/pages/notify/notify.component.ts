@@ -74,6 +74,26 @@ export class NotifyComponent implements OnInit, OnDestroy {
     }
   }
 
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
+  }
+
+  createLink(notification: any): string {
+    let user_name = notification.username;
+    if (notification.username?.startsWith('@')) {
+      user_name = notification.username.substring(1);
+    }
+    if (notification.type === 'MESSAGE') {
+      return `/direct-message/user/${String(user_name)}`;
+    }
+    if (notification.type === 'COMMENT') {
+      return `/profile/${String(user_name)}`;
+    }
+    if (notification.type === 'REACTION') {
+      return `/profile`;
+    }
+    return './';
+  }
   setRead(): void {
     const ids = [];
     for (const notification of this.notifications) {

@@ -74,6 +74,7 @@ export class PersonalMessagesComponent implements OnInit {
         }
       });
     }
+
     this.socketService.getNotificationObservable().subscribe((data: any) => {
       const notification: Notification = data.message; // Qui assumiamo che i dati siano annidati dentro 'message'
       console.log('Received notification from the socket:', notification);
@@ -84,6 +85,10 @@ export class PersonalMessagesComponent implements OnInit {
         this.loadSqueals();
       }
     });
+  }
+
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
   }
 
   loadSqueals(): void {

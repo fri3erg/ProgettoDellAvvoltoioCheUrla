@@ -35,7 +35,14 @@
 
         <div class="form-check">
           <label class="form-check-label" for="rememberMe">
-            <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" formControlName="rememberMe" />
+            <input
+              class="form-check-input"
+              style="border: black solid 2px; background-color: white"
+              type="checkbox"
+              name="rememberMe"
+              id="rememberMe"
+              formControlName="rememberMe"
+            />
             <span jhiTranslate="login.form.rememberme">Remember me</span>
           </label>
         </div>
@@ -54,9 +61,9 @@
       </div>
       <div class="alert alert-warning">
         <div>other options for sign in:</div>
-        <a class="alert-link" routerLink="/smm">sign in as social media manager</a>
+        <a class="alert-link" href="/smm/login">sign in as social media manager</a>
         <br />
-        <a class="alert-link" routerLink="/admin">sign in as admin</a>
+        <a class="alert-link" href="/admin">sign in as admin</a>
       </div>
     </div>
   </div>

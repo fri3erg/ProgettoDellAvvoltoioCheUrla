@@ -449,7 +449,7 @@ router.post('/authenticate/admin', async (req, res) => {
         if (user && (await bcrypt.compare(password, user.password))) {
           // Create token
           const token = jwt.sign({ user_id: user._id, username }, config.TOKEN_KEY, {
-            expiresIn: '200h',
+            expiresIn: '2h',
           });
 
           res.setHeader('Authorization', 'Bearer ' + token);
@@ -463,6 +463,59 @@ router.post('/authenticate/admin', async (req, res) => {
       }
     }
     res.status(400).send('Invalid Credentials');
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post('/register/admin', async (req, res) => {
+  try {
+    // Get user input
+    const { email, login, password } = req.body;
+
+    // Validate user input
+    if (!(email && password && login)) {
+      res.status(400).send('All input is required');
+    }
+
+    // Check if user already exist
+    let oldUser = await User.findOne({ email });
+    if (oldUser) {
+      return res.status(409).send('User Already Exist. Please Login');
+    }
+
+    if (password.length < 4 || password.length > 100) {
+      return res.status(409).send('password of invalid length');
+    }
+
+    //Encrypt user password
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const user = await User.create({
+      login,
+      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      password: encryptedPassword,
+      activation_key: uuidv4(),
+      timestamp: new Date.now(),
+      authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP', 'ROLE_ADMIN'],
+    });
+
+    // Create token
+    const token = jwt.sign({ user_id: user._id, email }, config.TOKEN_KEY, {
+      expiresIn: '2h',
+    });
+
+    res.setHeader('Authorization', 'Bearer ' + token);
+
+    // save user token
+    user.token = token;
+    //sendActivationMail();
+
+    // Create userVIP in our database
+    // return new user
+    res.status(201).json(user);
+    return;
   } catch (err) {
     console.log(err);
   }

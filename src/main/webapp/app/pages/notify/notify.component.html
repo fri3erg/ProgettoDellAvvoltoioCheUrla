@@ -1,11 +1,12 @@
 <div *ngIf="account">
-  <div *ngFor="let notification of this.notifications">
+  <div *ngFor="let notification of this.notifications" [routerLink]="createLink(notification)">
     <div class="notif rounded-4" [class.notseen]="notification.isRead">
       <img
         [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
         class="profilepic"
         *ngIf="notification?.profile_img"
         alt="Immagine"
+        (error)="setDefaultImage($event)"
       />
       <div class="info">
         <div class="username">

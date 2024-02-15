@@ -175,7 +175,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.edit = false;
             console.log(this.account);
           }
-
+          this.setImage();
           this.isApiCallInProgress = false;
         });
       }
@@ -214,6 +214,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
   }
 
   setFileData(event: any): void {

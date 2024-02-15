@@ -55,6 +55,10 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  setDefaultImage(event: any): void {
+    event.target.src = 'content/images/default-img.jpg'; // Replace this with your default image path
+  }
   getPreview(): void {
     this.squealService.getDirectSquealPreview().subscribe(r => {
       if (r.body) {

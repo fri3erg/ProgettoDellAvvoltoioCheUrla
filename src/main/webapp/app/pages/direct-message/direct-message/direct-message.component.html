@@ -7,6 +7,7 @@
           class="profilepic"
           *ngIf="squeal.userImg"
           alt="Immagine"
+          (error)="setDefaultImage($event)"
         />
       </div>
       <div class="message-layout rounded-4">

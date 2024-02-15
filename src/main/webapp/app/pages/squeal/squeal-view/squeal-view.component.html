@@ -7,6 +7,7 @@
         class="profilepic"
         *ngIf="squeal.userImg"
         alt="Immagine"
+        (error)="setDefaultImage($event)"
       />
       <div class="username fw-semibold fs-5" [routerLink]="['/profile', squeal.userName]">@{{ squeal.userName }}</div>
       <div>{{ timeDifference(squeal.squeal?.timestamp) }}</div>
@@ -28,7 +29,9 @@
       />
       <div *ngIf="squeal.geoLoc" class="map-squeal rounded-4" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
     </div>
-    <jhi-squeal-view *ngIf="response_squeal" [squeal]="response_squeal" class="response"></jhi-squeal-view>
+    <div class="response rounded-4" *ngIf="response_squeal">
+      <jhi-squeal-view [squeal]="response_squeal"></jhi-squeal-view>
+    </div>
     <div class="stats">
       <div (click)="reply = !reply" class="rispondi_squeal">Rispondi allo Squeal</div>
 

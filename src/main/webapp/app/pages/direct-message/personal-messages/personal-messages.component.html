@@ -1,5 +1,11 @@
 <div class="rounded-4 mytitlecard" [routerLink]="['/profile', username]">
-  <img [src]="'data:' + account?.img_content_type + ';base64,' + account?.img" class="profilepic" *ngIf="account?.img" alt="Immagine" />
+  <img
+    (error)="setDefaultImage($event)"
+    [src]="'data:' + account?.img_content_type + ';base64,' + account?.img"
+    class="profilepic"
+    *ngIf="account?.img"
+    alt="Immagine"
+  />
   <span class="user-name">@{{ username }}</span>
 </div>
 <div class="central" #scrollMe [scrollTop]="scrollMe.scrollHeight">

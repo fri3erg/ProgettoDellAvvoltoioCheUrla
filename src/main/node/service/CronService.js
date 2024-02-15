@@ -13,7 +13,10 @@ const squealDestination = require('../model/squealDestination.js');
 const squealCat = require('../model/squealCat.js');
 const geoLoc = require('../model/geoLoc.js');
 const notification = require('../model/notification.js');
+const { v1: uuidv1, v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 const BASE_IMG = config.BASE_IMG;
+const SQUEALER_IMG = config.SQUEALER_IMG;
 // Accessing the OpenAI API Key
 const openAIKey = config.OPENAI_API_KEY;
 const NINJA_API_KEY = config.NINJA_API_KEY;
@@ -62,7 +65,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
 
       destination: [
         {
@@ -130,7 +133,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
       squeal_id_response: lastSqueal._id.toString(),
       destination: [
         {
@@ -187,7 +190,7 @@ class CronService {
       user_id: user._id.toString(),
       body: '',
       timestamp: Date.now(),
-      n_characters: 125,
+      n_characters: 0,
       img: message,
       img_content_type: 'image/jpeg',
       destination: [
@@ -247,16 +250,36 @@ class CronService {
     await ChannelUser.deleteMany({});
     await notification.deleteMany({});*/
 
+    let userAdmin = await User.findOne({ login: 'squealadmin' });
+    if (!userAdmin) {
+      //Encrypt user password
+      const encryptedPassword = await bcrypt.hash('enzaccio', 10);
+
+      // Create user in our database
+      userAdmin = await User.create({
+        login: 'squealadmin',
+        email: 'email.squealadmin@canny.com'.toLowerCase(), // sanitize: convert email to lowercase
+        password: encryptedPassword,
+        activation_key: uuidv4(),
+        activated: true,
+        img: SQUEALER_IMG,
+        img_content_type: 'image/jpeg',
+        timestamp: Date.now(),
+        authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP', 'ROLE_ADMIN'],
+      });
+    }
+
     let user = await User.findOne({ login: 'squealbot' });
     if (!user) {
+      const encryptedPassword2 = await bcrypt.hash('enzaccio', 10);
       user = await User.create({
         first_name: 'bot',
         last_name: 'dello squeallo',
         login: 'squealbot',
-        password: 'canny',
+        password: encryptedPassword2,
         email: 'squealerfrigo@gmail.com',
         activated: true,
-        img: BASE_IMG,
+        img: SQUEALER_IMG,
         img_content_type: 'image/jpeg',
         lang_key: 'en',
         authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_MOD', 'ROLE_VIP'],
@@ -292,7 +315,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
       destination: [
         {
           admin_add: true,
@@ -311,7 +334,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
       destination: [
         {
           admin_add: true,
@@ -329,7 +352,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
       destination: [
         {
           admin_add: true,
@@ -348,7 +371,7 @@ class CronService {
       user_id: user._id.toString(),
       body: message,
       timestamp: Date.now(),
-      n_characters: message.length,
+      n_characters: 0,
       destination: [
         {
           admin_add: true,

@@ -2,9 +2,14 @@ const SMMVIP = require('../model/smmVIP');
 const User = require('../model/user');
 const AdminExtra = require('../model/adminExtras');
 const SquealCat = require('../model/squealCat');
+const SquealViews = require('../model/squealViews');
+const SquealReaction = require('../model/squealReaction');
+const GeoLoc = require('../model/geoLoc');
+const Notification = require('../model/notification');
 const squeal = require('../model/squeal');
 const SquealService = require('./SquealService');
-
+const Jimp = require('jimp');
+const { Squeal } = require('../model/squeal');
 class AccountService {
   async getUsersByName(user, myUsername, search, byRole, byPopolarity) {
     const thisUser = await User.findOne({ login: myUsername });
@@ -153,7 +158,12 @@ class AccountService {
     const deleted = await User.findOneAndDelete({ login: userToDelete.login });
     const squeals = await squeal.find({ user_id: userToDelete._id });
     for (const squeal of squeals) {
-      await new SquealService.delete();
+      const squeal_deleted = await Squeal.deleteOne({ _id: squeal._id });
+      const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squeal._id });
+      const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squeal._id });
+      const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squeal._id });
+      const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squeal._id });
+      const comments_deleted = await Squeal.deleteMany({ squeal_id_response: squeal._id });
     }
     const smmVIP = await SMMVIP.deleteMany({ user_id: userToDelete._id });
     const adminExtra = await AdminExtra.deleteMany({ user_id: userToDelete._id });
@@ -228,12 +238,12 @@ class AccountService {
   }
 
   async resizeUserImg(img) {
-    if (!img) {
+    if (!img[0]) {
       return;
     }
 
     // Load the image from a base64 string
-    const image = await Jimp.read(Buffer.from(img, 'base64'));
+    const image = await Jimp.read(Buffer.from(img[0], 'base64'));
 
     // Resize the image
     image.resize(1280, Jimp.AUTO);
@@ -246,7 +256,7 @@ class AccountService {
     const compressedImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
 
     const compressedBase64 = compressedImageBuffer.toString('base64');
-    return compressedBase64;
+    return [compressedBase64];
   }
 
   async isUserAuthorized(myUser, theirUser) {
