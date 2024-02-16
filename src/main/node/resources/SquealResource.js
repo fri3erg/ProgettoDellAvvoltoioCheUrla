@@ -197,6 +197,27 @@ router.post('/squeals/edit', auth, async (req, res) => {
   }
 });
 
+router.post('/squeals/changedest/', auth, async (req, res) => {
+  try {
+    let squeal = await new squealService().changeDest(req.user, req.query.squealId, req.query.dest);
+    res.status(201).json(squeal);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+
+router.post('/squeals/changereaction', auth, async (req, res) => {
+  try {
+    let squeal = await new squealService().changeReaction(req.user, req.body.requestBody);
+    res.status(201).json(squeal);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.delete('/squeals/:id', auth, async (req, res) => {
   try {
     await new squealService().deleteSqueal(req.params.id, req.user);

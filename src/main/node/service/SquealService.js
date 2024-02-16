@@ -650,6 +650,12 @@ class SquealService {
     if (!squeal || !squeal._id) {
       throw new Error('invalid squeal');
     }
+    for (var i = 0; i < squeal.destination.length; i++) {
+      const channel = await Channel.findOne({ name: squeal.destination[i].destination });
+      if (!channel) {
+        throw new Error('invalid destination');
+      }
+    }
     const squeal_updated = await Squeal.updateOne(
       { _id: squeal._id },
       {
@@ -681,6 +687,74 @@ class SquealService {
     }
 
     return squeal_updated;
+  }
+
+  async changeDest(user, squealId, dest) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    if (!squealId) {
+      throw new Error('invalid squeal');
+    }
+
+    const squeal_updated = await Squeal.updateOne({ _id: squealId }, { $pull: { destination: { destination: dest } } });
+    return squeal_updated;
+  }
+
+  async changeReaction(user, requestBody) {
+    console.log(requestBody);
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('invalid user');
+    }
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+
+    const posReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: true });
+    const negReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: false });
+
+    if (requestBody.positive) {
+      if (posReactions.length >= requestBody.positive) {
+        const idsToRemove = posReactions.slice(requestBody.positive).map(reaction => reaction._id);
+        await SquealReaction.deleteMany({ _id: { $in: idsToRemove } });
+      } else {
+        for (let i = posReactions.length; i < requestBody.positive; i++) {
+          const newReaction = new SquealReaction({
+            squeal_id: requestBody.squeal_id,
+            username: user.username,
+            user_id: thisUser._id.toString(),
+            emoji: 'heart',
+            positive: true,
+          });
+          await new reactionService().insertOrUpdateReaction(newReaction, user, user.username);
+        }
+      }
+    }
+
+    if (requestBody.negative) {
+      if (negReactions.length > requestBody.negative) {
+        const idsToRemove = negReactions.slice(requestBody.negative).map(reaction => reaction._id);
+        await SquealReaction.deleteMany({ _id: { $in: idsToRemove } });
+      } else {
+        for (let i = negReactions.length; i < requestBody.negative; i++) {
+          const newReaction = new SquealReaction({
+            squeal_id: requestBody.squeal_id,
+            username: user.username,
+            user_id: thisUser._id.toString(),
+            emoji: 'bored',
+            positive: false,
+          });
+          await new reactionService().insertOrUpdateReaction(newReaction, user, user.username);
+        }
+      }
+    }
+
+    return;
   }
 
   async getSquealDTO(squeal, username) {

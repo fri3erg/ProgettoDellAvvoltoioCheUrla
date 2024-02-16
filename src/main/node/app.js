@@ -21,7 +21,7 @@ const MoneyResource = require('./resources/MoneyResource');
 
 const nodeenv = process.env.NODE_ENV || 'production';
 const dev = nodeenv !== 'production';
-
+//const dev = true;
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
