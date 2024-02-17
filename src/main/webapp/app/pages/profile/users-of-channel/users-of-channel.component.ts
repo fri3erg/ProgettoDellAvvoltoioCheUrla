@@ -22,7 +22,7 @@ export class UsersOfChannelComponent implements OnInit {
     this.channel_id = this.activatedRoute.snapshot.paramMap.get('id')?.toString();
     this.channelService.getUsersSubbedToChannel(this.channel_id ?? '').subscribe(r => {
       if (r.body) {
-        console.log(r.body);
+        console.log('debugdeubugdebug', r.body);
         this.users = r.body;
       }
     });

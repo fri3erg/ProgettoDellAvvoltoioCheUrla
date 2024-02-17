@@ -14,6 +14,7 @@ import { CreateSquealComponent } from '../create-squeal/create-squeal.component'
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { Subject, takeUntil } from 'rxjs';
+import { ChannelTypes } from 'app/entities/enumerations/channel-types.model';
 
 @Component({
   selector: 'jhi-squeal-view',
@@ -24,6 +25,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() squeal?: ISquealDTO;
+  @Input() isReply = false;
   reactionAdded?: string;
   response_squeal?: ISquealDTO;
   reply = false;
@@ -32,6 +34,7 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
   marker?: google.maps.Marker; // Hold all markers
   polyline?: google.maps.Polyline; // Hold the polyline
   squealed = false;
+  connectedDestination: ISquealDestination[] = [];
   isApiCallInProgress = false;
   reactions: MenuItem[] = [
     {
@@ -104,6 +107,13 @@ export class SquealViewComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     }
+    this.connectedDestination = [
+      {
+        destination: this.squeal.userName,
+        destination_type: ChannelTypes.MESSAGE,
+        destination_id: this.squeal.squeal.user_id,
+      },
+    ];
   }
 
   ngAfterViewInit(): void {

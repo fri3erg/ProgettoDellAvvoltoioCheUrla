@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./config/database').connect();
 const express = require('express');
 const cors = require('cors');
-//const next = require('next');
+const next = require('next');
 const corsOptions = require('./config/corsOptions');
 const path = require('path');
 
@@ -49,7 +49,6 @@ if (!dev) {
 
     app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', 'nextbuild')));
     app.all('/smm/*', (req, res) => {
-      console.log('appNext', req);
       return handle(req, res);
     });
   });
@@ -80,10 +79,6 @@ app.get('/db/search', async function (req, res) {
   res.send(await mymongo.search(req.query, mongoCredentials))
 });
 */
-
-app.get('/welcome', auth, (req, res) => {
-  res.status(200).send('Welcome 🙌 ');
-});
 
 app.get(/^\/(?!smm).*$/, (req, res, next) => {
   if (req.path.startsWith('/api/')) {

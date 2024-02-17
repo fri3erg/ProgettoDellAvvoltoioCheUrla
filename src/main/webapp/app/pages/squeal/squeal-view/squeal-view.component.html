@@ -29,8 +29,8 @@
       />
       <div *ngIf="squeal.geoLoc" class="map-squeal rounded-4" [id]="'map_' + squeal.squeal?._id?.toString()"></div>
     </div>
-    <div class="response rounded-4" *ngIf="response_squeal">
-      <jhi-squeal-view [squeal]="response_squeal"></jhi-squeal-view>
+    <div class="response rounded-4" *ngIf="response_squeal && !isReply">
+      <jhi-squeal-view [isReply]="true" [squeal]="response_squeal"></jhi-squeal-view>
     </div>
     <div class="stats">
       <div (click)="reply = !reply" class="rispondi_squeal">Rispondi allo Squeal</div>
@@ -54,6 +54,11 @@
     </div>
   </div>
   <div class="reply rounded-4" *ngIf="reply && !squealed">
-    <jhi-create-squeal [isResponse]="true" (squealed)="onSquealed($event)" [response]="squeal.squeal?._id?.toString()"></jhi-create-squeal>
+    <jhi-create-squeal
+      [destination]="connectedDestination"
+      [isResponse]="true"
+      (squealed)="onSquealed($event)"
+      [response]="squeal.squeal?._id?.toString()"
+    ></jhi-create-squeal>
   </div>
 </div>

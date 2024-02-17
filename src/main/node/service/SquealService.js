@@ -23,47 +23,6 @@ const Jimp = require('jimp');
 //user for auth and isUserAuthorized
 //username,user to do action on, default: you, but smm
 class SquealService {
-  async getUserChars(username) {
-    const thisUser = await User.findOne({ login: username });
-    if (!thisUser) throw new Error('Invalid username');
-
-    const purchased = await AdminExtras.find({ user_id: thisUser._id.toString(), valid_until: { $gte: Date.now() } });
-    const ch_purchased = purchased.reduce((acc, p) => acc + p.n_characters, 0);
-
-    const squeals = await Squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - config.msinMonth } });
-    const ids = squeals
-      .filter(s => !s.destination.some(d => ['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)))
-      .map(s => s._id.toString());
-
-    const cats = await SquealCat.find({ squeal_id: { $in: ids } });
-    const ch_total = cats.reduce((acc, c) => acc + c.n_characters, 0);
-
-    let chRemMonth = parseInt(config.chMonth + ch_total + ch_purchased);
-    let [chRemWeek, chRemDay] = [chRemMonth, chRemMonth].map(ch =>
-      parseInt(ch / (ch === chRemMonth ? config.monthWeekMultiplier : config.weekDayMultiplier))
-    );
-
-    squeals.forEach(s => {
-      const nChars = s.n_characters;
-      chRemMonth -= nChars;
-      if (s.timestamp > Date.now() - config.msinWeek) {
-        chRemWeek -= nChars;
-        if (s.timestamp > Date.now() - config.msinDay) {
-          chRemDay -= nChars;
-        }
-      }
-    });
-
-    const extra_admin = await AdminExtras.find({ user_id: thisUser._id.toString() });
-    const extra_admin_ch = extra_admin.reduce((acc, e) => acc + e.n_characters, 0);
-    [chRemMonth, chRemWeek, chRemDay] = [chRemMonth, chRemWeek, chRemDay].map(ch => ch + extra_admin_ch);
-
-    const remainingChars = Math.min(chRemDay, chRemWeek, chRemMonth);
-    const type = remainingChars === chRemDay ? 'DAY' : remainingChars === chRemWeek ? 'WEEK' : 'MONTH';
-
-    return { remainingChars, type };
-  }
-
   async getSquealList(page, size, user, username) {
     const ret = [];
     const thisUser = await User.findOne({ login: username });
@@ -472,9 +431,10 @@ class SquealService {
     let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
     let squealsSent = await Squeal.find({
       user_id: thisUser._id.toString(),
-      'destination.destination_id': { $regex: '(?i)' + '@' + '.*' },
+      'destination.destination': { $regex: '(?i)' + '@' + '.*' },
     });
     squeals = squeals.concat(squealsSent);
+    squeals.sort((a, b) => a.timestamp - b.timestamp);
     const map = new Map();
     for (const s of squeals) {
       const user = s.user_id;
@@ -597,7 +557,7 @@ class SquealService {
         type: 'COMMENT',
         isRead: false,
       });
-      socket.sendNotification(m1);
+      await socket.sendNotification(m1);
     }
     for (const dest of newSqueal.destination) {
       const user = socket.getUser(dest.destination_id);
@@ -613,7 +573,7 @@ class SquealService {
           isRead: false,
         });
 
-        socket.sendNotification(m2);
+        await socket.sendNotification(m2);
       }
     }
     return ret;

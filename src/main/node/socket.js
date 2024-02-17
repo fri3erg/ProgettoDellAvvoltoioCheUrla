@@ -1,7 +1,7 @@
 const socketIO = require('socket.io');
 
 const allowedOrigins = require('./config/allowedOrigins');
-const notificationService = require('./service/NotificationService');
+const notification = require('./model/notification');
 let io; // Declare io variable
 let onlineUsers = [];
 
@@ -17,21 +17,43 @@ function getUser(userId) {
   return onlineUsers.find(user => user.userId === userId);
 }
 
-function sendNotification(message) {
+async function sendNotification(message) {
   console.log(message);
   const user = getUser(message.destId);
   if (user) {
     console.log('sending notification');
     io.to(user.socketId).emit('getNotification', { message });
   }
-  new notificationService().createNotification(message);
+  await createNotification(message);
 }
+
+async function createNotification(message) {
+  let newNotification = new notification({
+    username: message.username,
+    reaction: message.reaction,
+    body: message.body,
+    destId: message.destId,
+    profile_img: message.profile_img,
+    profile_img_content_type: message.profile_img_content_type,
+    timestamp: message.timestamp,
+    type: message.type,
+    isRead: message.isRead,
+  });
+
+  newNotification = await message.save();
+
+  if (!newNotification) {
+    throw new Error('could not create');
+  }
+  return newNotification;
+}
+
 function initializeSocket(server) {
   io = socketIO(server, { cors: { origin: allowedOrigins } });
 
   io.on('connection', socket => {
     socket.on('addUser', user => {
-      if (user) {
+      if (user && user._id) {
         addNewUser(user._id.toString(), socket.id);
         console.log('user connected');
       }

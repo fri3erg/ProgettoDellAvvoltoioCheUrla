@@ -23,14 +23,17 @@ export class AccountService {
     private applicationConfigService: ApplicationConfigService
   ) {}
 
-  delete(id: string): Observable<{}> {
-    return this.http.delete(this.applicationConfigService.getEndpointFor('api/account') + '/' + id);
+  delete(): Observable<{}> {
+    const url = this.applicationConfigService.getEndpointFor(`api/account`);
+    return this.http.delete(url);
   }
   setPhoto(user: Account): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/img-update'), user, { observe: 'response' });
   }
-  addSMM(id?: string): Observable<HttpResponse<Account>> {
-    return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/add-smm'), id, { observe: 'response' });
+  addSMM(login?: string): Observable<HttpResponse<Account>> {
+    return this.http.get<Account>(this.applicationConfigService.getEndpointFor(`api/account/ask-smm/${login ?? ''}`), {
+      observe: 'response',
+    });
   }
   update(user: Account): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/update'), user, { observe: 'response' });
@@ -57,7 +60,7 @@ export class AccountService {
     return this.http.get<Account[]>(url, { params, observe: 'response' });
   }
   save(account: Account): Observable<{}> {
-    return this.http.post(this.applicationConfigService.getEndpointFor('api/account'), account);
+    return this.http.post(this.applicationConfigService.getEndpointFor('api/account/update'), account);
   }
 
   authenticate(identity: Account | null): void {

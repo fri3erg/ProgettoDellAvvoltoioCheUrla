@@ -14,6 +14,8 @@
           <span class="timestamp">{{ timeDifference(notification.timestamp) }}</span>
         </div>
         <div class="body" *ngIf="notification.type == 'MESSAGE'">{{ notification.body }}</div>
+
+        <div class="body" *ngIf="notification.type == 'SMM'">wants to be your client</div>
         <div class="body" *ngIf="notification.type == 'REACTION'">
           reacted to your post:
           <span [class]="notification.reaction" class="reaction"></span>

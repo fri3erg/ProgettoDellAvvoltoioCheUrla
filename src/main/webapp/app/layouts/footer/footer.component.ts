@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { NotificationService } from 'app/pages/notify/notification.service';
@@ -18,7 +19,8 @@ export default class FooterComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private accountService: AccountService,
     private socketService: SocketService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -51,13 +53,9 @@ export default class FooterComponent implements OnInit, OnDestroy {
   }
 
   recalc(): void {
-    setTimeout(() => {
-      this.notificationService.getNotReadCount(this.account?.login ?? '').subscribe(p => {
-        if (p.body) {
-          this.unreadNotificationCount = p.body;
-        }
-      });
-    }, 1000);
+    console.log('recalc');
+    this.unreadNotificationCount = 0;
+    this.router.navigate(['/notification']);
   }
 
   generateBeep(): void {

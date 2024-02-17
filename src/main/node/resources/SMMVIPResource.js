@@ -15,6 +15,7 @@ const channelUserService = require('../service/ChannelUserService');
 const channelService = require('../service/ChannelService');
 const accountService = require('../service/AccountService');
 const { request } = require('http');
+const NotificationService = require('../service/NotificationService');
 
 //const { Chat } = require('openai/resources');
 
@@ -54,7 +55,7 @@ router.get('/smmvips/:_id', auth, async (req, res) => {
 
 //aggiungimi come cliente del smm ✅
 //chiamata dall'utente quando vuole diventare cliente di un smm
-router.post('/add-smm', auth, async (req, res) => {
+router.post('/account/add-smm', auth, async (req, res) => {
   try {
     const smmId = req.body.id;
     const userName = req.user.username;
@@ -62,7 +63,7 @@ router.post('/add-smm', auth, async (req, res) => {
     if (!thisUser.authorities) {
       return res.status(401).send('Non hai i permessi');
     } else {
-      authArray = ['ROLE_ADMIN', 'ROLE_VIP'];
+      const authArray = ['ROLE_ADMIN', 'ROLE_VIP'];
       const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
 
       if (!result) {
@@ -74,6 +75,17 @@ router.post('/add-smm', auth, async (req, res) => {
     }
   } catch (err) {
     res.status(500).send();
+  }
+});
+
+router.get('/account/ask-smm/:login', auth, async (req, res) => {
+  try {
+    const smmLogin = req.params.login;
+    const userName = req.user.username;
+    const notif = await new NotificationService().askSMM(smmLogin, userName);
+    res.status(201).json(notif);
+  } catch (err) {
+    console.log(err);
   }
 });
 

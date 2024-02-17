@@ -115,6 +115,26 @@ router.get('/add-vip', auth, async (req, res) => {
   }
 });
 
+router.get('/chars-by-login/:login', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUserChars(req.params.login);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/user-chars', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().getUserChars(req.user.username);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get('/account', auth, async (req, res) => {
   try {
     const cUsername = req.user.username;
@@ -227,10 +247,41 @@ router.get('/account/list-users', auth, async (req, res) => {
   }
 });
 
-router.delete('/account/:id', auth, async (req, res) => {
+router.delete('/account', auth, async (req, res) => {
   try {
-    const ret = await new accountService().delete(req.user, req.params.id);
+    const ret = await new accountService().delete(req.user);
 
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
+router.post('/account/change-password', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().resetPasswordKnown(req.user, req.body.currentPassword, req.body.newPassword);
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+router.post('/account/reset-password/init', async (req, res) => {
+  try {
+    const ret = await new accountService().resetPasswordInit(req.body.email);
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+router.post('/account/reset-password/finish', async (req, res) => {
+  try {
+    const ret = await new accountService().resetPasswordFinish(req.body.key, req.body.newPassword);
     res.status(200).json(ret);
     return;
   } catch (err) {

@@ -20,7 +20,7 @@ class ReactionDTO {
   }
 }
 CATTHRESHOLD = 0.25;
-VIEWSTHRESHOLD = 50;
+VIEWSTHRESHOLD = 10;
 POSITIVETHRESHOLD = 0.25;
 NEGATIVETHRESHOLD = 0.25;
 BASEMULTIPLIER = 2;
@@ -69,7 +69,7 @@ class ReactionService {
         type: 'REACTION',
         isRead: false,
       });
-      socket.sendNotification(message);
+      await socket.sendNotification(message);
     }
     await this.updateCat(reaction.squeal_id, thisUser._id.toString());
     return ret;

@@ -40,26 +40,6 @@ router.get('/squeal-list/filtered/', auth, async (req, res) => {
   }
 });
 
-router.get('/user-chars', auth, async (req, res) => {
-  try {
-    const ret = await new squealService().getUserChars(req.user.username);
-    res.status(200).json(ret);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
-router.get('/chars-by-login/:login', auth, async (req, res) => {
-  try {
-    const ret = await new squealService().getUserChars(req.params.login);
-    res.status(200).json(ret);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
-  }
-});
-
 router.get('/squeal-response/:id', auth, async (req, res) => {
   try {
     const ret = await new squealService().getSquealById(req.user, req.user.username, req.params.id);
@@ -206,7 +186,6 @@ router.post('/squeals/changedest/', auth, async (req, res) => {
     return res.status(400).send(err.message);
   }
 });
-
 
 router.post('/squeals/changereaction', auth, async (req, res) => {
   try {

@@ -54,7 +54,11 @@
     </div>
   </div>
 
-  <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
+  <jhi-create-squeal
+    (squealed)="createdSqueal()"
+    *ngIf="connectedDestination && channel.channel.type !== 'MOD'"
+    [destination]="[connectedDestination]"
+  ></jhi-create-squeal>
   <p-dataView #dv [value]="squeals" *ngIf="squeals" id="squeals">
     <ng-template let-s pTemplate="listItem">
       <jhi-squeal-view [squeal]="s"></jhi-squeal-view>

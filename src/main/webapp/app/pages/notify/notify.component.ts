@@ -86,7 +86,7 @@ export class NotifyComponent implements OnInit, OnDestroy {
     if (notification.type === 'MESSAGE') {
       return `/direct-message/user/${String(user_name)}`;
     }
-    if (notification.type === 'COMMENT') {
+    if (notification.type === 'COMMENT' || notification.type === 'SMM') {
       return `/profile/${String(user_name)}`;
     }
     if (notification.type === 'REACTION') {

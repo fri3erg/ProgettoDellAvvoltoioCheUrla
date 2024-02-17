@@ -2,13 +2,7 @@
   <div class="p-fluid p-1">
     <div class="p-field top_profile">
       <div>
-        <img
-          [src]="'data:' + account.img_content_type + ';base64,' + account.img"
-          (error)="setDefaultImage($event)"
-          class="profilepic"
-          *ngIf="account.img"
-          alt="Immagine"
-        />
+        <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
       </div>
       <div class="user-info">
         <div style="font-size: larger; font-weight: bold">@{{ this.account.login || 'gaymaffeo42' }}</div>

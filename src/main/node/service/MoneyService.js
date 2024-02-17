@@ -68,7 +68,7 @@ class MoneyService {
     console.log(mac);
     resp.addParameter('mac', this.getSha1(mac));
     resp.addParameter('alias', this.PAYMENT_ALIAS);
-    resp.addParameter('descrizione', `Pagamento 500 caratteri per Squealer, buon squealing ${thisUser.username}!`);
+    resp.addParameter('descrizione', `Pagamento 500 caratteri per Squealer, buon squealing ${thisUser.login}!`);
 
     return resp.getResponse();
   }

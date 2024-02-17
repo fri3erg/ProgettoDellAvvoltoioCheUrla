@@ -1,4 +1,6 @@
 const User = require('../model/user');
+
+const socket = require('../socket');
 const accountService = require('../service/AccountService');
 const notification = require('../model/notification');
 
@@ -53,27 +55,6 @@ class NotificationService {
     return await notification.countDocuments({ username: direct_name, destId: thisUser._id.toString(), isRead: false });
   }
 
-  async createNotification(message) {
-    let newNotification = new notification({
-      username: message.username,
-      reaction: message.reaction,
-      body: message.body,
-      destId: message.destId,
-      profile_img: message.profile_img,
-      profile_img_content_type: message.profile_img_content_type,
-      timestamp: message.timestamp,
-      type: message.type,
-      isRead: message.isRead,
-    });
-
-    newNotification = await message.save();
-
-    if (!newNotification) {
-      throw new Error('could not create');
-    }
-    return newNotification;
-  }
-
   async getNotReadNotification(username) {
     const thisUser = await User.findOne({ login: username });
     const notRead = await notification.find({ destId: thisUser._id.toString(), isRead: false });
@@ -89,6 +70,28 @@ class NotificationService {
       throw new Error('Unauthorized');
     }
     return await notification.updateMany({ _id: { $in: body }, isRead: false }, { isRead: true });
+  }
+
+  async askSMM(smmLogin, username) {
+    const thisUser = await User.findOne({ login: username });
+    const smm = await User.findOne({ login: smmLogin });
+    if (!smm) {
+      throw new Error('Invalid SMM');
+    }
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    const notif = await notification.create({
+      username: username,
+      destId: smm._id,
+      profile_img: thisUser.img,
+      profile_img_content_type: thisUser.img_content_type,
+      timestamp: Date.now(),
+      type: 'SMM',
+      isRead: false,
+    });
+    await socket.sendNotification(notif);
+    return notif;
   }
 }
 module.exports = NotificationService;

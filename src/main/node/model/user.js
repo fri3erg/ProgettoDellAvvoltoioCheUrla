@@ -12,6 +12,7 @@ const userSchema = new Schema(
     token: { type: String },
     timestamp: { type: Number, default: null },
     activation_key: { type: String, default: null },
+    timestamp_activation: { type: Number, default: null },
     activated: { type: Boolean, default: false },
     img: {
       type: Array,

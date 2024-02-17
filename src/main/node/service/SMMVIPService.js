@@ -6,13 +6,13 @@ const accountService = require('./AccountService');
 class SMMVIPService {
   //da testare
   async addSMM(smmId, currentId) {
-    const isClient = smmVIP.findOne({ users: currentId });
+    const isClient = await smmVIP.findOne({ users: currentId });
 
     if (!isClient) {
       throw new Error('You already have a SMM');
     }
     const opt = { new: true };
-    smmVIP.findOneAndUpdate({ _id: smmId }, { $push: { users: currentId } }, opt, (error, data) => {
+    await smmVIP.findOneAndUpdate({ _id: smmId }, { $push: { users: currentId } }, opt, (error, data) => {
       if (error) {
         throw new Error(error);
       }
@@ -74,18 +74,14 @@ class SMMVIPService {
     if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       throw new Error('Unauthorized');
     }
-    const accountService = new accountService();
-    const smm = await smmVIP.find({ name: { $regex: search, $options: 'i' } });
-
-    smm.forEach(sm => {
-      idArray.push(sm.user_id);
+    const smm = await user.find({
+      login: { $regex: search, $options: 'i' },
+      authorities: { $in: ['ROLE_SMM'] },
     });
 
-    const users_associated = await user.find({ login: { $in: idArray } });
-
-    users_associated.forEach(user => {
-      smmArray.push(accountService.hideSensitive(user));
-    });
+    for (const user of smm) {
+      smmArray.push(await new accountService().hideSensitive(user));
+    }
 
     return smmArray;
   }

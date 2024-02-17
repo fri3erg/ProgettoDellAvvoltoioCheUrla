@@ -7,9 +7,13 @@ const SquealReaction = require('../model/squealReaction');
 const GeoLoc = require('../model/geoLoc');
 const Notification = require('../model/notification');
 const squeal = require('../model/squeal');
-const SquealService = require('./SquealService');
 const Jimp = require('jimp');
-const { Squeal } = require('../model/squeal');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const config = require('../config/env');
+const nodemailer = require('nodemailer');
+const squealReaction = require('../model/squealReaction');
+
 class AccountService {
   async getUsersByName(user, myUsername, search, byRole, byPopolarity) {
     const thisUser = await User.findOne({ login: myUsername });
@@ -47,7 +51,7 @@ class AccountService {
     }
     let ret = [];
     for (const us of users) {
-      ret.push(this.hideSensitive(us));
+      ret.push(await this.hideSensitive(us));
     }
     return ret;
   }
@@ -63,7 +67,7 @@ class AccountService {
     }
     console.log(hisUsername, block);
     const ret = await User.findOneAndUpdate({ login: hisUsername }, { activated: block });
-    return this.hideSensitive(ret);
+    return await this.hideSensitive(ret);
   }
 
   async getUserImg(id) {
@@ -93,7 +97,14 @@ class AccountService {
     if (account.last_name) {
       thisUser.last_name = account.last_name;
     }
-    return this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, thisUser));
+    if (account.email) {
+      thisUser.email = account.email;
+    }
+    if (account.lang_key) {
+      thisUser.lang_key = account.lang_key;
+    }
+
+    return await this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, thisUser));
   }
 
   async getUser(user, myUsername, name) {
@@ -108,7 +119,7 @@ class AccountService {
     if (name.startsWith('@')) {
       name = name.substring(1);
     }
-    return this.hideSensitive(await User.findOne({ login: name }));
+    return await this.hideSensitive(await User.findOne({ login: name }));
   }
 
   //not tested
@@ -124,7 +135,7 @@ class AccountService {
       throw new Error('you already have that role');
     }
     const auth = thisUser.authorities.push('ROLE_VIP');
-    return this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, { authorities: auth }));
+    return await this.hideSensitive(await User.findOneAndUpdate({ login: thisUser.login }, { authorities: auth }));
   }
 
   //not tested
@@ -145,33 +156,30 @@ class AccountService {
     return admin_extra;
   }
 
-  async delete(user, user_id) {
+  async delete(user) {
     const thisUser = await User.findOne({ login: user.username });
-    const userToDelete = await User.findById(user_id);
-    if (!thisUser || !userToDelete) {
+    const user_id = thisUser._id.toString();
+    if (!thisUser) {
       throw new Error('bad username');
     }
-    if (!(await this.isUserAuthorized(userToDelete, thisUser))) {
-      throw new Error('unauthorized');
-    }
 
-    const deleted = await User.findOneAndDelete({ login: userToDelete.login });
-    const squeals = await squeal.find({ user_id: userToDelete._id });
+    const deleted = await User.findOneAndDelete({ login: thisUser.login });
+    const squeals = await squeal.find({ user_id: thisUser._id.toString() });
     for (const squeal of squeals) {
-      const squeal_deleted = await Squeal.deleteOne({ _id: squeal._id });
-      const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squeal._id });
-      const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squeal._id });
-      const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squeal._id });
-      const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squeal._id });
-      const comments_deleted = await Squeal.deleteMany({ squeal_id_response: squeal._id });
+      const squeal_deleted = await squeal.deleteOne({ _id: squeal._id.toString() });
+      const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squeal._id.toString() });
+      const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squeal._id.toString() });
+      const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squeal._id.toString() });
+      const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squeal._id.toString() });
+      const comments_deleted = await squeal.deleteMany({ squeal_id_response: squeal._id.toString() });
     }
-    const smmVIP = await SMMVIP.deleteMany({ user_id: userToDelete._id });
-    const adminExtra = await AdminExtra.deleteMany({ user_id: userToDelete._id });
-    const notifications = await Notification.deleteMany({ user_id: userToDelete._id });
-    const channelUser = await ChannelUser.deleteMany({ user_id: userToDelete._id });
-    const smmUser = await SMMVIP.find({ users: userToDelete._id });
+    const smmVIP = await SMMVIP.deleteMany({ user_id: thisUser._id.toString() });
+    const adminExtra = await AdminExtra.deleteMany({ user_id: thisUser._id.toString() });
+    const notifications = await Notification.deleteMany({ user_id: thisUser._id.toString() });
+    const channelUser = await ChannelUser.deleteMany({ user_id: thisUser._id.toString() });
+    const smmUser = await SMMVIP.find({ users: thisUser._id.toString() });
     for (const user of smmUser) {
-      user.users = user.users.filter(e => e !== userToDelete._id);
+      user.users = user.users.filter(e => e !== thisUser._id.toString());
       await SMMVIP.findOneAndUpdate({ user_id: user.user_id }, user);
     }
 
@@ -186,21 +194,25 @@ class AccountService {
     if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
-    await User.findOneAndUpdate(
+    const userupdated = await User.findOneAndUpdate(
       { login: thisUser.login },
       { img: await this.resizeUserImg(account.img), img_content_type: account.img_content_type }
     );
-    const updated = this.hideSensitive(await User.findOne({ login: myUsername }));
+    const updated = await this.hideSensitive(await User.findOne({ login: myUsername }));
     return updated;
   }
 
-  hideSensitive(account) {
+  async hideSensitive(account) {
     if (!account) {
       throw new Error('account not found');
     }
+    const n_characters = await this.getUserChars(account.login);
+    const positive = await this.getTotalPosReaction(account.login);
+    const negative = await this.getTotalNegReaction(account.login);
+    const views = await this.countViews(account._id.toString());
     return {
       login: account.login,
-      _id: account._id,
+      _id: account._id.toString(),
       first_name: account.first_name,
       last_name: account.last_name,
       img: account.img,
@@ -208,7 +220,52 @@ class AccountService {
       imgContentType: account.imgContentType,
       authorities: account.authorities,
       lang_key: account.lang_key,
+      positive: positive,
+      negative: negative,
+      views: views,
+      n_characters: n_characters,
     };
+  }
+
+  async getUserChars(username) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) throw new Error('Invalid username');
+
+    const purchased = await AdminExtra.find({ user_id: thisUser._id.toString(), valid_until: { $gte: Date.now() } });
+    const ch_purchased = purchased.reduce((acc, p) => acc + p.n_characters, 0);
+
+    const squeals = await squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - config.msinMonth } });
+    const ids = squeals
+      .filter(s => !s.destination.some(d => ['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)))
+      .map(s => s._id.toString());
+
+    const cats = await SquealCat.find({ squeal_id: { $in: ids } });
+    const ch_total = cats.reduce((acc, c) => acc + c.n_characters, 0);
+
+    let chRemMonth = parseInt(config.chMonth + ch_total + ch_purchased);
+    let [chRemWeek, chRemDay] = [chRemMonth, chRemMonth].map(ch =>
+      parseInt(ch / (ch === chRemMonth ? config.monthWeekMultiplier : config.weekDayMultiplier))
+    );
+
+    squeals.forEach(s => {
+      const nChars = s.n_characters;
+      chRemMonth -= nChars;
+      if (s.timestamp > Date.now() - config.msinWeek) {
+        chRemWeek -= nChars;
+        if (s.timestamp > Date.now() - config.msinDay) {
+          chRemDay -= nChars;
+        }
+      }
+    });
+
+    const extra_admin = await AdminExtra.find({ user_id: thisUser._id.toString() });
+    const extra_admin_ch = extra_admin.reduce((acc, e) => acc + e.n_characters, 0);
+    [chRemMonth, chRemWeek, chRemDay] = [chRemMonth, chRemWeek, chRemDay].map(ch => ch + extra_admin_ch);
+
+    const remainingChars = Math.min(chRemDay, chRemWeek, chRemMonth);
+    const type = remainingChars === chRemDay ? 'DAY' : remainingChars === chRemWeek ? 'WEEK' : 'MONTH';
+
+    return { remainingChars, type };
   }
 
   async isMod(user) {
@@ -238,12 +295,12 @@ class AccountService {
   }
 
   async resizeUserImg(img) {
-    if (!img[0]) {
+    if (!img) {
       return;
     }
 
     // Load the image from a base64 string
-    const image = await Jimp.read(Buffer.from(img[0], 'base64'));
+    const image = await Jimp.read(Buffer.from(img, 'base64'));
 
     // Resize the image
     image.resize(1280, Jimp.AUTO);
@@ -302,6 +359,114 @@ class AccountService {
     return await User.find()
       .limit(size)
       .skip(size * page);
+  }
+
+  async resetPasswordKnown(user, currentPassword, newPassword) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+
+    //Encrypt user password
+    const encryptedPassword = await bcrypt.hash(currentPassword, 10);
+    if (encryptedPassword !== thisUser.password) {
+      throw new Error('invalid password');
+    }
+    const encryptedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    if (newPassword.length < 4 || newPassword.length > 100) {
+      throw new Error('invalid password');
+    }
+
+    thisUser.password = encryptedNewPassword;
+    return thisUser.save();
+  }
+
+  async resetPasswordInit(user, mail) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    const resetKey = crypto.randomBytes(20).toString('hex');
+    thisUser.activation_key = resetKey;
+    thisUser.timestamp_activation = Date.now();
+    thisUser.save();
+    this.sendResetPasswordMail(mail, resetKey);
+    return `https://site222347.tw.cs.unibo.it/reset-password?resetKey=${resetKey}`;
+  }
+  sendResetPasswordMail(mail, key) {
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.your-email-provider.com', // Replace with your mail server host
+      port: 587, // Common port for SMTP
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: config.EMAIL, // Your email address
+        pass: config.EMAIL_PASSWORD, // Your email password or app-specific password
+      },
+    });
+    let mailOptions = {
+      from: '"Squealer" <support@squealer.com>', // Sender address
+      to: mail,
+      subject: 'Password Reset Request', // Subject line
+      text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttp://yoursocialmediaapp.com/reset-password?token=RandomTokenHere\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`, // Plain text body
+      html: `
+      <p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
+      <p>Please click on the following link, or paste this into your browser to complete the process:</p>
+      <a href="${key}">Reset Password</a>
+      <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
+    `, // HTML body content
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log('Message sent: %s', info.messageId);
+    });
+    console.log('sending mail to ' + mail + ' with key ' + key);
+  }
+
+  async resetPasswordFinish(user, newPassword, key) {
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+    if (thisUser.activation_key !== key) {
+      throw new Error('invalid key');
+    }
+    if (thisUser.timestamp_activation < Date.now() - 1860000) {
+      throw new Error('key expired');
+    }
+    const encryptedNewPassword = await bcrypt.hash(newPassword, 10);
+    thisUser.password = encryptedNewPassword;
+    return thisUser.save();
+  }
+
+  async getTotalPosReaction(username) {
+    const squeals = await squeal.find({ user_id: username });
+    let total = 0;
+    for (const squeal of squeals) {
+      total += await squealReaction.countDocuments({ squeal_id: squeal._id, reaction: 'positive' });
+    }
+    return total;
+  }
+
+  async getTotalNegReaction(username) {
+    const squeals = await squeal.find({ user_id: username });
+    let total = 0;
+    for (const squeal of squeals) {
+      total += await SquealReaction.countDocuments({ squeal_id: squeal._id, reaction: 'negative' });
+    }
+    return total;
+  }
+
+  async countViews(id) {
+    const squeals = await squeal.find({ user_id: id });
+    let total = 0;
+    for (const squeal of squeals) {
+      total += await SquealViews.countDocuments({ squeal_id: squeal._id.toString() });
+    }
+    return total;
   }
 }
 module.exports = AccountService;

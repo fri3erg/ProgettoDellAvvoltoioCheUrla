@@ -123,7 +123,7 @@ class ChannelUserService {
     }
     let ret = [];
     for (const user_id of chId) {
-      ret.push(new accountService().hideSensitive(await User.findById(user_id)));
+      ret.push(await new accountService().hideSensitive(await User.findById(user_id)));
     }
     return ret;
   }

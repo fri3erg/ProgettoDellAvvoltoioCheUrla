@@ -171,11 +171,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isApiCallInProgress = true;
         this.accountService.update(this.account).subscribe(r => {
           if (r.body) {
-            this.account = r.body;
-            this.edit = false;
+            this.openEdit = false;
             console.log(this.account);
           }
-          this.setImage();
           this.isApiCallInProgress = false;
         });
       }
@@ -183,7 +181,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   addSMM(): void {
-    this.accountService.addSMM(this.smm?._id?.toString()).subscribe(r => {
+    this.accountService.addSMM(this.smm?.login).subscribe(r => {
       if (r.body) {
         console.log(this.account);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'SMM added' });
@@ -234,6 +232,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
           this.account.img = base64Data;
           this.account.img_content_type = file.type;
+          this.setImage();
           this.newphoto = true;
           console.log(this.account);
         });
