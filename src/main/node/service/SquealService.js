@@ -494,6 +494,7 @@ class SquealService {
   }
 
   async insertOrUpdate(squeal, user, username, geoLoc) {
+    console.log(squeal);
     let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!squeal || !thisUser) {
@@ -553,7 +554,7 @@ class SquealService {
         newSqueal.destination.push(dest);
       }
     }
-
+    console.log(newSqueal);
     if (newSqueal.destination.length == 0) {
       throw new Error('no valid destinations');
     }
@@ -718,38 +719,36 @@ class SquealService {
     const posReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: true });
     const negReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: false });
 
-    if (requestBody.positive) {
-      if (posReactions.length >= requestBody.positive) {
+    if (requestBody.positive.length > 0) {
+      if (posReactions.length > requestBody.positive) {
         const idsToRemove = posReactions.slice(requestBody.positive).map(reaction => reaction._id);
         await SquealReaction.deleteMany({ _id: { $in: idsToRemove } });
-      } else {
+      } else if (posReactions.length < requestBody.positive) {
         for (let i = posReactions.length; i < requestBody.positive; i++) {
-          const newReaction = new SquealReaction({
+          await SquealReaction.create({
             squeal_id: requestBody.squeal_id,
             username: user.username,
             user_id: thisUser._id.toString(),
             emoji: 'heart',
             positive: true,
           });
-          await new reactionService().insertOrUpdateReaction(newReaction, user, user.username);
         }
       }
     }
 
-    if (requestBody.negative) {
+    if (requestBody.negative.length > 0) {
       if (negReactions.length > requestBody.negative) {
         const idsToRemove = negReactions.slice(requestBody.negative).map(reaction => reaction._id);
         await SquealReaction.deleteMany({ _id: { $in: idsToRemove } });
-      } else {
+      } else if (negReactions.length < requestBody.negative) {
         for (let i = negReactions.length; i < requestBody.negative; i++) {
-          const newReaction = new SquealReaction({
+          await SquealReaction.create({
             squeal_id: requestBody.squeal_id,
             username: user.username,
             user_id: thisUser._id.toString(),
             emoji: 'bored',
             positive: false,
           });
-          await new reactionService().insertOrUpdateReaction(newReaction, user, user.username);
         }
       }
     }

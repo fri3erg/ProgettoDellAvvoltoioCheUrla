@@ -101,8 +101,18 @@ router.post('/channels/edit', auth, async (req, res) => {
 router.post('/channels/edit-description', auth, async (req, res) => {
   try {
     let body = req.body;
-    let channel = await new channelService().editChannelDescription(body, req.user);
+    let channel = await new channelService().editChannelDescription(req.body.channel, req.user);
     res.status(201).json(channel);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
+router.get('/channels-mod/', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().listModChannels(parseInt(req.query.page), parseInt(req.query.size), req.user.username);
+    res.status(200).json(ret);
   } catch (err) {
     console.log(err);
     return res.status(400).send(err.message);

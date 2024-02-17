@@ -130,8 +130,13 @@ class ChannelService {
     if (!thisUser) {
       throw new Error('invalid user');
     }
+    /*
     let mychannelUser = await channelUser.findOne({ user_id: thisUser._id.toString(), channel_id: channel._id.toString() });
     if (!mychannelUser || !['ADMIN', 'WRITE'].includes(mychannelUser.privilege)) {
+      throw new Error('Unathorized');
+    }
+    */
+    if (!(await new accountService().isMod(thisUser))) {
       throw new Error('Unathorized');
     }
 
@@ -162,6 +167,7 @@ class ChannelService {
   }
 
   async insertOrUpdateChannel(channel, user, username) {
+    console.log(channel);
     const thisUser = await User.findOne({ login: username });
     if (!channel || !thisUser) {
       throw new Error('invalid data');
@@ -291,6 +297,25 @@ class ChannelService {
       channel: channel,
       users: users,
     };
+  }
+
+  async listModChannels(page, size, username) {
+    const thisUser = await User.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid username');
+    }
+    const ret = [];
+    if (!(await new accountService().isMod(thisUser))) {
+      throw new Error('Unathorized');
+    }
+    const channels = await Channel.find({ type: 'MOD' })
+      .limit(size)
+      .skip(size * page);
+
+    for (const ch of channels) {
+      ret.push(await this.loadChannelData(ch));
+    }
+    return ret;
   }
 }
 
