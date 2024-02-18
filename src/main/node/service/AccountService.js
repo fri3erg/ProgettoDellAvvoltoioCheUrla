@@ -71,7 +71,12 @@ class AccountService {
         .sort({ login: byName })
         .limit(size)
         .skip(size * page);
-    } else if (byRole.length > 1) {
+    } else if (
+      byRole.toString() == 'ROLE_USER' ||
+      byRole.toString() == 'ROLE_SMM' ||
+      byRole.toString() == 'ROLE_ADMIN' ||
+      byRole.toString() == 'ROLE_VIP'
+    ) {
       result = await User.find({ authorities: byRole })
         .limit(size)
         .skip(size * page);
@@ -100,7 +105,9 @@ class AccountService {
 
     let users = [];
     for (const r of result) {
-      users.push(await this.hideSensitive(r));
+      if (r) {
+        users.push(await this.hideSensitive(r));
+      }
     }
     return users;
   }
