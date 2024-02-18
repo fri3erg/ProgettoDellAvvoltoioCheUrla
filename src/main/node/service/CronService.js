@@ -55,7 +55,6 @@ class CronService {
     });
 
     const message = chatCompletion.choices[0].message.content;
-    console.log(message);
     if (!message) {
       throw new Error('referencing squeal not found');
     }
@@ -85,7 +84,7 @@ class CronService {
       temperature: 0.5,
     });
     let user = await User.findOne({ login: 'squealbot' });
-    let channel = await Channel.findOne({ name: '#mean_gpt', type: 'PUBLICGROUP' });
+    let channel = await Channel.findOne({ name: '#mean_gpt' });
     if (!channel) {
       channel = await Channel.create({
         name: '#mean_gpt',
@@ -122,7 +121,6 @@ class CronService {
     });
 
     const message = chatCompletion.choices[0].message.content;
-    console.log(message);
 
     if (!message) {
       throw new Error('referencing squeal not found');
@@ -239,7 +237,13 @@ class CronService {
   }
 
   async initMainChannels() {
+    const allUsers = await User.find({});
+    console.log('all Users:');
+    for (let user of allUsers) {
+      console.log(user.login);
+    }
     /*
+    await User.deleteMany({});
     await Squeal.deleteMany({});
     await squealViews.deleteMany({});
     await squealReaction.deleteMany({});
@@ -248,7 +252,8 @@ class CronService {
     await geoLoc.deleteMany({});
     await Channel.deleteMany({})
     await ChannelUser.deleteMany({});
-    await notification.deleteMany({});*/
+    await notification.deleteMany({});
+*/
 
     let userAdmin = await User.findOne({ login: 'squealadmin' });
     if (!userAdmin) {
@@ -282,7 +287,7 @@ class CronService {
         img: SQUEALER_IMG,
         img_content_type: 'image/jpeg',
         lang_key: 'en',
-        authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_MOD', 'ROLE_VIP'],
+        authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_ADMIN', 'ROLE_VIP'],
       });
     }
     let channel = await Channel.findOne({ name: '§SQUEALER_BASICS', type: 'MOD' });

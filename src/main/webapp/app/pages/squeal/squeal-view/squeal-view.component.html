@@ -15,7 +15,7 @@
     <div class="squeal-layout pt-0 pb-1 head-message">
       <div style="flex: 1">
         <ng-container style="size-adjust: 40%" *ngFor="let d of squeal.squeal?.destination">
-          <p-chip [label]="d.destination ?? 'aaa'" (click)="redirect(d)"></p-chip>
+          <p-chip [label]="d.destination ?? 'destinationerror'" (click)="redirect(d)"></p-chip>
         </ng-container>
       </div>
     </div>

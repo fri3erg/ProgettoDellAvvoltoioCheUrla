@@ -18,7 +18,6 @@ function getUser(userId) {
 }
 
 async function sendNotification(message) {
-  console.log(message);
   const user = getUser(message.destId);
   if (user) {
     console.log('sending notification');

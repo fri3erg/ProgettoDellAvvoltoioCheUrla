@@ -35,7 +35,6 @@ router.get('/smmvips', auth, async (req, res) => {
 router.get('/get-id/smm', auth, async (req, res) => {
   try {
     const ret = await smmVIP.findOne({ user_id: req.user.user_id });
-    console.log('SMM: ', ret);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
@@ -125,7 +124,6 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
           const vip = await smmVIP.findOne({ _id: urlId });
           const result = vip.users;
           const clientsArray = await new SMMVIPService().idToObj(result);
-          console.log(clientsArray);
           res.status(200).json(clientsArray);
         }
       }
@@ -228,7 +226,6 @@ router.post('/client-post/:name', auth, async (req, res) => {
 router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
   try {
     let reaction = await new reactionService().insertOrUpdateReaction(req.body, req.user, req.params.name);
-    console.log(reaction);
     res.status(201).json(reaction);
   } catch (err) {
     console.log(err);

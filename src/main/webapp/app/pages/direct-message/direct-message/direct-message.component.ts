@@ -79,6 +79,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     });
   }
   getSqueals(): ISquealDTO[] {
+    console.log(Array.from(this.notifyMap.keys()));
     return Array.from(this.notifyMap.keys());
   }
 

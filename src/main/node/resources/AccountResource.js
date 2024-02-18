@@ -56,7 +56,6 @@ router.post('/authenticate/smm', async (req, res) => {
 
     // Validate if user exist in our database
     const user = await User.findOne({ login: username });
-    console.log(user);
 
     if (!user.authorities) {
       return res.status(401).send('Non hai i permessi');
@@ -150,11 +149,8 @@ router.get('/account', auth, async (req, res) => {
       authNew.push(auth[i]);
     }
 
-    console.log(authNew);
-
     user.authorities = authNew;
 
-    console.log(user);
     res.status(200).json(user);
     return;
   } catch (err) {
@@ -318,7 +314,7 @@ router.post('/register', async (req, res) => {
       login,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
-      timestamp: new Date.now(),
+      timestamp: Date.now(),
       activation_key: uuidv4(),
       authorities: ['ROLE_USER'],
       activated: true,
@@ -372,7 +368,7 @@ router.post('/register/smm', async (req, res) => {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
       activation_key: uuidv4(),
-      timestamp: new Date.now(),
+      timestamp: Date.now(),
       authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP'],
     });
 
@@ -445,7 +441,7 @@ router.post('/register/vip', async (req, res) => {
       login,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
-      timestamp: new Date.now(),
+      timestamp: Date.now(),
       activation_key: uuidv4(),
       authorities: ['ROLE_USER', 'ROLE_VIP'],
     });
@@ -487,7 +483,6 @@ router.post('/authenticate/admin', async (req, res) => {
 
     // Validate if user exist in our database
     const user = await User.findOne({ login: username });
-    console.log(user);
 
     if (!user.authorities) {
       return res.status(401).send('Non hai i permessi');
@@ -549,7 +544,7 @@ router.post('/register/admin', async (req, res) => {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
       activation_key: uuidv4(),
-      timestamp: new Date.now(),
+      timestamp: Date.now(),
       authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP', 'ROLE_ADMIN'],
     });
 

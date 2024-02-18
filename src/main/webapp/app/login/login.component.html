@@ -37,7 +37,7 @@
           <label class="form-check-label" for="rememberMe">
             <input
               class="form-check-input"
-              style="border: black solid 2px; background-color: white"
+              style="border: black solid 2px"
               type="checkbox"
               name="rememberMe"
               id="rememberMe"
@@ -49,16 +49,16 @@
 
         <button type="submit" class="btn btn-primary" jhiTranslate="login.form.button" data-cy="submit">Sign in</button>
       </form>
+      <div class="alert alert-warning">
+        <span jhiTranslate="global.messages.info.register.noaccount">You don't have an account yet?</span>
+        <a class="alert-link" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register a new account</a>
+      </div>
       <div class="mt-3 alert alert-warning">
         <a class="alert-link" routerLink="/account/reset/request" jhiTranslate="login.password.forgot" data-cy="forgetYourPasswordSelector"
           >Did you forget your password?</a
         >
       </div>
 
-      <div class="alert alert-warning">
-        <span jhiTranslate="global.messages.info.register.noaccount">You don't have an account yet?</span>
-        <a class="alert-link" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register a new account</a>
-      </div>
       <div class="alert alert-warning">
         <div>other options for sign in:</div>
         <a class="alert-link" href="/smm/login">sign in as social media manager</a>

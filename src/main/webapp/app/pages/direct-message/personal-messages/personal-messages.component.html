@@ -28,6 +28,7 @@
       >
         <span class="mymessage">
           <div [innerHTML]="sanitize(squeal.squeal?.body ?? '')" class="ps-4 fs-4 fw-light"></div>
+
           <img
             [src]="'data:' + squeal.squeal?.img_content_type + ';base64,' + squeal.squeal?.img"
             class="img-squeal rounded-4"

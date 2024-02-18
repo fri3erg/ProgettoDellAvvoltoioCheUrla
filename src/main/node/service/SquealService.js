@@ -456,20 +456,46 @@ class SquealService {
     let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
     let squealsSent = await Squeal.find({
       user_id: thisUser._id.toString(),
-      'destination.destination': { $regex: '(?i)' + '@' + '.*' },
+      destination: {
+        $elemMatch: {
+          destination_type: 'MESSAGE',
+        },
+      },
     });
-    squeals = squeals.concat(squealsSent);
-    squeals.sort((a, b) => a.timestamp - b.timestamp);
-    const map = new Map();
-    for (const s of squeals) {
-      const user = s.user_id;
-      let n = s;
-      map.set(user, n);
-    }
+    // Combine the received and sent squeals into one array
+    let combinedSqueals = [...squeals, ...squealsSent];
 
-    squeals = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+    // Create a map to hold the most recent squeal per conversation
+    let squealsMap = new Map();
 
-    for (const s of squeals) {
+    combinedSqueals.forEach(squeal => {
+      squeal.destination.forEach(dest => {
+        if (dest.destination_type === 'MESSAGE') {
+          // Define a conversation key by sorting and joining the user IDs
+          let conversationKey = [squeal.user_id, dest.destination_id].sort().join('-');
+
+          if (squeal.user_id !== dest.destination_id) {
+            // Check if there's already a squeal for this conversation
+            if (squealsMap.has(conversationKey)) {
+              // Update if the current squeal's timestamp is more recent
+              if (squeal.createdAt > squealsMap.get(conversationKey).createdAt) {
+                squealsMap.set(conversationKey, squeal);
+              }
+            } else {
+              // Add the new conversation squeal
+              squealsMap.set(conversationKey, squeal);
+            }
+          }
+        }
+      });
+    });
+
+    // Extract the most recent squeal per conversation
+    let uniqueSqueals = Array.from(squealsMap.values()).sort((a, b) => b.createdAt - a.createdAt);
+
+    // Now uniqueSqueals contains the most recent squeal for each unique conversation
+
+    for (const s of uniqueSqueals) {
       const dto = await this.loadSquealData(s, thisUser);
       if (dto) {
         ret.push(dto);
@@ -479,7 +505,6 @@ class SquealService {
   }
 
   async insertOrUpdate(squeal, user, username, geoLoc) {
-    console.log(squeal);
     let ret = {};
     const thisUser = await User.findOne({ login: username });
     if (!squeal || !thisUser) {
@@ -539,7 +564,6 @@ class SquealService {
         newSqueal.destination.push(dest);
       }
     }
-    console.log(newSqueal);
     if (newSqueal.destination.length == 0) {
       throw new Error('no valid destinations');
     }
@@ -693,7 +717,6 @@ class SquealService {
   }
 
   async changeReaction(user, requestBody) {
-    console.log(requestBody);
     const thisUser = await User.findOne({ login: user.username });
     if (!thisUser) {
       throw new Error('invalid user');

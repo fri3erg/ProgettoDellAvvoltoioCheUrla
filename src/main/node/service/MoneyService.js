@@ -65,7 +65,6 @@ class MoneyService {
     resp.addParameter('url_back', this.PAYMENT_BACK_URL);
 
     const mac = `codTrans=${codTrans}divisa=${pay.currency}importo=${pay.amount}${this.PAYMENT_KEY}`;
-    console.log(mac);
     resp.addParameter('mac', this.getSha1(mac));
     resp.addParameter('alias', this.PAYMENT_ALIAS);
     resp.addParameter('descrizione', `Pagamento 500 caratteri per Squealer, buon squealing ${thisUser.login}!`);
@@ -75,7 +74,6 @@ class MoneyService {
 
   getSha1(input) {
     const sha = crypto.createHash('sha1').update(input, 'utf-8').digest('hex');
-    console.log(sha);
     return sha;
   }
 

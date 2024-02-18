@@ -43,18 +43,40 @@ if (!dev) {
 
   const appNext = next(appNextOptions);
   const handle = appNext.getRequestHandler();
-  console.log(__dirname);
-  appNext.prepare().then(() => {
-    console.log('smm setup');
 
-    app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', 'nextbuild')));
-    app.all('/smm/*', (req, res) => {
-      return handle(req, res);
+  appNext.prepare().then(() => {
+    console.log('Next.js app prepared');
+
+    // Serve static files from Next.js build directory for SMM paths
+    app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', '.next')));
+
+    // Handle all requests for SMM paths with Next.js
+    app.get('/smm', (req, res) => handle(req, res));
+    app.all('/smm/*', (req, res) => handle(req, res));
+
+    // Static files middleware for other paths
+    app.use(express.static(path.join(__dirname, 'app')));
+
+    // API routes
+
+    // Fallback for non-API and non-SMM paths, serving the main app
+    app.get(/^\/(?!smm|api).*/, (req, res) => {
+      res.sendFile(path.join(__dirname, 'app/index.html'));
+    });
+
+    // Place the catch-all handler for undefined routes here, inside the prepare.then() block
+    app.use('*', (req, res) => {
+      res.status(404).json({
+        success: 'false',
+        message: 'Page not found',
+        error: {
+          statusCode: 404,
+          message: 'You reached a route that is not defined on this server',
+        },
+      });
     });
   });
 }
-
-app.use(express.static(path.join(__dirname, 'app')));
 
 app.use('/api', accountResource);
 app.use('/api', squealResource);
@@ -64,7 +86,6 @@ app.use('/api', ReactionResource);
 app.use('/api', ChannelUserResource);
 app.use('/api', NotificationResource);
 app.use('/api', MoneyResource);
-
 /*
 
 const mongoCredentials = {
@@ -80,24 +101,4 @@ app.get('/db/search', async function (req, res) {
 });
 */
 
-app.get(/^\/(?!smm).*$/, (req, res, next) => {
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, 'app/index.html'));
-});
-
-// This should be the last route else any after it won't work
-/*
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: 'false',
-    message: 'Page not found',
-    error: {
-      statusCode: 404,
-      message: 'You reached a route that is not defined on this server',
-    },
-  });
-});
-*/
 module.exports = app;

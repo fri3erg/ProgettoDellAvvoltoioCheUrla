@@ -167,7 +167,6 @@ class ChannelService {
   }
 
   async insertOrUpdateChannel(channel, user, username) {
-    console.log(channel);
     const thisUser = await User.findOne({ login: username });
     if (!channel || !thisUser) {
       throw new Error('invalid data');

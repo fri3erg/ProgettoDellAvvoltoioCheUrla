@@ -5,10 +5,10 @@
         <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
       </div>
       <div class="user-info">
-        <div style="font-size: larger; font-weight: bold">@{{ this.account.login || 'gaymaffeo42' }}</div>
+        <div style="font-size: larger; font-weight: bold">@{{ this.account.login || 'default login' }}</div>
         <div style="font-weight: 500">
-          {{ this.account.first_name || 'maffeo' }}
-          {{ this.account.last_name || 'raggi' }}
+          {{ this.account.first_name || 'firstname' }}
+          {{ this.account.last_name || 'lastname' }}
         </div>
         <div style="font-size: small; padding-top: 0.3rem">{{ remaining }} characters remaining</div>
       </div>
@@ -18,8 +18,10 @@
   <div class="buttons">
     <div *ngIf="account?.login === myAccount?.login && !openEdit" class="options rounded-4" (click)="openEdit = true">edit profile</div>
     <div *ngIf="account?.login === myAccount?.login && openEdit" class="options rounded-4" (click)="openEdit = false">cancel</div>
-    <div *ngIf="!openmySearch" class="options rounded-4" (click)="openmySearch = true">add a SMM</div>
-    <div *ngIf="openmySearch" class="options rounded-4" (click)="openmySearch = false">close</div>
+    <div *ngIf="!openmySearch && account?.login === myAccount?.login" class="options rounded-4" (click)="openmySearch = true">
+      add a SMM
+    </div>
+    <div *ngIf="openmySearch && account?.login === myAccount?.login" class="options rounded-4" (click)="openmySearch = false">close</div>
   </div>
 
   <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
