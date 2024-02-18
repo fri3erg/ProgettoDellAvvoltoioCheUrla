@@ -173,14 +173,15 @@ router.get('/users/search', auth, async (req, res) => {
   }
 });
 
-router.get('/users/search-filtered', auth, async (req, res) => {
+router.get('/users/search-filtered/', auth, async (req, res) => {
   try {
-    const ret = await new accountService().getUsersByName(
+    const ret = await new accountService().listFilteredUsers(
       req.user,
-      req.user.username,
-      req.query.search,
+      parseInt(req.query.page),
+      parseInt(req.query.size),
+      parseInt(req.query.byName),
       req.query.byRole,
-      req.query.byPopolarity
+      parseInt(req.query.byPopularity)
     );
 
     return res.status(200).json(ret);

@@ -39,7 +39,7 @@ class AccountService {
             totalCharacters: { $sum: '$n_characters' },
           },
         },
-        { $sort: { totalCharacters: -1 } },
+        { $sort: { totalCharacters: byPopolarity } },
         { $limit: 5 },
       ]);
       for (const res of result) {
@@ -54,6 +54,55 @@ class AccountService {
       ret.push(await this.hideSensitive(us));
     }
     return ret;
+  }
+
+  async listFilteredUsers(user, page, size, byName, byRole, byPopularity) {
+    var result = [];
+    const thisUser = await User.findOne({ login: user.username });
+    if (!thisUser) {
+      throw new Error('bad username');
+    }
+
+    if (!(await this.isMod(thisUser))) {
+      throw new Error('unauthorized');
+    }
+    if (byName == 1 || byName == -1) {
+      result = await User.find()
+        .sort({ login: byName })
+        .limit(size)
+        .skip(size * page);
+    } else if (byRole.length > 1) {
+      result = await User.find({ authorities: byRole })
+        .limit(size)
+        .skip(size * page);
+    } else if (byPopularity == 1 || byPopularity == -1) {
+      const temp = await SquealViews.aggregate([
+        {
+          $group: {
+            _id: '$user_id',
+            totalViews: { $sum: '$number' },
+          },
+        },
+        // Ordina in base alla popolarità
+        { $sort: { totalViews: byPopularity } },
+        // Skip e Limit per la paginazione
+        { $skip: page * size },
+        { $limit: size },
+      ]);
+      for (const t of temp) {
+        result.push(await User.findById(t._id));
+      }
+    } else {
+      result = await User.find()
+        .limit(size)
+        .skip(size * page);
+    }
+
+    let users = [];
+    for (const r of result) {
+      users.push(await this.hideSensitive(r));
+    }
+    return users;
   }
 
   async block(user, hisUsername, block) {
