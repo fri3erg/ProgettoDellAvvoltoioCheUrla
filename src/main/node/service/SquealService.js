@@ -522,6 +522,7 @@ class SquealService {
 
     await SquealViews.create({
       squeal_id: newSqueal._id.toString(),
+      user_id: thisUser._id.toString(),
       number: 1,
     });
 
@@ -1190,7 +1191,7 @@ class SquealService {
       throw new Error('User not found');
     }
     if (squeal.user_id != thisUser._id.toString()) {
-      await SquealViews.updateOne({ squeal_id: squeal._id.toString() }, { $inc: { number: 1 } });
+      await SquealViews.updateOne({ squeal_id: squeal._id.toString() }, { user_id: thisUser._id.toString() }, { $inc: { number: 1 } });
     }
 
     const squeal_id = squeal._id.toString();
