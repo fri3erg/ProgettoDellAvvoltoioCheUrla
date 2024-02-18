@@ -63,8 +63,8 @@ class SquealService {
     return ret;
   }
 
-  async getSquealListFiltered(page, size, user, byTimestamp) {
-    const ret = [];
+  async getSquealListFiltered(page, size, user, bySender, byChannelType, byTimestamp) {
+    var ret = [];
     const thisUser = await User.findOne({ login: user.username });
     if (!thisUser) {
       throw new Error('Invalid username');
@@ -73,19 +73,44 @@ class SquealService {
       throw new Error('Unauthorized');
     }
 
-    const sq = await Squeal.find({ squeal_id_response: null })
-      .limit(size)
-      .skip(size * page)
-      .sort({ timestamp: byTimestamp });
+    if (byTimestamp == 1 || byTimestamp == -1) {
+      ret = await Squeal.find()
+        .limit(size)
+        .skip(size * page)
+        .sort({ timestamp: byTimestamp });
+    } else if (bySender == 1 || bySender == -1) {
+      const temp = await User.find().sort({ login: bySender });
 
-    console.log(sq);
-    for (const s of sq) {
-      const dto = await this.loadSquealData(s, thisUser);
+      console.log(temp);
+      const userIds = temp.map(t => t._id);
+      const squeals = await Squeal.find({ user_id: { $in: userIds } })
+        .limit(size)
+        .skip(size * page);
+
+      ret = ret.concat(squeals);
+    } else if (
+      byChannelType.toString() == 'MOD' ||
+      byChannelType.toString() == 'PUBLICGROUP' ||
+      byChannelType.toString() == 'PRIVATEGROUP'
+    ) {
+      ret = await Squeal.find({ 'destination.destination_type': byChannelType.toString() })
+        .limit(size)
+        .skip(size * page)
+        .sort({ timestamp: -1 });
+    } else {
+      ret = await Squeal.find()
+        .limit(size)
+        .skip(size * page);
+    }
+
+    const squeal = [];
+    for (const r of ret) {
+      const dto = await this.loadSquealData(r, thisUser);
       if (dto) {
-        ret.push(dto);
+        squeal.push(dto);
       }
     }
-    return ret;
+    return squeal;
   }
 
   async anonymousSqueals(page, size) {

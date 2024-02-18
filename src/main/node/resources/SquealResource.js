@@ -31,7 +31,9 @@ router.get('/squeal-list/filtered/', auth, async (req, res) => {
       parseInt(req.query.page),
       parseInt(req.query.size),
       req.user,
-      req.query.byTimestamp
+      parseInt(req.query.bySender),
+      req.query.byChannelType,
+      parseInt(req.query.byTimestamp)
     );
     res.status(200).json(ret);
   } catch (err) {
