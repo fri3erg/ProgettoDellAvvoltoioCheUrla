@@ -77,6 +77,17 @@ router.post('/account/add-smm', auth, async (req, res) => {
   }
 });
 
+router.post('/account/add-client/', auth, async (req, res) => {
+  try {
+    const userName = req.user.username;
+    const clientName = req.query.client;
+    const ret = await new SMMVIPService().addClient(userName, clientName);
+    res.status(200).json(ret);
+  } catch (err) {
+    res.status(500).send();
+  }
+});
+
 router.get('/account/ask-smm/:login', auth, async (req, res) => {
   try {
     const smmLogin = req.params.login;
@@ -123,6 +134,7 @@ router.get('/smmclients/:_id', auth, async (req, res) => {
         if (urlId.match(/^[0-9a-fA-F]{24}$/)) {
           const vip = await smmVIP.findOne({ _id: urlId });
           const result = vip.users;
+          console.log(result);
           const clientsArray = await new SMMVIPService().idToObj(result);
           res.status(200).json(clientsArray);
         }
@@ -541,7 +553,7 @@ router.get('/squeal-time-chart/:name/:days', auth, async (req, res) => {
 
 router.get('/client-chars/:name', auth, async (req, res) => {
   try {
-    const ret = await new squealService().getUserChars(req.params.name);
+    const ret = await new accountService().getUserChars(req.params.name);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);

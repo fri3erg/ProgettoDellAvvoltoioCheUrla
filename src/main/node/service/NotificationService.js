@@ -27,7 +27,6 @@ class NotificationService {
     if (!notifications) {
       return res.status(400).json({ message: 'No notifications found' });
     }
-
     for (const n of notifications) {
       ret.push(n);
     }

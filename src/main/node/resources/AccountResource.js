@@ -151,6 +151,8 @@ router.get('/account', auth, async (req, res) => {
 
     user.authorities = authNew;
 
+    user = await new accountService().hideSensitive(user);
+
     res.status(200).json(user);
     return;
   } catch (err) {
@@ -370,6 +372,7 @@ router.post('/register/smm', async (req, res) => {
       activation_key: uuidv4(),
       timestamp: Date.now(),
       authorities: ['ROLE_USER', 'ROLE_SMM', 'ROLE_VIP'],
+      activated: true,
     });
 
     // Create token
