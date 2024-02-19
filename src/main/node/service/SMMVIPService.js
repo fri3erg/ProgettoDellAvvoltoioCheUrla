@@ -21,32 +21,33 @@ class SMMVIPService {
   }
 
   async addClient(username, userLogin) {
-    const client = await user.findOne({ login: userLogin });
-    const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id } } });
-    const thisUser = await user.findOne({ login: username });
-
-    if (isClient) {
-      return res.status(401).send('User already have a SMM');
-    }
-
-    if (!thisUser.authorities) {
-      return res.status(401).send('Non hai i permessi');
-    } else {
-      authArray = ['ROLE_ADMIN', 'ROLE_SMM'];
-      const result = thisUser.authorities.map(authority => authArray.includes(authority)).find(value => value === true);
-      if (!result) {
-        res.status(401).send('Non hai i permessi');
+    try {
+      const client = await user.findOne({ login: userLogin });
+      const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id } } });
+      const thisUser = await user.findOne({ login: username });
+  
+      if (isClient) {
+        throw new Error('User already has a SMM');
       }
-    }
-
-    const opt = { new: true };
-    await smmVIP.findOneAndUpdate({ user_id: thisUser._id }, { $push: { users: client._id } }, opt, (error, data) => {
-      if (error) {
-        throw new Error(error);
+  
+      if (!thisUser || !thisUser.authorities || !Array.isArray(thisUser.authorities)) {
+        throw new Error('Invalid user or missing authorities');
       }
-    });
-    return 'added';
+  
+      const hasPermission = ['ROLE_ADMIN', 'ROLE_SMM'].some(role => thisUser.authorities.includes(role));
+      if (!hasPermission) {
+        throw new Error('User does not have the required permissions');
+      }
+  
+      const opt = { new: true };
+      await smmVIP.findOneAndUpdate({ user_id: thisUser._id }, { $push: { users: client._id } }, opt);
+      
+      return 'added';
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
+  
 
   async removeSMM(smmId, currentId) {
     const opt = { new: true };
