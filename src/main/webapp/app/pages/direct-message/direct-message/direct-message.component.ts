@@ -83,6 +83,16 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     return Array.from(this.notifyMap.keys());
   }
 
+  getName(squeal: ISquealDTO): string {
+    let ret;
+    if (squeal.userName !== this.account?.login) {
+      ret = squeal.userName ?? 'name error';
+    } else {
+      ret = squeal.squeal?.destination?.[0]?.destination ?? 'name error';
+    }
+    return ret.trim().replace(/@/g, '');
+  }
+
   timeDifference(previous: any): string {
     const current = Date.now();
     const msPerMinute = 60 * 1000;
@@ -94,17 +104,17 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     const elapsed = current - previous;
 
     if (elapsed < msPerMinute) {
-      return Math.round(elapsed / 1000).toString() + ' seconds ago';
+      return Math.round(elapsed / 1000).toString() + ' seconds';
     } else if (elapsed < msPerHour) {
-      return Math.round(elapsed / msPerMinute).toString() + ' minutes ago';
+      return Math.round(elapsed / msPerMinute).toString() + ' minutes';
     } else if (elapsed < msPerDay) {
-      return Math.round(elapsed / msPerHour).toString() + ' hours ago';
+      return Math.round(elapsed / msPerHour).toString() + ' hours';
     } else if (elapsed < msPerMonth) {
-      return Math.round(elapsed / msPerDay).toString() + ' days ago';
+      return Math.round(elapsed / msPerDay).toString() + ' days';
     } else if (elapsed < msPerYear) {
-      return 'about ' + Math.round(elapsed / msPerMonth).toString() + ' months ago';
+      return Math.round(elapsed / msPerMonth).toString() + ' months';
     } else {
-      return 'about ' + Math.round(elapsed / msPerYear).toString() + ' years ago';
+      return Math.round(elapsed / msPerYear).toString() + ' years';
     }
   }
 

@@ -54,6 +54,12 @@ export class AccountService {
     return this.http.get<Account[]>(url, { params, observe: 'response' });
   }
 
+  getRandomUsers(size: number): Observable<HttpResponse<Account[]>> {
+    const url = this.applicationConfigService.getEndpointFor(`api/users/get/random`);
+    const params = new HttpParams().append('size', size.toString());
+    return this.http.get<Account[]>(url, { params, observe: 'response' });
+  }
+
   search(search: string): Observable<HttpResponse<Account[]>> {
     const url = this.applicationConfigService.getEndpointFor('api/users/search');
     const params = new HttpParams().append('search', search);

@@ -443,62 +443,54 @@ class SquealService {
   }
 
   async getDirectSquealPreview(user, myUsername) {
-    const ret = [];
-
     const thisUser = await User.findOne({ login: myUsername });
     if (!thisUser) {
       throw new Error('Username Invalid');
     }
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
-      throw new Error('Unathorized');
+      throw new Error('Unauthorized');
     }
 
-    let squeals = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
+    let squealsReceived = await Squeal.find({ 'destination.destination_id': thisUser._id.toString() });
     let squealsSent = await Squeal.find({
       user_id: thisUser._id.toString(),
-      destination: {
-        $elemMatch: {
-          destination_type: 'MESSAGE',
-        },
-      },
+      'destination.destination_type': 'MESSAGE',
     });
-    // Combine the received and sent squeals into one array
-    let combinedSqueals = [...squeals, ...squealsSent];
 
-    // Create a map to hold the most recent squeal per conversation
-    let squealsMap = new Map();
+    let combinedSqueals = [...squealsReceived, ...squealsSent];
+    let latestSquealsMap = new Map();
 
-    combinedSqueals.forEach(squeal => {
-      squeal.destination.forEach(dest => {
+    for (const squeal of combinedSqueals) {
+      for (const dest of squeal.destination) {
         if (dest.destination_type === 'MESSAGE') {
-          // Define a conversation key by sorting and joining the user IDs
           let conversationKey = [squeal.user_id, dest.destination_id].sort().join('-');
-
-          if (squeal.user_id !== dest.destination_id) {
-            // Check if there's already a squeal for this conversation
-            if (squealsMap.has(conversationKey)) {
-              // Update if the current squeal's timestamp is more recent
-              if (squeal.createdAt > squealsMap.get(conversationKey).createdAt) {
-                squealsMap.set(conversationKey, squeal);
-              }
-            } else {
-              // Add the new conversation squeal
-              squealsMap.set(conversationKey, squeal);
-            }
+          if (!latestSquealsMap.has(conversationKey) || squeal.timestamp > latestSquealsMap.get(conversationKey).timestamp) {
+            latestSquealsMap.set(conversationKey, squeal);
           }
         }
-      });
-    });
+      }
+    }
 
-    // Extract the most recent squeal per conversation
-    let uniqueSqueals = Array.from(squealsMap.values()).sort((a, b) => b.createdAt - a.createdAt);
+    const userMap = new Map();
+    const ret = [];
 
-    // Now uniqueSqueals contains the most recent squeal for each unique conversation
+    for (const [key, squeal] of latestSquealsMap.entries()) {
+      const ids = key.split('-');
+      const otherUserId = ids.find(id => id !== thisUser._id.toString());
 
-    for (const s of uniqueSqueals) {
-      const dto = await this.loadSquealData(s, thisUser);
-      if (dto) {
-        ret.push(dto);
+      if (otherUserId) {
+        if (!userMap.has(otherUserId)) {
+          const otherUser = await User.findById(otherUserId);
+          userMap.set(otherUserId, { login: otherUser.login, img: otherUser.img, img_content_type: otherUser.img_content_type });
+        }
+        const { login, img, img_content_type } = userMap.get(otherUserId);
+        let squealDTO = await this.loadSquealData(squeal, thisUser);
+        if (squealDTO) {
+          squealDTO.userImg = img;
+          squealDTO.userContentType = img_content_type;
+          squealDTO.userName = login;
+          ret.push(squealDTO);
+        }
       }
     }
     return ret;

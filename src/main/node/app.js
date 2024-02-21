@@ -43,16 +43,14 @@ if (!dev) {
 
   const appNext = next(appNextOptions);
   const handle = appNext.getRequestHandler();
-
   appNext.prepare().then(() => {
     console.log('Next.js app prepared');
 
     // Serve static files from Next.js build directory for SMM paths
     app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', '.next')));
 
-    // Handle all requests for SMM paths with Next.js
-    app.get('/smm', (req, res) => handle(req, res));
-    app.all('/smm/*', (req, res) => handle(req, res));
+    // Handle all GET requests for SMM paths with Next.js
+    app.get('/smm*', (req, res) => handle(req, res)); // Changed from '/smm' to '/smm*' to capture all subpaths
 
     // Static files middleware for other paths
     app.use(express.static(path.join(__dirname, 'app')));
@@ -60,11 +58,11 @@ if (!dev) {
     // API routes
 
     // Fallback for non-API and non-SMM paths, serving the main app
-    app.get(/^\/(?!smm|api).*/, (req, res) => {
+    app.get(/\/(smm|api)\//, (req, res) => {
       res.sendFile(path.join(__dirname, 'app/index.html'));
     });
 
-    // Place the catch-all handler for undefined routes here, inside the prepare.then() block
+    // Catch-all handler for undefined routes
     app.use('*', (req, res) => {
       res.status(404).json({
         success: 'false',

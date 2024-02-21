@@ -9,18 +9,22 @@
         (error)="setDefaultImage($event)"
       />
       <div class="info">
-        <div class="username">
-          @{{ notification.username }}
+        <div>
+          <span class="username truncate"> @{{ notification.username }} </span>
           <span class="timestamp">{{ timeDifference(notification.timestamp) }}</span>
         </div>
-        <div class="body" *ngIf="notification.type == 'MESSAGE'">{{ notification.body }}</div>
+        <div style="display: flex">
+          <div class="body" *ngIf="notification.type == 'MESSAGE'" class="truncatebody padded">{{ notification.body }}</div>
 
-        <div class="body" *ngIf="notification.type == 'SMM'">wants to be your client</div>
-        <div class="body" *ngIf="notification.type == 'REACTION'">
-          reacted to your post:
-          <span [class]="notification.reaction" class="reaction"></span>
+          <p class="body" *ngIf="notification.type == 'SMM'" class="padded">wants to be your client</p>
+          <div class="body" *ngIf="notification.type == 'REACTION'" class="padded truncatebody">
+            reacted to your post:
+            <span [class]="notification.reaction" class="reaction padded"></span>
+          </div>
+          <p class="body" *ngIf="notification.type == 'COMMENT'" class="truncatebody padded">
+            commented on your post: {{ notification.body }}
+          </p>
         </div>
-        <div class="body" *ngIf="notification.type == 'COMMENT'">commented on your post: {{ notification.body }}</div>
       </div>
     </div>
   </div>

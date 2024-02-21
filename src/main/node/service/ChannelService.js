@@ -10,6 +10,7 @@ const { isModuleNamespaceObject } = require('util/types');
 const channelUserService = require('../service/ChannelUserService');
 const accountService = require('../service/AccountService');
 const channelUser = require('../model/channelUser');
+const user = require('../model/user');
 
 class ChannelService {
   async getChannel(user, myUsername, id) {
@@ -156,12 +157,24 @@ class ChannelService {
     if (!(await new accountService().isUserAuthorized(user, thisUser))) {
       throw new Error('Unathorized');
     }
+    search = search.trim().replace(/[@§#]/g, '');
+
     let channels = await Channel.find({ name: { $regex: '(?i).*' + search + '.*' } });
 
     for (const ch of channels) {
       if (await new channelUserService().userHasReadPrivilege(ch, thisUser)) {
         ret.push(await this.loadChannelData(ch));
       }
+    }
+    return ret;
+  }
+
+  async getRandomChannelList(size) {
+    const ret = [];
+    const channels = await Channel.aggregate([{ $match: { type: { $in: ['PUBLICGROUP', 'MOD'] } } }, { $sample: { size: size } }]);
+
+    for (const ch of channels) {
+      ret.push(await this.loadChannelData(ch));
     }
     return ret;
   }
@@ -243,9 +256,9 @@ class ChannelService {
       channels.push(await Channel.findById(id));
     }
     for (const ch of channels) {
-      //if (await new channelUserService().userHasReadPrivilege(ch, myUser)) {
-      ret.push(await this.loadChannelData(ch));
-      //}
+      if (await new channelUserService().userHasReadPrivilege(ch, myUser)) {
+        ret.push(await this.loadChannelData(ch));
+      }
     }
     return ret;
   }

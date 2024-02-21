@@ -10,6 +10,13 @@
   display: flex;
 }
 
+.truncate {
+  width: 16rem; /* Adjust the width as needed */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .profilepic {
   width: 3rem;
   height: 3rem;

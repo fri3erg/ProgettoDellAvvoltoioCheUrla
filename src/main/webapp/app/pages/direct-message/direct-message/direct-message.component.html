@@ -1,6 +1,6 @@
 <div *ngIf="account">
   <ng-container *ngFor="let squeal of getSqueals()">
-    <div class="whole rounded-4" [routerLink]="['user', squeal.userName]">
+    <div *ngIf="account.login != getName(squeal)" class="whole rounded-4" [routerLink]="['user', getName(squeal)]">
       <div style="padding-top: 0.3rem">
         <img
           [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
@@ -10,19 +10,20 @@
           (error)="setDefaultImage($event)"
         />
       </div>
-      <div class="message-layout rounded-4">
-        <div class="myname rounded-4">@{{ squeal.userName }}</div>
+      <span class="message-layout rounded-4">
+        <div class="myname rounded-4 truncatename">@{{ squeal.userName }}</div>
         <div class="mymessage">
-          <span class="squealbody">
-            <p>{{ squeal.squeal?.body?.split('\n')?.shift() ?? ' ' }}</p>
+          <span class="squealbody truncate">
+            <p>{{ squeal.squeal?.body ?? ' ' }}</p>
           </span>
         </div>
-      </div>
-
-      <span class="mytimestamp">
-        {{ timeDifference(squeal.squeal?.timestamp) }}
       </span>
-      <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
+      <span>
+        <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
+        <div class="mytimestamp">
+          {{ timeDifference(squeal.squeal?.timestamp) }}
+        </div>
+      </span>
     </div>
   </ng-container>
 </div>

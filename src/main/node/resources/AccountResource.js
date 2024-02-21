@@ -341,6 +341,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.get('/users/get/random', async (req, res) => {
+  try {
+    const ret = await new accountService().getUsersRandom(parseInt(req.query.size));
+    res.status(200).json(ret);
+    return;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.post('/register/smm', async (req, res) => {
   try {
     // Get user input

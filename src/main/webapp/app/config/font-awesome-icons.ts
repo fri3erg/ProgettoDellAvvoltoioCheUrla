@@ -50,6 +50,7 @@ import {
   faRightFromBracket,
   faRightToBracket,
   faCircle,
+  faPaperPlane,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -57,6 +58,7 @@ export const fontAwesomeIcons = [
   faArrowLeft,
   faAsterisk,
   faBan,
+  faPaperPlane,
   faBars,
   faBell,
   faBook,

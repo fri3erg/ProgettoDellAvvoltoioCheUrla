@@ -19,7 +19,10 @@
 .mytimestamp {
   line-height: 3.1rem;
   font-size: smaller;
-  padding-right: 1.5rem;
+  padding-right: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .mynotify {
   line-height: 3rem;
@@ -36,6 +39,24 @@
   border: 2px solid $custom-purple;
   display: block;
   overflow: hidden;
+}
+
+.truncate {
+  width: 6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Adjust line-height as needed */
+  max-height: 3.6em; /* This should be line-height * number of lines you want to show */
+  white-space: normal;
+  padding-right: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.truncatename {
+  width: 10rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .whole {

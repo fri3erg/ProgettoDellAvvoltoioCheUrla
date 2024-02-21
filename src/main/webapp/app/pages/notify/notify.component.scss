@@ -11,13 +11,32 @@
   border: 2px solid $custom-purple;
 }
 
+.truncate {
+  width: 9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.truncatebody {
+  width: 9rem; /* Adjust the width as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em;
+  max-height: 4.1em;
+  white-space: normal;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  flex: 1;
+}
+
 .notif {
   border: 2px solid $custom-purple;
   display: flex;
   padding: 1.5rem;
   margin-bottom: 0.7rem;
   background-color: white;
-  padding-bottom: 0rem;
+  padding-bottom: 1rem;
   padding-left: 1rem;
 }
 .body {
@@ -29,6 +48,9 @@
 
 .reaction {
   font-size: larger;
+}
+.padded {
+  padding-left: 0.6rem;
 }
 
 .timestamp {

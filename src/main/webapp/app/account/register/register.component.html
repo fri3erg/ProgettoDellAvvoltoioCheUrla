@@ -58,12 +58,8 @@
               Your username is required to be at least 1 character.
             </small>
 
-            <small
-              class="form-text text-danger"
-              *ngIf="registerForm.get('login')?.errors?.maxlength"
-              jhiTranslate="register.messages.validate.login.maxlength"
-            >
-              Your username cannot be longer than 50 characters.
+            <small class="form-text text-danger" *ngIf="registerForm.get('login')?.errors?.maxlength">
+              Your username cannot be longer than 25 characters.
             </small>
 
             <small

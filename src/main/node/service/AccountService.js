@@ -24,9 +24,6 @@ class AccountService {
     if (!(await this.isUserAuthorized(user, thisUser))) {
       throw new Error('unauthorized');
     }
-    if (search.startsWith('@')) {
-      search = search.substring(1);
-    }
     let users = [];
     if (byRole) {
       users = await User.find({ authorities: byRole });
@@ -136,6 +133,8 @@ class AccountService {
   }
 
   async searchUser(search) {
+    search = search.trim().replace(/[@§#]/g, '');
+
     return await User.find({ login: { $regex: '(?i).*' + search + '.*' } });
   }
 
@@ -289,8 +288,16 @@ class AccountService {
 
     const purchased = await AdminExtra.find({ user_id: thisUser._id.toString(), valid_until: { $gte: Date.now() } });
     const ch_purchased = purchased.reduce((acc, p) => acc + p.n_characters, 0);
+    const squeals = await squeal.find({
+      user_id: thisUser._id.toString(),
+      timestamp: { $gte: Date.now() - config.msinMonth },
+      destination: {
+        $elemMatch: {
+          destination_type: { $ne: 'MESSAGE' },
+        },
+      },
+    });
 
-    const squeals = await squeal.find({ user_id: thisUser._id.toString(), timestamp: { $gte: Date.now() - config.msinMonth } });
     const ids = squeals
       .filter(s => !s.destination.some(d => ['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)))
       .map(s => s._id.toString());
@@ -436,6 +443,17 @@ class AccountService {
 
     thisUser.password = encryptedNewPassword;
     return thisUser.save();
+  }
+
+  async getUsersRandom(size) {
+    const ret = [];
+
+    const users = await User.aggregate([{ $sample: { size: size } }]);
+
+    for (const u of users) {
+      ret.push(await this.hideSensitive(u));
+    }
+    return ret;
   }
 
   async resetPasswordInit(user, mail) {

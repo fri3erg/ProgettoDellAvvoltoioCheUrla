@@ -48,6 +48,16 @@ router.get('/channels/:id', auth, async (req, res) => {
   }
 });
 
+router.get('/channels/get/random', auth, async (req, res) => {
+  try {
+    const ret = await new channelService().getRandomChannelList(parseInt(req.query.size));
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 router.delete('/channels/:id', auth, async (req, res) => {
   try {
     const ret = await new channelService().deleteChannel(req.user, req.params.id);

@@ -24,6 +24,10 @@ export class ChannelService {
   getUsersSubbedToChannel(id: string): Observable<HttpResponse<Account[]>> {
     return this.http.get<Account[]>(`api/channels/get-subscribed/${id}`, { observe: 'response' });
   }
+  getRandomChannels(size: number): Observable<HttpResponse<IChannelDTO[]>> {
+    const params = new HttpParams().set('size', size.toString());
+    return this.http.get<IChannelDTO[]>(`api/channels/get/random`, { params, observe: 'response' });
+  }
 
   countUsersFollowing(id: string): Observable<HttpResponse<number>> {
     return this.http.get<number>(`api/channels/countSubs/${id}`, { observe: 'response' });

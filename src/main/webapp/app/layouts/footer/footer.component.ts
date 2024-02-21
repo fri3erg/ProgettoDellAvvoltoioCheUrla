@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
@@ -13,6 +13,8 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 export default class FooterComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   unreadNotificationCount = 0;
+  @ViewChild('dingSound') dingSound?: ElementRef;
+
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -59,8 +61,30 @@ export default class FooterComponent implements OnInit, OnDestroy {
   }
 
   generateBeep(): void {
-    const audio = new Audio('/home/assets/sounds/ding.mp3');
-    audio.play();
+    try {
+      // In your Angular component// Create an AudioContext
+      const audioContext = new window.AudioContext();
+
+      // Create an oscillator
+      const oscillator = audioContext.createOscillator();
+      oscillator.type = 'sine'; // Type of wave
+      oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequency in hertz (1000Hz is a clear "ding" sound)
+
+      // Create a gain node (to control the volume)
+      const gainNode = audioContext.createGain();
+      gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Set volume to 50%
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // Fade out after 1 second
+
+      // Connect the oscillator to the gain node and the gain node to the audio context's destination (the speakers)
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Start the oscillator and schedule it to stop after 2 seconds
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 2); // Stop after 2 seconds to ensure it doesn't keep going indefinitely
+    } catch (error) {
+      console.error('Error playing the sound:', error);
+    }
   }
 
   ngOnDestroy(): void {

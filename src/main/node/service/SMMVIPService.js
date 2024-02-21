@@ -25,29 +25,28 @@ class SMMVIPService {
       const client = await user.findOne({ login: userLogin });
       const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id } } });
       const thisUser = await user.findOne({ login: username });
-  
+
       if (isClient) {
         throw new Error('User already has a SMM');
       }
-  
+
       if (!thisUser || !thisUser.authorities || !Array.isArray(thisUser.authorities)) {
         throw new Error('Invalid user or missing authorities');
       }
-  
+
       const hasPermission = ['ROLE_ADMIN', 'ROLE_SMM'].some(role => thisUser.authorities.includes(role));
       if (!hasPermission) {
         throw new Error('User does not have the required permissions');
       }
-  
+
       const opt = { new: true };
       await smmVIP.findOneAndUpdate({ user_id: thisUser._id }, { $push: { users: client._id } }, opt);
-      
+
       return 'added';
     } catch (error) {
       throw new Error(error.message);
     }
   }
-  
 
   async removeSMM(smmId, currentId) {
     const opt = { new: true };
@@ -103,6 +102,8 @@ class SMMVIPService {
     if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
       throw new Error('Unauthorized');
     }
+    search = search.trim().replace(/[@§#]/g, '');
+
     const smm = await user.find({
       login: { $regex: search, $options: 'i' },
       authorities: { $in: ['ROLE_SMM'] },

@@ -236,7 +236,7 @@ class ChannelUserService {
             throw new Error('unable to create new channel');
           }
           destination.destination_id = newdest._id.toString();
-          destination.destination = newdest.destination;
+          destination.destination = newdest.name;
         }
         return true;
       case 'MESSAGE':

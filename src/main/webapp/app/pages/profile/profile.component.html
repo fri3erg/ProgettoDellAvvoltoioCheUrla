@@ -75,7 +75,7 @@
     <div [routerLink]="['/profile', profileName, 'mychannels']" class="stats rounded-4">{{ this.nChannels }} channels</div>
     <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squealslength }} squeals</div>
 
-    <div class="dropdown-user rounded-4 account-squeal">
+    <div class="dropdown-user rounded-4 account-squeal" *ngIf="account?.login === myAccount?.login">
       <ul class="navbar-nav">
         <li
           ngbDropdown
