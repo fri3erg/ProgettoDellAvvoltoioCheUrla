@@ -81,7 +81,8 @@ router.post('/account/add-client/', auth, async (req, res) => {
   try {
     const userName = req.user.username;
     const clientName = req.query.client;
-    const ret = await new SMMVIPService().addClient(userName, clientName);
+    const notificationId = req.query.id;
+    const ret = await new SMMVIPService().addClient(userName, clientName, notificationId);
     res.status(200).json(ret);
   } catch (err) {
     res.status(500).send();

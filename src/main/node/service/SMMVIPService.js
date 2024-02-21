@@ -1,6 +1,7 @@
 const channelUser = require('../model/channelUser');
 const smmVIP = require('../model/smmVIP');
 const user = require('../model/user');
+const notification = require('../model/notification');
 const accountService = require('./AccountService');
 
 class SMMVIPService {
@@ -20,7 +21,7 @@ class SMMVIPService {
     return 'added';
   }
 
-  async addClient(username, userLogin) {
+  async addClient(username, userLogin, notificationId) {
     try {
       const client = await user.findOne({ login: userLogin });
       const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id } } });
@@ -38,6 +39,9 @@ class SMMVIPService {
       if (!hasPermission) {
         throw new Error('User does not have the required permissions');
       }
+
+      console.log('notificationId', notificationId);
+      await notification.deleteOne({ _id: notificationId.toString() });
 
       const opt = { new: true };
       await smmVIP.findOneAndUpdate({ user_id: thisUser._id }, { $push: { users: client._id } }, opt);
