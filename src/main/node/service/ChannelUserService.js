@@ -206,7 +206,6 @@ class ChannelUserService {
     }
     switch (destination.destination_type) {
       case 'MOD':
-        /*
         const userSubMod = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
         if (!userSubMod) {
           return false;
@@ -214,8 +213,6 @@ class ChannelUserService {
         if (userSubMod.privilege == 'ADMIN') {
           return true;
         }
-        */
-        return true;
         break;
       case 'PRIVATEGROUP':
         const userSub = await ChannelUser.findOne({ channel_id: destination.destination_id, user_id: thisUser._id.toString() });
@@ -228,15 +225,19 @@ class ChannelUserService {
         break;
       case 'PUBLICGROUP':
         if (!destination.destination_id && destination.destination) {
-          const newdest = await Channel.create({
-            name: destination.destination,
-            type: 'PUBLICGROUP',
-          });
-          if (!newdest) {
-            throw new Error('unable to create new channel');
+          const foundChannel = await Channel.findOne({ name: destination.destination, destination_type: 'PUBLICGROUP' });
+          if (!foundChannel) {
+            const newdest = await Channel.create({
+              name: destination.destination,
+              type: 'PUBLICGROUP',
+            });
+            await ChannelUser.create({ channel_id: newdest._id.toString(), user_id: thisUser._id.toString() });
+            if (!newdest) {
+              throw new Error('unable to create new channel');
+            }
+            destination.destination_id = newdest._id.toString();
+            destination.destination = newdest.name;
           }
-          destination.destination_id = newdest._id.toString();
-          destination.destination = newdest.name;
         }
         return true;
       case 'MESSAGE':

@@ -63,10 +63,10 @@ export class ChannelSubscribeComponent implements OnInit, OnDestroy {
   }
 
   confirm(c?: IChannelDTO): void {
-    /*if(c?.channel.type!==ChannelTypes.PRIVATEGROUP){
-    this.unSub(c);
-    return;
-  }*/
+    if (c?.channel.type !== ChannelTypes.PRIVATEGROUP) {
+      this.unSub(c);
+      return;
+    }
     this.confirmationService.confirm({
       message: 'careful, you will not be able to resubscribe',
       header: 'Confirmation',

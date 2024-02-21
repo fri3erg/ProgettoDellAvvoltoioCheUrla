@@ -152,6 +152,11 @@ export class CreateSquealComponent implements OnInit {
             console.log(this.dto);
             this.messageService.add({ severity: 'success', summary: 'Squeal Squealed', detail: 'You squealed' });
             this.squealed.emit(true);
+            this.userCharsService.getChars().subscribe(i => {
+              if (i.body) {
+                this.charsDTO = i.body;
+              }
+            });
           }
         },
         error => {
@@ -245,7 +250,7 @@ export class CreateSquealComponent implements OnInit {
 
   makePayment(): void {
     this.loading = true;
-    const pr = {};
+    const pr = { desc: 'Pagamento 500 caratteri per Squealer' };
     this.moneyService
       .getPaymentUrl(pr)
       .pipe(

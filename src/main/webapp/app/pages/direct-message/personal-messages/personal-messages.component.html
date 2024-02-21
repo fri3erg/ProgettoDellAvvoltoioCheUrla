@@ -58,5 +58,5 @@
     ></textarea>
     <label for="floatingTextarea2">write a message</label>
   </div>
-  <div class="invia rounded-4" (click)="createSqueal()">Invia</div>
+  <button class="invia rounded-4" [disabled]="message.length === 0" (click)="createSqueal()">Invia</button>
 </form>

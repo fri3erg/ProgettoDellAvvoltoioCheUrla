@@ -35,6 +35,11 @@ export class AccountService {
       observe: 'response',
     });
   }
+  removeSMM(login?: string): Observable<HttpResponse<Account>> {
+    return this.http.get<Account>(this.applicationConfigService.getEndpointFor(`api/remove-smm-login/${login ?? ''}`), {
+      observe: 'response',
+    });
+  }
   update(user: Account): Observable<HttpResponse<Account>> {
     return this.http.post<Account>(this.applicationConfigService.getEndpointFor('api/account/update'), user, { observe: 'response' });
   }
@@ -50,6 +55,14 @@ export class AccountService {
       search = '';
     }
     const url = this.applicationConfigService.getEndpointFor(`api/smm/search`);
+    const params = new HttpParams().append('search', search);
+    return this.http.get<Account[]>(url, { params, observe: 'response' });
+  }
+  findSMMSubbed(search?: string): Observable<HttpResponse<Account[]>> {
+    if (!search) {
+      search = '';
+    }
+    const url = this.applicationConfigService.getEndpointFor(`api/smm/search-subbed`);
     const params = new HttpParams().append('search', search);
     return this.http.get<Account[]>(url, { params, observe: 'response' });
   }

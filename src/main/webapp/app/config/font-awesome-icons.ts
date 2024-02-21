@@ -51,6 +51,7 @@ import {
   faRightToBracket,
   faCircle,
   faPaperPlane,
+  faStar,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -65,6 +66,7 @@ export const fontAwesomeIcons = [
   faCalendarAlt,
   faCheck,
   faCloud,
+  faStar,
   faCogs,
   faDatabase,
   faEye,

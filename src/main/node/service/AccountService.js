@@ -293,14 +293,12 @@ class AccountService {
       timestamp: { $gte: Date.now() - config.msinMonth },
       destination: {
         $elemMatch: {
-          destination_type: { $ne: 'MESSAGE' },
+          destination_type: { $in: ['PRIVATEGROUP', 'PUBLICGROUP'] },
         },
       },
     });
 
-    const ids = squeals
-      .filter(s => !s.destination.some(d => ['MOD', 'PRIVATEGROUP', 'PUBLICGROUP'].includes(d.destination_type)))
-      .map(s => s._id.toString());
+    const ids = squeals.map(s => s._id.toString());
 
     const cats = await SquealCat.find({ squeal_id: { $in: ids } });
     const ch_total = cats.reduce((acc, c) => acc + c.n_characters, 0);

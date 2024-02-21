@@ -1,8 +1,8 @@
 <div class="channel-layout rounded-4">
-  <div class="channelname" [routerLink]="['/channels/view', (channel?.channel?._id || '').toString()]">
+  <span class="channelname" [routerLink]="['/channels/view', (channel?.channel?._id || '').toString()]">
     {{ channel?.channel?.name }}
-  </div>
-  <div>
+  </span>
+  <span>
     <jhi-channel-subscribe [channel]="channel"></jhi-channel-subscribe>
-  </div>
+  </span>
 </div>

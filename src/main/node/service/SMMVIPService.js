@@ -103,7 +103,11 @@ class SMMVIPService {
     if (!thisUser) {
       throw new Error('Invalid Username');
     }
-    if (!(await new accountService().isUserAuthorized(myUser, thisUser))) {
+    if (
+      !(await new accountService().isUserAuthorized(myUser, thisUser)) ||
+      !thisUser.authorities.includes('ROLE_VIP') ||
+      !thisUser.authorities.includes('ROLE_ADMIN')
+    ) {
       throw new Error('Unauthorized');
     }
     search = search.trim().replace(/[@§#]/g, '');
@@ -115,6 +119,33 @@ class SMMVIPService {
 
     for (const user of smm) {
       smmArray.push(await new accountService().hideSensitive(user));
+    }
+
+    return smmArray;
+  }
+
+  async getSMMSubbed(myUser, username, search) {
+    let smmArray = [];
+    const thisUser = await user.findOne({ login: username });
+    if (!thisUser) {
+      throw new Error('Invalid Username');
+    }
+    if (
+      !(await new accountService().isUserAuthorized(myUser, thisUser)) ||
+      !thisUser.authorities.includes('ROLE_VIP') ||
+      !thisUser.authorities.includes('ROLE_ADMIN')
+    ) {
+      throw new Error('Unauthorized');
+    }
+    search = search.trim().replace(/[@§#]/g, '');
+
+    const smm = await smmVIP.find({ users: { $elemMatch: { $eq: thisUser._id.toString() } } });
+
+    for (const user of smm) {
+      const userSMM = await user.findById(user.user_id);
+      if (userSMM.login.includes(search)) {
+        smmArray.push(await new accountService().hideSensitive(userSMM));
+      }
     }
 
     return smmArray;

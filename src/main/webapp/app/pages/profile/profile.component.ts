@@ -147,9 +147,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  isVip(): boolean {
-    return this.account?.authorities.includes('ROLE_VIP') ?? false;
-  }
   search(event: any): void {
     const q: string = event.query;
     console.log(q);
@@ -189,6 +186,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'SMM not added' });
       }
     });
+  }
+
+  isVip(): boolean {
+    // Assuming 'authorities' is an array of strings. Adjust the type if it's different.
+    const authorities: string[] = this.account?.authorities ?? [];
+    const a = authorities.includes('ROLE_VIP ') || authorities.includes('ROLE_ADMIN');
+    return a;
   }
 
   loadOther(): void {

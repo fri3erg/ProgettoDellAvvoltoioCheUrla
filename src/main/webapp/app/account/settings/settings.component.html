@@ -162,7 +162,52 @@
           Save
         </button>
         <button title="Delete account" class="btn btn-primary" style="float: right" (click)="confirm()">Delete my account</button>
+
+        <button title="remove a SMM" *ngIf="!openmySearch" class="btn btn-primary pe-1" (click)="openmySearch = true">remove a SMM</button>
+        <button title="Close" *ngIf="openmySearch" class="btn btn-primary" (click)="openmySearch = false">close</button>
+        <button class="btn btn-warning" type="button" (click)="makePayment()">
+          <span *ngIf="!loading">Compra VIP</span>
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
       </form>
     </div>
+  </div>
+
+  <div *ngIf="openmySearch" class="d-flex justify-content-center mt-4 rounded-4">
+    <p-autoComplete
+      [style]="{ width: '100%' }"
+      name="social media manager to add"
+      [minLength]="2"
+      [(ngModel)]="smm"
+      [suggestions]="results ?? []"
+      (completeMethod)="search($event)"
+      [multiple]="false"
+      field="login"
+      placeholder="smm username"
+      aria-autocomplete="list"
+      role="searchbox"
+      title="search for destination"
+      aria-haspopup="true"
+    ></p-autoComplete>
+    <button
+      [disabled]="!smm"
+      class="btn rounded-pill"
+      style="margin-left: 0.5rem; padding: 0.5rem; border: 2px solid #4b2ca0"
+      type="button"
+      [disabled]="!smm"
+      (click)="removeSMM()"
+    >
+      Remove
+    </button>
+  </div>
+  <div class="d-flex, justify-content-center">
+    <p *ngIf="paymentUrlResponse != null">Attendere redirect a {{ paymentUrlResponse.url }} per il pagamento</p>
+
+    <form name="pf" #pf ngNoForm style="display: none" method="post" [action]="paymentUrlResponse.url" *ngIf="paymentUrlResponse">
+      <ng-template ngFor let-param [ngForOf]="paymentUrlResponse.parameters">
+        <input type="hidden" [name]="param.name" [value]="param.value" />
+      </ng-template>
+      <button type="submit" [hidden]="'true'"></button>
+    </form>
   </div>
 </div>

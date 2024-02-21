@@ -18,6 +18,7 @@ router.post('/nexi-return', auth, async (req, res) => {
     if (transaction && transaction.status !== 'START') {
       return res.status(400).send('Transaction already processed');
     }
+
     const updatedTransaction = await moneyService.updateTransaction(params);
     res.status(200).send({ message: 'Transaction updated successfully', data: updatedTransaction });
   } catch (error) {
@@ -28,6 +29,7 @@ router.post('/nexi-return', auth, async (req, res) => {
 
 router.post('/nexi-start', auth, async (req, res) => {
   try {
+    const query = req.query;
     const user = req.user; // Assuming `req.user` is set by your auth middleware
     const response = await moneyService.createMac(user, req.body);
     res.send(response);

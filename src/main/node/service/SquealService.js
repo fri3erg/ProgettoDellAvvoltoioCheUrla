@@ -550,7 +550,7 @@ class SquealService {
           dest.destination_id = destUser[0]._id.toString();
         }
       }
-      if (squeal.squeal_id_response || (await new channelUserService().userHasWritePrivilege(dest, thisUser))) {
+      if (await new channelUserService().userHasWritePrivilege(dest, thisUser)) {
         //!
         newSqueal.destination.seen = false;
         newSqueal.destination.push(dest);

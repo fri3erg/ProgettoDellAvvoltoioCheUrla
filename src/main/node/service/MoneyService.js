@@ -41,6 +41,7 @@ class MoneyService {
   }
 
   async createMac(user, urlRequest) {
+    const description = urlRequest.desc;
     const thisUser = await User.findOne({ _id: user.user_id });
     if (!thisUser) {
       throw new Error('Invalid user');
@@ -67,7 +68,7 @@ class MoneyService {
     const mac = `codTrans=${codTrans}divisa=${pay.currency}importo=${pay.amount}${this.PAYMENT_KEY}`;
     resp.addParameter('mac', this.getSha1(mac));
     resp.addParameter('alias', this.PAYMENT_ALIAS);
-    resp.addParameter('descrizione', `Pagamento 500 caratteri per Squealer, buon squealing ${thisUser.login}!`);
+    resp.addParameter('descrizione', `${description}, buon squealing ${thisUser.login}!`);
 
     return resp.getResponse();
   }
@@ -98,13 +99,22 @@ class MoneyService {
   async updateTransaction(params) {
     const updatedTransaction = await Money.findById(params.codTrans);
     await Money.updateOne(updatedTransaction, { status: params.esito });
-    await AdminExtras.create({
-      user_id: updatedTransaction.user_id,
-      n_characters: updatedTransaction.n_characters,
-      timestamp: updatedTransaction.timestamp,
-      admin_created: 'SQUEALER_NEXI',
-      valid_until: updatedTransaction.timestamp + config.msinYear,
-    });
+
+    if (params.desc != 'buying vip status') {
+      await AdminExtras.create({
+        user_id: updatedTransaction.user_id,
+        n_characters: updatedTransaction.n_characters,
+        timestamp: updatedTransaction.timestamp,
+        admin_created: 'SQUEALER_NEXI',
+        valid_until: updatedTransaction.timestamp + config.msinYear,
+      });
+    } else {
+      const thisUser = await User.findOneAndUpdate(
+        { _id: updatedTransaction.user_id },
+        { $addToSet: { authorities: 'ROLE_VIP' } },
+        { new: true } // Return the updated document
+      );
+    }
     return params;
   }
 }

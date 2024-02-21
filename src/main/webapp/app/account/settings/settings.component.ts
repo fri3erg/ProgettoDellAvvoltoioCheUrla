@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -7,6 +7,10 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { LANGUAGES } from 'app/config/language.constants';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { MoneyService } from 'app/pages/money/money.service';
+import { HttpResponse } from '@angular/common/http';
+import { PaymentUrlResponse } from 'app/shared/model/deserialize-model';
+import { finalize } from 'rxjs';
 
 const initialAccount: Account = {} as Account;
 
@@ -19,6 +23,15 @@ const initialAccount: Account = {} as Account;
 export default class SettingsComponent implements OnInit {
   success = false;
   languages = LANGUAGES;
+  response?: string;
+  smm?: Account;
+  results?: Account[];
+  openmySearch = false;
+  error: any;
+
+  loading = false;
+  paymentUrlResponse?: PaymentUrlResponse;
+  @ViewChild('pf') paymentFormElement?: ElementRef;
 
   settingsForm = new FormGroup({
     first_name: new FormControl(initialAccount.first_name, {
@@ -47,7 +60,8 @@ export default class SettingsComponent implements OnInit {
     private accountService: AccountService,
     private translateService: TranslateService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private moneyService: MoneyService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +70,73 @@ export default class SettingsComponent implements OnInit {
         this.settingsForm.patchValue(account);
       }
     });
+  }
+
+  search(event: any): void {
+    const q: string = event.query;
+    console.log(q);
+
+    this.accountService.findSMMSubbed(q).subscribe(r => {
+      this.results = [];
+      if (r.body) {
+        for (const dest of r.body) {
+          this.results.push(dest);
+        }
+      }
+    });
+  }
+
+  removeSMM(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sureyou want to remove this smm?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.accountService.removeSMM(this.smm?.login).subscribe(r => {
+          if (r.body) {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'SMM removed' });
+          } else {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'SMM not removed' });
+          }
+        });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: '' });
+      },
+    });
+  }
+
+  makePayment(): void {
+    this.loading = true;
+    const pr = { desc: 'buying vip status' };
+    this.moneyService
+      .getPaymentUrl(pr)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe(
+        result => {
+          if (result instanceof HttpResponse) {
+            this.paymentUrlResponse = result.body;
+            console.log(this.paymentUrlResponse);
+            setTimeout(() => {
+              this.submitPaymentForm();
+            }, 500);
+          } else {
+            this.error = result;
+          }
+        },
+        error => {
+          console.error(error);
+        }
+      );
+  }
+
+  submitPaymentForm(): void {
+    console.log('submit');
+    this.paymentFormElement?.nativeElement.submit();
   }
 
   save(): void {

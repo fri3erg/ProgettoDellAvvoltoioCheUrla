@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
+    "contexts": "^0.0.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -37,6 +38,7 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.9",
     "openai": "^4.17.5",
+    "react-rsc": "^0.0.0",
     "readline-sync": "^1.4.10",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.1",

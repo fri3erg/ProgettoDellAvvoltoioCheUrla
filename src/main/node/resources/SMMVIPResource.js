@@ -115,6 +115,25 @@ router.post('/remove-smm/:_id', auth, async (req, res) => {
   }
 });
 
+router.post('/remove-smm-login/:login', auth, async (req, res) => {
+  try {
+    const thisUser = await user.findOne({ login: req.user.username });
+    if (!thisUser.authorities) {
+      return res.status(401).send('Non hai i permessi');
+    } else {
+      const smm = await User.findOne({ login: req.params.login });
+      if (!smm) {
+        return res.status(401).send('Non valido');
+      }
+      const smmId = smm._id.toString();
+      await new SMMVIPService().removeSMM(smmId, thisUser._id);
+      res.status(201);
+    }
+  } catch (err) {
+    res.status(500).send();
+  }
+});
+
 //dammi oggetto di tutti i clienti del smm ✅
 //chiamato dal smm quando vuole visualizzare tutti i suoi clienti
 router.get('/smmclients/:_id', auth, async (req, res) => {
@@ -249,6 +268,15 @@ router.post('/client-squeal-reaction/create/:name', auth, async (req, res) => {
 router.get('/smm/search', auth, async (req, res) => {
   try {
     const ret = await new SMMVIPService().getSMM(req.user, req.user.username, req.query.search);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+router.get('/smm/search-subbed', auth, async (req, res) => {
+  try {
+    const ret = await new SMMVIPService().getSMMSubbed(req.user, req.user.username, req.query.search);
     res.status(200).json(ret);
   } catch (err) {
     console.log(err);
