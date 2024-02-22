@@ -24,27 +24,27 @@ class SMMVIPService {
   async addClient(username, userLogin, notificationId) {
     try {
       const client = await user.findOne({ login: userLogin });
-      const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id } } });
+      const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id.toString() } } });
       const thisUser = await user.findOne({ login: username });
 
       if (isClient) {
         throw new Error('User already has a SMM');
       }
 
-      if (!thisUser || !thisUser.authorities || !Array.isArray(thisUser.authorities)) {
+      if (!thisUser) {
         throw new Error('Invalid user or missing authorities');
       }
 
-      const hasPermission = ['ROLE_ADMIN', 'ROLE_SMM'].some(role => thisUser.authorities.includes(role));
+      const hasPermission = thisUser.authorities.includes('ROLE_SMM') || thisUser.authorities.includes('ROLE_ADMIN');
       if (!hasPermission) {
         throw new Error('User does not have the required permissions');
       }
 
       console.log('notificationId', notificationId);
-      await notification.deleteOne({ _id: notificationId.toString() });
+      //await notification.deleteOne({ _id: notificationId.toString() });
 
       const opt = { new: true };
-      await smmVIP.findOneAndUpdate({ user_id: thisUser._id }, { $push: { users: client._id } }, opt);
+      await smmVIP.findOneAndUpdate({ user_id: thisUser._id.toString() }, { $push: { users: client._id.toString() } }, opt);
 
       return 'added';
     } catch (error) {

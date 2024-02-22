@@ -600,4 +600,14 @@ router.get('/channels/sub/get/smm/:client/:name', auth, async (req, res) => {
   }
 });
 
+router.post('/add-char/smm-to-client/', auth, async (req, res) => {
+  try {
+    const ret = await new accountService().addCharToClient(req.user, req.query.name, req.body.char);
+    res.status(200).json(ret);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err.message);
+  }
+});
+
 module.exports = router; // export to use in server.js

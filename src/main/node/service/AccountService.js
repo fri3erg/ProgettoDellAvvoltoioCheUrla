@@ -211,6 +211,25 @@ class AccountService {
     return admin_extra;
   }
 
+  async addCharToClient(user, clientUsername, char) {
+    const myUser = await User.findOne({ login: clientUsername });
+    if (!myUser) {
+      throw new Error('invalid username');
+    }
+
+    if (!(await this.isUserAuthorized(user, myUser))) {
+      throw new Error('Unathorized');
+    }
+
+    await AdminExtra.create({
+      n_characters: char,
+      user_id: myUser._id.toString(),
+      timestamp: Date.now(),
+      admin_created: 'SMM',
+    });
+    return 'ch added';
+  }
+
   async delete(user) {
     const thisUser = await User.findOne({ login: user.username });
     const user_id = thisUser._id.toString();
