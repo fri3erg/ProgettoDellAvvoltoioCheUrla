@@ -621,7 +621,7 @@ class SquealService {
     return ret;
   }
 
-  async deleteSqueal(squeal, user) {
+  async deleteSqueal(squealId, user) {
     const thisUser = await User.findOne({ login: user.username });
     if (!thisUser) {
       throw new Error('invalid user');
@@ -629,15 +629,15 @@ class SquealService {
     if (!(await new accountService().isMod(thisUser))) {
       throw new Error('Unathorized');
     }
-    if (!squeal || !squeal._id) {
+    if (!squealId) {
       throw new Error('invalid squeal');
     }
-    const squeal_deleted = await Squeal.deleteOne({ _id: squeal._id });
-    const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squeal._id });
-    const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squeal._id });
-    const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squeal._id });
-    const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squeal._id });
-    const comments_deleted = await Squeal.deleteMany({ squeal_id_response: squeal._id });
+    const squeal_deleted = await Squeal.deleteOne({ _id: squealId });
+    const squealCat_deleted = await SquealCat.deleteMany({ squeal_id: squealId });
+    const squealViews_deleted = await SquealViews.deleteMany({ squeal_id: squealId });
+    const geoLoc_deleted = await GeoLoc.deleteMany({ squeal_id: squealId });
+    const reactions_deleted = await SquealReaction.deleteMany({ squeal_id: squealId });
+    const comments_deleted = await Squeal.deleteMany({ squeal_id_response: squealId });
 
     return squeal_deleted;
   }

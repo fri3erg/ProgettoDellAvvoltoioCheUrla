@@ -24,12 +24,7 @@ class SMMVIPService {
   async addClient(username, userLogin, notificationId) {
     try {
       const client = await user.findOne({ login: userLogin });
-      const isClient = await smmVIP.findOne({ users: { $elemMatch: { $eq: client._id.toString() } } });
       const thisUser = await user.findOne({ login: username });
-
-      if (isClient) {
-        throw new Error('User already has a SMM');
-      }
 
       if (!thisUser) {
         throw new Error('Invalid user or missing authorities');
