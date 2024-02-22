@@ -1,185 +1,211 @@
-<div *ngIf="account">
-  <div class="p-fluid p-1">
-    <div class="p-field top_profile">
-      <div>
-        <img [src]="'data:' + account.img_content_type + ';base64,' + account.img" class="profilepic" *ngIf="account.img" alt="Immagine" />
+<div class="d-flex justify-content-center">
+  <div style="width: 50rem">
+    <div *ngIf="account">
+      <div class="p-fluid p-1">
+        <div class="p-field top_profile">
+          <div>
+            <img
+              [src]="'data:' + account.img_content_type + ';base64,' + account.img"
+              class="profilepic"
+              *ngIf="account.img"
+              alt="Immagine"
+            />
+          </div>
+          <div class="user-info">
+            <div style="font-size: larger; font-weight: bold">
+              @{{ this.account.login || 'default login' }}
+              <fa-icon icon="star" style="color: yellow; font-size: 14px" [fixedWidth]="true" [size]="'xl'" *ngIf="isVip()"></fa-icon>
+            </div>
+            <div style="font-weight: 500">
+              {{ this.account.first_name || 'firstname' }}
+              {{ this.account.last_name || 'lastname' }}
+            </div>
+            <div *ngIf="!isMod()" style="font-size: small; padding-top: 0.3rem">{{ remaining }} characters remaining</div>
+          </div>
+        </div>
       </div>
-      <div class="user-info">
-        <div style="font-size: larger; font-weight: bold">
-          @{{ this.account.login || 'default login' }}
-          <fa-icon icon="star" style="color: yellow; font-size: 14px" [fixedWidth]="true" [size]="'xl'" *ngIf="isVip()"></fa-icon>
-        </div>
-        <div style="font-weight: 500">
-          {{ this.account.first_name || 'firstname' }}
-          {{ this.account.last_name || 'lastname' }}
-        </div>
-        <div style="font-size: small; padding-top: 0.3rem">{{ remaining }} characters remaining</div>
-      </div>
-    </div>
-  </div>
 
-  <div class="buttons">
-    <div *ngIf="account?.login === myAccount?.login && !openEdit" class="options rounded-4" (click)="openEdit = true">edit profile</div>
-    <div *ngIf="account?.login === myAccount?.login && openEdit" class="options rounded-4" (click)="openEdit = false">cancel</div>
-    <div *ngIf="!openmySearch && account?.login === myAccount?.login && isVip()" class="options rounded-4" (click)="openmySearch = true">
-      add a SMM
-    </div>
-    <div *ngIf="openmySearch && account?.login === myAccount?.login && isVip()" class="options rounded-4" (click)="openmySearch = false">
-      close
-    </div>
-  </div>
-
-  <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
-    <div>
-      <form class="form_edit">
-        <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
-        <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
-        <div class="bottom_edit">
-          <button type="submit" class="btn rounded-pill submitedit" (click)="applyEdit()">Apply</button>
-          <span class="button-group">
-            <button title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
-              <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
-            </button>
-
-            <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
-              <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
-            </button>
-
-            <button class="btn btn-block" title="seleziona immagine" type="button" onclick="document.getElementById('file_select').click()">
-              <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
-            </button>
-          </span>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
-  <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
-
-  <div style="display: flex" *ngIf="openmySearch && isVip()" class="addsmm rounded-4">
-    <p-autoComplete
-      [style]="{ width: '100%' }"
-      name="social media manager to add"
-      [minLength]="2"
-      [(ngModel)]="smm"
-      [suggestions]="results ?? []"
-      (completeMethod)="search($event)"
-      [multiple]="false"
-      field="login"
-      placeholder="smm username"
-      aria-autocomplete="list"
-      role="searchbox"
-      title="search for destination"
-      aria-haspopup="true"
-    ></p-autoComplete>
-    <button [disabled]="!smm" class="btn rounded-pill invia" type="button" (click)="addSMM()">Invia Richiesta</button>
-  </div>
-
-  <div class="stats-bar">
-    <div [routerLink]="['/profile', profileName, 'mychannels']" class="stats rounded-4">{{ this.nChannels }} channels</div>
-    <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squealslength }} squeals</div>
-
-    <div class="dropdown-user rounded-4 account-squeal" *ngIf="account?.login === myAccount?.login">
-      <ul class="navbar-nav">
-        <li
-          ngbDropdown
-          class="nav-item pointer"
-          display="dynamic"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          aria-haspopup="true"
-          aria-expanded="false"
+      <div class="buttons">
+        <div *ngIf="account?.login === myAccount?.login && !openEdit" class="options rounded-4" (click)="openEdit = true">edit profile</div>
+        <div *ngIf="account?.login === myAccount?.login && openEdit" class="options rounded-4" (click)="openEdit = false">cancel</div>
+        <div
+          *ngIf="!openmySearch && account?.login === myAccount?.login && isVip()"
+          class="options rounded-4"
+          (click)="openmySearch = true"
         >
-          <a
-            class="nav-link dropdown-toggle"
-            ngbDropdownToggle
-            id="account-menu"
-            data-cy="accountMenu"
-            role="button"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span>
-              <fa-icon icon="user"></fa-icon>
-              <span jhiTranslate="global.menu.account.main">Account</span>
-            </span>
-            <span *ngIf="account?.image_url">
-              <img [src]="account!.image_url" class="profile-image rounded-circle" alt="Avatar" />
-            </span>
-          </a>
-          <ul class="dropdown-menu rounded-4" ngbDropdownMenu aria-labelledby="account-menu">
-            <li>
+          add a SMM
+        </div>
+        <div
+          *ngIf="openmySearch && account?.login === myAccount?.login && isVip()"
+          class="options rounded-4"
+          (click)="openmySearch = false"
+        >
+          close
+        </div>
+      </div>
+
+      <div class="rounded-4 editProfile" *ngIf="account?.login === myAccount?.login && openEdit">
+        <div>
+          <form class="form_edit">
+            <input class="form-control" type="text" placeholder="firstname" name="firstname" [(ngModel)]="account.first_name" />
+            <input class="form-control" type="text" placeholder="lastname" name="lastname" [(ngModel)]="account.last_name" />
+            <div class="bottom_edit">
+              <button type="submit" class="btn rounded-pill submitedit" (click)="applyEdit()">Apply</button>
+              <span class="button-group">
+                <button title="Rotate" class="btn btn-block" type="button" (click)="rotateImage()">
+                  <fa-icon icon="rotate-right" [fixedWidth]="true"></fa-icon>
+                </button>
+
+                <button class="btn btn-block" title="scatta foto" type="button" onclick="document.getElementById('file_camera').click()">
+                  <fa-icon icon="camera" [fixedWidth]="true"></fa-icon>
+                </button>
+
+                <button
+                  class="btn btn-block"
+                  title="seleziona immagine"
+                  type="button"
+                  onclick="document.getElementById('file_select').click()"
+                >
+                  <fa-icon icon="folder-open" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <input type="file" style="display: none" id="file_select" (change)="setFileData($event)" accept="image/*" />
+      <input type="file" style="display: none" capture="camera" id="file_camera" (change)="setFileData($event)" accept="image/*" />
+
+      <div style="display: flex" *ngIf="openmySearch && isVip()" class="addsmm rounded-4">
+        <p-autoComplete
+          [style]="{ width: '100%' }"
+          name="social media manager to add"
+          [minLength]="2"
+          [(ngModel)]="smm"
+          [suggestions]="results ?? []"
+          (completeMethod)="search($event)"
+          [multiple]="false"
+          field="login"
+          placeholder="smm username"
+          aria-autocomplete="list"
+          role="searchbox"
+          title="search for destination"
+          aria-haspopup="true"
+        ></p-autoComplete>
+        <button [disabled]="!smm" class="btn rounded-pill invia" type="button" (click)="addSMM()">Invia Richiesta</button>
+      </div>
+
+      <div class="stats-bar">
+        <div [routerLink]="['/profile', profileName, 'mychannels']" class="stats rounded-4">{{ this.nChannels }} channels</div>
+        <div (click)="scrollToSqueals()" class="stats rounded-4">{{ squealslength }} squeals</div>
+
+        <div class="dropdown-user rounded-4 account-squeal" *ngIf="account?.login === myAccount?.login">
+          <ul class="navbar-nav">
+            <li
+              ngbDropdown
+              class="nav-item pointer"
+              display="dynamic"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               <a
-                class="dropdown-item"
-                routerLink="/account/settings"
-                routerLinkActive="active"
-                (click)="collapseNavbar()"
-                data-cy="settings"
+                class="nav-link dropdown-toggle"
+                ngbDropdownToggle
+                id="account-menu"
+                data-cy="accountMenu"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
               >
-                <fa-icon icon="wrench" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.account.settings">Settings</span>
+                <span>
+                  <fa-icon icon="user"></fa-icon>
+                  <span jhiTranslate="global.menu.account.main">Account</span>
+                </span>
+                <span *ngIf="account?.image_url">
+                  <img [src]="account!.image_url" class="profile-image rounded-circle" alt="Avatar" />
+                </span>
               </a>
-            </li>
-            <hr />
-            <li>
-              <a
-                class="dropdown-item"
-                routerLink="/account/password"
-                routerLinkActive="active"
-                (click)="collapseNavbar()"
-                data-cy="passwordItem"
-              >
-                <fa-icon icon="lock" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.account.password">Password</span>
-              </a>
-            </li>
-            <hr />
-            <li>
-              <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
-                <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.account.logout">Sign out</span>
-              </a>
+              <ul class="dropdown-menu rounded-4" ngbDropdownMenu aria-labelledby="account-menu">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/account/settings"
+                    routerLinkActive="active"
+                    (click)="collapseNavbar()"
+                    data-cy="settings"
+                  >
+                    <fa-icon icon="wrench" [fixedWidth]="true"></fa-icon>
+                    <span jhiTranslate="global.menu.account.settings">Settings</span>
+                  </a>
+                </li>
+                <hr />
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/account/password"
+                    routerLinkActive="active"
+                    (click)="collapseNavbar()"
+                    data-cy="passwordItem"
+                  >
+                    <fa-icon icon="lock" [fixedWidth]="true"></fa-icon>
+                    <span jhiTranslate="global.menu.account.password">Password</span>
+                  </a>
+                </li>
+                <hr />
+                <li>
+                  <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
+                    <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
+                    <span jhiTranslate="global.menu.account.logout">Sign out</span>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
+        </div>
+      </div>
+
+      <jhi-create-squeal
+        (squealed)="createdSqueal()"
+        *ngIf="connectedDestination"
+        [destination]="[connectedDestination]"
+      ></jhi-create-squeal>
+      <p-dataView #dv [value]="squeals" *ngIf="squeals" id="squeals">
+        <ng-template let-s pTemplate="listItem">
+          <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
+        </ng-template>
+      </p-dataView>
+
+      <div
+        jhiObserveElement
+        #intersection="intersection"
+        [class.example-card--is-intersecting]="intersection._isIntersecting"
+        (isIntersecting)="isIntersecting($event)"
+        [isContinuous]="true"
+        *ngIf="hasMorePage"
+      >
+        <span> Loading more...</span>
+      </div>
+    </div>
+    <div *ngIf="!account">
+      you are not logged in
+
+      <ul>
+        <li>
+          <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+            <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.login">Sign in</span>
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" (click)="collapseNavbar()" data-cy="register">
+            <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.register">Register</span>
+          </a>
         </li>
       </ul>
     </div>
   </div>
-
-  <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="connectedDestination" [destination]="[connectedDestination]"></jhi-create-squeal>
-  <p-dataView #dv [value]="squeals" *ngIf="squeals" id="squeals">
-    <ng-template let-s pTemplate="listItem">
-      <jhi-squeal-view [squeal]="s"></jhi-squeal-view>
-    </ng-template>
-  </p-dataView>
-
-  <div
-    jhiObserveElement
-    #intersection="intersection"
-    [class.example-card--is-intersecting]="intersection._isIntersecting"
-    (isIntersecting)="isIntersecting($event)"
-    [isContinuous]="true"
-    *ngIf="hasMorePage"
-  >
-    <span> Loading more...</span>
-  </div>
-</div>
-<div *ngIf="!account">
-  you are not logged in
-
-  <ul>
-    <li>
-      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
-        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.login">Sign in</span>
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" (click)="collapseNavbar()" data-cy="register">
-        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.register">Register</span>
-      </a>
-    </li>
-  </ul>
 </div>

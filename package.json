@@ -91,6 +91,7 @@
     "google-maps": "^4.3.3",
     "ngx-cron-jobs": "^15.2.2",
     "ngx-infinite-scroll": "16.0.0",
+    "nodemailer": "^6.9.10",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primeng": "^16.1.0",

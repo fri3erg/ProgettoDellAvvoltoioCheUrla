@@ -1,34 +1,38 @@
-<div class="input-group search bg-gradient rounded-2">
-  <input
-    (keyup)="search()"
-    [(ngModel)]="searchKey"
-    type="text"
-    class="form-control"
-    minlength="2"
-    #searchtext
-    placeholder="Search users or channels"
-    aria-label="Search users or channels"
-    aria-describedby="button-addon2"
-  />
-</div>
-<button title="make new channel button" class="big-button" [routerLink]="['/channels/new']">
-  <fa-icon icon="plus" [fixedWidth]="true" [size]="'xl'"></fa-icon>
-</button>
+<div class="d-flex justify-content-center">
+  <div style="width: 50rem">
+    <div class="input-group search bg-gradient rounded-2">
+      <input
+        (keyup)="search()"
+        [(ngModel)]="searchKey"
+        type="text"
+        class="form-control"
+        minlength="2"
+        #searchtext
+        placeholder="Search users or channels"
+        aria-label="Search users or channels"
+        aria-describedby="button-addon2"
+      />
+    </div>
+    <button title="make new channel button" class="big-button" [routerLink]="['/channels/new']">
+      <fa-icon icon="plus" [fixedWidth]="true" [size]="'xl'"></fa-icon>
+    </button>
 
-<div *ngIf="!combinedAndShuffledResults || combinedAndShuffledResults.length === 0">
-  <p>No results</p>
-</div>
-<div *ngIf="combinedAndShuffledResults && combinedAndShuffledResults.length > 0">
-  <div *ngFor="let entry of combinedAndShuffledResults">
-    <!-- Added a check for c to ensure it's not undefined -->
-    <ng-container *ngIf="entry.destype === 'user'; else channelTemplate">
-      <jhi-user-preview [user]="entry"></jhi-user-preview>
-    </ng-container>
-    <ng-template #channelTemplate>
-      <!-- Also added a check for c here -->
-      <ng-container>
-        <jhi-channel-preview [channel]="entry"></jhi-channel-preview>
-      </ng-container>
-    </ng-template>
+    <div *ngIf="!combinedAndShuffledResults || combinedAndShuffledResults.length === 0">
+      <p>No results</p>
+    </div>
+    <div *ngIf="combinedAndShuffledResults && combinedAndShuffledResults.length > 0">
+      <div *ngFor="let entry of combinedAndShuffledResults">
+        <!-- Added a check for c to ensure it's not undefined -->
+        <ng-container *ngIf="entry.destype === 'user'; else channelTemplate">
+          <jhi-user-preview [user]="entry"></jhi-user-preview>
+        </ng-container>
+        <ng-template #channelTemplate>
+          <!-- Also added a check for c here -->
+          <ng-container>
+            <jhi-channel-preview [channel]="entry"></jhi-channel-preview>
+          </ng-container>
+        </ng-template>
+      </div>
+    </div>
   </div>
 </div>

@@ -18,6 +18,7 @@ const socket = require('../socket');
 const config = require('../config/env');
 
 const Jimp = require('jimp');
+const squealCat = require('../model/squealCat');
 //params:
 //page and size for paging
 //user for auth and isUserAuthorized
@@ -716,7 +717,7 @@ class SquealService {
     if (!(await new accountService().isMod(thisUser))) {
       throw new Error('Unathorized');
     }
-
+    let ch = 0;
     const posReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: true });
     const negReactions = await SquealReaction.find({ squeal_id: requestBody.squeal_id.toString(), positive: false });
 
@@ -735,6 +736,7 @@ class SquealService {
           });
         }
       }
+      ch = ch + requestBody.positive.length * 3;
     }
 
     if (requestBody.negative.length > 0) {
@@ -752,6 +754,23 @@ class SquealService {
           });
         }
       }
+      ch = ch + requestBody.negative.length * 8;
+    }
+
+    if (ch < 0) {
+      const cat = await squealCat.create({
+        squeal_id: requestBody.squeal_id,
+        user_id: thisUser._id.toString(),
+        n_characters: ch,
+        cat_type: 'UNPOPULAR',
+      });
+    } else {
+      const cat = await squealCat.create({
+        squeal_id: requestBody.squeal_id,
+        user_id: thisUser._id.toString(),
+        n_characters: ch,
+        cat_type: 'POPULAR',
+      });
     }
 
     return;

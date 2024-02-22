@@ -1,60 +1,64 @@
-<div *ngIf="account">
-  <div *ngFor="let notification of this.notifications" [routerLink]="createLink(notification)">
-    <div class="notif rounded-4" [class.notseen]="notification.isRead">
-      <img
-        [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
-        class="profilepic"
-        *ngIf="notification?.profile_img"
-        alt="Immagine"
-        (error)="setDefaultImage($event)"
-      />
-      <div class="info">
-        <div>
-          <span class="username truncate"> @{{ notification.username }} </span>
-          <span class="timestamp">{{ timeDifference(notification.timestamp) }}</span>
-        </div>
-        <div style="display: flex">
-          <div class="body" *ngIf="notification.type == 'MESSAGE'" class="truncatebody padded">{{ notification.body }}</div>
+<div class="d-flex justify-content-center">
+  <div style="width: 50rem">
+    <div *ngIf="account">
+      <div *ngFor="let notification of this.notifications" [routerLink]="createLink(notification)">
+        <div class="notif rounded-4" [class.notseen]="notification.isRead">
+          <img
+            [src]="'data:' + notification?.profile_img_content_type + ';base64,' + notification?.profile_img"
+            class="profilepic"
+            *ngIf="notification?.profile_img"
+            alt="Immagine"
+            (error)="setDefaultImage($event)"
+          />
+          <div class="info">
+            <div>
+              <span class="username truncate"> @{{ notification.username }} </span>
+              <span class="timestamp">{{ timeDifference(notification.timestamp) }}</span>
+            </div>
+            <div style="display: flex">
+              <div class="body" *ngIf="notification.type == 'MESSAGE'" class="truncatebody padded">{{ notification.body }}</div>
 
-          <p class="body" *ngIf="notification.type == 'SMM'" class="padded">wants to be your client</p>
-          <div class="body" *ngIf="notification.type == 'REACTION'" class="padded truncatebody">
-            reacted to your post:
-            <span [class]="notification.reaction" class="reaction padded"></span>
+              <p class="body" *ngIf="notification.type == 'SMM'" class="padded">wants to be your client</p>
+              <div class="body" *ngIf="notification.type == 'REACTION'" class="padded truncatebody">
+                reacted to your post:
+                <span [class]="notification.reaction" class="reaction padded"></span>
+              </div>
+              <p class="body" *ngIf="notification.type == 'COMMENT'" class="truncatebody padded">
+                commented on your post: {{ notification.body }}
+              </p>
+            </div>
           </div>
-          <p class="body" *ngIf="notification.type == 'COMMENT'" class="truncatebody padded">
-            commented on your post: {{ notification.body }}
-          </p>
         </div>
       </div>
+
+      <div
+        jhiObserveElement
+        #intersection="intersection"
+        [class.example-card--is-intersecting]="intersection._isIntersecting"
+        (isIntersecting)="isIntersecting($event)"
+        [isContinuous]="true"
+        *ngIf="hasMorePage"
+      >
+        <span> Loading more...</span>
+      </div>
+    </div>
+    <div *ngIf="!account">
+      you are not logged in
+
+      <ul>
+        <li>
+          <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+            <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.login">Sign in</span>
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
+            <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.register">Register</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
-
-  <div
-    jhiObserveElement
-    #intersection="intersection"
-    [class.example-card--is-intersecting]="intersection._isIntersecting"
-    (isIntersecting)="isIntersecting($event)"
-    [isContinuous]="true"
-    *ngIf="hasMorePage"
-  >
-    <span> Loading more...</span>
-  </div>
-</div>
-<div *ngIf="!account">
-  you are not logged in
-
-  <ul>
-    <li>
-      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
-        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.login">Sign in</span>
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
-        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.register">Register</span>
-      </a>
-    </li>
-  </ul>
 </div>

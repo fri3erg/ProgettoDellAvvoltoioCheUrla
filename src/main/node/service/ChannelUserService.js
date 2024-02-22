@@ -237,6 +237,9 @@ class ChannelUserService {
             }
             destination.destination_id = newdest._id.toString();
             destination.destination = newdest.name;
+          } else {
+            destination.destination_id = foundChannel._id.toString();
+            destination.destination = foundChannel.name;
           }
         }
         return true;

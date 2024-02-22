@@ -47,7 +47,7 @@ if (!dev) {
     console.log('Next.js app prepared');
 
     // Serve static files from Next.js build directory for SMM paths
-    app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', '.next')));
+    app.use('/smm/_next', express.static(path.join(__dirname, 'avvoltoio-smm', 'nextbuild')));
 
     // Handle all GET requests for SMM paths with Next.js
     app.get('/smm*', (req, res) => handle(req, res)); // Changed from '/smm' to '/smm*' to capture all subpaths

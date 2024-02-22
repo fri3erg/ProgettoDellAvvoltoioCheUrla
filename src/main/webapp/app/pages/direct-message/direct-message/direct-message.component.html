@@ -1,47 +1,51 @@
-<div *ngIf="account">
-  <ng-container *ngFor="let squeal of getSqueals()">
-    <div *ngIf="account.login != getName(squeal)" class="whole rounded-4" [routerLink]="['user', getName(squeal)]">
-      <div style="padding-top: 0.3rem">
-        <img
-          [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
-          class="profilepic"
-          *ngIf="squeal.userImg"
-          alt="Immagine"
-          (error)="setDefaultImage($event)"
-        />
-      </div>
-      <span class="message-layout rounded-4">
-        <div class="myname rounded-4 truncatename">@{{ squeal.userName }}</div>
-        <div class="mymessage">
-          <span class="squealbody truncate">
-            <p>{{ squeal.squeal?.body ?? ' ' }}</p>
+<div class="d-flex justify-content-center">
+  <div style="width: 50rem">
+    <div *ngIf="account">
+      <ng-container *ngFor="let squeal of getSqueals()">
+        <div *ngIf="account.login != getName(squeal)" class="whole rounded-4" [routerLink]="['user', getName(squeal)]">
+          <div style="padding-top: 0.3rem">
+            <img
+              [src]="'data:' + squeal.userContentType + ';base64,' + squeal.userImg"
+              class="profilepic"
+              *ngIf="squeal.userImg"
+              alt="Immagine"
+              (error)="setDefaultImage($event)"
+            />
+          </div>
+          <span class="message-layout rounded-4">
+            <div class="myname rounded-4 truncatename">@{{ squeal.userName }}</div>
+            <div class="mymessage">
+              <span class="squealbody truncate">
+                <p>{{ squeal.squeal?.body ?? ' ' }}</p>
+              </span>
+            </div>
+          </span>
+          <span>
+            <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
+            <div class="mytimestamp">
+              {{ timeDifference(squeal.squeal?.timestamp) }}
+            </div>
           </span>
         </div>
-      </span>
-      <span>
-        <div class="mynotify rounded-4">{{ notifyMap.get(squeal) }} <span class="dot"></span></div>
-        <div class="mytimestamp">
-          {{ timeDifference(squeal.squeal?.timestamp) }}
-        </div>
-      </span>
+      </ng-container>
     </div>
-  </ng-container>
-</div>
-<div *ngIf="!account">
-  you are not logged in
+    <div *ngIf="!account">
+      you are not logged in
 
-  <ul>
-    <li>
-      <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
-        <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.login">Sign in</span>
-      </a>
-    </li>
-    <li>
-      <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
-        <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
-        <span jhiTranslate="global.menu.account.register">Register</span>
-      </a>
-    </li>
-  </ul>
+      <ul>
+        <li>
+          <a class="dropdown-item" routerLink="/login" id="login" data-cy="login">
+            <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.login">Sign in</span>
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" routerLink="/account/register" routerLinkActive="active" data-cy="register">
+            <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
+            <span jhiTranslate="global.menu.account.register">Register</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>

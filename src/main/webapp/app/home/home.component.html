@@ -1,26 +1,30 @@
-<jhi-create-squeal (squealed)="createdSqueal()" *ngIf="account"></jhi-create-squeal>
-<p-dataView #dv [value]="squeals">
-  <ng-template let-s pTemplate="listItem">
-    <jhi-squeal-view *ngIf="s" [squeal]="s"></jhi-squeal-view>
-  </ng-template>
-</p-dataView>
-<div
-  id="intersection"
-  jhiObserveElement
-  #intersection="intersection"
-  [class.example-card--is-intersecting]="intersection._isIntersecting"
-  (isIntersecting)="isIntersecting($event)"
-  [isContinuous]="true"
-  *ngIf="hasMorePage"
->
-  <span *ngIf="!first_load"> Loading more...</span>
-  <span *ngIf="first_load"> Loading...</span>
-</div>
-
-<div [ngSwitch]="account !== null" class="">
-  <div class="alert alert-success" *ngSwitchCase="true">
-    <span id="home-logged-message" *ngIf="account" jhiTranslate="home.logged.message" [translateValues]="{ username: account.login }"
-      >You are logged in as user "{{ account.login }}".</span
+<div class="d-flex justify-content-center">
+  <div style="width: 50rem">
+    <jhi-create-squeal (squealed)="createdSqueal()" *ngIf="account"></jhi-create-squeal>
+    <p-dataView #dv [value]="squeals">
+      <ng-template let-s pTemplate="listItem" class="squeal">
+        <jhi-squeal-view *ngIf="s" [squeal]="s"></jhi-squeal-view>
+      </ng-template>
+    </p-dataView>
+    <div
+      id="intersection"
+      jhiObserveElement
+      #intersection="intersection"
+      [class.example-card--is-intersecting]="intersection._isIntersecting"
+      (isIntersecting)="isIntersecting($event)"
+      [isContinuous]="true"
+      *ngIf="hasMorePage"
     >
+      <span *ngIf="!first_load"> Loading more...</span>
+      <span *ngIf="first_load"> Loading...</span>
+    </div>
+
+    <div [ngSwitch]="account !== null" class="">
+      <div class="alert alert-success" *ngSwitchCase="true">
+        <span id="home-logged-message" *ngIf="account" jhiTranslate="home.logged.message" [translateValues]="{ username: account.login }"
+          >You are logged in as user "{{ account.login }}".</span
+        >
+      </div>
+    </div>
   </div>
 </div>

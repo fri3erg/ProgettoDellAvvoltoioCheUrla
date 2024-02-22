@@ -207,6 +207,7 @@ class AccountService {
       user_id: adminExtra.user_id,
       timestamp: adminExtra.timestamp,
       admin_created: thisUser.login,
+      valid_until: adminExtra.valid_until,
     });
     return admin_extra;
   }

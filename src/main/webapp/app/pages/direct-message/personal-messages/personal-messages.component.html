@@ -20,7 +20,7 @@
     <span> Loading...</span>
   </div>
   <ng-container *ngFor="let squeal of squeals" class="container">
-    <div class="col-10 containing" [class.float-left]="username === squeal?.userName" [class.float-right]="username !== squeal?.userName">
+    <div class="col-7 containing" [class.float-left]="username === squeal?.userName" [class.float-right]="username !== squeal?.userName">
       <div
         class="message-layout rounded-4"
         [class.mybubble]="username !== squeal?.userName"

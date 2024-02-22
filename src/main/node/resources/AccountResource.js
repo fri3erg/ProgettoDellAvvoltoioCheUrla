@@ -27,7 +27,7 @@ router.post('/authenticate', async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign({ user_id: user._id, username }, config.TOKEN_KEY, {
-        expiresIn: '200h',
+        expiresIn: '2h',
       });
 
       res.setHeader('Authorization', 'Bearer ' + token);
@@ -56,6 +56,10 @@ router.post('/authenticate/smm', async (req, res) => {
 
     // Validate if user exist in our database
     const user = await User.findOne({ login: username });
+
+    if (!user) {
+      return res.status(400).send('Invalid Credentials');
+    }
 
     if (!user.authorities) {
       return res.status(401).send('Non hai i permessi');
@@ -496,6 +500,10 @@ router.post('/authenticate/admin', async (req, res) => {
 
     // Validate if user exist in our database
     const user = await User.findOne({ login: username });
+
+    if (!user) {
+      return res.status(400).send('Invalid Credentials');
+    }
 
     if (!user.authorities) {
       return res.status(401).send('Non hai i permessi');

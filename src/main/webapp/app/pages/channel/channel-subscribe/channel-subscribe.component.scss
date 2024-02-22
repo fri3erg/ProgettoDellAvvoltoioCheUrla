@@ -14,7 +14,6 @@
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: #dc3545;
     --bs-gradient: none;
-    border-radius: 12px;
     width: 3.5rem;
     height: 3.5rem;
   }
@@ -34,8 +33,18 @@
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: #4b2ca0;
     --bs-gradient: none;
-    border-radius: 12px;
     width: 3.5rem;
     height: 3.5rem;
+  }
+
+  .sub {
+    width: 3.5rem;
+    height: 3.5rem;
+    color: #4b2ca0;
+  }
+  .unsub {
+    width: 3.5rem;
+    height: 3.5rem;
+    color: red;
   }
 }

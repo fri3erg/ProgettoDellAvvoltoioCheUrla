@@ -33,7 +33,7 @@ import { MoneyComponent } from './pages/money/money.component';
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: true }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
     HttpClientModule,
     MainModule,
     TranslationModule,

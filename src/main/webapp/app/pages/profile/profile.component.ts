@@ -190,8 +190,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   isVip(): boolean {
     // Assuming 'authorities' is an array of strings. Adjust the type if it's different.
+
     const authorities: string[] = this.account?.authorities ?? [];
-    const a = authorities.includes('ROLE_VIP ') || authorities.includes('ROLE_ADMIN');
+    const a = authorities.includes('ROLE_VIP') || authorities.includes('ROLE_ADMIN');
+    return a;
+  }
+  isMod(): boolean {
+    const authorities: string[] = this.account?.authorities ?? [];
+    const a = authorities.includes('ROLE_ADMIN');
     return a;
   }
 

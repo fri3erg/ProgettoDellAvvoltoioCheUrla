@@ -23,12 +23,14 @@ class SMMVIPService {
 
   async addClient(username, userLogin, notificationId) {
     try {
+      console.log('userLogin', userLogin);
       const client = await user.findOne({ login: userLogin });
       const thisUser = await user.findOne({ login: username });
 
       if (!thisUser) {
         throw new Error('Invalid user or missing authorities');
       }
+      console.log('thisUser', thisUser);
 
       const hasPermission = thisUser.authorities.includes('ROLE_SMM') || thisUser.authorities.includes('ROLE_ADMIN');
       if (!hasPermission) {
@@ -99,8 +101,7 @@ class SMMVIPService {
     }
     if (
       !(await new accountService().isUserAuthorized(myUser, thisUser)) ||
-      !thisUser.authorities.includes('ROLE_VIP') ||
-      !thisUser.authorities.includes('ROLE_ADMIN')
+      !(thisUser.authorities.includes('ROLE_VIP') || thisUser.authorities.includes('ROLE_ADMIN'))
     ) {
       throw new Error('Unauthorized');
     }
@@ -126,8 +127,7 @@ class SMMVIPService {
     }
     if (
       !(await new accountService().isUserAuthorized(myUser, thisUser)) ||
-      !thisUser.authorities.includes('ROLE_VIP') ||
-      !thisUser.authorities.includes('ROLE_ADMIN')
+      !(thisUser.authorities.includes('ROLE_VIP') || thisUser.authorities.includes('ROLE_ADMIN'))
     ) {
       throw new Error('Unauthorized');
     }
@@ -135,8 +135,8 @@ class SMMVIPService {
 
     const smm = await smmVIP.find({ users: { $elemMatch: { $eq: thisUser._id.toString() } } });
 
-    for (const user of smm) {
-      const userSMM = await user.findById(user.user_id);
+    for (const u of smm) {
+      const userSMM = await user.findById(u.user_id);
       if (userSMM.login.includes(search)) {
         smmArray.push(await new accountService().hideSensitive(userSMM));
       }

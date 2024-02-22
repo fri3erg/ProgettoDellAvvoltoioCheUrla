@@ -20,7 +20,7 @@ class ReactionDTO {
   }
 }
 CATTHRESHOLD = 0.25;
-VIEWSTHRESHOLD = 10;
+VIEWSTHRESHOLD = 1;
 POSITIVETHRESHOLD = 0.25;
 NEGATIVETHRESHOLD = 0.25;
 BASEMULTIPLIER = 2;
@@ -93,8 +93,7 @@ class ReactionService {
           catType = 'UNPOPULAR';
         }
       }
-      const base_characters = BASEMULTIPLIER * Math.sign(positive - negative);
-      const n_characters = positive * POSITIVEMULTIPLIER - negative * NEGATIVEMULTIPLIER + base_characters;
+      const n_characters = positive * POSITIVEMULTIPLIER - negative * NEGATIVEMULTIPLIER;
       if (!cat) {
         cat = await SquealCat.create({
           squeal_id: squeal_id,
