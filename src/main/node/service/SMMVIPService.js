@@ -35,8 +35,7 @@ class SMMVIPService {
         throw new Error('User does not have the required permissions');
       }
 
-      console.log('notificationId', notificationId);
-      //await notification.deleteOne({ _id: notificationId.toString() });
+      await notification.deleteOne({ _id: notificationId.toString() });
 
       const opt = { new: true };
       await smmVIP.findOneAndUpdate({ user_id: thisUser._id.toString() }, { $push: { users: client._id.toString() } }, opt);
