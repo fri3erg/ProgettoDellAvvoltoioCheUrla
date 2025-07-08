@@ -1,258 +1,100 @@
-# avvoltoioCheUrla
+# 🚀 Squealer: A Multi-Platform Social Media Application
 
-This application was generated using JHipster 8.0.0-beta.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2](https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2).
+---
 
-## Project Structure
+Welcome to Squealer, a comprehensive social media platform developed for the Web Technologies exam at the University of Bologna! Squealer offers a Twitter-like experience across three distinct web applications, each for a specific role, and powered by a Node.js backend with MongoDB.
 
-Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.
+---
 
-In the project root, JHipster generates configuration files for tools like git, prettier, eslint, husky, and others that are well known and you can find references in the web.
+## 📚 Project Overview
 
-`/src/*` structure follows default Java structure.
+Squealer was designed as a multi-faceted social media platform, featuring dedicated interfaces for different user types:
 
-- `.yo-rc.json` - Yeoman configuration file
-  JHipster configuration is stored in this file at `generator-jhipster` key. You may find `generator-jhipster-*` for specific blueprints configuration.
-- `.yo-resolve` (optional) - Yeoman conflict resolver
-  Allows to use a specific action when conflicts are found skipping prompts for files that matches a pattern. Each line should match `[pattern] [action]` with pattern been a [Minimatch](https://github.com/isaacs/minimatch#minimatch) pattern and action been one of skip (default if ommited) or force. Lines starting with `#` are considered comments and are ignored.
-- `.jhipster/*.json` - JHipster entity configuration files
+* **Angular Application:** The primary platform for **end-users**, offering a rich and interactive social media experience.
+* **React Application:** Designed for **moderators and social media managers**, providing tools to oversee content and manage user profiles.
+* **Vanilla JavaScript Application:** The **administrator's control panel**, granting full oversight and modification capabilities over the entire platform.
 
-- `npmw` - wrapper to use locally installed npm.
-  JHipster installs Node and npm locally using the build tool by default. This wrapper makes sure npm is installed locally and uses it avoiding some differences different versions can cause. By using `./npmw` instead of the traditional `npm` you can configure a Node-less environment to develop or test your application.
-- `/src/main/docker` - Docker configurations for the application and services that the application depends on
+The backend is built with **Node.js** and utilizes **MongoDB** for data storage, running within the University's Docker environment.
 
-## Development
+---
 
-Before you can build this project, you must install and configure the following dependencies on your machine:
+## ✨ Features
 
-1. [Node.js][]: We use Node to run a development web server and build the project.
-   Depending on your system, you can install Node either from source or as a pre-packaged bundle.
+Squealer boasts a wide array of features to facilitate a dynamic social media environment:
 
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in [package.json](package.json).
+### 🚀 Core User Features (Angular Application)
 
-```
-npm install
-```
+Get ready to dive into the heart of Squealer with these powerful features designed for end-users:
 
-We use npm scripts and [Angular CLI][] with [Webpack][] as our build system.
+* **Seamless Interaction & Content Creation**
+  * **Authentication:** Securely **log in and register** to start your Squealer journey.
+  * **Posts:** Share your thoughts with **short messages, or "squeals."**
+  * **Images in Posts:** Bring your squeals to life by **sharing visual content.**
+  * **Locations in Posts:** Let others know where you are by **tagging geographical locations.**
+  * **Character Limits:** Keep it concise! We've got **daily, weekly, and yearly character limits** to encourage focused communication.
+  * **Premium Character Access:** Need more room to express yourself? **Purchase additional characters** seamlessly via **Nexi** integration.
+  * **Dynamic Character Algorithm:** Our smart algorithm **adjusts your daily character limits** based on your popularity and post reactions, rewarding quality content!
+  * **Post Control:** You're in charge! **Modify and delete your own posts** anytime.
+  * **Post Views:** See the impact of your words by **tracking the reach of your posts.**
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
+* **Engage and Connect**
+  * **Likes and Reactions:** Show some love! **Express engagement** with posts through likes and various reactions.
+  * **Comments on Posts:** Join the conversation by **engaging in discussions** under posts.
+  * **User Tags:** Easily **mention other users** in your posts to grab their attention.
+  * **Hashtags:** **Categorize your content** and effortlessly discover trending topics.
+  * **Direct Messages:** Keep it private with **one-on-one conversations** between users.
 
-```
-./mvnw
-npm start
-```
+* **Community and Discovery**
+  * **Homepage:** Your personalized hub, featuring a **feed of content from followed users and channels.**
+  * **Profiles:** Make it yours! **Customize your profile** with personal info and your post history.
+  * **Follows:** **Connect with other users** and subscribe to channels to tailor your feed.
+  * **Channels:** Explore and create **public or private thematic feeds.**
+  * **Channel Ownership:** If you create a channel, you'll have **full control** over it.
+  * **Groups:** Build and manage vibrant **communities with various privacy settings.**
+  * **AI Channels:** Discover unique, engaging content from **automated channels with bot-generated responses.**
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
+* **Flexible Permissions**
+  * **Multiple Roles:** Squealer supports **differentiated permissions** for standard users, social media managers, and administrators, ensuring everyone has the right level of access.
 
-The `npm run` command will list all of the scripts available to run for this project.
+### 🧑‍💼 Social Media Manager Features (React Application)
 
-### PWA Support
+* **Multi-Profile Control:** Social media managers can authenticate and manage multiple user profiles.
+* **Content Moderation:** Tools to review, approve, or remove user-generated content.
+* **User Management:** Capabilities to oversee user accounts.
 
-JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
+### 🧑‍⚖️ Administrator Features (Vanilla JS Application)
 
-The service worker initialization code is disabled by default. To enable it, uncomment the following code in `src/main/webapp/app/app.module.ts`:
+* **Full Control:** Direct and comprehensive control over all platform functionalities.
+* **Modification & Deletion:** Ability to modify and delete any content, user, or platform setting.
 
-```typescript
-ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
-```
+---
 
-### Managing dependencies
+## 💻 Technologies Used
 
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+| Category           | Technology                             |
+| :----------------- | :------------------------------------- |
+| **Frontend** | Angular 🅰️ (User Application)           |
+| **Frontend** | React ⚛️ (Moderation/SMM Application)   |
+| **Frontend** | Vanilla JavaScript 🍦 (Admin Application) |
+| **Backend** | Node.js 🟢                            |
+| **Database** | MongoDB 🍃                            |
+| **Containerization** | Gocker (uni Docker) 🐳                             |
 
-```
-npm install --save --save-exact leaflet
-```
+---
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+## ⚠️ Important Note
 
-```
-npm install --save-dev --save-exact @types/leaflet
-```
+As of the current date, the university's web services for this project have been revoked. Therefore, Squealer is no longer hosted online.
 
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/app.module.ts](src/main/webapp/app/app.module.ts) file:
+**Please be aware:** The dependencies for this project are now outdated. It is highly recommended to upgrade them to avoid potential security vulnerabilities and ensure optimal performance.
 
-```
-import 'leaflet/dist/leaflet.js';
-```
+---
 
-Edit [src/main/webapp/content/scss/vendor.scss](src/main/webapp/content/scss/vendor.scss) file:
+## 🧑‍🤝‍🧑 Contributors
 
-```
-@import 'leaflet/dist/leaflet.css';
-```
+* [Elia Friberg](https://github.com/fri3erg)
+* [Matteo Raggi](https://github.com/matteraggi)
 
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
+---
 
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-### Using Angular CLI
-
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
-```
-ng generate component my-component
-```
-
-will generate few files:
-
-```
-create src/main/webapp/app/my-component/my-component.component.html
-create src/main/webapp/app/my-component/my-component.component.ts
-update src/main/webapp/app/app.module.ts
-```
-
-### JHipster Control Center
-
-JHipster Control Center can help you manage and control your application(s). You can start a local control center server (accessible on http://localhost:7419) with:
-
-```
-docker compose -f src/main/docker/jhipster-control-center.yml up
-```
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the avvoltoioCheUrla application for production, run:
-
-```
-./mvnw -Pprod clean verify
-```
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-```
-java -jar target/*.jar
-```
-
-Then navigate to [http://localhost:8000](http://localhost:8000) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-```
-./mvnw -Pprod,war clean verify
-```
-
-## Testing
-
-To launch your application's tests, run:
-
-```
-./mvnw verify
-```
-
-### Client tests
-
-Unit tests are run by [Jest][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-```
-npm test
-```
-
-For more information, refer to the [Running tests page][].
-
-### Code quality
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
-
-```
-docker compose -f src/main/docker/sonar.yml up -d
-```
-
-Note: we have turned off forced authentication redirect for UI in [src/main/docker/sonar.yml](src/main/docker/sonar.yml) for out of the box experience while trying out SonarQube, for real use cases turn it back on.
-
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
-
-Then, run a Sonar analysis:
-
-```
-./mvnw -Pprod clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
-
-```
-./mvnw initialize sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-Additionally, Instead of passing `sonar.password` and `sonar.login` as CLI arguments, these parameters can be configured from [sonar-project.properties](sonar-project.properties) as shown below:
-
-```
-sonar.login=admin
-sonar.password=admin
-```
-
-For more information, refer to the [Code quality page][].
-
-## Using Docker to simplify development (optional)
-
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
-
-For example, to start a mongodb database in a docker container, run:
-
-```
-docker compose -f src/main/docker/mongodb.yml up -d
-```
-
-To stop it and remove the container, run:
-
-```
-docker compose -f src/main/docker/mongodb.yml down
-```
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
-
-```
-npm run java:docker
-```
-
-Or build a arm64 docker image when using an arm64 processor os like MacOS with M1 processor family running:
-
-```
-npm run java:docker:arm64
-```
-
-Then run:
-
-```
-docker compose -f src/main/docker/app.yml up -d
-```
-
-When running Docker Desktop on MacOS Big Sur or later, consider enabling experimental `Use the new Virtualization framework` for better processing performance ([disk access performance is worse](https://github.com/docker/roadmap/issues/7)).
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
-
-[JHipster Homepage and latest documentation]: https://www.jhipster.tech
-[JHipster 8.0.0-beta.2 archive]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2
-[Using JHipster in development]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/development/
-[Using Docker and Docker-Compose]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/docker-compose
-[Using JHipster in production]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/production/
-[Running tests page]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/running-tests/
-[Code quality page]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/code-quality/
-[Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v8.0.0-beta.2/setting-up-ci/
-[Node.js]: https://nodejs.org/
-[NPM]: https://www.npmjs.com/
-[Webpack]: https://webpack.github.io/
-[BrowserSync]: https://www.browsersync.io/
-[Jest]: https://facebook.github.io/jest/
-[Leaflet]: https://leafletjs.com/
-[DefinitelyTyped]: https://definitelytyped.org/
-[Angular CLI]: https://cli.angular.io/
+Feel free to explore the codebase and use it!
